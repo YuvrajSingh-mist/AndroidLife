@@ -2,8 +2,8 @@
   "file": "Global var->tasks index",
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
-  "generated_at": "2026-08-08",
-  "var_key_count_in_local_env": 37,
+  "generated_at": "2026-08-10",
+  "var_key_count_in_local_env": 38,
   "placeholder_key_count_in_dataset": 46,
   "vars": {
     "X": {
@@ -79,18 +79,6 @@
       "tasks": [
         "medium__chrome__001"
       ]
-    },
-    "artist": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
-    },
-    "bedtime": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
     },
     "channel name": {
       "configured_in_local_env": true,
@@ -207,12 +195,6 @@
         "easy__google-photos__001"
       ]
     },
-    "digits": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
-    },
     "food delivery site": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -254,7 +236,7 @@
       ]
     },
     "meeting folder": {
-      "configured_in_local_env": false,
+      "configured_in_local_env": true,
       "task_count": 1,
       "days": [
         1
@@ -264,7 +246,7 @@
       ]
     },
     "meeting title": {
-      "configured_in_local_env": false,
+      "configured_in_local_env": true,
       "task_count": 2,
       "days": [
         1,
@@ -285,12 +267,6 @@
         "hard__music-obsidian__077"
       ]
     },
-    "name": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
-    },
     "new email": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -303,12 +279,14 @@
     },
     "note title": {
       "configured_in_local_env": true,
-      "task_count": 1,
+      "task_count": 2,
       "days": [
-        1
+        1,
+        2
       ],
       "tasks": [
-        "easy__obsidian__001"
+        "easy__obsidian__001",
+        "easy__notes__001"
       ]
     },
     "number": {
@@ -494,7 +472,7 @@
       ]
     },
     "stock note title": {
-      "configured_in_local_env": false,
+      "configured_in_local_env": true,
       "task_count": 1,
       "days": [
         1
@@ -502,12 +480,6 @@
       "tasks": [
         "hard__google-search-obsidian-telegram__057"
       ]
-    },
-    "store": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
     },
     "subject": {
       "configured_in_local_env": false,
@@ -635,28 +607,6 @@
         "easy__google-search__005"
       ]
     },
-    "meeting folder": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        1
-      ],
-      "tasks": [
-        "hard__calendar-telegram-obsidian__002"
-      ]
-    },
-    "meeting title": {
-      "configured_in_local_env": false,
-      "task_count": 2,
-      "days": [
-        1,
-        19
-      ],
-      "tasks": [
-        "hard__calendar-telegram-obsidian__002",
-        "medium__clock__007"
-      ]
-    },
     "number": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -707,16 +657,6 @@
         "easy__music__009"
       ]
     },
-    "stock note title": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        1
-      ],
-      "tasks": [
-        "hard__google-search-obsidian-telegram__057"
-      ]
-    },
     "subject": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -764,9 +704,7 @@
   },
   "local_env_keys_with_no_task": [
     "artist",
-    "store",
     "digits",
-    "name",
-    "bedtime"
+    "store"
   ]
 }
