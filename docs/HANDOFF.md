@@ -55,6 +55,33 @@
   ringtone), medium-camera (no Night/HDR toggles), medium-calendar (no recurring
   no-attendee events), medium-obsidian (150-step word-count loop).
 
+## 3b. Day-1 task rewordings (DONE 2026-08-09 — data already regenerated)
+
+The following tasks failed on data/device preconditions, so they were reworded to be
+achievable and re-seeded. All changes are in `benchmarks/dailyBench-600/tasks_530.md`
+(source of truth) and the regenerated `DailyBench_530_v1.json/.jsonl` + day-1 seed
+manifest + `website/assets/data/site_data.json` (site auto-deploys on push):
+
+- **easy__phone__001** → "In Phone, message the most recent unknown number with
+  \"who's this?\"" — `seed_unknown_number_call()` now inserts an incoming call from
+  `+919555555001` (unknown, not in contacts) on seed day.
+- **medium__calendar__001** → "Filter my Calendar to show only recurring events with
+  no attendees, delete one that's outdated, and check that the series still repeats
+  correctly" (removed the "for today" constraint that failed when no recurring
+  no-attendee event fell on run day). Seed fix: `Weekly_Standup` now uses
+  `rrule="FREQ=DAILY;COUNT=14"` starting today so there's always an event on run day;
+  `Old_Gym_Class` stays a dated WEEKLY series (the outdated one to delete).
+- **medium__obsidian__001** → **RENAMED** to **medium__google-docs__001** (task_id
+  comment in tasks_530.md + new `[Google Docs]` section): "Rank my documents in
+  Google Docs by length (word count), open the longest one, and tell me its word
+  count." `task_dataset.py` APP_ALIASES gained `"Google Docs": ("Google Docs", "Docs")`.
+- **medium__camera__001** → "I'm taking a portrait this evening, so set up the
+  Camera: turn on AI enhancement mode and portrait mode."
+
+Metrics rule (user's): results are ONLY true success / failure / hallucination — no
+partials. The Day-1 report reclassified `hard__chrome-telegram-notes__008` from
+⚠️PARTIAL to a strict failure (❌).
+
 ## 4. Grading conventions (AGREED — do not change)
 
 - **MobileWorld SR gate**: ASK USER task counts as success ONLY if agent called
