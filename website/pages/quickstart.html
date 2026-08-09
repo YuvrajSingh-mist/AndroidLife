@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyBench300  -  Quick Start</title>
+  <meta name="description" content="Quick start guide for setting up, running, and measuring DailyBench300 on a real Android phone.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<nav aria-label="Main navigation">
+  <span class="nav-title">DailyBench300</span>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="../index.html">Overview</a>
+    <a href="./tasks.html">Tasks</a>
+    <a href="#setup">Quick Start</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="container">
+      <h1>Quick Start</h1>
+      <p class="hero-subtitle">Setup, Smoke Tests, Batch Runs, and Metrics</p>
+      <p class="hero-desc">
+        This page mirrors the benchmark workflow in the repository: create the environment, run a smoke
+        test, run a day of tasks, and aggregate MobileWorld-style metrics.
+      </p>
+      <div class="hero-btns">
+        <a href="#setup" class="btn btn-primary">Setup</a>
+        <a href="../index.html" class="btn btn-outline">Back to Overview</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="setup" aria-labelledby="heading-setup">
+    <div class="container">
+      <h2 class="section-title" id="heading-setup">Environment Setup</h2>
+      <div class="prose">
+        <p>Clone the repository and install dependencies. This repo is <code>uv</code>-managed end to end.</p>
+      </div>
+      <pre><code class="language-bash">git clone https://github.com/YuvrajSingh-mist/DrainBench300.git
+cd DrainBench300
+uv sync --extra dev --extra tracing --extra hf
+cp .env.example .env</code></pre>
+      <pre><code class="language-bash">OPENROUTER_API_KEY=...   # needed if using OpenRouter (default agent host)
+OPENAI_API_KEY=...       # only needed for the ask_user tool (Hard/ASK USER tasks)
+HF_TOKEN=hf_...          # only needed for pushing dataset exports to Hugging Face</code></pre>
+      <div class="prose">
+        <p>
+          Prerequisites are system tools (not <code>uv</code>-managed): <code>adb</code>, <code>scrcpy</code>,
+          and Python 3.11&ndash;3.13. Every run writes into <code>assets/runs/</code> and (optionally)
+          <code>assets/db/dayN/</code> for Phoenix.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="smoke" aria-labelledby="heading-smoke">
+    <div class="container">
+      <h2 class="section-title" id="heading-smoke">Smoke Test</h2>
+      <div class="prose">
+        <p>
+          Confirm the phone and model server are reachable, then run the pre-flight check before any real
+          benchmark run (or after changing phones/model hosts). It checks prerequisites, the LLM server
+          (<code>GET /models</code> + a real chat completion), wired and wireless ADB with a device health
+          check, and one real one-step agent run:
+        </p>
+      </div>
+      <pre><code class="language-bash">adb devices -l
+curl -s "$LLM_UPSTREAM/models"
+
+./scripts/run/smoke_test.sh --help                          # full flag reference
+./scripts/run/smoke_test.sh                                 # defaults: first USB device + first model
+./scripts/run/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model my-model
+./scripts/run/smoke_test.sh --skip-llm --skip-agent-run --wireless-serial 192.168.1.23:5555</code></pre>
+    </div>
+  </section>
+
+  <section id="batch" aria-labelledby="heading-batch">
+    <div class="container">
+      <h2 class="section-title" id="heading-batch">Running a Benchmark</h2>
+      <div class="prose">
+        <p>
+          Point <code>LLM_UPSTREAM</code>/<code>MODEL</code> at OpenRouter for a hosted model, or at a local
+          host. List a task slice first, then dry-run it to see the exact commands that would execute, then
+          run it for real:
+        </p>
+      </div>
+      <pre><code class="language-bash">export DAILYBENCH_SERIAL=RS7XKZDI8HTOJNYL    # adb serial of your phone
+export LLM_UPSTREAM=https://openrouter.ai/api
+export MODEL='qwen/qwen3.7-flash'
+
+uv run dailybench_tasks.py --bucket easy --app gmail --list
+uv run dailybench_tasks.py \
+  --bucket easy --app gmail --skip-unresolved \
+  --serial "$DAILYBENCH_SERIAL" \
+  --llm-upstream-base "$LLM_UPSTREAM" --model "$MODEL" \
+  --dry-run</code></pre>
+      <div class="prose">
+        <p>
+          Run a whole day from the 28-day schedule (or all 533) with one command. This also sets up the
+          per-day Phoenix project (<code>dailybench-dayN</code>) automatically:
+        </p>
+      </div>
+      <pre><code class="language-bash">uv run python scripts/run/run_day.py --day 1
+uv run python scripts/run/run_day.py --day 1 --dry-run     # preview the exact per-task commands
+uv run python scripts/run/run_day.py --all                 # the whole 533-task set
+
+# resume an interrupted batch in place:
+uv run python scripts/run/run_day.py --day 1 \
+  --run-root assets/runs/full-bench/2026-08-09-153930 \
+  --resume-from medium__gallery__001</code></pre>
+      <div class="prose">
+        <p>Single one-off task with full harness artifacts:</p>
+      </div>
+      <pre><code class="language-bash">uv run dailybench_runner.py \
+  --serial "$DAILYBENCH_SERIAL" \
+  --label gmail-unread-count \
+  --llm-upstream-base "$LLM_UPSTREAM" \
+  --model "$MODEL" --temperature 0 --steps 50 \
+  --goal "Check how many unread emails are in the inbox"</code></pre>
+    </div>
+  </section>
+
+  <section id="metrics" aria-labelledby="heading-metrics">
+    <div class="container">
+      <h2 class="section-title" id="heading-metrics">Metrics</h2>
+      <div class="prose">
+        <p>
+          After a batch, aggregate the run folders into MobileWorld-style metrics (Success Rate with the
+          ASK USER gate, Average Completion Steps, Average User Queries, and User Interaction Quality):
+        </p>
+      </div>
+      <pre><code class="language-bash">uv run scripts/eval/dailybench_report.py \
+  --runs assets/runs/full-bench/2026-08-09-153930/day1
+uv run scripts/eval/dailybench_report.py \
+  --runs 'assets/runs/full-bench/2026-08-09-153930/day1' --cooldown-seconds 10</code></pre>
+      <div class="prose">
+        <p>
+          Trace every run with Phoenix for debugging. Each day uses its own DB under <code>assets/db/dayN/</code>:
+        </p>
+      </div>
+      <pre><code class="language-bash">PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/day1/phoenix.db" \
+PHOENIX_PROJECT_NAME=dailybench-day1 \
+uv run phoenix serve --port 6006   # then view http://localhost:6006
+
+# register real OpenRouter pricing so Phoenix shows LLM cost:
+uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash</code></pre>
+    </div>
+  </section>
+
+  <section id="preview" aria-labelledby="heading-preview">
+    <div class="container">
+      <h2 class="section-title" id="heading-preview">Preview This Site</h2>
+      <div class="prose">
+        <p>The website is static and GitHub Pages-ready. Rebuild the task data and preview locally:</p>
+      </div>
+      <pre><code class="language-bash">node website/tools/build_site_data.mjs   # regenerate site_data.json from the datasets
+cd website
+python3 -m http.server 8000
+# then open http://localhost:8000</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="../index.html">Overview</a>
+      <a href="./tasks.html">Tasks</a>
+      <a href="#setup">Quick Start</a>
+    </div>
+    <p><strong>DailyBench300</strong> &nbsp;&middot;&nbsp; Quick start workflow &nbsp;&middot;&nbsp; Real-phone Android agent benchmark</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="../assets/js/nav.js"></script>
+</body>
+</html>

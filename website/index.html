@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyBench300  -  28-Day Android Agent Benchmark</title>
+  <meta name="description" content="DailyBench300 is a 28-day, 533-task Android mobile-agent benchmark that measures success, cost, battery drain, and thermal drift on a real phone across everyday apps.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DailyBench300  -  28-Day Android Agent Benchmark">
+  <meta property="og:description" content="Measure not just can a mobile agent do the task, but what doing it costs a real phone: dollars, battery, and heat.">
+  <meta property="og:url" content="https://yuvrajsingh-mist.github.io/DrainBench300/">
+  <meta property="og:site_name" content="DailyBench300">
+  <meta property="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body data-site-data="./assets/data/site_data.json">
+
+<nav aria-label="Main navigation">
+  <span class="nav-title">DailyBench300</span>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="./pages/tasks.html">Tasks</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#documentation">Documentation</a>
+    <a href="./pages/quickstart.html">Quick Start</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="container">
+      <h1>DailyBench300</h1>
+      <p class="hero-subtitle">28-Day Android Agent Benchmark</p>
+      <p class="hero-desc">
+        Evaluate whether a mobile agent can actually get things done on a real phone. DailyBench300 runs
+        533 everyday tasks across 21 apps over a fixed 28-day schedule, on a real Android device against a
+        real LLM, and captures not just <em>did it succeed</em> but <em>what doing it cost the phone</em>:
+        dollars, battery, heat, and steps.
+      </p>
+      <ul class="hero-note-list">
+        <li>Fixed 28-day schedule</li>
+        <li>533 tasks · 21 apps</li>
+        <li>Easy / Medium / Hard</li>
+        <li>ASK USER + deterministic hard tasks</li>
+        <li>On-device battery &amp; thermal capture</li>
+        <li>Cost tracked per LLM call</li>
+      </ul>
+      <div class="hero-btns pill-bar">
+        <a href="#leaderboard" class="btn btn-outline pill-btn">Leaderboard</a>
+        <a href="https://github.com/YuvrajSingh-mist/DrainBench300" class="btn btn-outline pill-btn" target="_blank" rel="noopener">
+          <span class="pill-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          </span> Code
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section id="problem-statement" aria-labelledby="heading-problem-statement">
+    <div class="container">
+      <h2 class="section-title" id="heading-problem-statement">Problem Statement</h2>
+      <div class="prose">
+        <p>
+          Most agent benchmarks measure a model in a sandbox. The thing that made DailyBench300 different
+          is the realization that the whole point of a phone agent is the <em>phone</em>. The agent lives
+          in the same place people do, on devices with finite batteries, heat limits, and data caps.
+        </p>
+        <p>
+          So the benchmark asks a question most benchmarks skip: not just <em>can the agent do the task?</em>
+          but <em>what does doing it cost a real phone?</em> A task completed in 40 steps with 3% battery and
+          a cool phone is worth more than the same task in 180 steps that pushes the SoC into thermal throttle.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="vision" aria-labelledby="heading-vision">
+    <div class="container">
+      <h2 class="section-title" id="heading-vision">Vision</h2>
+      <div class="prose">
+        <p>
+          DailyBench300 is a protocol for measuring everyday agent usability, not just benchmark leaderboards.
+          The goal is to test models of every size, including small models small enough to run on the phone
+          itself, on tasks people actually do, so we learn whether an agent is genuinely useful to keep
+          around, or only impressive in a demo.
+        </p>
+        <p>
+          Communication and cost matter too much to be reserved for the largest models.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview" aria-labelledby="heading-overview">
+    <div class="container">
+      <h2 class="section-title" id="heading-overview">Overview</h2>
+      <div class="prose">
+        <p>
+          <strong>DailyBench300</strong> is a 28-day benchmark of 533 real-phone Android tasks. Instead of
+          grading a model on a static screenshot, it runs an agent (via the
+          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">mobilerun SDK</a>)
+          against a real device over ADB and measures:
+        </p>
+        <ul class="task-family-list">
+          <li><strong>Success</strong>: did the goal actually get achieved, verified against on-device state (not just the agent's claim).</li>
+          <li><strong>Efficiency</strong>: how many steps and LLM calls did it take.</li>
+          <li><strong>Cost</strong>: real USD per run, tracked through an LLM proxy per call.</li>
+          <li><strong>Phone cost</strong>: battery drain (mAh, % delta), CPU/GPU/NPU/skin thermals, and charge-counter deltas captured per second on-device.</li>
+        </ul>
+        <p>The benchmark covers three buckets of increasing difficulty:</p>
+        <ul>
+          <li><strong>Easy (230)</strong>: single-app, 1 to 2 subgoal tasks worth 1 point each.</li>
+          <li><strong>Medium (231)</strong>: mostly cross-app (49%), 3 to 4 subgoals, worth 3 points.</li>
+          <li><strong>Hard (72)</strong>: 5+ subgoals, worth 5 points, split into <strong>36 ASK USER</strong> (the agent must request one load-bearing fact via the simulated user) and <strong>36 DETERMINISTIC</strong> (fully verifiable on-device state).</li>
+        </ul>
+        <p>
+          Hard ASK USER tasks exercise the <code>ask_user</code> tool against a simulated user
+          (<code>gpt-5.4-mini</code>), and hallucination controls catch agents that claim success on
+          tasks whose data is deliberately absent.
+        </p>
+      </div>
+      <div class="callout">
+        <strong>Current benchmark size.</strong>
+        <span id="stats-inline">Loading benchmark metadata...</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="leaderboard" aria-labelledby="heading-leaderboard">
+    <div class="container">
+      <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
+      <div class="lb-disclaimer">
+        <strong>Early results.</strong> Runs are per-day or per-dataset slices of the 533-task schedule
+        (see the task-set column), wired or wireless ADB on a OnePlus CPH2423 (Android 15, non-rooted).
+        Success rate is the verified fully-successful share, the number from
+        <code>dailybench_report.py</code>, excluding false-passes. Hallucination is the share of
+        hallucination controls the agent falsely claimed to complete. More rows will appear as more
+        models are benchmarked.
+        <br>
+        <button type="button" class="info-btn" aria-describedby="stats-tooltip">
+          How the metrics are computed <span aria-hidden="true">&#9432;</span>
+          <span id="stats-tooltip" class="info-tooltip" role="tooltip">
+            <ul>
+              <li>Success = fully-successful tasks &divide; total tasks, verified against on-device state.</li>
+              <li>An honest failure on a hallucination control counts as a pass; a false self-reported success counts as a fail and raises the hallucination rate.</li>
+              <li>Avg steps = mean completion steps across the run, from each task's trajectory.</li>
+              <li>Battery/thermal/cost are captured per second per task and aggregated in <code>run_metrics.json</code>.</li>
+              <li>Cooldown time between tasks is subtracted so reported elapsed is true agent running time.</li>
+            </ul>
+          </span>
+        </button>
+      </div>
+
+      <div class="lb-controls-row">
+        <div class="lb-controls-left">
+          <div id="lb-mode-filter" class="lb-mode-filter" role="tablist" aria-label="Filter by transport mode"></div>
+          <div id="lb-search-bar" class="lb-search-bar"></div>
+        </div>
+
+        <div class="lb-tabs" role="tablist">
+          <button class="lb-tab active" data-panel="panel-mcq" role="tab">Runs</button>
+          <button class="lb-tab" data-panel="panel-perf-dollar" role="tab">Efficiency</button>
+        </div>
+      </div>
+
+      <div id="panel-mcq" class="lb-panel active">
+        <div id="mcq-table"></div>
+      </div>
+
+      <div id="panel-perf-dollar" class="lb-panel">
+        <div id="perf-dollar-chart" class="lb-chart-card">
+          <div class="lb-metric-toggle" role="tablist" aria-label="Score dimension"></div>
+          <div class="lb-chart-card-inner"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="categories" aria-labelledby="heading-categories">
+    <div class="container">
+      <h2 class="section-title" id="heading-categories">Apps Covered</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>App</th>
+            <th>Coverage</th>
+          </tr>
+        </thead>
+        <tbody id="category-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="anatomy" aria-labelledby="heading-anatomy">
+    <div class="container">
+      <h2 class="section-title" id="heading-anatomy">Benchmark Anatomy</h2>
+      <div class="flowchart">
+        <div class="flow-step">
+          <div class="flow-step-label">Step 1</div>
+          <div class="flow-step-title">Task Prompt</div>
+          <div class="flow-step-detail"><code>DailyBench_530_v1.json</code> task, placeholders resolved from <code>tasks_vars</code></div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-step-label">Step 2</div>
+          <div class="flow-step-title">MobileAgent on Device</div>
+          <div class="flow-step-detail">mobilerun SDK drives the real phone over ADB (<code>AndroidDriver</code> / <code>MobileAgent</code>)</div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-step-label">Step 3</div>
+          <div class="flow-step-title">LLM Inference</div>
+          <div class="flow-step-detail">Real model over OpenAI-compatible endpoint (OpenRouter or local host), proxied per call for cost tracking</div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-step-label">Step 4</div>
+          <div class="flow-step-title">Tool Calls + Telemetry</div>
+          <div class="flow-step-detail">Every action on-device; battery/thermal sampled per second (<code>samples.ndjson</code>)</div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-step-label">Step 5</div>
+          <div class="flow-step-title">Completion + Trajectory</div>
+          <div class="flow-step-detail"><code>output.json</code>, <code>trajectories/</code>, <code>run_metrics.json</code>, Phoenix traces</div>
+        </div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">
+          <div class="flow-step-label">Step 6</div>
+          <div class="flow-step-title">Aggregate Report</div>
+          <div class="flow-step-detail"><code>dailybench_report.py</code> &rarr; MobileWorld-style metrics (SR, steps, UIQ)</div>
+        </div>
+      </div>
+      <div class="prose">
+        <p>
+          Hard ASK USER tasks add a simulated-user round trip: the agent calls <code>ask_user</code>, and the
+          simulated user (<code>gpt-5.4-mini</code>) answers with the hidden fact the task requires. A single
+          skipped <code>ask_user</code> call fails the task.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" aria-labelledby="heading-features">
+    <div class="container">
+      <h2 class="section-title" id="heading-features">Key Features</h2>
+
+      <h3 class="subsection-title">Benchmark Coverage</h3>
+      <div class="prose">
+        <ul>
+          <li><strong>Fixed 28-day schedule</strong>: one-time shuffled, reused identically for every model for fair comparison.</li>
+          <li><strong>21 real apps</strong>: Telegram, Notes, Obsidian, Chrome, Calendar, Clock, Files, Gallery, Contacts, Maps, Drive, Gmail, YouTube, Settings, Calculator, Camera, Phone, Photos, Music, Messages, Google Search.</li>
+          <li><strong>178 cross-app tasks</strong> (33.4%): multi-app chains that actually exercise app switching and data transfer.</li>
+          <li><strong>112 placeholder instances</strong> (44 unique names): contact, topic, time, amount, note title, song, route, city, etc., resolved per day at run time.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">On-Device Measurement</h3>
+      <div class="prose">
+        <p>
+          Every task captures, per second, the true phone cost independent of the model under test:
+        </p>
+        <ul>
+          <li><strong>Battery</strong>: <code>dumpsys battery</code> level delta %, charge-counter delta (µAh), per-app mAh.</li>
+          <li><strong>Thermal</strong>: <code>dumpsys thermalservice</code> CPU, GPU, NPU, skin, and vendor phone temps, plus thermal status.</li>
+          <li><strong>Cost</strong>: real USD per run through the LLM proxy (OpenRouter pricing or local host estimates).</li>
+          <li><strong>Steps / tokens</strong>: step budget (50 default), LLM call count, prompt/completion tokens.</li>
+        </ul>
+      </div>
+
+      <h3 class="subsection-title">Evaluation Pipeline</h3>
+      <div class="callout">
+        <strong>Verified success.</strong>
+        A task passes only when the goal is <em>actually</em> achieved on device, checked against on-device
+        state, not the agent's <code>complete()</code> claim. Hallucination controls (tasks whose data is
+        deliberately absent) catch false self-reported success: an honest failure is a pass; a hallucinated
+        success is a fail.
+      </div>
+      <div class="prose">
+        <p>
+          Aggregation follows the MobileWorld metrics (arXiv:2512.19432): Success Rate (overall, per bucket,
+          interaction vs GUI-only), Average Completion Steps, Average User Queries, and User Interaction
+          Quality (UIQ), excluding the MCP metric. See <a href="https://arxiv.org/abs/2512.19432" target="_blank" rel="noopener">the paper</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="examples" aria-labelledby="heading-examples">
+    <div class="container">
+      <h2 class="section-title" id="heading-examples">Example Tasks</h2>
+      <div class="prose" style="margin-bottom: 1rem;">
+        <p>
+          One hard-difficulty public task per app family, loaded live from the public dataset
+          (<code>DailyBench_public_v2.json</code>, exported from <code>public.md</code>, the same format as
+          the private benchmark). See every public example on the
+          <a href="./pages/tasks.html">Tasks</a> page.
+        </p>
+      </div>
+      <div class="public-example-list" id="featured-examples-list"></div>
+    </div>
+  </section>
+
+  <section id="technical" aria-labelledby="heading-technical">
+    <div class="container">
+      <h2 class="section-title" id="heading-technical">Technical Details</h2>
+      <div class="prose">
+        <p>
+          The harness is <code>uv</code>-managed end to end: the dataset lives in
+          <code>benchmarks/dailyBench-600/</code>, the runner in <code>dailybench_runner.py</code> /
+          <code>dailybench_tasks.py</code>, and run artifacts under <code>assets/runs/</code> (with
+          per-day Phoenix DBs in <code>assets/db/dayN/</code>). The website data
+          file is generated directly from the dataset (see
+          <a href="./tools/build_site_data.mjs"><code>website/tools/build_site_data.mjs</code></a>).
+        </p>
+
+        <h3 class="subsection-title" style="margin-top: 1rem;">Tracing (Phoenix)</h3>
+        <p>
+          Every LLM call, tool execution, and agent step is captured as OpenTelemetry spans by
+          <a href="https://github.com/Arize-ai/phoenix" target="_blank" rel="noopener">Arize Phoenix</a>
+          (<code>uv run phoenix serve --port 6006</code>), giving a full trace tree per task at
+          <a href="http://localhost:6006" target="_blank" rel="noopener">localhost:6006</a>.
+        </p>
+
+        <h3 class="subsection-title" style="margin-top: 1.5rem;">Reference Device</h3>
+        <ul>
+          <li>OnePlus CPH2423 (Android 15, non-rooted), wired or wireless ADB.</li>
+          <li>Host-side <code>scrcpy --record</code> for video artifacts (off by default to save disk).</li>
+          <li>Model host: any OpenAI-compatible endpoint, OpenRouter or a local model server.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="task-index" aria-labelledby="heading-task-index">
+    <div class="container">
+      <h2 class="section-title" id="heading-task-index">Benchmark Summary</h2>
+      <div class="prose">
+        <p>A compact view of per-app coverage before the full task listing.</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>App</th>
+            <th>Tasks</th>
+            <th>Difficulty Buckets</th>
+          </tr>
+        </thead>
+        <tbody id="benchmark-summary-body"></tbody>
+      </table>
+      <div class="learn-more-wrap">
+        <a href="./pages/tasks.html" class="btn btn-outline">Learn more</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="schedule" aria-labelledby="heading-schedule">
+    <div class="container">
+      <h2 class="section-title" id="heading-schedule">Daily Schedule</h2>
+      <div class="prose">
+        <p>The fixed 28-day schedule: tasks per day, easy/medium/hard split, ASK USER vs deterministic hard tasks, and distinct apps per day.</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Tasks</th>
+            <th>Easy / Med / Hard</th>
+            <th>ASK / DET</th>
+            <th>Distinct apps</th>
+          </tr>
+        </thead>
+        <tbody id="day-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="documentation" aria-labelledby="heading-documentation">
+    <div class="container">
+      <h2 class="section-title" id="heading-documentation">Documentation</h2>
+      <p class="docs-intro">Core entrypoints and artifacts for working with the benchmark:</p>
+      <ul class="docs-list">
+        <li>
+          <a href="./pages/quickstart.html">Quick Start Guide</a>
+          <span> -  environment setup, smoke tests, batch runs, metrics, and local website preview</span>
+        </li>
+        <li>
+          <a href="./assets/data/site_data.json">Task Metadata</a>
+          <span> -  generated app, day, and example index consumed by the published website</span>
+        </li>
+        <li>
+          <a href="./pages/tasks.html">Tasks</a>
+          <span> -  full public example task listing in the same format as the private benchmark</span>
+        </li>
+        <li>
+          <a href="#technical">Technical Details</a>
+          <span> -  ADB, mobilerun SDK, Phoenix tracing, and cost-tracking notes</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="text-align: center;">
+      <h2 class="section-title">Publishing Notes</h2>
+      <div class="prose publish-note">
+        <p>The website is static and GitHub Pages-ready. Its data file is generated from the real benchmark dataset, so publishing the site also publishes the benchmark structure.</p>
+        <p>Contributions are expected to happen through the repository itself: new tasks, better seeds, and stronger evaluation baselines can all build on the same layout.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="citation" aria-labelledby="heading-citation" style="border-bottom: none;">
+    <div class="container">
+      <h2 class="section-title" id="heading-citation">Citation</h2>
+      <div class="prose">
+        <p>If you use DailyBench300 in your work, please cite it as:</p>
+      </div>
+      <pre><code>@misc{singh2026dailybench300,
+      title={DailyBench300: A 28-Day Android Agent Benchmark for Success, Cost, Battery, and Heat},
+      author={Yuvraj Singh},
+      year={2026},
+      howpublished={\url{https://github.com/YuvrajSingh-mist/DrainBench300}},
+}</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="./pages/tasks.html">Tasks</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#documentation">Documentation</a>
+      <a href="./pages/quickstart.html">Quick Start</a>
+    </div>
+    <p><strong>DailyBench300</strong> &nbsp;&middot;&nbsp; 28-day Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
+    <p><em>Built by Yuvraj Singh.</em></p>
+    <p class="footnote">For business inquiries, contact <a href="mailto:yuvraj.mist@gmail.com">yuvraj.mist@gmail.com</a>.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="./assets/js/nav.js"></script>
+<script src="./assets/js/app.js"></script>
+<script src="./assets/js/leaderboard.js"></script>
+</body>
+</html>
