@@ -34,18 +34,14 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "seeding"))
 from DailyBench.user_config import load_user_config  # noqa: E402
+import device_paths  # noqa: E402  (auto-detect vault/calendar/email per device)
 
 DAY_DIR = REPO_ROOT / "assets" / "seeds" / "full_tasks" / "day_1"
-VAULT = "/sdcard/Obsidian/Papers vault oneplus "  # NB: trailing space is real
-CAMERA = "/sdcard/DCIM/Camera"
-SCREENSHOTS = "/sdcard/DCIM/Screenshots"
+CAMERA = device_paths.CAMERA
+SCREENSHOTS = device_paths.SCREENSHOTS
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
-
-# Fabricated email for the persona {contact} (Yuvraj Airtel) so the
-# hard__photos-gmail-obsidian__012 "email it to them if so" branch can trigger.
-# Source of truth: docs/fabricated-test-data.md.
-CONTACT_EMAIL = "yuvraj.airtel@example.com"
 
 NOW = time.time()
 TODAY = time.strftime("%Y-%m-%d", time.localtime(NOW))
@@ -297,19 +293,17 @@ def push_obsidian_seed(serial: str, cfg: dict[str, str]) -> None:
     if note is None or not note.exists():
         print("  (missing seed_files/ - build manifests first)")
         return
-    remote = f"{VAULT}/{note_title}.md"  # slash AFTER the trailing space -> inside the vault dir
-    adb(serial, "shell", "mkdir", "-p", VAULT)
+    vault = device_paths.vault_path(serial, cfg)
+    remote = f"{vault}/{note_title}.md"  # slash AFTER the trailing space -> inside the vault dir
+    adb(serial, "shell", "mkdir", "-p", vault)
     adb(serial, "push", str(note), remote)
     print(f"  pushed -> {remote}")
     print("  note contents:")
     print(note.read_text(encoding="utf-8"))
 
 
-GOOGLE_CALENDAR_ID = "16"  # yuvraj.mist@gmail.com - the one the Google Calendar app displays
-
-
-def seed_calendar_events(serial: str, meeting_title: str) -> None:
-    """Seed the Day-1 calendar tasks into the Google-synced calendar (cal_id=16).
+def seed_calendar_events(serial: str, meeting_title: str, cfg: dict[str, str] | None = None) -> None:
+    """Seed the Day-1 calendar tasks into the Google-synced calendar (cal_id auto-detected).
 
     Coverts the three calendar tasks:
       easy__calendar__001        -> the 'Lunch with Maa' event today the agent can add a location to
@@ -320,6 +314,7 @@ def seed_calendar_events(serial: str, meeting_title: str) -> None:
     """
     import datetime as _dt
 
+    cal_id = device_paths.calendar_id(serial, cfg)
     today = _dt.date.today()  # run/device date (NOT a hardcoded snapshot)
     wd = today.strftime("%a").upper()[:2]  # e.g. 'SA' for Saturday
     ms = int(_dt.datetime.combine(today, _dt.time.min, tzinfo=_dt.timezone.utc).timestamp() * 1000)
@@ -329,7 +324,7 @@ def seed_calendar_events(serial: str, meeting_title: str) -> None:
         # single-quote wrap on the title too: a title with spaces (e.g.
         # "1:1 with Yuvraj Airtel") must survive the device shell's word-split.
         cmd = ["content", "insert", "--uri", "content://com.android.calendar/events",
-               "--bind", f"calendar_id:i:{GOOGLE_CALENDAR_ID}",
+               "--bind", f"calendar_id:i:{cal_id}",
                "--bind", f"title:s:'{title}'",
                "--bind", f"dtstart:l:{dtstart_ms}",
                "--bind", f"dtend:l:{dtend_ms}",
@@ -434,7 +429,7 @@ def seed_day2(serial: str) -> None:
     # photos-gmail-obsidian__012: fabricated {contact} email so the 'email it to
     # them if so' branch can trigger (the caption is an operator step - manifest).
     cfg = load_user_config(CONFIG_PATH)
-    seed_contact_email(serial, cfg["contact"], CONTACT_EMAIL)
+    seed_contact_email(serial, cfg["contact"], device_paths.contact_email(cfg))
 
 
 def attempt_content_seeds(serial: str, cfg: dict[str, str]) -> None:
@@ -472,17 +467,19 @@ def day_seed_dir(day: int) -> Path:
 def push_obsidian_note(serial: str, day: int, task_id: str, fname: str, vault_title: str) -> None:
     """Push a materialised Obsidian .md seed file into the vault (idempotent).
 
-    NB: the vault dir is `{VAULT}` (trailing space is real), so the remote path
-    must join with a slash AFTER the trailing space (`{VAULT}/{title}`); joining
-    without it would create a stray file at the Obsidian root instead.
+    The vault dir is resolved per-device (see device_paths.vault_path); its
+    historical name has a trailing space, so the remote path joins with a slash
+    AFTER it (`{vault}/{title}`) - joining without it would create a stray file
+    at the Obsidian root instead.
     """
     sf = day_seed_dir(day) / task_id / "seed_files"
     note = sf / fname
     if not note.exists():
         print(f"  [skip] {task_id}: no seed_files/{fname}")
         return
-    adb(serial, "shell", "mkdir", "-p", VAULT)
-    remote = f"{VAULT}/{vault_title}"
+    vault = device_paths.vault_path(serial)
+    adb(serial, "shell", "mkdir", "-p", vault)
+    remote = f"{vault}/{vault_title}"
     adb(serial, "push", str(note), remote)
     print(f"  pushed {fname} -> {remote}")
 
@@ -580,9 +577,10 @@ def seed_day3_music(serial: str) -> None:
             f"# Bedtime\n\n- {bedtime}\n", encoding="utf-8")
         print(f"  materialised seed_files/bedtime.md (Bedtime={bedtime})")
         # (re)push now that the file exists
-        adb(serial, "shell", "mkdir", "-p", VAULT)
-        adb(serial, "push", str(sf / "bedtime.md"), f"{VAULT}/Bedtime.md")
-        print(f"  pushed Bedtime.md -> {VAULT}/Bedtime.md")
+        vault = device_paths.vault_path(serial)
+        adb(serial, "shell", "mkdir", "-p", vault)
+        adb(serial, "push", str(sf / "bedtime.md"), f"{vault}/Bedtime.md")
+        print(f"  pushed Bedtime.md -> {vault}/Bedtime.md")
     else:
         print(f"  Bedtime.md already seeded (Bedtime={bedtime})")
 
@@ -606,6 +604,7 @@ def seed_day5_calendar(serial: str) -> None:
     """
     import datetime as _dt
 
+    cal_id = device_paths.calendar_id(serial)
     today = _dt.date.today()  # the run day (device date == run date when seeding)
     tomorrow = today + _dt.timedelta(days=1)
     next_monday = tomorrow + _dt.timedelta(days=(7 - tomorrow.weekday()) % 7)
@@ -615,7 +614,7 @@ def seed_day5_calendar(serial: str) -> None:
 
     def ins(title: str, start: int, end: int, all_day: bool = False) -> None:
         cmd = ["content", "insert", "--uri", "content://com.android.calendar/events",
-               "--bind", f"calendar_id:i:{GOOGLE_CALENDAR_ID}",
+               "--bind", f"calendar_id:i:{cal_id}",
                "--bind", f"title:s:'{title}'",
                "--bind", f"dtstart:l:{start}", "--bind", f"dtend:l:{end}",
                "--bind", "allDay:i:" + ("1" if all_day else "0"), "--bind", "hasAlarm:i:0",
@@ -666,6 +665,7 @@ def seed_day6_calendar(serial: str) -> None:
     """
     import datetime as _dt
 
+    cal_id = device_paths.calendar_id(serial)
     today = _dt.date.today()
     tomorrow = today + _dt.timedelta(days=1)
 
@@ -674,7 +674,7 @@ def seed_day6_calendar(serial: str) -> None:
 
     def ins(title: str, start: int, end: int, all_day: bool = False) -> None:
         cmd = ["content", "insert", "--uri", "content://com.android.calendar/events",
-               "--bind", f"calendar_id:i:{GOOGLE_CALENDAR_ID}",
+               "--bind", f"calendar_id:i:{cal_id}",
                "--bind", f"title:s:'{title}'",
                "--bind", f"dtstart:l:{start}", "--bind", f"dtend:l:{end}",
                "--bind", "allDay:i:" + ("1" if all_day else "0"), "--bind", "hasAlarm:i:0",
@@ -726,7 +726,7 @@ def seed_day6(serial: str) -> None:
     seed_day6_calendar(serial)
     seed_day6_files(serial)
     cfg = load_user_config(CONFIG_PATH)
-    seed_duplicate_contact_email(serial, cfg["contact"])
+    seed_duplicate_contact_email(serial, cfg["contact"], cfg)
 
 
 def _contact_raw_id(serial: str, display_name: str) -> str | None:
@@ -824,13 +824,14 @@ def seed_unknown_number_call(serial: str) -> None:
     print(f"  unknown-number call insert rc={rc}: {out[:120] or 'OK'}")
 
 
-def seed_duplicate_contact_email(serial: str, source_name: str) -> None:
+def seed_duplicate_contact_email(serial: str, source_name: str, cfg: dict[str, str] | None = None) -> None:
     """medium__contacts__005: ensure at least two contacts share one email
     address (idempotent; reports the operator step if not creatable)."""
+    email = device_paths.contact_email(cfg)
     rc, out = adb(serial, "shell", "content", "query", "--uri",
                   "content://com.android.contacts/data", "--projection", "data1")
-    if CONTACT_EMAIL in out:
-        print(f"  duplicate-email pair already present ({CONTACT_EMAIL}) - nothing to do")
+    if email in out:
+        print(f"  duplicate-email pair already present ({email}) - nothing to do")
         return
     raw_id = _contact_raw_id(serial, source_name)
     if raw_id is None:
@@ -840,7 +841,7 @@ def seed_duplicate_contact_email(serial: str, source_name: str) -> None:
                   "content://com.android.contacts/data",
                   "--bind", f"raw_contact_id:i:{raw_id}",
                   "--bind", "mimetype:s:vnd.android.cursor.item/email_v2",
-                  "--bind", f"data1:s:{CONTACT_EMAIL}", "--bind", "data2:i:1")
+                  "--bind", f"data1:s:{email}", "--bind", "data2:i:1")
     print(f"  duplicate-email insert rc={rc}: {out[:120] or 'OK'}")
 
 
@@ -899,7 +900,7 @@ def main() -> int:
     push_seed_images(args.serial)
     push_obsidian_seed(args.serial, cfg)
     cleanup_test_events(args.serial)
-    seed_calendar_events(args.serial, cfg["meeting title"])
+    seed_calendar_events(args.serial, cfg["meeting title"], cfg)
     seed_unknown_number_call(args.serial)
     attempt_content_seeds(args.serial, cfg)
     return 0

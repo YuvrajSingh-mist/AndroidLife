@@ -8,11 +8,12 @@ Every script carries a module docstring; run any with `--help` for its exact fla
 
 | Folder | Purpose |
 |---|---|
+| [`setup.py`](setup.py) | **One-command onboarding**: prerequisites → uv sync → scaffold `.env`/config → device check → manifests → day vars → seed → verify |
 | [`run/`](run/) | Entrypoints: run a day / the full suite, pre-flight + test runners |
 | [`seeding/`](seeding/) | Baseline data: seed manifests, seeding, device reset, verification |
 | [`data/`](data/) | Dataset export (`tasks_530.md` → JSON/JSONL + public preview) |
 | [`eval/`](eval/) | Metrics, hallucination eval, e2e check |
-| [`tools/`](tools/) | Infrastructure: LLM proxy, device health, provider guard, pricing |
+| [`tools/`](tools/) | Infrastructure: LLM proxy, device health, provider guard, pricing, app audit |
 
 ## ▶️ `run/` — entrypoints
 
@@ -22,12 +23,33 @@ Every script carries a module docstring; run any with `--help` for its exact fla
 | `smoke_test.sh` | Pre-flight: prerequisites, LLM server + real completion, wired/wireless ADB + device health, one real one-step agent run. Run before any benchmark. |
 | `run_tests.sh` | Thin `pytest` wrapper for the test suite. |
 
+## 🚀 `setup.py` — one-command onboarding
+
+Turns the whole "new machine + new phone" flow into a single guided command
+(each stage is idempotent and safe to re-run):
+
+```bash
+uv run python scripts/setup.py                    # full guided flow
+uv run python scripts/setup.py prerequisites deps env config device   # pick stages
+uv run python scripts/setup.py manifests day-vars                     # no device needed
+uv run python scripts/setup.py seed --day 1       # push fabricated seeds to the phone
+uv run python scripts/setup.py verify --day 1     # confirm seeds are on-device
+uv run python scripts/setup.py --yes --serial <id> all   # non-interactive
+```
+
+Stages: `prerequisites` (adb/scrcpy/uv/python) → `deps` (uv sync) → `env`
+(scaffold `.env`) → `config` (scaffold `config/user.yaml` + verify) → `device`
+(pick serial + audit the 22 required apps) → `manifests` (per-day seed
+manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
+(mutate/check the phone for a day).
+
 ## 🌱 `seeding/` — seeding & provisioning
 
 | Script | What it does |
 |---|---|
 | `build_day_seed_manifest.py` | Generate the per-day seed manifests (`assets/seeds/full_tasks/day_N/manifest_index.json`) describing every fabricated seed a day's tasks need. |
-| `seed_data.py` | Push fabricated seed files to the device (photos, Obsidian note, invoice PDF, calendar events, SMS, call-log) with correct mtimes. `--day N`. |
+| `seed_data.py` | Push fabricated seed files to the device (photos, Obsidian note, invoice PDF, calendar events, SMS, call-log) with correct mtimes. `--day N`. Device-specific paths (Obsidian vault, calendar id, persona email) are auto-detected via `device_paths.py`. |
+| `device_paths.py` | Auto-detect device-specific seed values (Obsidian vault dir via `find`, Google-synced calendar id, persona contact email), with `config/user.yaml` overrides (`vault path`, `calendar id`, `contact email`). |
 | `reset_phone.py` | Undo agent-created run artifacts (settings, blocked numbers, calendar events, downloads, Obsidian run notes) back to the pre-run baseline. Dry-run by default; `--apply` to act. Prints the manual UI items ADB can't reach. |
 | `verify_day1_seeds.py` | Verify seeds are actually on-device (config + device halves) before a run. `--day N`. |
 | `verify_config.py` | Verify `config/user.yaml` resolves every placeholder / ASK USER fact / seed key the dataset needs. |
@@ -55,5 +77,6 @@ Every script carries a module docstring; run any with `--help` for its exact fla
 |---|---|
 | `openai_proxy_logger.py` | Local OpenAI-compatible proxy that forwards to `--llm-upstream-base` and logs every completion to JSONL. Spawned per task by the harness (`src/DailyBench/processes.py`). |
 | `device_health_check.py` | Battery/thermal/CPU device health snapshot over ADB. |
+| `app_audit.py` | **Device-readiness check**: verifies the connected phone has the 22 apps the benchmark targets (label → candidate packages map, OEM-tolerant). `--json` for machine output. |
 | `mobilerun_provider_guard.py` | Guard/validation for the mobilerun provider configuration. |
 | `register_openrouter_pricing.py` | Register real OpenRouter pricing into the live per-day Phoenix DB (`assets/db/dayN/phoenix.db`) so Phoenix costs LLM spans (README's Tracing section). |

@@ -110,3 +110,13 @@ currency pair: USD to INR
 
 # Digit prefix for the Phone call-history filter task (`[digits]`).
 digits: 98765
+
+# ---- device layout (OPTIONAL overrides) ----------------------------------
+# The seed scripts auto-detect these from the connected phone, so you normally
+# DON'T need them. Set them only to force a value for a non-standard device:
+#   vault path    - Obsidian vault dir on the device (auto-detected via find)
+#   calendar id   - the Google-synced calendar id used for seeded events
+#   contact email - fabricated email for the persona {contact} (seed scripts)
+vault path: /sdcard/Obsidian/Papers vault oneplus 
+calendar id: 16
+contact email: yuvraj.airtel@example.com

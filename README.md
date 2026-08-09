@@ -22,6 +22,36 @@ Installed locally (system tools, not `uv`-managed):
 
 This repo is `uv`-managed end to end: no bare `pip`/`python3` — every install and every script/test run goes through `uv`.
 
+### One-command onboarding (recommended)
+
+Plug in / pair your phone, then run the guided setup. It checks prerequisites,
+installs deps, scaffolds `.env` + `config/user.yaml`, picks your device, audits
+that the 22 benchmark apps are installed, and builds the per-day seed manifests
+and vars:
+
+```bash
+uv run python scripts/setup.py            # or: make setup
+```
+
+Then seed the device for the day you're about to run and verify:
+
+```bash
+uv run python scripts/setup.py seed --day 1 --serial <id>   # push fabricated seeds
+uv run python scripts/setup.py verify --day 1 --serial <id> # confirm on-device
+```
+
+The device-specific seed values (Obsidian vault path, Google calendar id,
+persona contact email) are **auto-detected** from your phone — no manual path
+editing. Override any of them in `config/user.yaml` (`vault path`, `calendar id`,
+`contact email`) if your device is unusual. Run `uv run python scripts/tools/app_audit.py`
+(or `make app-audit`) any time to check the phone has the apps the tasks need.
+
+> New to the benchmark / setting up a fresh phone? See
+> [docs/new-device-setup.md](docs/new-device-setup.md) for the full step-by-step
+> (install apps → scaffold config → build manifests → seed → verify → run → reset).
+
+### Manual setup (the individual steps)
+
 ```bash
 uv sync --extra dev --extra tracing --extra hf
 ```

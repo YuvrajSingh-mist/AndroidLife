@@ -86,6 +86,14 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "article url": ("URL for the Chrome summarize-article task (`[article url]`).", "https://en.wikipedia.org/wiki/Open-source_software"),
     "currency pair": ("Exchange-rate pair for the Google Search task (`[currency pair]`).", "USD to INR"),
     "digits": ("Digit prefix for the Phone call-history filter task (`[digits]`).", "98765"),
+    # device layout (overrides for the seed scripts' auto-detection; omit to
+    # auto-detect from the connected phone - see scripts/seeding/device_paths.py)
+    "vault path": ("Obsidian vault dir on the device (auto-detected if omitted). "
+                   "Kept as a quoted/escaped path, e.g. '/sdcard/Obsidian/My Vault'.", "/sdcard/Obsidian/Papers vault oneplus "),
+    "calendar id": ("The Google-synced calendar id used for seeded events "
+                    "(auto-detected if omitted).", "16"),
+    "contact email": ("Fabricated email for the persona {contact} used by the "
+                      "photo-email + duplicate-email seeds (config only).", "yuvraj.airtel@example.com"),
 }
 
 DEFAULT_CONFIG: dict[str, str] = {k: example for k, (_, example) in SCHEMA.items()}

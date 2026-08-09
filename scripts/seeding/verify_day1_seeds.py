@@ -45,9 +45,11 @@ CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
 VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
 NON_CONFIG_TEMPLATES = {"today's date"}
 
-VAULT = "/sdcard/Obsidian/Papers vault oneplus "  # NB: trailing space is real
-CAMERA = "/sdcard/DCIM/Camera"
-SCREENSHOTS = "/sdcard/DCIM/Screenshots"
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "seeding"))
+import device_paths  # noqa: E402  (auto-detect vault/camera per device)
+
+CAMERA = device_paths.CAMERA
+SCREENSHOTS = device_paths.SCREENSHOTS
 
 CAMERA_SEEDS = [f"pizza{i}.jpg" for i in range(1, 6)] + \
                [f"today_{i}.jpg" for i in range(1, 6)] + ["hide_me.jpg"]
@@ -198,7 +200,8 @@ def device_checks(serial: str, cfg: dict[str, str]) -> None:
 
     # obsidian stock note
     note = cfg.get("stock note title", "")
-    rc, out = shell(serial, f"ls '{VAULT}'")
+    vault = device_paths.vault_path(serial, cfg)
+    rc, out = shell(serial, f"ls '{vault}'")
     md_files = [ln for ln in out.splitlines() if ln.strip().endswith(".md")]
     ok = any(ln.strip() == f"{note}.md" for ln in md_files)
     report("obsidian_note", "PASS" if ok else "FAIL",
@@ -289,13 +292,14 @@ def device_checks_day3(serial: str, cfg: dict[str, str]) -> None:
     rc, out = adb(serial, "get-state")
     report("device_online", "PASS" if rc == 0 else "FAIL", out or serial)
 
-    rc, out = shell(serial, f"ls '{VAULT}'")
+    vault = device_paths.vault_path(serial, cfg)
+    rc, out = shell(serial, f"ls '{vault}'")
     ok = "Bedtime.md" in out
     report("obsidian_bedtime", "PASS" if ok else "FAIL",
            "'Bedtime.md' in vault (hard__music-obsidian__077 sleep-timer target)"
            if ok else "missing Bedtime.md")
 
-    rc, content = shell(serial, f"cat '{VAULT}/Bedtime.md'")
+    rc, content = shell(serial, f"cat '{vault}/Bedtime.md'")
     bedtime = cfg.get("bedtime", "10:30 PM")
     cok = bedtime.lower() in content.lower()
     report("bedtime_content", "PASS" if cok else "FAIL",
@@ -315,7 +319,8 @@ def device_checks_day4(serial: str, cfg: dict[str, str]) -> None:
     rc, out = adb(serial, "get-state")
     report("device_online", "PASS" if rc == 0 else "FAIL", out or serial)
 
-    rc, out = shell(serial, f"ls '{VAULT}'")
+    vault = device_paths.vault_path(serial, cfg)
+    rc, out = shell(serial, f"ls '{vault}'")
     ok = "Daily Log.md" in out
     report("obsidian_daily_log", "PASS" if ok else "FAIL",
            "'Daily Log.md' in vault (easy__obsidian__003 target)" if ok else "missing Daily Log.md")
@@ -346,7 +351,8 @@ def device_checks_day5(serial: str, cfg: dict[str, str]) -> None:
     rc, out = adb(serial, "get-state")
     report("device_online", "PASS" if rc == 0 else "FAIL", out or serial)
 
-    rc, out = shell(serial, f"ls '{VAULT}'")
+    vault = device_paths.vault_path(serial, cfg)
+    rc, out = shell(serial, f"ls '{vault}'")
     ok = "Budget Deadline.md" in out
     report("obsidian_budget_deadline", "PASS" if ok else "FAIL",
            "'Budget Deadline.md' in vault (hard__drive-obsidian-telegram__049)" if ok else "missing Budget Deadline.md")

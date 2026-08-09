@@ -38,7 +38,7 @@ from DailyBench.user_config import (  # noqa: E402
 # placeholder corpus here is the 530 dataset, which still spans all 28 days.
 DATASET_530 = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
 FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
-MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "build_day_seed_manifest.py"
+MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "seeding" / "build_day_seed_manifest.py"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
 VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
 

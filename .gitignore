@@ -29,6 +29,17 @@ __pycache__/
 .DS_Store
 src/*.egg-info/
 .deepeval/
+.mobilerun/
+
+# generated report artifacts (dailybench_report.py writes into CWD)
+report.json
+report.md
+metrics/
+coverage.xml
+htmlcov/
+
+# website build output
+website/node_modules/
 
 # dev scratch scripts (underscore-prefixed)
 scripts/_*.py

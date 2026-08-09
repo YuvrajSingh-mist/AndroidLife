@@ -14,6 +14,14 @@ test-cli:
 sync:
 	uv sync --extra dev --extra tracing --extra hf
 
+.PHONY: setup
+setup:
+	uv run python scripts/setup.py
+
+.PHONY: app-audit
+app-audit:
+	uv run python scripts/tools/app_audit.py
+
 .PHONY: smoke-test
 smoke-test:
 	./scripts/run/smoke_test.sh
@@ -22,6 +30,8 @@ smoke-test:
 help:
 	@printf "Targets:\n"
 	@printf "  make sync        Create/update the uv-managed .venv with all extras\n"
+	@printf "  make setup       One-command onboarding: prereqs, deps, env/config, device, manifests, day-vars\n"
+	@printf "  make app-audit   Check the connected phone has the 22 benchmark apps\n"
 	@printf "  make test        Run the full pytest suite\n"
 	@printf "  make test-fast   Run fast parser/helper coverage\n"
 	@printf "  make test-cli    Run harness CLI/process coverage\n"
