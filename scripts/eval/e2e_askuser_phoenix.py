@@ -64,7 +64,7 @@ async def main() -> None:
     # SimpleSpanProcessor exports synchronously on span end; give it a beat anyway.
     time.sleep(2)
 
-    con = sqlite3.connect(os.path.expanduser("~/.phoenix/phoenix.db"))
+    con = sqlite3.connect(Path(__file__).resolve().parents[2] / "assets" / "db" / "day1" / "phoenix.db")
     rows = con.execute(
         """
         SELECT s.name, s.span_kind, s.llm_token_count_prompt, s.llm_token_count_completion,

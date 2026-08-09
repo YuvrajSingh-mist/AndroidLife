@@ -24,7 +24,7 @@ import sys
 from collections import OrderedDict, defaultdict
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 from DailyBench.user_config import load_user_config, parse_flat_config  # noqa: E402
 

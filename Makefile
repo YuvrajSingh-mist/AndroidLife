@@ -16,7 +16,7 @@ sync:
 
 .PHONY: smoke-test
 smoke-test:
-	./scripts/smoke_test.sh
+	./scripts/run/smoke_test.sh
 
 .PHONY: help
 help:

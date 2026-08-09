@@ -25,15 +25,15 @@ def test_slugify_and_make_run_dir(tmp_path) -> None:
 
 
 def test_dated_out_dir_inserts_datetime_right_after_the_runs_root() -> None:
-    """A `runs/...` out-dir gets a date-time stamp inserted as the segment right under `runs`."""
-    result = dated_out_dir("runs/gmail/easy")
-    assert result.parts[0] == "runs"
-    # parts[1] is the date-time folder (e.g. "2026-07-31-000818")
-    assert len(result.parts[1].split("-")) == 4  # YYYY-MM-DD-HHMMSS
-    assert result.parts[2:] == ("gmail", "easy")
-    result2 = dated_out_dir("runs")
-    assert result2.parts[0] == "runs"
-    assert len(result2.parts[1].split("-")) == 4
+    """An `assets/runs/...` out-dir gets a date-time stamp inserted as the segment right under `assets/runs`."""
+    result = dated_out_dir("assets/runs/gmail/easy")
+    assert result.parts[:2] == ("assets", "runs")
+    # parts[2] is the date-time folder (e.g. "2026-07-31-000818")
+    assert len(result.parts[2].split("-")) == 4  # YYYY-MM-DD-HHMMSS
+    assert result.parts[3:] == ("gmail", "easy")
+    result2 = dated_out_dir("assets/runs")
+    assert result2.parts[:2] == ("assets", "runs")
+    assert len(result2.parts[2].split("-")) == 4
 
 
 def test_dated_out_dir_appends_datetime_for_a_non_runs_root(tmp_path) -> None:

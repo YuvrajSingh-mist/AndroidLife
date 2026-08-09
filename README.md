@@ -53,13 +53,22 @@ HF_TOKEN=hf_...            # only needed for pushing dataset exports to Hugging 
 
 ### Start the Phoenix server
 
+Phoenix DBs are **per-day**: each day's run writes into its own SQLite DB at
+`assets/db/dayN/phoenix.db` (project `dailybench-dayN`). Point the server at the day
+you're running:
+
 ```bash
+PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/day1/phoenix.db" \
+PHOENIX_PROJECT_NAME=dailybench-day1 \
 uv run phoenix serve --port 6006
 ```
 
 This must be running **before** you start any benchmark run. The server's web UI will be at [http://localhost:6006](http://localhost:6006).
 
-> **Note:** Phoenix stores its data in `~/.phoenix/phoenix.db` by default (a SQLite database). Traces accumulate across runs — you can query them directly with `sqlite3` or use the Phoenix UI to explore span trees, token counts, and latency.
+> **Note:** `run_day.py --day N` auto-targets the `dailybench-dayN` project, so a day's
+traces land in that day's own project + DB. Query a day's spans directly with `sqlite3`
+against `assets/db/dayN/phoenix.db`, or use the Phoenix UI to explore span trees, token
+counts, and latency.
 
 ### How traces flow
 
@@ -73,10 +82,10 @@ This must be running **before** you start any benchmark run. The server's web UI
 Phoenix prices LLM spans by matching `llm.model_name` against a built-in model catalog (OpenAI/Anthropic/Gemini/…). OpenRouter slugs like `qwen/qwen3.6-plus` aren't in that catalog, so their cost shows as **$0.00** even though token counts are recorded. Register real OpenRouter pricing so new spans get costed:
 
 ```bash
-uv run scripts/register_openrouter_pricing.py --model qwen/qwen3.6-plus
+uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash
 ```
 
-This fetches live per-token prices from OpenRouter's model API and upserts them into `~/.phoenix/phoenix.db` as user-defined models; Phoenix's cost daemon picks them up within ~5 seconds. Options:
+This fetches live per-token prices from OpenRouter's model API and upserts them into the live per-day DB (`assets/db/dayN/phoenix.db`; override with `--db`) as user-defined models; Phoenix's cost daemon picks them up within ~5 seconds. Options:
 
 - `--all` — register every model in OpenRouter's catalog
 - `--model A --model B` — register specific slugs (repeatable)
@@ -84,23 +93,6 @@ This fetches live per-token prices from OpenRouter's model API and upserts them 
 
 Existing spans are not retroactively repriced — run the script once, and new spans for those models carry real cost.
 
-### Querying traces without the UI
-
-The Phoenix database is a standard SQLite file. Copy it before querying to avoid locks:
-
-```bash
-cp ~/.phoenix/phoenix.db /tmp/phoenix_copy.db
-sqlite3 /tmp/phoenix_copy.db "
-SELECT p.name as project,
-       COUNT(DISTINCT t.id) as traces,
-       COUNT(s.id) as spans,
-       SUM(s.llm_token_count_prompt + s.llm_token_count_completion) as total_tokens
-FROM projects p
-JOIN traces t ON t.project_rowid = p.id
-LEFT JOIN spans s ON s.trace_rowid = t.id
-GROUP BY p.name;
-"
-```
 
 The main tables are `traces`, `spans`, `projects`, and `span_annotations`. See [docs/advanced-features.md](docs/advanced-features.md) for more tracing configuration.
 
@@ -109,9 +101,15 @@ The main tables are `traces`, `spans`, `projects`, and `span_annotations`. See [
 After a batch, aggregate the run folders into the [MobileWorld](https://arxiv.org/abs/2512.19432) metrics (arXiv:2512.19432) — Success Rate (overall + per bucket + interaction/GUI-only split), Average Completion Steps, Average User Queries, and User Interaction Quality (UIQ) — excluding the MCP metric:
 
 ```bash
-uv run scripts/dailybench_report.py --runs runs/2026-08-01-001234   # default scans runs/*/*
-uv run scripts/dailybench_report.py --model qwen/qwen3.6-plus       # filter by model
+uv run scripts/eval/dailybench_report.py --runs assets/runs/2026-08-01-001234   # default scans assets/runs/*/*
+uv run scripts/eval/dailybench_report.py --runs 'assets/runs/2026-08-01-001234/day3/*' --cooldown-seconds 10
 ```
+
+`--cooldown-seconds` (default `10.0`) is the fixed inter-task pause the batch runner
+applies between tasks (`dailybench_tasks.py --cooldown-seconds`). The report subtracts
+`cooldown_seconds × (n_tasks − 1)` from the summed per-run wall-clock so the reported
+elapsed time is the **TRUE agent running time** (set `0` to report raw per-run elapsed).
+Pass it only when the batch was run with the same non-default value.
 
 This writes `report.json` + `report.md` in the current directory. Interaction (ASK USER) tasks are identified via the ask_user_facts sidecar for the runs' source: `--source tasks.md` (default) selects `benchmarks/dailyBench-600/ask_user_facts_730.json`, `--source public.md` selects `benchmarks/dailyBench-600/ask_user_facts.json` (overridable with `--ask-user-facts`). Each run's `meta.json` records its `task_id` (batch runner passes `--task-id`), and `run_metrics.json` records `ask_user_call_count`. See [docs/leaderboard-format.md](docs/leaderboard-format.md).
 
@@ -128,8 +126,12 @@ Prefer a hosted model over running your own? Point `LLM_UPSTREAM`/`MODEL` at [Op
 
 ```bash
 export LLM_UPSTREAM=https://openrouter.ai/api
-export MODEL='qwen/qwen3.6-plus'
+export MODEL='qwen/qwen3.7-flash'
 ```
+
+`qwen/qwen3.7-flash` is the default agent model (see `scripts/run/run_day.py`): it's cheap
+($0.03/$0.13 per 1M tokens), open-source, and XML-reliable for mobilerun's tool-calling
+protocol. Override per run with `--model` or `$MODEL`.
 
 This needs `OPENROUTER_API_KEY` set in `.env`. See [docs/advanced-features.md](docs/advanced-features.md) for the full setup.
 
@@ -143,18 +145,18 @@ curl -s "$LLM_UPSTREAM/models"
 Then run the pre-flight check before any real benchmark run (or after changing phones/model hosts):
 
 ```bash
-./scripts/smoke_test.sh
+./scripts/run/smoke_test.sh
 ```
 
 It checks, in order: local prerequisites (`adb`/`curl`/`uv`/the `mobilerun` SDK import), the LLM server (`GET /models` + a real chat completion, auto-selecting the first listed model if `--model` isn't given), wired ADB + a device health check on a USB device, wireless ADB + the same check over TCP/IP (bootstrapping with `adb tcpip`/`adb connect` from a USB device if no wireless serial is given), and finally one real one-step agent run through `dailybench_runner.py` itself. Every target is a flag or env var — nothing is hardcoded to one phone or model host. Naming exactly one of `--usb-serial`/`--wireless-serial` automatically skips the other transport's check:
 
 ```bash
-./scripts/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model my-model
-./scripts/smoke_test.sh --skip-llm --skip-agent-run --wireless-serial 192.168.1.23:5555
-./scripts/smoke_test.sh --help   # full flag/env var reference
+./scripts/run/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model my-model
+./scripts/run/smoke_test.sh --skip-llm --skip-agent-run --wireless-serial 192.168.1.23:5555
+./scripts/run/smoke_test.sh --help   # full flag/env var reference
 ```
 
-The device health check itself is pure SDK: [scripts/device_health_check.py](scripts/device_health_check.py) connects with `mobilerun.AndroidDriver` and exercises `get_date()`/`screenshot()` for real, mirroring [docs.mobilerun.ai/framework/sdk/adb-tools](https://docs.mobilerun.ai/framework/sdk/adb-tools).
+The device health check itself is pure SDK: [scripts/tools/device_health_check.py](scripts/tools/device_health_check.py) connects with `mobilerun.AndroidDriver` and exercises `get_date()`/`screenshot()` for real, mirroring [docs.mobilerun.ai/framework/sdk/adb-tools](https://docs.mobilerun.ai/framework/sdk/adb-tools).
 
 ### Known-good target (last verified working configuration)
 
@@ -225,14 +227,14 @@ uv run dailybench_runner.py \
   --goal "Check how many unread emails are in the inbox"
 ```
 
-All runs land under `runs/<date-time>/<label>/` automatically — no need to specify an output directory.
+All runs land under `assets/runs/<date-time>/<label>/` automatically — no need to specify an output directory.
 
 Stop interrupted runs:
 
 ```bash
 pkill -f "dailybench_tasks.py" || true
 pkill -f "dailybench_runner.py" || true
-pkill -f "scripts/openai_proxy_logger.py" || true
+pkill -f "scripts/tools/openai_proxy_logger.py" || true
 pkill -f "scrcpy" || true
 ```
 
@@ -240,57 +242,72 @@ Full flag reference for both entry points, including the app-reset fairness beha
 
 ## Task dataset
 
-The corpus is **730 tasks** (`benchmarks/dailyBench-600/tasks.md`, the superset). The **canonical runnable schedule is the deterministic 530-task subset** — 229 easy / 229 medium / 72 hard (36 ASK USER / 36 DETERMINISTIC), ~9-10 apps/day, max 1276 pts — shipped as `tasks_530.md` + `DailyBench_530_v1.json`/`.jsonl`. The batch runner's default `--dataset` is the 530 set; values for every placeholder come from `config/user.yaml` automatically (overridable per run with `--var`, per day with `--vars-file`).
+The benchmark is a **28-day schedule of 530 runnable tasks** (533 dataset rows: 230 easy / 231 medium / 72 hard, of which 36 ASK USER + 36 DETERMINISTIC hard; ~9-10 apps/day, max 1279 pts). It ships as `tasks_530.md` + `DailyBench_530_v1.json`/`.jsonl` (the dataset the runner reads by default).
+
+- **`benchmarks/dailyBench-600/tasks_530.md`** — the source of truth. Edit it and regenerate the JSON/JSONL with `scripts/data/export_530_dataset.py`; each task line carries its `task_id` in an HTML comment so ids survive edits.
+- **`benchmarks/dailyBench-600/public.md`** — the public 50-task preview (same structure, a curated sample you can publish/share).
+- **`config/user.yaml`** — supplies the persona values for every `[placeholder]` automatically (override per run with `--var`, per day with `--vars-file`).
 
 ### Prep the dataset (from scratch)
 
 ```bash
-# 1. Export the 730 superset from tasks.md (after editing it):
-uv run scripts/export_tasks_dataset.py
+# 1. Regenerate the runnable 530 dataset from tasks_530.md (the source of truth):
+uv run scripts/data/export_530_dataset.py
 
-# 2. Build the runnable 530 subset (writes .json + .jsonl):
-uv run scripts/build_530_subset.py
+# 2. One-time resync: render tasks_530.md from the JSON (embeds task_ids, round-trips itself):
+uv run scripts/data/export_530_markdown.py --verify
 
-# 3. Regenerate the standalone 530 markdown schedule (round-trip checks itself):
-uv run scripts/export_530_markdown.py --verify
-
-# 4. Point config/user.yaml at your persona (first time only; ships with defaults):
+# 3. Point config/user.yaml at your persona (first time only; ships with defaults):
 cp config/user_config.example config/user.yaml   # then edit values
 
-# 5. Verify config resolves every placeholder, ASK USER fact, and seed:
-uv run scripts/verify_config.py
+# 4. Verify config resolves every placeholder, ASK USER fact, and seed:
+uv run scripts/seeding/verify_config.py
 
-# 6. Generate per-day vars files (tasks_vars/day_N.env) from config + tasks_vars.local.env:
-uv run scripts/generate_day_vars.py --all
+# 5. Generate per-day vars files (tasks_vars/day_N.env) from config + tasks_vars.local.env:
+uv run scripts/seeding/generate_day_vars.py --all
 
-# 7. Build a day's fabricated-data seed manifests (e.g. day 1):
-uv run scripts/build_day_seed_manifest.py --day 1
+# 6. Build a day's fabricated-data seed manifests (any day 1..28 on the 530 set;
+#    days 1-6 have hand-authored specs; days 7-28 are auto-generated per-task):
+uv run scripts/seeding/build_day_seed_manifest.py --day 1
 
-# 8. Materialise the day's seed artifacts (images/docs) and push to the device:
-uv run scripts/seed_day1_data.py --serial "$DAILYBENCH_SERIAL" --no-push   # dry: only materialise into seeds/
-uv run scripts/seed_day1_data.py --serial "$DAILYBENCH_SERIAL"             # real: push onto the phone
+# 7. Materialise the day's seed artifacts (images/docs) and push to the device:
+uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL" --no-push   # dry: only materialise into assets/seeds/
+uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL"             # real: push onto the phone
+uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL" --day 3 --verify   # device-state check: every declared seed path actually on the phone
 ```
+
+`--verify` (any `--day`) is the check that catches "the manifest says the seed exists but it was never pushed" — it runs `adb shell ls` on every `seed_device_path` a day's tasks declare and exits 1 if any is missing. Run it before a batch so you never start a run on half-seeded data.
 
 The 530 `.jsonl` is the easiest artifact to push to Hugging Face datasets (`uv sync --extra hf` first).
 
 ### Run a day (530)
 
-The 530 set is the default `--dataset`; `config/user.yaml` supplies the persona values and the per-day vars file supplies that day's overrides. Get a day's task ids from `seeds/full_tasks/day_N/manifests.json` (or `tasks_530.md`), then:
+The 530 set is the default `--dataset`; `config/user.yaml` supplies the persona values and the per-day vars file supplies that day's overrides. **The runner takes any schedule day directly** — no need to hand-list task ids:
+
+**Prepare the device before any run** — wake it, dismiss the lock screen, and return to the
+home screen so the first task's agent starts from a clean launcher (not a lock screen / stale
+foreground app, which would poison its first screenshot and UI dump):
+
+```bash
+adb -s "$DAILYBENCH_SERIAL" shell "input keyevent 3; input keyevent KEYCODE_WAKEUP; wm dismiss-keyguard"
+```
 
 ```bash
 uv run dailybench_tasks.py \
   --serial "$DAILYBENCH_SERIAL" \
   --llm-upstream-base "$LLM_UPSTREAM" \
   --model "$MODEL" \
-  --vars-file benchmarks/dailyBench-600/tasks_vars/day_1.env \
-  --task-id easy__chrome__001 --task-id medium__chrome__001 ...   # the day's task ids
+  --day 3 \
+  --vars-file benchmarks/dailyBench-600/tasks_vars/day_3.env
 ```
 
-Add `--dry-run` first to inspect the exact per-task commands. Each one carries the **raw goal** (placeholders kept) plus the task's resolved `--var` variables (rendered into the agent's system prompt), and — for ASK USER tasks — the hidden ground-truth fact only via `--ask-user-context` (never as a variable).
+`--day N` is a selector on its own (works for any day 1..28) and combines with `--bucket`/`--app`/`--task-id`; add `--dry-run` first to inspect the exact per-task commands, or `--list` to print the day's task ids. Each one carries the **raw goal** (placeholders kept) plus the task's resolved `--var` variables (rendered into the agent's system prompt), and — for ASK USER tasks — the hidden ground-truth fact only via `--ask-user-context` (never as a variable).
+
+Every run lands under `assets/runs/<batch>/day<N>/...` automatically (see [Run artifacts](#run-artifacts)), and every day's fabricated-data manifests are generated under `assets/seeds/full_tasks/day_<N>/` (per-task `manifest.json` + `manifest_index.json` + `day_<N>_fabricated_data.jsonl`) so the benchmark is fully inspectable and extensible day by day — see [docs/benchmark-spec.md](docs/benchmark-spec.md).
 
 ## Run artifacts
 
-Run folders are grouped under `runs/<date-time>/...` automatically, and contain phone/model metrics, logs, and the task's final result. Full contents and metric definitions: [docs/run-artifacts.md](docs/run-artifacts.md).
+Run folders are grouped under `assets/runs/<date-time>/...` automatically, and contain phone/model metrics, logs, and the task's final result. Full contents and metric definitions: [docs/run-artifacts.md](docs/run-artifacts.md).
 
 ## Repo layout
 
@@ -300,17 +317,16 @@ Run folders are grouped under `runs/<date-time>/...` automatically, and contain 
 - [src/DailyBench](src/DailyBench): harness package
 - [pyproject.toml](pyproject.toml): package metadata
 - [Makefile](Makefile): common test commands
-- [scripts/openai_proxy_logger.py](scripts/openai_proxy_logger.py): per-run proxy/logger
-- [scripts/export_tasks_dataset.py](scripts/export_tasks_dataset.py): markdown-to-dataset exporter
-- [scripts/smoke_test.sh](scripts/smoke_test.sh): pre-flight check for the LLM server, wired/wireless ADB + mobilerun, and one real end-to-end task
-- [scripts/device_health_check.py](scripts/device_health_check.py): SDK-only device health check used by `smoke_test.sh`
-- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): task schedules (`tasks.md` = 730 superset, `tasks_530.md` = runnable 530), exported datasets (`.json`/`.jsonl`), public preview, and per-day vars (`tasks_vars/`)
+- [scripts/tools/openai_proxy_logger.py](scripts/tools/openai_proxy_logger.py): per-run proxy/logger
+- [scripts/data/export_530_dataset.py](scripts/data/export_530_dataset.py): tasks_530.md -> DailyBench_530_v1.json/.jsonl exporter
+- [scripts/run/smoke_test.sh](scripts/run/smoke_test.sh): pre-flight check for the LLM server, wired/wireless ADB + mobilerun, and one real end-to-end task
+- [scripts/tools/device_health_check.py](scripts/tools/device_health_check.py): SDK-only device health check used by `smoke_test.sh`
+- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the 530-task source of truth, `public.md` = public 50-task preview), exported datasets (`.json`/`.jsonl`), and per-day vars (`tasks_vars/`)
 - [config](config): the user config — `user_config.example` is the committed, documented persona template; copy to `user.yaml` (gitignored) and edit
-- [seeds](seeds): per-day fabricated-data manifests + materialised seed artifacts (images/docs) with on-device paths (`DEVICE_PATHS.md`)
+- [assets](assets): everything generated — `assets/runs/` (run artifacts), `assets/seeds/` (per-day fabricated-data manifests + materialised seed artifacts with on-device paths), `assets/db/dayN/phoenix.db` (per-day Phoenix DBs)
 - [docs](docs): CLI reference, advanced features, run artifacts, methodology, and task authoring notes
 - [reports](reports): benchmark reports and notes
 - [tests](tests): pytest coverage for CLI, parsing, helpers, and process wiring
-- [runs](runs): run artifacts
 
 ## Testing
 
@@ -320,7 +336,7 @@ Run `uv sync --extra dev` once first (or `make sync` for every extra). All of th
 make test
 make test-fast
 make test-cli
-./scripts/run_tests.sh
+./scripts/run/run_tests.sh
 ```
 
 ## Further documentation
@@ -329,4 +345,4 @@ make test-cli
 - [docs/advanced-features.md](docs/advanced-features.md) — starting the mini2 model server, tracing, trajectory recording
 - [docs/run-artifacts.md](docs/run-artifacts.md) — run folder contents and metric definitions
 - [docs/benchmark-spec.md](docs/benchmark-spec.md), [docs/evaluation-policy.md](docs/evaluation-policy.md), [docs/task-authoring.md](docs/task-authoring.md), [docs/leaderboard-format.md](docs/leaderboard-format.md)
-- [reports/failures.md](reports/failures.md), [reports/droidrun300-benchmark.md](reports/droidrun300-benchmark.md), [reports/trace.md](reports/trace.md)
+- [reports/benchmark-report.md](reports/benchmark-report.md) — benchmark stats & distribution, failures summary, and task trace

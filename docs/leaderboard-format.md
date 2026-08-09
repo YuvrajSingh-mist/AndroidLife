@@ -13,7 +13,7 @@ Recommended columns for published results:
 
 ## MobileWorld-style metrics
 
-The batch report script (`scripts/dailybench_report.py`) additionally computes the
+The batch report script (`scripts/eval/dailybench_report.py`) additionally computes the
 metrics defined in [MobileWorld](https://arxiv.org/abs/2512.19432) (arXiv:2512.19432,
 Section 4.2) — excluding the MCP metric:
 
@@ -26,9 +26,15 @@ Section 4.2) — excluding the MCP metric:
   unnecessarily on GUI-only tasks
 
 ```
-uv run scripts/dailybench_report.py --runs runs/<date-time>            # default scans runs/*/*
-uv run scripts/dailybench_report.py --model qwen/qwen3.6-plus          # filter by model
+uv run scripts/eval/dailybench_report.py --runs runs/<date-time>            # default scans runs/*/*
+uv run scripts/eval/dailybench_report.py --model qwen/qwen3.7-flash      # filter by model
+uv run scripts/eval/dailybench_report.py --runs 'runs/<date-time>/day3/*' --cooldown-seconds 10
 ```
+
+`--cooldown-seconds` (default `10.0`) subtracts the batch's fixed inter-task pause
+(`cooldown_seconds × (n_tasks − 1)`) from summed wall-clock, so reported elapsed is the
+**TRUE agent running time** — pass `0` to report raw per-run elapsed instead. Only set it
+when the batch was actually run with a non-default `--cooldown-seconds`.
 
 This writes `report.json` and `report.md`. Interaction tasks are identified by
 task_id membership in the ask_user_facts sidecar for the runs' source: `--source

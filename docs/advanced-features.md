@@ -40,10 +40,29 @@ No model server to run yourself — point the harness at [OpenRouter](https://op
 
 ```bash
 export LLM_UPSTREAM=https://openrouter.ai/api
-export MODEL='qwen/qwen3.6-plus'
+export MODEL='qwen/qwen3.7-flash'
 ```
 
-This needs `OPENROUTER_API_KEY` set in `.env` (see the README's Setup section) — the harness's `OpenAILike` client sends it as the request's `Authorization: Bearer` header, and the local proxy (`scripts/openai_proxy_logger.py`) forwards that header straight through to OpenRouter. `cli.py` picks `OPENROUTER_API_KEY` over `OPENAI_API_KEY` for this specifically, since `OPENAI_API_KEY` is reserved for the unrelated `ask_user` tool's real OpenAI calls.
+`qwen/qwen3.7-flash` is the default agent model (`scripts/run/run_day.py`): cheap ($0.03/$0.13
+per 1M tokens), open-source, and XML-reliable for mobilerun's tool-calling protocol.
+
+**Reasoning off (Qwen3.7 thinking models):** `qwen/qwen3.7-flash` is a reasoning model —
+without disabling thinking it returns `content: null` + a `reasoning` field, which breaks
+mobilerun's XML tool-calling parse (the harness reads `content`). The harness disables it via
+`extra_body` with BOTH switches so it works hosted and self-hosted: OpenRouter's native
+`reasoning: {enabled: false}` (confirmed live: clean content, no reasoning tokens) and the
+model's own `chat_template_kwargs: {enable_thinking: false}` (for self-hosted Qwen3-family
+servers, where OpenRouter's param isn't in play). Note the OpenAI SDK rejects a top-level
+`reasoning` kwarg ("got an unexpected keyword argument") — it must go inside `extra_body`.
+
+**Swapping models is a one-flag decision:** the single `--thinking` flag (off by default,
+threaded through `run_day.py` → `dailybench_tasks.py` → `dailybench_runner.py`) controls
+whether the reasoning-off switches are sent at all. Default off = reasoning disabled for any
+model/host (non-reasoning models ignore the fields). Pass `--thinking` to leave reasoning
+ON. So to swap the agent model you only change `--model` (and optionally flip `--thinking`),
+never the reasoning plumbing:
+
+This needs `OPENROUTER_API_KEY` set in `.env` (see the README's Setup section) — the harness's `OpenAILike` client sends it as the request's `Authorization: Bearer` header, and the local proxy (`scripts/tools/openai_proxy_logger.py`) forwards that header straight through to OpenRouter. `cli.py` picks `OPENROUTER_API_KEY` over `OPENAI_API_KEY` for this specifically, since `OPENAI_API_KEY` is reserved for the unrelated `ask_user` tool's real OpenAI calls.
 
 OpenRouter is supported by mobilerun natively — see [mobilerun's CLI docs](https://docs.mobilerun.ai/framework/guides/cli) for the `--provider OpenRouter` option, or use the `OpenAILike` path above to go through the harness's own proxy/logger.
 
@@ -71,7 +90,7 @@ uv run dailybench_tasks.py \
 
 `--phoenix-url`/`--phoenix-project` set the `phoenix_url`/`phoenix_project_name` env vars mobilerun reads (lowercase, per its docs) inside each `dailybench_runner.py` process; omit them to use mobilerun's own defaults (`http://0.0.0.0:6006`, no project grouping).
 
-**OpenRouter cost:** Phoenix's bundled model catalog doesn't include OpenRouter slugs, so their spans show $0.00 cost. Register real pricing once with [scripts/register_openrouter_pricing.py](../scripts/register_openrouter_pricing.py) — e.g. `uv run scripts/register_openrouter_pricing.py --model qwen/qwen3.6-plus` (see the README's Tracing section for all options). New spans for those models then carry real cost.
+**OpenRouter cost:** Phoenix's bundled model catalog doesn't include OpenRouter slugs, so their spans show $0.00 cost. Register real pricing once with [scripts/tools/register_openrouter_pricing.py](../scripts/tools/register_openrouter_pricing.py) — e.g. `uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash` (see the README's Tracing section for all options). New spans for those models then carry real cost.
 
 **Trajectory recording** saves local screenshots + UI-state artifacts per step or per atomic action — independent of tracing, and it stays entirely on disk (nothing leaves your machine):
 
@@ -106,6 +125,6 @@ Since `ask_user` is a genuine `async def` that `await`s a real network call befo
 }
 ```
 
-`scripts/export_public_dataset.py` merges the public facts file (`ask_user_facts.json`, via `ask_user_facts_path("public.md")`) straight into the published dataset as each task's `ask_user_fact` column (`merge_ask_user_facts`) - public.md is explicitly "not the eval set, a structural preview only," so publishing the answer alongside it doesn't compromise anything real. **This is deliberately different from what the real private benchmark does**: `tasks.md`'s facts live in `ask_user_facts_730.json` and are kept out of the published `DailyBench_730_v4` dataset (its rows have no `ask_user_fact`; the batch runner reads the sidecar at run time), since leaking the real eval's answers would let a submitter memorize them instead of the agent genuinely asking.
+`scripts/data/export_public_dataset.py` merges the public facts file (`ask_user_facts.json`, via `ask_user_facts_path("public.md")`) straight into the published dataset as each task's `ask_user_fact` column (`merge_ask_user_facts`) - public.md is explicitly "not the eval set, a structural preview only," so publishing the answer alongside it doesn't compromise anything real. **This is deliberately different from what the real private benchmark does**: `tasks.md`'s facts live in `ask_user_facts_730.json` and are kept out of the published `DailyBench_530_v1` dataset (its rows have no `ask_user_fact`; the batch runner reads the sidecar at run time), since leaking the real eval's answers would let a submitter memorize them instead of the agent genuinely asking.
 
 `dailybench_tasks.py` (the batch runner) reads each task's own `ask_user_fact` field first and, for every task whose `ahi == "ASK USER"`, automatically forwards it as that task's `--ask-user-context` — no manual typing per task. If a dataset row has no `ask_user_fact` (as the future private benchmark's published rows deliberately won't), it falls back to a local `--ask-user-facts` sidecar file instead. A task with neither still runs (empty context — the simulated user just has nothing to reveal and will say so) but prints a warning. Running `dailybench_runner.py` directly (a single task, outside the batch runner) still takes `--ask-user-context` as a plain flag with no lookup, for quick manual testing.

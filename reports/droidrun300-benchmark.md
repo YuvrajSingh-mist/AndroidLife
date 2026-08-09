@@ -1,53 +1,133 @@
-# DailyBench
-### What does it actually cost — in dollars, battery, and heat — to get an AI agent to use your phone?
+# DailyBench300 — Benchmark Stats & Distribution Report
+
+**What it is:** a 28-day, 530-task mobile-agent benchmark that measures not just *can the agent do the task?* but *what does doing it cost a real phone* — dollars, battery, and heat — across cloud and local models, on everyday tasks in apps people actually use.
+
+**Source of truth:** `benchmarks/dailyBench-600/tasks_530.md` → `DailyBench_530_v1.json` (exported by `scripts/export_530_dataset.py`). All figures below are computed from that JSON.
 
 ---
 
-## Vision
+## 1. Snapshot
 
-Every mobile AI-agent benchmark today asks one question: **can it complete the task?** Nobody asks the question that actually matters to a person deciding which model to run on their own phone: **what does completing that task cost me — in dollars, battery percentage, and heat — on the hardware I actually own?**
+| Metric | Value |
+|---|---|
+| Dataset rows | **533** |
+| Schedule | 28 days (fixed, one-time-shuffled, reused for every model) |
+| Tasks/day | 16–23 (~19 avg) |
+| Difficulty split | 230 easy / 231 medium / 72 hard |
+| Hard split | 36 ASK USER / 36 DETERMINISTIC |
+| Max points | 1,283 (230×1 + 231×3 + 72×5) |
+| Apps covered | 21 |
+| Cross-app required | 178 / 533 (33.4%) |
+| Uniqueness | 533 unique ids · 0 duplicate prompts · 0 empty prompts |
 
-DailyBench exists to be the place that answer lives. Live, on a real phone, across real everyday tasks in apps people actually use — not a synthetic sandbox, not an emulator. The end state: a public leaderboard where someone can look up a model, see its success rate next to its real cost, battery drain, and thermal impact on a known reference device, and pick a model the way they'd check a spec sheet before buying hardware — then publish the runs themselves, openly, to build attention and trust in the project.
+## 2. Distribution by difficulty
 
-## Problem Statement
+| bucket | count | share | points | subgoal (clause) range |
+|---|---|---|---|---|
+| easy | 230 | 43.1% | 230 | 1–3 (dominant 2) |
+| medium | 231 | 43.3% | 693 | 3–8 (dominant 4) |
+| hard | 72 | 13.5% | 360 | 1–11 (dominant 5) |
 
-Mobile GUI-agent benchmarks are a crowded, active research area — AndroidWorld, AndroidArena, MobiBench, AndroidDaily, MobileBench-OL, GUI-CEval, MVISU-Bench, and the open-source agent frameworks built to run them (Droidrun/mobilerun, Mobile-Agent, AppAgent) all exist and are actively maintained. Every one of them, without exception, reports **task success rate** as the headline metric. A couple (MobiBench, MVISU-Bench) have started reporting cost and latency too. **None of them report battery drain or thermal impact of running an agent live on a real device** — and none of them are built specifically around a curated set of everyday tasks that's also safe to demo and publish publicly, since most either use toy open-source stand-in apps (AndroidWorld) or real closed-source apps without regard for automation ToS risk (AndroidDaily).
+## 3. Hard split — ASK USER vs DETERMINISTIC
 
-## What's Actually Different (stated conservatively, not oversold)
+- **36 ASK USER** — each hides one load-bearing fact the agent must actively request (all 36 carry an `ask_user_fact`; a single skipped `ask_user` fails the task). 32 have 0 placeholders, 4 have 1–3.
+- **36 DETERMINISTIC** — all data on-device, ADB-verifiable end state.
+- Interleaved across days: **19/28 days mix both**, 4 days are all-ASK-USER, 5 days are all-DETERMINISTIC.
 
-| Piece | Already exists elsewhere | What DailyBench does |
+## 4. Subgoal (clause) distribution
+
+Rough subgoal count = prompt clauses (split on commas/em-dashes/`and`, ignoring app prefixes and parentheticals).
+
+| bucket | clause-count distribution |
+|---|---|
+| easy | 1×16, 2×197, 3×17 |
+| medium | 3×13, 4×157, 5×53, 6×5, 7×1, 8×2 |
+| hard | 1×1, 2×3, 3×7, 4×9, 5×35, 6×13, 7×2, 8×1, 11×1 |
+
+## 5. Cross-app requirement
+
+| bucket | cross-app | total | share |
+|---|---|---|---|
+| medium | 114 | 231 | 49.4% |
+| hard | 64 | 72 | 88.9% |
+| easy | 0 | 230 | 0% |
+| **all** | **178** | **533** | **33.4%** |
+
+## 6. Per-day distribution
+
+| Day | tasks | easy/med/hard | ASK/DET | distinct apps |
+|---|---|---|---|---|
+| D01 | 22 | 9/10/3 | 3/0 | 11 |
+| D02 | 18 | 7/8/3 | 2/1 | 10 |
+| D03 | 21 | 9/9/3 | 1/2 | 11 |
+| D04 | 19 | 9/7/3 | 0/3 | 10 |
+| D05 | 21 | 9/9/3 | 3/0 | 10 |
+| D06 | 17 | 7/7/3 | 1/2 | 9 |
+| D07 | 17 | 7/7/3 | 1/2 | 12 |
+| D08 | 18 | 8/7/3 | 1/2 | 11 |
+| D09 | 19 | 8/8/3 | 2/1 | 10 |
+| D10 | 20 | 7/10/3 | 0/3 | 11 |
+| D11 | 19 | 9/7/3 | 1/2 | 12 |
+| D12 | 19 | 9/7/3 | 0/3 | 11 |
+| D13 | 23 | 9/11/3 | 2/1 | 13 |
+| D14 | 19 | 9/7/3 | 0/3 | 11 |
+| D15 | 20 | 9/8/3 | 2/1 | 10 |
+| D16 | 18 | 7/8/3 | 0/3 | 12 |
+| D17 | 17 | 7/8/2 | 1/1 | 10 |
+| D18 | 20 | 7/11/2 | 2/0 | 9 |
+| D19 | 18 | 8/8/2 | 2/0 | 10 |
+| D20 | 18 | 8/8/2 | 1/1 | 10 |
+| D21 | 18 | 8/8/2 | 0/2 | 12 |
+| D22 | 19 | 9/8/2 | 1/1 | 11 |
+| D23 | 20 | 8/10/2 | 1/1 | 10 |
+| D24 | 16 | 7/7/2 | 2/0 | 9 |
+| D25 | 18 | 9/7/2 | 2/0 | 10 |
+| D26 | 21 | 10/9/2 | 1/1 | 10 |
+| D27 | 19 | 8/9/2 | 2/0 | 10 |
+| D28 | 19 | 9/8/2 | 2/0 | 12 |
+
+**Schedule notes:** days 1–16 carry 3 hard tasks; days 17–28 carry 2. Every day spans 9–13 distinct apps (min 7, max 11 in the original design; observed 9–13) — no app is on screen every day.
+
+## 7. Per-app coverage
+
+| App | total | easy/med/hard |
 |---|---|---|
-| Live accessibility-driven agents | Yes — Droidrun/mobilerun, Mobile-Agent, m3a | Built on top of mobilerun rather than reinvented |
-| Cost in dollars, on real devices | Yes — MobiBench (offline), MVISU-Bench (live) | Same idea, applied consistently across the whole suite |
-| Real-device (not emulator) testing | Yes — MobileBench-OL, GUI-CEval, AndroidDaily | Same, on a defined consumer hardware tier |
-| **Battery drain + thermal impact of a live agent loop** | **Not found anywhere in the benchmarks or frameworks surveyed** | **Reported as a first-class, headline metric** |
-| Everyday tasks (not synthetic/toy) | Partially — AndroidDaily, MobileWorld use real apps | Grounded task suite (300 queries) built from real usage patterns |
-| An app scope safe to demo and publish publicly | Not something any research benchmark had to solve | Deliberately excludes apps with active anti-automation/bot-detection enforcement (Instagram, Facebook, WhatsApp, Messenger, Threads, TikTok, X, Snapchat, WeChat) |
+| Telegram | 71 | 11/36/24 |
+| Notes | 71 | 6/44/21 |
+| Obsidian | 71 | 7/44/20 |
+| Chrome | 49 | 22/21/6 |
+| Calendar | 47 | 12/22/13 |
+| Clock | 32 | 13/14/5 |
+| Files | 30 | 11/13/6 |
+| Google Search | 29 | 11/10/8 |
+| Gallery | 29 | 12/11/6 |
+| Contacts | 27 | 9/11/7 |
+| Google Maps | 27 | 10/12/5 |
+| Google Drive | 27 | 12/12/3 |
+| Gmail | 26 | 9/10/7 |
+| YouTube | 26 | 11/10/5 |
+| Settings | 26 | 10/10/6 |
+| Calculator | 26 | 11/12/3 |
+| Camera | 25 | 11/10/4 |
+| Phone | 25 | 11/11/3 |
+| Google Photos | 25 | 11/12/2 |
+| Music | 24 | 9/10/5 |
+| Messages | 23 | 11/10/2 |
 
-**The one-sentence claim:** DailyBench measures what running an LLM agent actually costs a real phone — in dollars, battery, and heat — across cloud and local models, on everyday tasks in apps people actually use, in a scope safe enough to publish without risking a platform ban. Every individual ingredient exists somewhere else; this combination doesn't.
+## 8. Placeholders
 
-## Scope
+44 unique `[placeholders]` in prompts (contact, topic, time, amount, note title, product, song, route, city, sender, meeting title, etc.), resolved from `tasks_vars.local.env` / per-day `tasks_vars/day_N.env` at run time.
 
-**Framework:** built on [mobilerun](https://github.com/droidrun/mobilerun) (Droidrun) rather than a from-scratch accessibility service — it already solves setup friction (Portal app, wizard-based provider config) and supports the full range of models needed: OpenAI, Anthropic, Gemini, DeepSeek, and local models via Ollama.
+## 9. Model / measurement contract
 
-**Apps (20, ToS-vetted safe list):** Gmail, Google Maps, Chrome, Google Drive, Google Photos, YouTube, Telegram, Google Search, Calculator, Clock, Calendar, Contacts, Notes, Files, Camera, Gallery, Music, Messages, Phone, Settings.
+- **Models:** agent = `~deepseek/deepseek-v4-flash-latest` (OpenRouter) · ask_user/judge = `gpt-5.4-mini` · temp 0.0 · top-p 0.95.
+- **Core metrics:** success rate, cost (USD), latency, battery/energy drain, thermal drift — captured per step on-device (`dumpsys battery`, `dumpsys thermalservice`), independent of the model under test.
+- **Action budget:** 50 steps default (fixed cap, part of the benchmark definition; fairness across buckets).
+- **Reference device:** OnePlus CPH2423 (Android 15, non-rooted), wired or wireless ADB; host-side `scrcpy --record` for video artifacts.
 
-**Task suite:** 300 queries — 100 easy, 100 medium, 78 hard-deterministic (composite, cross-app, independently verifiable), and 22 open-ended (ambiguous/subjective, graded separately via a calibrated rubric-based LLM-judge panel — never blended into the deterministic success rate).
+## Related reports
 
-**Core metrics:** task success rate, cost (USD), latency (total wall-clock time), battery/energy drain, and thermal drift — captured per step, on-device, via `BatteryManager` and thermal-zone polling, independent of whatever model is under test.
-
-## Publishing Plan
-
-Run videos published openly, showing the agent operating live on a real device — building public visibility and trust in the project's numbers, while staying inside the app scope that doesn't carry meaningful ToS/account-ban risk.
-
-## Measurement Implementation
-
-For the actual benchmark harness, use untethered Wi-Fi ADB after setup so USB power and cable thermals do not pollute the run.
-
-- Battery sampling: `adb shell dumpsys battery`
-- Thermal sampling: `adb shell dumpsys thermalservice`
-- Screen capture: host-side `scrcpy --record`
-
-On the current reference phone, `dumpsys thermalservice` exposes HAL-backed `CPU`, `GPU`, `BATTERY`, `SKIN`, `POWER_AMPLIFIER`, and `NPU` temperatures. The phone blocks direct `adb shell screenrecord` file writes, so the harness records from the host side using `scrcpy --record`, which still preserves a clean per-task `.mp4` artifact for publishing.
-
-The implementation in this repo is [dailybench_runner.py](/Users/yuvrajsingh9886/Desktop/DrainBench300/dailybench_runner.py) with usage notes in [bench-usage.md](/Users/yuvrajsingh9886/Desktop/DrainBench300/bench-usage.md).
+- Run reports: `reports/day1-run.md`, `reports/day2-run.md`, `reports/day3-run.md`
+- Metric JSON/MD: `reports/metrics/day2-metrics.md`, `reports/metrics/day3-metrics.md`, `hallucination-eval-day2.md`
+- Full pipeline spec: `docs/benchmark-spec.md`, `docs/leaderboard-format.md`, `docs/evaluation-policy.md`
+- Dataset layout: `benchmarks/dailyBench-600/tasks_530.md` (canonical) + `public.md` (50-task preview)

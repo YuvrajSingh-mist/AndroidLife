@@ -28,12 +28,13 @@ DEVICE_SERIAL = first_adb_device()
 def _newest_run_dir(label: str) -> Path:
     """Return the most recently created run folder for a label.
 
-    Every test invocation writes a fresh runs/<date-time>/<label>/ folder and the
-    old ones accumulate, so ``next(glob)`` is not deterministic - it can pick a
-    stale folder from a previous run. Use mtime to select the folder this test just
-    wrote instead.
+    Every test invocation writes a fresh assets/runs/<batch>/<date-time>/<label>/ folder
+    (e.g. assets/runs/full-bench/<timestamp>/cli-smoke) and the old ones accumulate, so a
+    non-recursive glob can't see the nested folders and ``next(glob)`` would not be
+    deterministic - it can pick a stale folder from a previous run. Use a recursive
+    match + mtime to select the folder this test just wrote.
     """
-    return max(Path("runs").glob(f"*/{label}"), key=lambda p: p.stat().st_mtime)
+    return max(Path("assets/runs").rglob(label), key=lambda p: p.stat().st_mtime)
 
 
 class _StubUpstreamHandler(BaseHTTPRequestHandler):
@@ -214,7 +215,38 @@ def test_run_agent_builds_llm_with_deterministic_sampling_and_thinking_off(tmp_p
     assert llm.temperature == 0.0
     assert llm.additional_kwargs["top_p"] == 0.9
     assert llm.additional_kwargs["seed"] == 7
-    assert llm.additional_kwargs["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
+    # reasoning off by default via extra_body: OpenRouter's native `reasoning` param
+    # AND the Qwen chat-template switch (for self-hosted models) - see cli.py run_agent.
+    assert llm.additional_kwargs["extra_body"] == {
+        "reasoning": {"enabled": False},
+        "chat_template_kwargs": {"enable_thinking": False},
+    }
+
+
+def test_run_agent_thinking_flag_leaves_reasoning_on(tmp_path: Path, monkeypatch) -> None:
+    """--thinking leaves the model's reasoning on: extra_body carries no reasoning-off switches."""
+    captured_llms: list = []
+
+    class _CapturingFakeAgent:
+        def __init__(self, goal: str, config, llms, prompts=None, custom_tools=None, timeout=None, variables=None) -> None:
+            captured_llms.append(llms)
+
+        async def run(self) -> _FakeResult:
+            return _FakeResult(success=True, reason="ok", steps=1)
+
+    monkeypatch.setattr(cli, "MobileAgent", _CapturingFakeAgent)
+    parser = cli.build_parser()
+    args = parser.parse_args(
+        ["--serial", "device-1", "--label", "x", "--goal", "g", "--model", "m", "--thinking"]
+    )
+    import asyncio
+
+    run_dir = tmp_path / "run-1"
+    run_dir.mkdir()
+    asyncio.run(cli.run_agent(args, run_dir, "http://127.0.0.1:1/v1"))
+
+    llm = captured_llms[0]
+    assert llm.additional_kwargs["extra_body"] == {}
 
 
 def test_build_mobile_config_maps_cli_flags(tmp_path: Path) -> None:
@@ -230,7 +262,6 @@ def test_build_mobile_config_maps_cli_flags(tmp_path: Path) -> None:
             "--reasoning",
             "--vision",
             "--no-debug",
-            "--tracing",
             "--save-trajectory", "action",
         ]
     )
@@ -246,13 +277,23 @@ def test_build_mobile_config_maps_cli_flags(tmp_path: Path) -> None:
     assert config.tracing.enabled is True
 
 
-def test_build_mobile_config_defaults_are_fast_agent_no_vision_no_tracing(tmp_path: Path) -> None:
-    """Without any opt-in flags, the harness runs the fast-agent loop with vision/tracing off and debug on."""
+def test_build_mobile_config_defaults_are_fast_agent_no_vision_tracing_on_action_trajectory(tmp_path: Path) -> None:
+    """Defaults: fast-agent loop, vision off, debug on, Phoenix tracing ON, action trajectories saved."""
     parser = cli.build_parser()
     args = parser.parse_args(["--serial", "device-1", "--label", "x", "--goal", "g", "--model", "m"])
     config = cli.build_mobile_config(args, tmp_path / "run-1")
     assert config.agent.reasoning is False
     assert config.agent.fast_agent.vision is False
     assert config.logging.debug is True
-    assert config.logging.save_trajectory == "none"
+    assert config.logging.save_trajectory == "action"
+    assert config.tracing.enabled is True
+
+
+def test_build_mobile_config_no_tracing_disables_tracing(tmp_path: Path) -> None:
+    """--no-tracing turns Phoenix tracing off."""
+    parser = cli.build_parser()
+    args = parser.parse_args(
+        ["--serial", "device-1", "--label", "x", "--goal", "g", "--model", "m", "--no-tracing"]
+    )
+    config = cli.build_mobile_config(args, tmp_path / "run-1")
     assert config.tracing.enabled is False

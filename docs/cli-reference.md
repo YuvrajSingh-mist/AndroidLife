@@ -22,6 +22,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--steps` | `50` | Step budget (`AgentConfig.max_steps`) |
 | `--vision` | off | Enable vision (screenshots) for the agent; off by default for this harness |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
+| `--thinking` | off | Leave the model's reasoning/thinking mode ON. Off by default: the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) so reasoning models return text content; non-reasoning models ignore them |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
 | `--tracing` | off | Enable Arize Phoenix tracing (see [advanced-features.md](advanced-features.md)) |
 | `--phoenix-url` | *(none)* | Phoenix collector endpoint; sets the `phoenix_url` env var mobilerun reads |
@@ -33,13 +34,16 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--ask-user-model` | `gpt-5.4-mini` | OpenAI model used to play the simulated user for `ask_user` — **OpenAI-hosted models only** (see note below) |
 | `--ask-user-base-url` | *(OpenAI's default)* | Override the OpenAI API base URL for `ask_user` (e.g. to point at a local stand-in) |
 
+> `ask_user` inherits the run's `--temperature`, `--top-p`, and `--seed` (it now sends them in the OpenAI call), so the simulated user is as reproducible as the main agent.
+
 > **Note:** The `ask_user` simulated user (`--ask-user-model`, default `gpt-5.4-mini`) only supports **OpenAI-hosted models** — the `ask_user` tool calls the OpenAI API directly, and its per-1M-token cost table covers OpenAI models. It is a separate service from the agent's LLM (`--model`), which can be any model your LLM host (e.g. OpenRouter) serves.
 
 ## `dailybench_tasks.py` — dataset-backed batch runner
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--dataset` | `benchmarks/dailyBench-600/DailyBench_730_v4.json` | Which exported task dataset to read |
+| `--dataset` | `benchmarks/dailyBench-600/DailyBench_530_v1.json` | Which exported task dataset to read |
+| `--day` | *(none)* | Run every task whose schedule `day` equals `N` (any day 1..28 on the 530 set). A selector on its own; combines with `--bucket`/`--app`/`--task-id` |
 | `--bucket` | *(none)* | Filter to `easy`/`medium`/`hard`/`hard-deterministic`/`open-ended` (`hard` is the current dialect's shuffled DETERMINISTIC+ASK USER battery; `hard-deterministic`/`open-ended` are the older dialect's split buckets) |
 | `--app` | *(none)* | Filter to one app slug (e.g. `gmail`) |
 | `--task-id` | `[]` | Repeatable; run only these specific task IDs |
@@ -55,11 +59,14 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--llm-proxy-port-base` | `8090` | First proxy port; each task/repeat invocation gets `base + running index` |
 | `--model` | `$MODEL` | Model name, forwarded as `dailybench_runner.py --model` |
 | `--temperature` | `0.0` | Sampling temperature |
+| `--top-p` | `0.95` | Nucleus sampling top-p, forwarded to each task run (agent + `ask_user`) |
+| `--seed` | `42` | Fixed sampling seed, forwarded to each task run (agent + `ask_user`), for run-to-run reproducibility |
 | `--steps` | `50` | Fixed step budget for every task, regardless of bucket (see [Step-budget policy](#step-budget-policy)) |
 | `--repeats` | `1` | Run each selected task this many times; opt-in since runs are already deterministic at temperature 0 (see caveat below) |
 | `--screen-record` | off | Record `screen.mp4` for every task in the batch — **off by default** (see single-run flag for why); opt in when you need video evidence |
 | `--vision` | off | Enable vision (screenshots) for the agent; off by default for this harness |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
+| `--thinking` | off | Leave the model's reasoning/thinking mode ON (default off: reasoning-off switches sent via `extra_body`; see [advanced-features.md](advanced-features.md)) |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
 | `--tracing` | off | Enable Arize Phoenix tracing (needs `phoenix serve` running first) |
 | `--phoenix-url` | *(none)* | Phoenix collector endpoint; sets the `phoenix_url` env var |

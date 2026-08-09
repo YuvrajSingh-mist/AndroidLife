@@ -15,7 +15,7 @@ from mobilerun import AgentConfig, DeviceConfig, FastAgentConfig, LoggingConfig,
 
 from .adb import capture_app_battery, capture_sample, read_jsonl, reset_app_state, utc_now
 from .custom_tools import CUSTOM_TOOLS, DEFAULT_ASK_USER_MODEL, build_ask_user_tool
-from .files import make_run_dir, run_dir_for_label, write_json, write_text
+from .files import default_batch_run_dir, run_dir_for_label, write_json, write_text
 from .processes import ProxyStartupError, start_llm_proxy, start_scrcpy, stop_process, wait_for_proxy_ready
 from .sampler import Sampler
 from .summary import TaskOutcome, summarize, summarize_app_battery
@@ -43,19 +43,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--steps", type=int, default=200)
+    parser.add_argument("--steps", type=int, default=150)
     parser.add_argument("--task-timeout", type=int, default=0, help="Wall-clock seconds before mobilerun's own MobileAgent(timeout=...) aborts the task. 0 = no wall-clock limit (default): the --steps step budget is the real bound.")
     parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
     parser.add_argument("--reasoning", action="store_true", help="Use mobilerun's manager/executor planning workflow instead of the fast-agent loop.")
+    parser.add_argument("--thinking", action="store_true", help="Leave the model's reasoning/thinking mode ON. OFF by default (the fast-agent loop needs immediate text content, and hidden reasoning burns tokens + breaks determinism): when off, the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) for whichever the model/host honors.")
     parser.add_argument("--no-debug", action="store_true", help="Disable mobilerun's verbose debug logging (on by default).")
-    parser.add_argument("--tracing", action="store_true", help="Enable Arize Phoenix tracing (needs `phoenix serve` running locally; see docs.mobilerun.ai/framework/features/tracing).")
-    parser.add_argument("--phoenix-url", default=None, help="Phoenix collector endpoint, e.g. http://localhost:6006 (sets the `phoenix_url` env var mobilerun reads).")
-    parser.add_argument("--phoenix-project", default=None, help="Phoenix project name to group traces under (sets the `phoenix_project_name` env var).")
-    parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="none", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action).")
+    parser.add_argument("--no-tracing", action="store_true", help="Disable Arize Phoenix tracing (ON by default; needs `phoenix serve` running locally, see docs.mobilerun.ai/framework/features/tracing).")
+    parser.add_argument("--phoenix-url", default="http://localhost:6006", help="Phoenix collector endpoint (sets the `phoenix_url` env var mobilerun reads; default local Phoenix on :6006).")
+    parser.add_argument("--phoenix-project", default="dailybench", help="Phoenix project name to group traces under (sets the `phoenix_project_name` env var).")
+    parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after the run (on by default, for fairness so the next task doesn't inherit this task's UI/navigation state).")
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="OpenAI model used to play the simulated user for the ask_user tool.")
-    parser.add_argument("--run-root", default=None, help="Optional shared run directory created by the batch; the task's run folder is created inside it (instead of runs/<timestamp>/<label>).")
+    parser.add_argument("--run-root", default=None, help="Optional shared run directory created by the batch; the task's run folder is created inside it (instead of assets/runs/full-bench/<timestamp>/<label>).")
     return parser
 
 
@@ -76,7 +77,7 @@ def build_mobile_config(args: argparse.Namespace, run_dir: Path) -> MobileConfig
         device=DeviceConfig(serial=args.serial),
         agent=AgentConfig(max_steps=args.steps, reasoning=args.reasoning, fast_agent=FastAgentConfig(vision=args.vision)),
         logging=LoggingConfig(debug=not args.no_debug, save_trajectory=args.save_trajectory, trajectory_path=str(run_dir / "trajectories")),
-        tracing=TracingConfig(enabled=args.tracing),
+        tracing=TracingConfig(enabled=not args.no_tracing),
     )
 
 
@@ -142,15 +143,47 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         additional_kwargs={
             "top_p": args.top_p,
             "seed": args.seed,
-            # Qwen3-family "thinking" models (e.g. OpenRouter's qwen/qwen-3-4b-instruct) burn real
-            # tokens on hidden reasoning by default even at temperature=0 - this is the model's
-            # own chat-template switch to turn that off, confirmed live: 226 reasoning tokens
-            # dropped to 0, and output became reproducible run-to-run with a fixed seed. A
-            # non-reasoning model (mini2's local Qwen3-4B) just ignores the unrecognized field.
-            "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+            # ONE reasoning-off mechanism for model swap: the `--thinking` flag
+            # (off by default). When off, extra_body carries both switches so it
+            # works on any host the model runs through:
+            #  (1) "reasoning": {"enabled": false} — OpenRouter's NATIVE param
+            #      (confirmed live on qwen/qwen3.7-flash: clean content, no
+            #      reasoning tokens). Self-hosted servers ignore it.
+            #  (2) "chat_template_kwargs.enable_thinking" — the model's OWN
+            #      chat-template switch for self-hosted Qwen3-family thinking
+            #      models (e.g. mini2's local Qwen3-4B), where OpenRouter's
+            #      `reasoning` param isn't in play. Confirmed live: 226 reasoning
+            #      tokens dropped to 0, output reproducible with a fixed seed.
+            # Both are sent together because the OpenAI SDK only forwards unknown
+            # params via extra_body (a top-level `reasoning` kwarg raises
+            # "got an unexpected keyword argument"). Non-reasoning models ignore
+            # both fields. Pass --thinking to leave reasoning ON (no switches).
+            "extra_body": (
+                {} if args.thinking else {
+                    "reasoning": {"enabled": False},
+                    "chat_template_kwargs": {"enable_thinking": False},
+                }
+            ),
         },
     )
-    ask_user_tool = build_ask_user_tool(args.ask_user_context, model=args.ask_user_model, log_path=run_dir / "ask_user_metrics.jsonl")
+    # The ask_user tool is registered ONLY for ASK USER tasks (--ask-user-context non-empty).
+    # Its simulated user holds only that task's hidden fact; on every other task it would have
+    # nothing to reveal, so exposing it there only tempts the agent to "ask" instead of either
+    # finding the data on-device or honestly reporting it absent (the correct outcome for a
+    # hallucination control). Gating it also keeps the system prompt's ASK USER section
+    # (rendered only when the ask_user tool is available) from appearing on other tasks.
+    custom_tools = dict(CUSTOM_TOOLS)
+    if args.ask_user_context:
+        custom_tools.update(
+            build_ask_user_tool(
+                args.ask_user_context,
+                model=args.ask_user_model,
+                log_path=run_dir / "ask_user_metrics.jsonl",
+                temperature=args.temperature,
+                top_p=args.top_p,
+                seed=args.seed,
+            )
+        )
     # 0 means "no wall-clock cap". The FastAgent loop's MobileAgentInitEvent requires an int
     # timeout (None fails pydantic validation: "Input should be a valid integer"), so we pass
     # a 100-year deadline instead of None — effectively no wall-clock limit. The step budget
@@ -164,7 +197,7 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         llms=llm,
         variables=parse_vars(args.var),  # mobilerun-native custom_variables
         prompts={"fast_agent_system": FAST_AGENT_SYSTEM_PROMPT},
-        custom_tools={**CUSTOM_TOOLS, **ask_user_tool},
+        custom_tools=custom_tools,
         timeout=timeout,
     )
     handler = attach_agent_log_file(run_dir / "agent.log.txt")
@@ -203,7 +236,9 @@ def main() -> int:
         run_dir.mkdir(parents=True, exist_ok=True)
         run_dir = run_dir.resolve()
     else:
-        run_dir = make_run_dir("runs", args.label).resolve()
+        run_dir = run_dir_for_label(default_batch_run_dir(), args.label)
+        run_dir.mkdir(parents=True, exist_ok=True)
+        run_dir = run_dir.resolve()
     meta = {
         "run_id": run_dir.name, "label": args.label, "task_id": args.task_id, "serial": args.serial, "started_at_utc": utc_now(),
         "goal": args.goal, "variables": parse_vars(args.var), "model": args.model, "steps": args.steps, "task_timeout_seconds": args.task_timeout, "sample_interval_seconds": args.sample_interval,

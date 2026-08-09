@@ -1,7 +1,7 @@
 """Pytest coverage for the custom mobilerun tools: real-device date/time/location, the
 ask_user tool spec, and the Phoenix span-emission helpers.
 
-ask_user's real OpenAI call is verified end-to-end by scripts/e2e_askuser_phoenix.py
+ask_user's real OpenAI call is verified end-to-end by scripts/eval/e2e_askuser_phoenix.py
 (real API, real token counts) — no fake endpoints/stubs live in this suite.
 """
 

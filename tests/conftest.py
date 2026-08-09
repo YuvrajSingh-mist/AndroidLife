@@ -10,10 +10,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 SCRIPTS = ROOT / "scripts"
+# Script modules were reorganized into subfolders (2026-08-08): eval/ holds the
+# report + eval modules, tools/ holds the proxy + provider/pricing helpers.
+SCRIPT_SUBDIRS = [SCRIPTS / "eval", SCRIPTS / "tools"]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
-if str(SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS))
+for _d in ([SCRIPTS] + SCRIPT_SUBDIRS):
+    if str(_d) not in sys.path:
+        sys.path.insert(0, str(_d))
 
 
 def _adb_device_serials() -> list[str]:

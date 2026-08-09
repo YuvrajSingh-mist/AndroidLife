@@ -10,17 +10,18 @@
 # Fully agnostic: every URL/serial is overridable via env var or flag - nothing here
 # is hardcoded to one phone or one model host. mobilerun is driven purely through its
 # Python SDK here (no `mobilerun` CLI involved anywhere), matching the rest of this
-# harness - step 4 shells out to scripts/device_health_check.py, a small SDK-only
+# harness - step 4 shells out to scripts/tools/device_health_check.py, a small SDK-only
 # helper built on `mobilerun.AndroidDriver` (see
 # https://docs.mobilerun.ai/framework/sdk/adb-tools). See also
 # https://docs.mobilerun.ai/framework/quickstart and
 # https://docs.mobilerun.ai/framework/sdk/configuration (LLM provider / api_base setup).
 #
-# Usage: scripts/smoke_test.sh [options]     (run --help for the full option list)
+# Usage: scripts/run/smoke_test.sh [options]     (run --help for the full option list)
 
 set -uo pipefail
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# This script lives in scripts/run/, so the repo root is two levels up.
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_DIR"
 
 # ---------------------------------------------------------------------------
@@ -45,7 +46,7 @@ LIST_MODELS_ONLY=0
 
 usage() {
   cat <<'EOF'
-Usage: scripts/smoke_test.sh [options]
+Usage: scripts/run/smoke_test.sh [options]
 
 Smoke-tests the LLM server plus wired and wireless ADB/mobilerun connectivity
 for DailyBench300, ending (by default) with one real one-step agent run through
@@ -87,17 +88,17 @@ pass both, or neither, to check both transports.
 
 Examples:
   # Everything auto-detected from env vars already exported by the README setup:
-  ./scripts/smoke_test.sh
+  ./scripts/run/smoke_test.sh
 
   # See exactly which model IDs a server offers, then pick one yourself:
-  ./scripts/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --list-models
-  ./scripts/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model "<id from the list above>"
+  ./scripts/run/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --list-models
+  ./scripts/run/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model "<id from the list above>"
 
   # Point at a different llama.cpp box, skip the real agent run:
-  ./scripts/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model my-model --skip-agent-run
+  ./scripts/run/smoke_test.sh --llm-url http://192.168.1.50:8080/v1 --model my-model --skip-agent-run
 
   # Only check a specific wireless phone, nothing else:
-  ./scripts/smoke_test.sh --skip-llm --skip-wired --skip-agent-run --wireless-serial 192.168.1.23:5555
+  ./scripts/run/smoke_test.sh --skip-llm --skip-wired --skip-agent-run --wireless-serial 192.168.1.23:5555
 EOF
 }
 
@@ -150,7 +151,7 @@ except Exception as exc:
   echo "$model_ids" | sed 's/^/  /'
   echo
   echo "Pass one of the above to --model, e.g.:"
-  echo "  ./scripts/smoke_test.sh --llm-url \"$LLM_URL\" --model \"$(head -n1 <<<"$model_ids")\""
+  echo "  ./scripts/run/smoke_test.sh --llm-url \"$LLM_URL\" --model \"$(head -n1 <<<"$model_ids")\""
   exit 0
 fi
 
@@ -246,7 +247,7 @@ run_device_health_check() {
   log_path="$(mktemp)"
   # device_health_check.py bounds its own checks internally via --timeout; the outer
   # with_timeout here is defense-in-depth against `uv run` startup itself hanging.
-  with_timeout "$((${CURL_TIMEOUT%.*} + 15))" uv run python scripts/device_health_check.py --serial "$serial" --timeout "$CURL_TIMEOUT" >"$log_path" 2>&1
+  with_timeout "$((${CURL_TIMEOUT%.*} + 15))" uv run python scripts/tools/device_health_check.py --serial "$serial" --timeout "$CURL_TIMEOUT" >"$log_path" 2>&1
   while IFS= read -r line; do
     [[ "$line" == "CHECK "* ]] || continue
     name="$(awk '{print $2}' <<<"$line")"
@@ -409,7 +410,7 @@ if [[ "$RUN_WIRED" -eq 1 ]]; then
       fail "adb shell not reachable on $serial - check the USB cable / accept the RSA authorization prompt on the phone"
     fi
 
-    info "uv run python scripts/device_health_check.py --serial $serial (AndroidDriver: connect, portal, get_date, screenshot) ..."
+    info "uv run python scripts/tools/device_health_check.py --serial $serial (AndroidDriver: connect, portal, get_date, screenshot) ..."
     if run_device_health_check "$serial"; then
       resolved_wired_serial="$serial"
     fi
@@ -468,7 +469,7 @@ if [[ "$RUN_WIRELESS" -eq 1 ]]; then
       fail "adb shell not reachable on $serial"
     fi
 
-    info "uv run python scripts/device_health_check.py --serial $serial (AndroidDriver: connect, portal, get_date, screenshot) ..."
+    info "uv run python scripts/tools/device_health_check.py --serial $serial (AndroidDriver: connect, portal, get_date, screenshot) ..."
     if run_device_health_check "$serial"; then
       resolved_wireless_serial="$serial"
     fi
@@ -499,7 +500,7 @@ if [[ "$RUN_AGENT_SMOKE" -eq 1 ]]; then
     if uv run dailybench_runner.py \
       --serial "$agent_serial" \
       --label smoke-test \
-      --out-dir runs/smoke-test \
+      --run-root assets/runs/full-bench/smoke-test \
       --llm-upstream-base "$LLM_URL" \
       --llm-proxy-port "$SMOKE_PROXY_PORT" \
       --model "$MODEL" \

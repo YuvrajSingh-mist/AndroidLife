@@ -1,4 +1,4 @@
-"""Pytest coverage for scripts/smoke_test.sh and scripts/device_health_check.py.
+"""Pytest coverage for scripts/run/smoke_test.sh and scripts/tools/device_health_check.py.
 
 Real subprocesses throughout - no mocks. The LLM checks run against a real local stub
 HTTP server this test starts itself (not an external llama.cpp box), so they're
@@ -22,8 +22,8 @@ from conftest import first_adb_device, first_wired_adb_device, first_wireless_ad
 from DailyBench import processes
 
 ROOT = Path(__file__).resolve().parents[1]
-SMOKE_TEST = ROOT / "scripts" / "smoke_test.sh"
-HEALTH_CHECK = ROOT / "scripts" / "device_health_check.py"
+SMOKE_TEST = ROOT / "scripts" / "run" / "smoke_test.sh"
+HEALTH_CHECK = ROOT / "scripts" / "tools" / "device_health_check.py"
 
 WIRED_SERIAL = first_wired_adb_device()
 WIRELESS_SERIAL = first_wireless_adb_device()
@@ -98,7 +98,7 @@ def test_help_exits_zero_and_prints_usage() -> None:
     """--help prints the usage text and exits 0 without touching any device or network."""
     result = run_smoke_test(["--help"])
     assert result.returncode == 0
-    assert "Usage: scripts/smoke_test.sh" in result.stdout
+    assert "Usage: scripts/run/smoke_test.sh" in result.stdout
     assert "--wireless-serial" in result.stdout
 
 
@@ -108,7 +108,7 @@ def test_unknown_flag_exits_two_with_usage() -> None:
     assert result.returncode == 2
     combined = result.stdout + result.stderr
     assert "Unknown option: --not-a-real-flag" in combined
-    assert "Usage: scripts/smoke_test.sh" in combined
+    assert "Usage: scripts/run/smoke_test.sh" in combined
 
 
 def test_skip_everything_still_runs_prerequisites_and_exits_zero() -> None:

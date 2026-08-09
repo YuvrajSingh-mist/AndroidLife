@@ -244,13 +244,33 @@ def test_select_and_render_prompt() -> None:
     """select_tasks filters by bucket/app, and render_prompt substitutes the selected task's placeholder."""
     dataset = {
         "tasks": [
-            {"task_id": "easy__gmail__001", "bucket": "easy", "app_slug": "gmail", "prompt_text": "Check [thing]", "placeholders": ["thing"]},
-            {"task_id": "medium__youtube__001", "bucket": "medium", "app_slug": "youtube", "prompt_text": "Play it", "placeholders": []},
+            {"task_id": "easy__gmail__001", "bucket": "easy", "app_slug": "gmail", "prompt_text": "Check [thing]", "placeholders": ["thing"], "day": 1},
+            {"task_id": "medium__youtube__001", "bucket": "medium", "app_slug": "youtube", "prompt_text": "Play it", "placeholders": [], "day": 1},
         ]
     }
     selected = select_tasks(dataset, bucket="easy", app="gmail")
     assert len(selected) == 1
     assert render_prompt(selected[0], {"thing": "mail"}) == "Check mail"
+
+
+def test_select_tasks_by_day() -> None:
+    """select_tasks(day=N) selects every task whose schedule day matches, and is a valid selector on its own."""
+    dataset = {
+        "tasks": [
+            {"task_id": "easy__gmail__001", "day": 1, "bucket": "easy", "placeholders": []},
+            {"task_id": "medium__gmail__002", "day": 3, "bucket": "medium", "placeholders": []},
+            {"task_id": "easy__clock__001", "day": 3, "bucket": "easy", "placeholders": ["city"]},
+            {"task_id": "hard__music-obsidian__077", "day": 3, "bucket": "hard", "placeholders": ["music type"]},
+        ]
+    }
+    day3 = select_tasks(dataset, day=3)
+    assert [t["task_id"] for t in day3] == ["medium__gmail__002", "easy__clock__001", "hard__music-obsidian__077"]
+    # --day alone must not require --all / another selector
+    assert len(select_tasks(dataset, day=3)) == 3
+    # day + bucket combine
+    assert len(select_tasks(dataset, day=3, bucket="easy")) == 1
+    # day with no matching tasks
+    assert select_tasks(dataset, day=28) == []
 
 
 def test_render_prompt_replaces_multiple_distinct_placeholders() -> None:

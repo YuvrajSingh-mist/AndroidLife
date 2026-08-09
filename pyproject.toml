@@ -7,7 +7,14 @@ name = "dailybench300"
 version = "0.1.0"
 description = "Benchmark harness for Droidrun / Mobilerun phone tasks."
 requires-python = ">=3.11,<3.14"
-dependencies = ["pydantic>=2.0", "mobilerun", "openai>=1.0", "python-dotenv>=1.0"]
+dependencies = [
+    "pydantic>=2.0",
+    "mobilerun>=0.6.15",
+    "openai>=1.0",
+    "python-dotenv>=1.0",
+    "deepeval>=4.1",
+    "sqlean-py>=3.45.1",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]

@@ -4,7 +4,7 @@
   "stats": {
     "task_count": 533,
     "day_count": 28,
-    "app_count": 21,
+    "app_count": 22,
     "cross_app_count": 178,
     "max_points": 1283,
     "easy": 230,
@@ -266,11 +266,11 @@
       "id": "obsidian",
       "slug": "obsidian",
       "name": "Obsidian",
-      "description": "15 tasks in Obsidian",
-      "count": 15,
+      "description": "14 tasks in Obsidian",
+      "count": 14,
       "difficulty": {
         "easy": 7,
-        "medium": 6,
+        "medium": 5,
         "hard": 2
       },
       "cross_app": 1
@@ -287,6 +287,19 @@
         "hard": 1
       },
       "cross_app": 3
+    },
+    {
+      "id": "google-docs",
+      "slug": "google-docs",
+      "name": "Google Docs",
+      "description": "1 task in Google Docs",
+      "count": 1,
+      "difficulty": {
+        "easy": 0,
+        "medium": 1,
+        "hard": 0
+      },
+      "cross_app": 0
     }
   ],
   "days": [
@@ -298,7 +311,7 @@
       "hard": 3,
       "ask_user": 3,
       "deterministic": 0,
-      "apps": 9
+      "apps": 10
     },
     {
       "day": 2,
@@ -1224,7 +1237,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 0,
-      "prompt": "Set a custom ringtone in Phone for unknown numbers to an equivalent of smooth jazz",
+      "prompt": "In Phone, message the most recent unknown number with \"who's this?\"",
       "note": ""
     },
     {
@@ -1298,7 +1311,7 @@
       "cross_app": false,
       "points": 3,
       "placeholder_count": 0,
-      "prompt": "Filter my Calendar to show only recurring events with no attendees for today, delete one if it's outdated, and check that the series still repeats correctly",
+      "prompt": "Filter my Calendar to show only recurring events with no attendees, delete one that's outdated, and check that the series still repeats correctly",
       "note": ""
     },
     {
@@ -1315,7 +1328,7 @@
       "cross_app": false,
       "points": 3,
       "placeholder_count": 0,
-      "prompt": "I'm shooting a dimly lit room this evening, so set up the Camera for low light: turn on night mode, enable HDR, and make sure the flash is off.",
+      "prompt": "I'm taking a portrait this evening, so set up the Camera: turn on AI enhancement mode and portrait mode.",
       "note": ""
     },
     {
@@ -1407,6 +1420,23 @@
       "note": ""
     },
     {
+      "task_id": "medium__google-docs__001",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "day": 1,
+      "app": "Google Docs",
+      "apps": [
+        "Google Docs"
+      ],
+      "is_ask_user": false,
+      "is_deterministic": false,
+      "cross_app": false,
+      "points": 3,
+      "placeholder_count": 0,
+      "prompt": "Rank my documents in Google Docs by length (word count), open the longest one, and tell me its word count",
+      "note": ""
+    },
+    {
       "task_id": "medium__google-search__001",
       "bucket": "medium",
       "difficulty": "medium",
@@ -1438,23 +1468,6 @@
       "points": 3,
       "placeholder_count": 0,
       "prompt": "Find all unread Messages from this week that contain an unanswered question, answer the most recent with \"Will get back to you fr in some time!\", and tell me the question you answered",
-      "note": ""
-    },
-    {
-      "task_id": "medium__obsidian__001",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "day": 1,
-      "app": "Obsidian",
-      "apps": [
-        "Obsidian"
-      ],
-      "is_ask_user": false,
-      "is_deterministic": false,
-      "cross_app": false,
-      "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Rank my notes in Obsidian by length (word count), open the longest one, and tell me its word count",
       "note": ""
     },
     {

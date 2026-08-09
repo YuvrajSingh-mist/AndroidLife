@@ -19,6 +19,11 @@ users know exactly what was synthetic. **No real personal details are exposed**
 | **Deterministic** | Task has a single correct, verifiable end state | All required data is **fabricated and seeded on-device** so the agent can find it |
 | **ASK USER** | Task is deliberately missing one load-bearing fact | Data is **deliberately absent**; the agent must actively ask the simulated user for it. Nothing is fabricated for these |
 
+> **Note (2026-08-06):** one ASK USER task — `hard__photos-gmail-obsidian__012` —
+> now has the **email-branch** data fabricated on-device (a saved email on the
+> Airtel contact + one event-photo caption mentioning them), so that branch can
+> genuinely trigger. The thing the agent must **ask** (which event) is still withheld.
+
 The hard-task battery explicitly marks which tasks are ASK USER by noting in the
 prompt that "no X exists anywhere on the test device" (see `public.md`). Those
 facts are held only by the simulated user and answered only when asked
@@ -50,6 +55,10 @@ of fictional family members, friends, and vendors:
 - A contact database fixture (~hundreds of entries) reflecting the persona's
   family, friends, and vendors.
 - Fictional contact **Yuvraj** (number redacted) — the default `[contact]`.
+- **Yuvraj Airtel** also has a fabricated **email address** (`yuvraj.airtel@example.com`,
+  redacted) saved on the contact, so the Gmail "email the event photo to them if so"
+  branch of `hard__photos-gmail-obsidian__012` can actually trigger. Seeded by
+  `scripts/seeding/seed_data.py --day 2` and checked by `scripts/seeding/verify_day1_seeds.py --day 2`.
 - Fictional contact **Yuvraj Singh Jio** (number redacted).
 - **Birthday / anniversary records** on H-prefix contacts, used by the
   "birthdays this month" task:
@@ -58,6 +67,15 @@ of fictional family members, friends, and vendors:
   - Genuine **birthday-type** records for H-contacts in August (Aug 4–7) are the
     intended target of that task and are added via the Contacts UI by the
     operator (see [Limitations](#6-known-limitations--honest-caveats)).
+- **Description (note) fields on the Yuvraj contacts** (added 2026-08-06 via ADB
+  `content insert` into `content://com.android.contacts/data`, mimetype
+  `vnd.android.cursor.item/note`), so the `[Contacts+Notes]` "suggest birthday
+  presents based on their descriptions" branch of `medium__contacts__002` can
+  actually answer. Every Yuvraj* contact with a **birthday this month (August)**
+  carries a short fabricated description:
+  - `yuvraj aneja` (bday Aug 6): "Likes football and a huge wine collection fan / 2nd best friend / Went to school together"
+  - `Yuvraj Singh Jio` (bday Aug 20): "Works at Jio telecom, loves cricket and biryani, big gadget geek"
+  - `Yuvraj Singh` (bday Aug 20): "College friend, passionate about photography and bikes"
 
 ### 3.2 Calendar
 - **Shareholder meetings** this week, prefixed with the word `shareholder`
@@ -104,6 +122,10 @@ of fictional family members, friends, and vendors:
     (spread across the 2-week window)
   - Pushed to `/sdcard/DCIM/Camera/`, indexed via the media scanner, and verified
     present in the Photos library with correct capture dates
+- **Event-photo caption (operator step):** for `hard__photos-gmail-obsidian__012`,
+  one event album photo has a caption mentioning **Yuvraj Airtel** (the operator adds
+  it in Google Photos — captions are app-private and not ADB-seedable), so the
+  "email it to them if so" branch is reachable.
 - **Invoice screenshots: NOT seeded (known gap).** The "Invoices album" task targets
   invoice screenshots, but none exist on the device (Screenshots contains only a Jul 13
   screenshot plus screen-record videos). The agent's output for that task is a documented
@@ -117,6 +139,21 @@ of fictional family members, friends, and vendors:
   programmatically. The "unsaved number from call logs today" task requires the
   operator to make a real outgoing call to an unsaved number (see
   [Limitations](#6-known-limitations--honest-caveats)).
+
+### 3.9 Music + Obsidian bedtime (sleep-timer task)
+For `hard__music-obsidian__077` (Day 3, DETERMINISTIC — "search YouTube Music for
+  my favorite music type, download the highly-liked video of it, then set a YouTube
+  Music sleep timer so the song plays until the bedtime noted in Obsidian, shorten
+  it if it would run past bedtime"):
+- **No fabricated audio.** The music side is deliberately **real app + web state**:
+  the agent must search YouTube Music for the `[music type]` (`Raining Night ASMR`,
+  pinned in `tasks_vars.local.env`) and download the highly-liked video of it
+  (offline download requires YT Music Premium + sign-in; otherwise it plays it). No
+  synthetic mp3 is seeded — the earlier fabricated brown-noise track was removed
+  (2026-08-06) so the search+download step is genuinely exercised.
+- **Obsidian bedtime note** `Bedtime.md` created in the vault (`/sdcard/Obsidian/
+  Papers vault oneplus /Bedtime.md`) containing `2026-08-06: 10:30 PM`, so the
+  agent has a concrete bedtime to compare the sleep timer against.
 
 ---
 
@@ -170,7 +207,7 @@ These are benchmark parameters, not real-world data.
   prompt hardcodes "change Akash Kumar's name to include their middle initial", and only the
   `middle initial` placeholder remains (`Kumar Sahoo`). The change is **scoped to this task**
   so the shared `contact` var used by messaging tasks is unaffected. The override is **baked
-  into `scripts/export_public_dataset.py`**, so it survives every dataset regeneration.
+  into `scripts/data/export_public_dataset.py`**, so it survives every dataset regeneration.
 
 ### Run configuration (what a reproducible run looks like)
 
@@ -237,6 +274,57 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-06 — Day-3 Music sleep-timer task made deterministic.**
+  `hard__music-obsidian__077` rewritten to name a concrete target: "search YouTube
+  Music for my favorite music type — a [music type] track — and download the
+  highly-liked video of it, then get it playing. Then set a YouTube Music sleep
+  timer so the song plays until the bedtime noted in Obsidian...". Pinned
+  `music type=Raining Night ASMR` + `bedtime=10:30 PM` in `tasks_vars.local.env`;
+  the earlier fabricated ASMR mp3 was **removed** (the music side is now real app +
+  web state — the agent must search + download the highly-liked video itself, see
+  §3.9) and only an Obsidian `Bedtime.md` note remains on-device. Regenerated
+  `tasks_vars/day_3.env` (10/10 placeholders pinned) + `DailyBench_530_v1.json/
+  .jsonl` (export --verify PASS, 531 tasks).
+
+- **2026-08-06 — Day-3 placeholder discipline + Yuvraj contact descriptions.**
+  Added a `[recipe]` placeholder to the Clock medium task (`medium__clock__001`,
+  "cooking the [recipe]") pinned to **World's Best Lasagna** (Allrecipes, with a
+  proper URL) so the "set multiple back-to-back timers" task has a concrete target
+  with explicit multi-step timers (simmer sauce 1.5h, boil noodles 8-10m, bake
+  25m covered + 25m uncovered, rest 15m); fixed the ambiguous Messages easy task
+  (`easy__messages__003`) to read "my conversation with **[contact]**" instead of
+  an unspecified thread; added **description (note) fields** to the Yuvraj contacts
+  with August birthdays (aneja/Jio/Singh — see §3.1) via ADB so
+  `medium__contacts__002` can suggest presents; typo-fixed "descriptiosn
+  menitoned" → "descriptions mentioned". Regenerated `tasks_vars/day_3.env`
+  (9/9 placeholders pinned) + `DailyBench_530_v1.json/.jsonl` (export --verify PASS,
+  531 tasks).
+
+- **2026-08-06 — Event-photo caption added + trip renamed to "Bhubaneswar trip".**
+  The pending operator caption for `hard__photos-gmail-obsidian__012` was completed: one event
+  photo (Sep 24, 2023 · Gothapatna) now carries the caption **"Bhubaneswar trip with Yuvraj
+  Airtel"**, so the "email it to them if so" branch is reachable. The persona trip was renamed
+  **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_730.json`
+  → "The event is the Bhubaneswar trip.", regenerated `DailyBench_530_v1.json/.jsonl`, rebuilt seed
+  manifests + `tasks_vars/day_2.env`). Re-ran the task into `runs/full-bench/2026-08-06-030706/day2/
+  hard-photos-gmail-obsidian-012` (original caption-missing run preserved as `*.nomention-backup`):
+  **PARTIAL → PASS** — photo starred + emailed to Yuvraj Airtel + send recorded in an Obsidian note.
+
+- **2026-08-06 — Day 4/5/6 fabricated-data pipeline (replicating Days 1-3).**
+  `build_day_seed_manifest.py` gained `DAY4_TASKS`/`DAY5_TASKS`/`DAY6_TASKS` specs +
+  orders + `SEED_FILE_TEMPLATES` (Daily Log, Photo Log, Budget Deadline, Research Notes),
+  so `scripts/seeding/build_day_seed_manifest.py --day 4/5/6` auto-creates `seeds/full_tasks/day_4/5/6`
+  (manifests + `seed_files/`). `seed_data.py --day 4/5/6` pushes the ADB-seedable data:
+  Day 4 = trip/today photos, Obsidian notes, missed call, duplicate-contact operator step;
+  Day 5 = Budget Deadline + Research Notes, tomorrow-conflict / next-week / early-bird
+  calendar events, contact address + company; Day 6 = all-day / no-reminder / clash /
+  availability calendar events, `old_doc_1-3.txt` (2026-04 mtimes), duplicate-email contact.
+  `verify_day1_seeds.py --day 4/5/6` + `verify_config.py` now cover these days. OPEN
+  placeholders on Days 4-6 (`amount`, `X`, `name`, `product`) were pinned in
+  `tasks_vars.local.env`; `day_4/5/6.env` regenerated with 0 OPEN. Device verify:
+  Day 4 PASS (1 operator WARN), Day 5 PASS, Day 6 PASS; Days 1-2 regression PASS.
+  Run dates: Day 4 = 2026-08-08 (Sat), Day 5 = 2026-08-09 (Sun), Day 6 = 2026-08-10 (Mon).
+
 - **2026-08-03 — Public ASK USER facts verified against Phoenix traces.** Recovered the sim
   user's actual answers from the hard-batch traces and corrected the dentist fact (the clinic
   name was NOT in the real fact — now just "2026-08-05 at 9:30 AM"). Maa's birthday, dinner
@@ -250,14 +338,14 @@ Harness behavior that affects results and is part of the reproducible spec:
   public facts) is split into per-source files, derived via `--source` with no hardcoded paths
   (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/dailyBench-600/ask_user_facts_730.json`
   (50 facts), `public.md` -> `benchmarks/dailyBench-600/ask_user_facts.json` (the 6 public facts,
-  which `scripts/export_public_dataset.py` publishes). The combined file
+  which `scripts/data/export_public_dataset.py` publishes). The combined file
   `ask_user_facts_public.json` is left untouched.
 - **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts.json` had been replaced with
   tasks.md-schedule facts; the 6 public ASK USER facts were merged back in (reconstructed from
   the documented values in §4 and the run analysis — verify against the original file if you
   have it).
 - **2026-08-03 — `easy__contacts__001` override persisted.** The Akash Kumar scoping is now
-  applied inside `scripts/export_public_dataset.py`, so it survives regeneration (previously it
+  applied inside `scripts/data/export_public_dataset.py`, so it survives regeneration (previously it
   was a manual re-edit of the gitignored dataset).
 - **2026-08-03 — §5 rewritten.** Documented the exact `--var` values used at launch
   (`sender=Myntra`, `place=Bhubaneswar Airport`, `contact=Yuvraj Singh`, `middle

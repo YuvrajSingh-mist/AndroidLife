@@ -1,6 +1,6 @@
 # DrainBench Public Run — Full Analysis (2026-08-03-162853)
 
-**Moved out of `reports/failures.md` into its own file (2026-08-04).**
+**Previously part of the consolidated `reports/benchmark-report.md`; split into its own file (2026-08-04).**
 
 ---
 

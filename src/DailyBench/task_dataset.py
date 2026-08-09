@@ -68,6 +68,7 @@ APP_ALIASES: dict[str, tuple[str, ...]] = {
     "Messages": ("Messages",),
     "Phone": ("Phone",),
     "Settings": ("Settings",),
+    "Google Docs": ("Google Docs", "Docs"),
 }
 _ALIAS_TO_APP: dict[str, str] = {
     alias: app for app, aliases in APP_ALIASES.items() for alias in aliases
@@ -392,16 +393,23 @@ def render_prompt(task: dict[str, Any], variables: dict[str, str]) -> str:
 def select_tasks(
     dataset: dict[str, Any],
     *,
+    day: int | None = None,
     bucket: str | None = None,
     app: str | None = None,
     task_ids: list[str] | None = None,
     include_all: bool = False,
     limit: int | None = None,
 ) -> list[dict[str, Any]]:
-    """Filter dataset tasks by selection flags."""
+    """Filter dataset tasks by selection flags.
+
+    ``day`` selects every task whose schedule day equals ``day`` (1..28 on the 530 set);
+    it counts as a selector on its own, so ``--day 3`` needs no other flag.
+    """
     chosen = dataset["tasks"]
-    if not include_all and not any([bucket, app, task_ids]):
+    if not include_all and not any([day, bucket, app, task_ids]):
         raise ValueError("Choose at least one selector or pass --all.")
+    if day is not None:
+        chosen = [task for task in chosen if task.get("day") == day]
     if bucket:
         chosen = [task for task in chosen if task["bucket"] == bucket]
     if app:

@@ -28,7 +28,7 @@ def test_build_run_command_contains_selection_config(tmp_path) -> None:
     assert command[0] == sys.executable
     assert "--llm-proxy-port" in command
     assert "8123" in command
-    assert "200" in command
+    assert "150" in command
     assert "--no-stream" not in command
     assert "Check inbox" == command[-1]
     assert "--out-dir" not in command
@@ -50,10 +50,10 @@ def test_parse_vars_and_skip_unresolved() -> None:
 
 
 def test_default_steps_is_fixed_fairness_budget() -> None:
-    """The default --steps budget is a fixed 200, so every task in a batch gets the same fairness budget."""
+    """The default --steps budget is a fixed 150, so every task in a batch gets the same fairness budget."""
     parser = task_batch.build_parser()
     args = parser.parse_args([])
-    assert args.steps == 200
+    assert args.steps == 150
 
 
 def test_default_repeats_is_one() -> None:
@@ -96,8 +96,8 @@ def test_build_run_command_labels_by_repeat_index_when_repeats_requested(tmp_pat
     assert label2 == "day1--easy-gmail-001-rep02"
 
 
-def test_build_run_command_defaults_to_no_tracing_and_no_trajectory(tmp_path) -> None:
-    """By default the built command has no --tracing flag and passes --save-trajectory none explicitly."""
+def test_build_run_command_defaults_to_tracing_on_and_action_trajectory(tmp_path) -> None:
+    """By default the built command has no tracing-disable flag and passes --save-trajectory action."""
     parser = task_batch.build_parser()
     args = parser.parse_args(
         [
@@ -108,25 +108,25 @@ def test_build_run_command_defaults_to_no_tracing_and_no_trajectory(tmp_path) ->
     )
     task = {"bucket": "easy", "app_slug": "gmail", "task_number_within_app": 1, "day": 1}
     command, label = task_batch.build_run_command(args, task, "Check inbox", 8090)
-    assert "--tracing" not in command
-    assert command[command.index("--save-trajectory") + 1] == "none"
+    assert "--no-tracing" not in command
+    assert command[command.index("--save-trajectory") + 1] == "action"
 
 
-def test_build_run_command_includes_tracing_and_trajectory_when_requested(tmp_path) -> None:
-    """--tracing and --save-trajectory step both flow straight through into the invocation."""
+def test_build_run_command_forwards_no_tracing_and_trajectory_when_requested(tmp_path) -> None:
+    """--no-tracing and --save-trajectory step both flow straight through into the invocation."""
     parser = task_batch.build_parser()
     args = parser.parse_args(
         [
             "--serial", "device-1",
             "--llm-upstream-base", "http://mini2:8081/v1",
             "--model", "demo-model",
-            "--tracing",
+            "--no-tracing",
             "--save-trajectory", "step",
         ]
     )
     task = {"bucket": "easy", "app_slug": "gmail", "task_number_within_app": 1, "day": 1}
     command, label = task_batch.build_run_command(args, task, "Check inbox", 8090)
-    assert "--tracing" in command
+    assert "--no-tracing" in command
     assert command[command.index("--save-trajectory") + 1] == "step"
 
 
@@ -344,11 +344,11 @@ def test_is_transient_failure_true_only_for_early_dropped_request_errors(tmp_pat
 
 
 def test_find_run_dir_globs_for_label_match_under_runs() -> None:
-    """find_run_dir locates the run folder under runs/<date-time>/<label>/."""
-    (task_batch.Path("runs") / "2026-07-30-090000" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
-    (task_batch.Path("runs") / "2026-07-30-091500" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
+    """find_run_dir locates the run folder under assets/runs/<date-time>/<label>/."""
+    (task_batch.Path("assets/runs") / "2026-07-30-090000" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
+    (task_batch.Path("assets/runs") / "2026-07-30-091500" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
     found = task_batch.find_run_dir("easy-gmail-001")
-    assert found == task_batch.Path("runs") / "2026-07-30-091500" / "easy-gmail-001"
+    assert found == task_batch.Path("assets/runs") / "2026-07-30-091500" / "easy-gmail-001"
     assert task_batch.find_run_dir("no-such-label") is None
 
 

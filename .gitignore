@@ -1,6 +1,9 @@
 # --- generated / regenerable artifacts (do not commit; rebuild via scripts) ---
-seeds/
-runs/
+# Everything generated lives under assets/ (runs, per-day seed manifests, per-day
+# Phoenix DBs). datasets/ stays at the repo root.
+assets/runs/
+assets/seeds/
+assets/db/
 datasets/
 
 # --- personal / device-specific data (never commit) ---
@@ -9,6 +12,7 @@ config/user.yaml
 backups/
 .fabricated_test_data.json
 benchmarks/dailyBench-600/tasks_vars.local.env
+benchmarks/dailyBench-600/tasks_vars.local.json
 benchmarks/dailyBench-600/tasks_vars/
 benchmarks/dailyBench-600/public_vars.local.env
 benchmarks/dailyBench-600/tasks-private/
@@ -24,6 +28,7 @@ __pycache__/
 .venv.nosync/
 .DS_Store
 src/*.egg-info/
+.deepeval/
 
 # dev scratch scripts (underscore-prefixed)
 scripts/_*.py

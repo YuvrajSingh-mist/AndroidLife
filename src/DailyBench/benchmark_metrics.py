@@ -6,7 +6,7 @@ per-run records produced by the DailyBench harness. The paper's Average MCP Tool
 Calls metric is deliberately excluded.
 
 A "record" is a dict with at least these fields (produced by
-``scripts/dailybench_report.py``):
+``scripts/eval/dailybench_report.py``):
 
     success: bool          # s_i in the paper: 1 if the task fully completed
     steps: int             # t_i: number of action steps in the trajectory
@@ -40,9 +40,27 @@ def _mean(values: Iterable[float]) -> float:
     return sum(values) / len(values) if values else 0.0
 
 
+def _record_success(record: Record) -> bool:
+    """Raw success flag, or classification-based success when present.
+
+    When a record carries a ``classification`` (``true_success`` / ``true_failure``
+    / ``hallucination``), only ``true_success`` counts as a success. This makes
+    every rate classification-aware: hallucinated controls (self-reported
+    success) and honest control failures never inflate Success Rate.
+    """
+    classification = record.get("classification")
+    if classification is not None:
+        return classification == "true_success"
+    return bool(record["success"])
+
+
 def success_rate(records: Iterable[Record]) -> float:
-    """Success Rate: the proportion of tasks fully completed (formula 1)."""
-    return _mean(1.0 if record["success"] else 0.0 for record in records)
+    """Success Rate: the proportion of tasks fully completed (formula 1).
+
+    Classification-aware: hallucinated controls and honest control failures are
+    not counted as successes (see :func:`_record_success`).
+    """
+    return _mean(1.0 if _record_success(record) else 0.0 for record in records)
 
 
 def avg_steps(records: Iterable[Record]) -> float:

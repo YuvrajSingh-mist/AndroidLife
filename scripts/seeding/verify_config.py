@@ -24,16 +24,23 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from DailyBench.user_config import SCHEMA, load_user_config, template_keys  # noqa: E402
+from DailyBench.user_config import (  # noqa: E402
+    SCHEMA,
+    load_user_config,
+    parse_flat_config,
+    template_keys,
+)
 
-DATASET_730 = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_730_v4.json"
+# The 730 corpus was retired (the 530 is the runnable source of truth), so the
+# placeholder corpus here is the 530 dataset, which still spans all 28 days.
 DATASET_530 = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
 FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
 MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "build_day_seed_manifest.py"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
 
 # {key} names that are natural-language directives, NOT config placeholders
 # (e.g. "{today's date}" in the note-title template). Ignored by the verifier.
@@ -67,11 +74,17 @@ def collect_keys(obj) -> set[str]:
 
 def main() -> int:
     cfg = load_user_config(CONFIG_PATH)
+    # tasks_vars.local.env wins (matches run-time resolution in verify_day1_seeds
+    # and generate_day_vars): persona values that live only in the local env
+    # (e.g. amount, X, name, product, date range, trip name) resolve here too.
+    if VARS_LOCAL.exists():
+        cfg = {**cfg, **parse_flat_config(VARS_LOCAL.read_text(encoding="utf-8"))}
     missing_required: list[str] = []
 
-    # ---- prompt placeholders (730 corpus; Day-1 REQUIRED, others advisory) ----
-    corpus = json.loads(DATASET_730.read_text(encoding="utf-8"))["tasks"]
-    runnable = json.loads(DATASET_530.read_text(encoding="utf-8"))["tasks"]
+    # ---- prompt placeholders (runnable 530 corpus; Day-1 REQUIRED, others advisory) ----
+    dataset = json.loads(DATASET_530.read_text(encoding="utf-8"))
+    corpus = dataset["tasks"]
+    runnable = dataset["tasks"]
     runnable_day1_ids = {t["task_id"] for t in runnable if t.get("day") == 1}
 
     per_day_unresolved: dict[int, set[str]] = defaultdict(set)
@@ -95,14 +108,17 @@ def main() -> int:
             if key not in cfg:
                 missing_required.append(f"fact {task_id}: {key!r} (in {fact!r})")
 
-    # ---- Day-1 seeds (REQUIRED) ----
+    # ---- Seed specs (REQUIRED): Day 1, 2, 4, 5, 6 (the seeded days) ----
     man = load_module("build_day_seed_manifest", MANIFEST_SCRIPT)
-    for task_id, spec in man.DAY1_TASKS.items():
-        for key in sorted(collect_keys(spec)):
-            if key in NON_CONFIG_TEMPLATES:
-                continue
-            if key not in cfg:
-                missing_required.append(f"seed {task_id}: {key!r}")
+    for day_name, spec_map in (("Day-1", man.DAY1_TASKS), ("Day-2", man.DAY2_TASKS),
+                               ("Day-4", man.DAY4_TASKS), ("Day-5", man.DAY5_TASKS),
+                               ("Day-6", man.DAY6_TASKS)):
+        for task_id, spec in spec_map.items():
+            for key in sorted(collect_keys(spec)):
+                if key in NON_CONFIG_TEMPLATES:
+                    continue
+                if key not in cfg:
+                    missing_required.append(f"seed {task_id}: {key!r}")
     for task_id, files in man.SEED_FILE_TEMPLATES.items():
         for key in sorted(collect_keys(files)):
             if key not in cfg:
@@ -114,8 +130,10 @@ def main() -> int:
         used.update(t.get("placeholders") or [])
     for task_id, fact in facts.items():
         used.update(template_keys(fact))
-    for spec in man.DAY1_TASKS.values():
-        used |= collect_keys(spec)
+    for spec_map in (man.DAY1_TASKS, man.DAY2_TASKS, man.DAY3_TASKS, man.DAY4_TASKS,
+                     man.DAY5_TASKS, man.DAY6_TASKS):
+        for spec in spec_map.values():
+            used |= collect_keys(spec)
     for files in man.SEED_FILE_TEMPLATES.values():
         used |= collect_keys(files)
     unused = sorted(set(cfg) - used)

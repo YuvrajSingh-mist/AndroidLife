@@ -16,17 +16,34 @@ def slugify(value: str) -> str:
 
 
 def dated_out_dir(base_dir: str | Path) -> Path:
-    """Insert a date-time stamp as the top-level segment right under a `runs`-rooted base dir.
+    """Insert a date-time stamp as the top-level segment right under the `runs` root.
 
-    `runs/gmail/easy` becomes `runs/2026-07-30-143052/gmail/easy` — a unique batch-level
-    folder so re-running the same bucket/app/config seconds later lands in a different
-    top-level directory instead of mixing with the previous batch's run folders.
+    `assets/runs/gmail/easy` becomes `assets/runs/2026-07-30-143052/gmail/easy` — a
+    unique batch-level folder so re-running the same bucket/app/config seconds later
+    lands in a different top-level directory instead of mixing with the previous batch's
+    run folders. The canonical runs root is `assets/runs` (see default_batch_run_dir);
+    a legacy bare `runs/...` root is still handled for back-compat.
     """
     path = Path(base_dir)
     date_str = datetime.now().strftime("%Y-%m-%d-%H%M%S")
-    if path.parts and path.parts[0] == "runs":
-        return Path(path.parts[0]) / date_str / Path(*path.parts[1:])
-    return path / date_str
+    try:
+        idx = path.parts.index("runs")
+    except ValueError:
+        return path / date_str
+    return Path(*path.parts[: idx + 1]) / date_str / Path(*path.parts[idx + 1 :])
+
+
+def default_batch_run_dir() -> Path:
+    """Default root for a fresh batch run: `assets/runs/full-bench/<timestamp>`.
+
+    Everything lives under `assets/` (runs, seeds, per-day phoenix DBs) so the repo
+    root stays clean. `assets/runs/full-bench` is the canonical home for every benchmark
+    run and is created on demand (mkdir parents), so a bare `assets/runs/` can't silently
+    swallow new runs again. Each batch gets its own timestamped subfolder so re-runs
+    never mix.
+    """
+    ts = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    return Path("assets") / "runs" / "full-bench" / ts
 
 
 def run_dir_for_label(run_root: str | Path, label: str) -> Path:

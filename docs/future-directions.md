@@ -99,6 +99,82 @@ purely about grading and anti-gaming.
 
 ---
 
+## 4) Close the Google Sheets gap (tasks exist, app not in the inventory)
+
+**Today:** the benchmark has **no `sheets` app_slug**, yet at least one task in
+`benchmarks/dailyBench-600/public.md` explicitly says *"open it in the google
+sheets app"* (the Files → SPORTS_VIDEO_DATA task), and Google Sheets **is installed
+on the device** (`com.google.android.apps.docs.editors.sheets`). So the app exists on
+the phone but is missing from the benchmark's app inventory / app list.
+
+**Proposal:** add `sheets` as a first-class app in the dataset (app_slug, vars,
+seeds) and write a real Sheets task set: open a sheet, read/format a cell range,
+sum a column, sort rows, add a note/freeze a header, share a sheet link, etc.
+Make sure the seed ships a `SPORTS_VIDEO_DATA`-style workbook so the Files→Sheets
+handoff is actually testable.
+
+**Why it matters:** Sheets is a core everyday app; skipping it leaves a visible
+coverage hole (the public task currently can't be graded cleanly because there's no
+sheets bucket/slug to route it to).
+
+**Open questions:** verify the exact launcher label / package for the agent's
+`open_app` step; confirm Sheets needs a Google account sign-in on a fresh device;
+define the read-back verification (cells → text dump) for grading.
+
+## 5) Add Google Meet tasks
+
+**Today:** no `meet` app_slug, and Google Meet is **not installed** on the current
+device (no `com.google.android.apps.meetings` package — confirmed via `pm list`).
+The existing "meeting" tasks (e.g. hard__calendar-telegram-obsidian__002) only
+*reference* a meet link text; they never open Meet.
+
+**Proposal:** add Meet as an app + task set. Realistic, testable tasks that don't
+need a live call: open Meet, view today's/upcoming scheduled meetings, join a
+meeting by link (landing screen), toggle camera/mic off, check the meeting roster
+(participant list), copy the meeting link, mute/unmute, leave the meeting, or
+schedule a Meet via Calendar. Keep it to UI-reachable states — no real call
+needed.
+
+**Why it matters:** Meet is a top everyday app for calls/meetings; adding it rounds
+out the Google-app coverage (Docs, Drive, Sheets, Photos, Meet).
+
+**Open questions:** Meet must be installed first (device provisioning / seed step
+for the app itself); sign-in requirements; whether joining a real meeting is in
+scope (probably keep to the join/landing + controls surface to stay deterministic).
+
+## 6) Real-world end-to-end "booking / checkout" tasks
+
+**Today:** tasks are mostly single-app or short cross-app. The closest thing to a
+real-world transaction is the public Notes task *"add the first checklist's
+unchecked items to my shopping cart on Amazon, and get it to the payments page"* —
+which is exactly the right shape, but it's one task, not a family.
+
+**Proposal:** add a family of **day-to-day end-to-end flow tasks** (user's words:
+"flight booking, ticket booking for movie, and shopping end-to-end from product
+picking to the payment page"):
+
+- **Flight booking:** pick a route + date, choose a flight, select a fare, and
+  reach the passenger/payment step (stop before paying).
+- **Movie ticket booking:** pick a movie + showtime, select seats, choose snacks if
+  offered, and reach the payment/checkout step.
+- **Shopping checkout:** pick a product, choose variant/qty, add to cart, and
+  navigate to the payment page (existing public task is the template).
+
+All three stop **at the payment page** — no real purchase, no credentials. This is
+"more like usual day-to-day" usage (user's phrasing) and stresses multi-step
+navigation, persistence across screens, and end-state verification.
+
+**Why it matters:** these are the flows real people do daily; they exercise long
+action chains, form-filling, and app-specific checkout UIs — much harder and more
+representative than single-step tasks.
+
+**Open questions:** which app to use (Amazon vs Flipkart vs a dedicated app) —
+`shopping-delivery-browser` already exists; booking sites need a browser or an
+app; how to seed state (logged-in cart, a movie listing) deterministically; and
+how to verify "reached payment page" as the end state without making a purchase.
+
+---
+
 ### Summary
 
 | # | Direction | Core change | Keeps UI-honest? |
@@ -106,3 +182,6 @@ purely about grading and anti-gaming.
 | 1 | MCP / GUI / MCP+GUI | Add programmatic read/act paths alongside UI | Hybrid yes, MCP-only no |
 | 2 | Multi-turn user agent | Conversational user, follow-ups, pushback | Yes |
 | 3 | Web lookup for app steps | Agent may search how-tos before acting | Yes |
+| 4 | Close Google Sheets gap | Add `sheets` app_slug + task set (device has it) | Yes |
+| 5 | Add Google Meet tasks | Add `meet` app + install + UI-reachable tasks | Yes |
+| 6 | Real-world booking/checkout | Flight / movie / shopping → payment-page flows | Yes |

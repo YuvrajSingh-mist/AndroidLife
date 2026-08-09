@@ -20,7 +20,11 @@ load_dotenv()
 
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY")
 OPENROUTER_UPSTREAM = "https://openrouter.ai/api"
-TEST_MODEL = "qwen/qwen3.6-plus"
+# The EXACT model the mobilerun benchmark agent uses (set by the user - see
+# scripts/run_day.py DEFAULT_MODEL). Do NOT substitute another model here; this
+# test must exercise the real agent path. qwen3.6-plus was tried first but is a
+# reasoning-only model that returns content=None, so it can never pass.
+TEST_MODEL = "~deepseek/deepseek-v4-flash-latest"
 
 pytestmark = pytest.mark.skipif(
     not OPENROUTER_KEY,
@@ -69,7 +73,10 @@ def test_proxy_forwards_to_openrouter_and_logs_token_counts(tmp_path: Path) -> N
                 "model": TEST_MODEL,
                 "messages": [{"role": "user", "content": "Say hello in exactly one word."}],
                 "stream": False,
-                "max_tokens": 10,
+                # The agent model is reasoning-capable: a 10-token budget gets
+                # consumed by reasoning and content comes back None. 100 leaves
+                # room to actually emit the answer (verified 3/3 vs OpenRouter).
+                "max_tokens": 1000,
             }
         ).encode()
         req = urllib.request.Request(

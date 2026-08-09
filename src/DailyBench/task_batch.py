@@ -21,7 +21,7 @@ from .user_config import load_user_config, parse_flat_config, resolve_template, 
 load_dotenv()  # picks up .env from the repo root (or any parent dir) - see README's Setup section
 
 # No wall-clock timeouts at all (timeout=None for every bucket): the step budget (--steps,
-# default 200) is the real bound, and on a real phone the battery is the ultimate failsafe
+# default 150) is the real bound, and on a real phone the battery is the ultimate failsafe
 # anyway. Wall-clock caps proved counterproductive - legitimately long runs (medium-clock,
 # medium-photos, medium-search-telegram) exceeded 20 minutes and were killed mid-verification.
 # The batch passes --task-timeout 0 for every bucket, which dailybench_runner translates to
@@ -70,16 +70,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--llm-proxy-port-base", type=int, default=8090)
     parser.add_argument("--model", default=os.environ.get("MODEL"))
     parser.add_argument("--temperature", type=float, default=0.0)
-    parser.add_argument("--steps", type=int, default=200)
+    parser.add_argument("--steps", type=int, default=150, help="Step budget for each task run (150 default, matching cli.py's fixed fairness budget).")
     parser.add_argument("--repeats", type=int, default=1, help="Run each selected task this many times (opt-in; runs are already deterministic at temperature=0).")
     parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
     parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
     parser.add_argument("--reasoning", action="store_true", help="Use mobilerun's manager/executor planning workflow instead of the fast-agent loop.")
     parser.add_argument("--no-debug", action="store_true", help="Disable mobilerun's verbose debug logging (on by default).")
-    parser.add_argument("--tracing", action="store_true", help="Enable Arize Phoenix tracing (needs `phoenix serve` running locally; see docs.mobilerun.ai/framework/features/tracing).")
+    parser.add_argument("--no-tracing", action="store_true", help="Disable Arize Phoenix tracing (ON by default; needs `phoenix serve` running locally, see docs.mobilerun.ai/framework/features/tracing).")
     parser.add_argument("--phoenix-url", default=None, help="Phoenix collector endpoint, e.g. http://localhost:6006 (sets the `phoenix_url` env var for the mobilerun process).")
     parser.add_argument("--phoenix-project", default=None, help="Phoenix project name to group traces under (sets the `phoenix_project_name` env var).")
-    parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="none", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action).")
+    parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
@@ -122,7 +122,7 @@ def run_label(task: dict[str, object], repeat_index: int = 1, repeats_total: int
 def task_timeout_seconds(task: dict[str, object]) -> int | None:
     """Return the task timeout for one task based on its bucket tier.
 
-    Every tier is None (no wall-clock cap) - the step budget (--steps, default 200)
+    Every tier is None (no wall-clock cap) - the step budget (--steps, default 150)
     is the real bound, and on a real phone the battery is the ultimate failsafe.
     """
     bucket = task["bucket"]
@@ -188,8 +188,8 @@ def build_run_command(
         command.append("--reasoning")
     if args.no_debug:
         command.append("--no-debug")
-    if args.tracing:
-        command.append("--tracing")
+    if args.no_tracing:
+        command.append("--no-tracing")
     if args.phoenix_url:
         command.extend(["--phoenix-url", args.phoenix_url])
     if args.phoenix_project:
@@ -218,10 +218,10 @@ def build_run_command(
     return command, label
 
 
-def find_run_dir(label: str, runs_root: str | Path = "runs") -> Path | None:
+def find_run_dir(label: str, runs_root: str | Path = "assets/runs") -> Path | None:
     """Best-effort: find the run folder `dailybench_runner.py` just created for this label.
 
-    Batch labels are `{sub}--{rest}` and are stored under `runs/<batch>/<sub>/<rest>`
+    Batch labels are `{sub}--{rest}` and are stored under `assets/runs/<batch>/<sub>/<rest>`
     (see files.run_dir_for_label), so the day/hard subfolder is included in the glob.
     `runs_root` is overridable for hermetic tests.
     """
@@ -280,7 +280,7 @@ def main() -> int:
             # original initial_device_sample.json baseline instead of overwriting it.
             print(f"Continuing into existing run root: {batch_dir}")
         else:
-            batch_dir = dated_out_dir("runs")
+            batch_dir = dated_out_dir("assets/runs")
             batch_dir.mkdir(parents=True, exist_ok=True)
             args.run_root = str(batch_dir)
             write_initial_device_sample(args.serial, batch_dir)

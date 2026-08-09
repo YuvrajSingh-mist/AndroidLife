@@ -70,7 +70,7 @@ def start_llm_proxy(
     repo_root = Path(__file__).resolve().parents[2]
     cmd = [
         sys.executable,
-        str(repo_root / "scripts" / "openai_proxy_logger.py"),
+        str(repo_root / "scripts" / "tools" / "openai_proxy_logger.py"),
         "--listen-host", "127.0.0.1",
         "--listen-port", str(preferred_port),
         "--upstream-base", upstream_base,

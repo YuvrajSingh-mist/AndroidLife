@@ -162,6 +162,9 @@ def build_ask_user_tool(
     base_url: str | None = None,
     log_path: Path | None = None,
     pricing: ModelPricing | None = None,
+    temperature: float = 0.0,
+    top_p: float = 0.95,
+    seed: int = 42,
 ) -> Dict[str, Dict[str, Any]]:
     """Build a per-run `ask_user` custom tool, closing over this task's hidden ground-truth fact.
 
@@ -199,6 +202,9 @@ def build_ask_user_tool(
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": question},
             ],
+            temperature=temperature,
+            top_p=top_p,
+            seed=seed,
         )
         elapsed_ms = (time.monotonic() - start) * 1000.0
         content = response.choices[0].message.content

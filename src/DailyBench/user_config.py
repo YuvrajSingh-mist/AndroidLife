@@ -42,6 +42,7 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "contact_b": ("The person the ASK USER facts mean when they say 'message the person "
                   "I usually ask' (`{contact_b}` in facts).", "Yuvraj Singh Jio"),
     "contact name": ("Contact to look up in the Contacts search task (`[contact name]`).", "Maa"),
+    "new email": ("New email address for the Contacts edit-email task (`[new email]`).", "yuvraj.new@example.com"),
     "sender": ("Gmail sender for the 'unread emails from [sender]' tasks (`[sender]`).", "Myntra"),
     "letter": ("Letter used by the 'contacts starting with [letter]' task.", "Y"),
     # location
@@ -56,17 +57,30 @@ SCHEMA: dict[str, tuple[str, str]] = {
     # notes
     "meeting folder": ("Obsidian folder where the reschedule/confirm log is saved "
                        "(`[meeting folder]`).", "Meeting Notes"),
+    "meeting title": ("Title of the Day-1 calendar meeting the agent must reschedule/confirm "
+                      "(`[meeting title]`); the seed script creates this event.", "1 on 1 with Yuvraj Airtel"),
     "news note title": ("Base title for the 'Open Source Model News' note "
                         "(`[news note title]`, a date is appended at run time).", "Open Source Model News"),
     "note title": ("Title for the Notes/Obsidian create-note tasks (`[note title]`).", "Daily Reflection"),
     # shopping
     "shopping_website_1": ("First shopping site for the price-comparison task.", "amazon.in"),
     "shopping_website_2": ("Second shopping site for the price-comparison task.", "flipkart.com"),
+    "food delivery site": ("Delivery site opened in Chrome to check for surcharges "
+                            "(`[food delivery site]`).", "Swiggy"),
+    "product": ("The product compared across shopping sites (`[product]`).", "wireless earbuds"),
     "item": ("The item being shopped for, revealed by the ASK USER fact (`{item}`).", "wireless earbuds"),
     # media
     "food_category": ("Photo category for the Gallery 'best 3 by resolution' task "
-                      "(`[food_category]`).", "pizza"),
+                       "(`[food_category]`).", "pizza"),
     "search word": ("Word to search Messages for (`[search word]`).", "ticket"),
+    # music / clock / sleep
+    "music type": ("Favorite music type for the Music sleep-timer task to search + "
+                    "download the highly-liked video of in YouTube Music "
+                    "(`[music type]`).", "Raining Night ASMR"),
+    "bedtime": ("Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must "
+                 "not run past (seed value).", "10:30 PM"),
+    "recipe": ("Recipe (name + URL) for the Clock multi-timer task; must have explicit "
+                "multi-step timers (`[recipe]`).", "World's Best Lasagna https://www.allrecipes.com/recipe/23600/worlds-best-lasagna/"),
     # misc
     "topic": ("Generic research topic used by several search tasks (`[topic]`).", "best budget smartphones 2026"),
     "article url": ("URL for the Chrome summarize-article task (`[article url]`).", "https://en.wikipedia.org/wiki/Open-source_software"),

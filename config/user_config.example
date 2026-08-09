@@ -55,6 +55,12 @@ stock last value: 1,385 INR
 # Obsidian folder where the reschedule/confirm log is saved (`[meeting folder]`).
 meeting folder: Meeting Notes
 
+# Title of the Day-1 calendar meeting the agent must reschedule/confirm
+# (`[meeting title]`); the seed script creates this event. Derived from an
+# existing contact for realism. NOTE: avoid ':' in the value (content-provider
+# bind values split on ':').
+meeting title: 1 on 1 with Yuvraj Airtel
+
 # Base title for the "Open Source Model News" note (`[news note title]`; the
 # runner appends today's date at run time).
 news note title: Open Source Model News
@@ -67,6 +73,9 @@ note title: Daily Reflection
 shopping_website_1: amazon.in
 shopping_website_2: flipkart.com
 
+# Delivery site opened in Chrome to check for surcharges (`[food delivery site]`).
+food delivery site: Swiggy
+
 # The item being shopped for, revealed by the ASK USER fact ({item}).
 item: wireless earbuds
 
@@ -76,6 +85,18 @@ food_category: pizza
 
 # Word to search Messages for (`[search word]`).
 search word: ticket
+
+# ---- music / clock / sleep ------------------------------------------------
+# Favorite music type to search + download the highly-liked video of in
+# YouTube Music for the sleep-timer task (`[music type]`).
+music type: Raining Night ASMR
+
+# Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must not run past.
+bedtime: 10:30 PM
+
+# Recipe (name + URL) for the Clock multi-timer task; must have explicit
+# multi-step timers (`[recipe]`).
+recipe: World's Best Lasagna https://www.allrecipes.com/recipe/23600/worlds-best-lasagna/
 
 # ---- misc ----------------------------------------------------------------
 # Generic research topic used by several search tasks (`[topic]`).

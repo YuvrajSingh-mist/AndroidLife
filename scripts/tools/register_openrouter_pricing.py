@@ -7,10 +7,10 @@ against rows in ``generative_models`` and applying each model's ``token_prices``
 so OpenRouter models (e.g. ``qwen/qwen3.6-plus``) get ``total_cost = NULL`` —
 shown as $0.00 in the Phoenix UI.
 
-This script upserts real OpenRouter pricing into ``~/.phoenix/phoenix.db`` as
-user-defined models (``is_built_in = 0``). Phoenix's ``GenerativeModelStore``
-daemon refreshes every ~5 seconds, so newly registered models start costing new
-spans almost immediately.
+This script upserts real OpenRouter pricing into the live Phoenix DB (per-day
+``assets/db/dayN/phoenix.db``; override with ``--db``) as user-defined models
+(``is_built_in = 0``). Phoenix's ``GenerativeModelStore`` daemon refreshes every
+~5 seconds, so newly registered models start costing new spans almost immediately.
 
 Pricing source:
   * live from https://openrouter.ai/api/v1/models using ``OPENROUTER_API_KEY``
@@ -44,7 +44,11 @@ from typing import Any
 from dotenv import load_dotenv
 
 OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"
-DEFAULT_DB = "~/.phoenix/phoenix.db"
+
+# Phoenix DBs are now per-day under assets/db/dayN/. This script targets the DB the
+# live `phoenix serve` is writing (the current day's DB). Point --db at another day's
+# DB (e.g. assets/db/day2/phoenix.db) to register pricing there too.
+DEFAULT_DB = str(Path(__file__).resolve().parents[2] / "assets" / "db" / "day1" / "phoenix.db")
 
 
 def fetch_openrouter_pricing(
