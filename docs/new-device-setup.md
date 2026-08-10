@@ -55,7 +55,7 @@ loudly ("you still need to fill X") instead of silently mis-running.
 uv run python scripts/setup.py manifests day-vars
 ```
 
-- `manifests` → `assets/seeds/full_tasks/day_N/manifest_index.json` (what each day's tasks need seeded).
+- `manifests` → `assets/seeds/manifests/day_N/manifest_index.json` (what each day's tasks need seeded).
 - `day-vars` → `benchmarks/dailyBench-600/tasks_vars/day_N.env` (every `[placeholder]` a day's tasks use, resolved from config + `tasks_vars.local.env`).
 
 ## 4. Seed the device

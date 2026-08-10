@@ -21,7 +21,7 @@ One benchmark unit is one task run through the harness into one timestamped run 
 The 530-task schedule spans **28 days** (`day` field on every dataset row, ~16-23 tasks/day). Three artifacts make any day runnable, inspectable, and extensible:
 
 1. **Runs** — `runs/<batch>/day<N>/<task-id>/...` (each task's run nests under its day, auto-created by `day_subfolder` in `src/DailyBench/task_batch.py`).
-2. **Seed manifests** — `scripts/seeding/build_day_seed_manifest.py --day N` generates `seeds/full_tasks/day_<N>/` for **any** day 1..28:
+2. **Seed manifests** — `scripts/seeding/build_day_seed_manifest.py --day N` generates `seeds/manifests/day_<N>/` for **any** day 1..28:
    - `manifest_index.json` — day-level index (task ids, buckets, count)
    - `<task_id>/manifest.json` — per-task fabricated-data spec (resolved prompt, `--var` map, ASK USER fact, seed list, expected end state)
    - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
@@ -51,11 +51,11 @@ The canonical runnable task list lives in [benchmarks/dailyBench-600/tasks_530.m
 The benchmark is organised day-by-day so it is fully inspectable and extensible:
 
 - **Run any day** with the batch runner: `uv run dailybench_tasks.py --day 3 ...` (a `--day N` selector for any day 1..28, see [README](../README.md#run-a-day-530)). Runs land under `runs/<batch>/day<N>/...`.
-- **Seed manifests** are generated per day under `seeds/full_tasks/day_<N>/`:
+- **Seed manifests** are generated per day under `seeds/manifests/day_<N>/`:
   - `manifest_index.json` — day-level index (task ids in schedule order, bucket counts)
   - `<task_id>/manifest.json` — per-task fabricated-data manifest (resolved prompt, `--var` map, ASK USER fact, required seed data + status, expected end state, config keys used)
   - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
-  - `<task_id>/seed_files/` — literal seed-file templates + `DEVICE_PATHS.md` (on-device paths)
+  - real seed files (photos/pdf/notes) live flat in `assets/seeds/day_<N>/`; `DEVICE_PATHS.md` per task sits in the manifest dir
 - **Days 1–6** have hand-authored specs (`DAY1..6_TASKS` in `scripts/seeding/build_day_seed_manifest.py`) that document each task's exact fabricated data.
 - **Days 7–28** are auto-generated per-task from the dataset (same manifest shape): each task gets an app-appropriate seed entry (web / needs_ui / needs_seed / present / sanity / creation) and a resolved-vars map. To document a specific day's fabricated seeds by hand, add a `DAY<N>_TASKS` block to `scripts/seeding/build_day_seed_manifest.py` and wire it into `build_day()` — the generator then uses your spec instead of the auto one.
 - Rebuild all days at once: `for d in $(seq 1 28); do uv run python scripts/seeding/build_day_seed_manifest.py --day $d; done`.

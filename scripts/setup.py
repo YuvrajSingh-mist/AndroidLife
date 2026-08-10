@@ -14,7 +14,7 @@ Stages (each is idempotent and safe to re-run):
   env             scaffold .env from .env.example (never overwrites)
   config          scaffold config/user.yaml from config/user_config.example
   device          pick/verify an ADB serial + audit the 22 required apps
-  manifests       build per-day seed manifests (assets/seeds/full_tasks/day_N)
+  manifests       build per-day seed manifests (assets/seeds/manifests/day_N)
   day-vars        generate per-day vars (benchmarks/dailyBench-600/tasks_vars/)
   seed            push fabricated seeds to the device (--day N)
   verify          verify seeds are on-device (--day N)

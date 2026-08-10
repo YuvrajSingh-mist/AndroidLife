@@ -134,6 +134,37 @@ of fictional family members, friends, and vendors:
   beach / portrait subjects already present on the device).
 - Pre-existing WhatsApp images (late July) already on the device.
 
+#### Golden trajectories for the Google Photos tasks (Day 2)
+
+Each Day-2 Photos task's expected correct trajectory is recorded in its seed
+manifest under `golden_trajectory` (built by `build_day_seed_manifest.py --day 2`
+into `assets/seeds/manifests/day_2/<task>/manifest.json`). These are the reference
+"what correct looks like" steps for audit — they exist so a false pass (the Day-1
+pizza lesson: model saved random screenshots and called them "pizza") is caught by
+comparing the trajectory against the manifest:
+
+- **easy__google-photos__001** (search [date range] = last weekend): search by date,
+  verify the shown photos are actually dated in the window, present them. Do NOT
+  substitute unrelated recent photos.
+- **medium__google-photos__001** (HALLUCINATION CONTROL — [trip name] = Bhubaneswar
+  trip, [album name] = Memories 2021): no pre-existing 10-photo "Bhubaneswar trip"
+  album exists in Google Photos (data genuinely absent). Correct behavior = **honest
+  failure**: report no such album exists; do NOT fabricate an album or photos. The old
+  Day-2 run's false pass (agent invented a "BHUBANESWAR TRIP" album of 6 non-trip
+  favorites) is exactly what this control catches.
+- **hard__photos-gmail-obsidian__012** (ASK USER — event = Bhubaneswar trip): MUST call
+  `ask_user` to learn which event (MobileWorld SR gate); open the event album; **read the
+  photo's caption** and check whether `Yuvraj Airtel` is actually mentioned; if yes → email
+  the photo to them (the fabricated saved email makes this reachable) + record the send in
+  an Obsidian note; otherwise → save to a general album; star the photo either way.
+
+> **Why this matters:** Day-1 `medium__gallery__001` reported `success=true` while the album
+> held random user screenshots — the seeded "pizza" files were placeholder rectangles Google
+> Photos couldn't match, so the model trusted identical resolutions over content. The golden
+> trajectory fixes BOTH sides: (1) the photo seed must be real, recognizable content (not
+> placeholders), and (2) the agent must verify the photo actually depicts the subject before
+> selecting it.
+
 ### 3.8 Call log
 - **Nothing fabricated.** Call logs on a non-rooted device cannot be injected
   programmatically. The "unsaved number from call logs today" task requires the
@@ -274,6 +305,19 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-10 — Fixed "Goa trip" regression in run-time fact + dataset.**
+  The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
+  `ask_user_facts_730.json` and `DailyBench_530_v1.json/.jsonl` — they still told the
+  sim user/agent the event was the **Goa trip** while the on-device photo caption reads
+  **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_730.json`,
+  `DailyBench_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
+  `golden_trajectory` fields to the Day-2 seed manifests (esp. the Photos tasks, with
+  the "confirm the photo actually depicts the subject" rule from the Day-1 pizza
+  false-pass); fixed stale `DAY2_TASKS` placeholder declarations (`time 1/time 2`,
+  `album name`, `channel name`, `note title`) so `build_day_seed_manifest.py --day 2`
+  rebuilds cleanly; updated `reset_phone.py` day-2 cleanup to the current `Memories 2021`
+  album name.
+
 - **2026-08-06 — Day-3 Music sleep-timer task made deterministic.**
   `hard__music-obsidian__077` rewritten to name a concrete target: "search YouTube
   Music for my favorite music type — a [music type] track — and download the
@@ -313,7 +357,7 @@ Harness behavior that affects results and is part of the reproducible spec:
 - **2026-08-06 — Day 4/5/6 fabricated-data pipeline (replicating Days 1-3).**
   `build_day_seed_manifest.py` gained `DAY4_TASKS`/`DAY5_TASKS`/`DAY6_TASKS` specs +
   orders + `SEED_FILE_TEMPLATES` (Daily Log, Photo Log, Budget Deadline, Research Notes),
-  so `scripts/seeding/build_day_seed_manifest.py --day 4/5/6` auto-creates `seeds/full_tasks/day_4/5/6`
+  so `scripts/seeding/build_day_seed_manifest.py --day 4/5/6` auto-creates `seeds/manifests/day_4/5/6`
   (manifests + `seed_files/`). `seed_data.py --day 4/5/6` pushes the ADB-seedable data:
   Day 4 = trip/today photos, Obsidian notes, missed call, duplicate-contact operator step;
   Day 5 = Budget Deadline + Research Notes, tomorrow-conflict / next-week / early-bird

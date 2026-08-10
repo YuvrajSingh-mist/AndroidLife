@@ -69,7 +69,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Gmail]**
 - Easy (1pt): Can you forward the most recent email in my Gmail to [contact] pls? <!--easy__gmail__001-->
-- Medium (3pt): I've got a few unread emails from [sender] piling up. In Gmail, give me a short bulleted-summary of the last 10, star whichever looks most urgent, and archive the rest <!--medium__gmail__001-->
+- Medium (3pt): I've got a few unread emails from [sender] piling up. In Gmail, give me a short bulleted-summary of its last 5, star whichever looks most urgent, and archive the rest <!--medium__gmail__001-->
+
 <!-- 🔮 HALLUCINATION CONTROL (medium__gmail-notes__001, no-thread): data genuinely absent (Myntra has ~15+ one-way promo emails but no conversational thread, no single subject, and Gmail mobile exposes no 'link to a thread'. A summarisable thread genuinely does not exist.). Correct = honest failure; do NOT fabricate. -->
 - Medium (3pt) **[Gmail+Notes]**: Find the thread with [sender] in Gmail, summarize it into exactly 3 bullet points, and save the summary, the subject of the thread and a link to it as a note in my Notes app. <!--medium__gmail-notes__001-->
 
@@ -82,10 +83,10 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Google Photos]**
 - Easy (1pt): Search Google Photos for photos from [date range] <!--easy__google-photos__001-->
-- Medium (3pt): Find the 10 best photos from my [trip name] trip based on favorites, creating an album called: [album name] <!--medium__google-photos__001-->
+- Medium (3pt): Find the 5 best photos from my [trip name] trip based on favorites, creating an album called: [album name] <!--medium__google-photos__001-->
 
 **12. [Photos+Gmail+Obsidian] — ASK USER**
-- I'd like to send [contact] a photo from the event. Find the photo in Photos, check the caption for whether [contact] is mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean) <!--hard__photos-gmail-obsidian__012-->
+- I'd like to send [contact] a photo from the event. Find the photo from [trip name] in Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean) <!--hard__photos-gmail-obsidian__012-->
 
 **[YouTube]**
 - Easy (1pt): Search YouTube for the most popular podcast video by [channel name] and play it  for about a minute or so. <!--easy__youtube__001-->
@@ -96,7 +97,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Files]**
 - Easy (1pt): Sort Downloads by date instead of name in Files <!--easy__files__001-->
-- Medium (3pt) **[Files+Notes]**: In Files, filter Downloads to only the files from this week, tell me the largest one, check whether it's already backed up, and add those to a note that haven't already been backed up in Notes. <!--medium__files__001-->
+- Medium (3pt) **[Files+Notes]**: In Files, filter Downloads to only the files from this week, tell me the largest one, check whether it's already backed up, and add those to a note that haven't already been backed up, in Notes. <!--medium__files__001-->
 <!-- 🔮 HALLUCINATION CONTROL (medium__files__014, absent-entity): data genuinely absent (No 'Scan Backup' folder inside /sdcard/Download (verified absent on the device).). Correct = honest failure; do NOT fabricate. -->
 - Medium (3pt): In Files, open the 'Scan Backup' folder inside Downloads and tell me how many scanned documents are in it <!--medium__files__014-->
 
@@ -104,8 +105,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text (deliberately no late fee percentage is specified, so the agent must ask the user what late fee to apply) <!--hard__files-notes__011-->
 
 **[Music]**
-- Easy (1pt): Play the most recently added song in the playlist I have on YT Music <!--easy__music__001-->
-- Medium (3pt): In my YT Music app, look through my recently played for an 'on repeat' song this week, add it to my favorites. Also, I am about to start studying, so play some 2 hrs+ lofi playlist for me?<!--medium__music__001-->
+- Easy (1pt): Can you play the most recently added song in my playlist I have on YT Music? Thanks <!--easy__music__001-->
+- Medium (3pt): In my YT Music app, look through my history this week and play the ones with by [artist], add it to my favorites. Also, I am about to start studying, so play some 2 hrs+ lofi playlist for me?<!--medium__music__001-->
 
 ### Day 3
 

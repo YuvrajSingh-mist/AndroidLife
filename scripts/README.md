@@ -47,7 +47,7 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 
 | Script | What it does |
 |---|---|
-| `build_day_seed_manifest.py` | Generate the per-day seed manifests (`assets/seeds/full_tasks/day_N/manifest_index.json`) describing every fabricated seed a day's tasks need. |
+| `build_day_seed_manifest.py` | Generate the per-day seed manifests (`assets/seeds/manifests/day_N/manifest_index.json`) describing every fabricated seed a day's tasks need. |
 | `seed_data.py` | Push fabricated seed files to the device (photos, Obsidian note, invoice PDF, calendar events, SMS, call-log) with correct mtimes. `--day N`. Device-specific paths (Obsidian vault, calendar id, persona email) are auto-detected via `device_paths.py`. |
 | `device_paths.py` | Auto-detect device-specific seed values (Obsidian vault dir via `find`, Google-synced calendar id, persona contact email), with `config/user.yaml` overrides (`vault path`, `calendar id`, `contact email`). |
 | `reset_phone.py` | Undo agent-created run artifacts (settings, blocked numbers, calendar events, downloads, Obsidian run notes) back to the pre-run baseline. Dry-run by default; `--apply` to act. Prints the manual UI items ADB can't reach. |

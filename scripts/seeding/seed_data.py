@@ -3,7 +3,8 @@
 
 For every seedable-by-ADB task the script:
   1. materialises the literal fabricated files into
-     seeds/full_tasks/day_1/<task_id>/seed_files/  (transparency artifact), and
+     seeds/day_<N>/  (flat folder of real artifacts: photos/pdf/notes),
+     and
   2. pushes them to the device with the correct mtime (so Gallery/Messages sort them
      as "today", "~1h ago", ">1 month old" respectively).
 
@@ -38,7 +39,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "seeding"))
 from DailyBench.user_config import load_user_config  # noqa: E402
 import device_paths  # noqa: E402  (auto-detect vault/calendar/email per device)
 
-DAY_DIR = REPO_ROOT / "assets" / "seeds" / "full_tasks" / "day_1"
+DAY_DIR = REPO_ROOT / "assets" / "seeds" / "day_1"
 CAMERA = device_paths.CAMERA
 SCREENSHOTS = device_paths.SCREENSHOTS
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
@@ -111,12 +112,11 @@ def write_invoice_pdf(path: Path) -> None:
 # ---------------------------------------------------------------------------
 def make_seed_images() -> None:
     def img(task: str, fname: str, rgb: tuple[int, int, int], mtime: str, dest: str, size=(64, 64)):
-        if not (DAY_DIR / task / "manifest.json").exists():
-            print(f"  [skip] {task}: no manifest (not in runnable day) - not materialising {fname}")
+        if not (REPO_ROOT / "assets" / "seeds" / "manifests" / "day_1" / "manifest_index.json").exists():
+            print(f"  [skip] {task}: no day-1 manifest (not built) - not materialising {fname}")
             return None, mtime, dest
-        d = DAY_DIR / task / "seed_files"
-        d.mkdir(parents=True, exist_ok=True)
-        p = d / fname
+        DAY_DIR.mkdir(parents=True, exist_ok=True)
+        p = DAY_DIR / fname
         if not p.exists():
             write_png(p, size[0], size[1], rgb)
         return p, mtime, dest
@@ -138,7 +138,7 @@ def make_seed_images() -> None:
     img("easy__gallery__001", "hide_me.jpg", (140, 140, 140),
         time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(NOW - 3600)), CAMERA, (96, 64))
 
-    print("materialised seed images into seed_files/")
+    print("materialised seed images into assets/seeds/day_1/")
 
 
 def adb(serial: str, *args: str) -> tuple[int, str]:
@@ -165,7 +165,7 @@ def verify_day_seeds(serial: str, day: int) -> int:
     """Verify (device-state, not just config) that every seed a day's tasks
     declare is actually present on the phone.
 
-    Reads seeds/full_tasks/day_N/manifest_index.json, then for each task's
+    Reads seeds/manifests/day_N/manifest_index.json, then for each task's
     manifest:
       - checks every entry in `seed_device_paths` with `adb shell ls` (these
         are the ADB-pushable files, so they can be confirmed on the device), and
@@ -180,7 +180,7 @@ def verify_day_seeds(serial: str, day: int) -> int:
     """
     index = day_seed_dir(day) / "manifest_index.json"
     if not index.exists():
-        print(f"  [warn] no seeds/full_tasks/day_{day}/manifest_index.json - build the day first")
+        print(f"  [warn] no assets/seeds/manifests/day_{day}/manifest_index.json - build the day first")
         return 0
     idx = json.loads(index.read_text(encoding="utf-8"))
     task_ids = idx.get("tasks") or []
@@ -268,17 +268,14 @@ def mtime_for(fname: str) -> str:
 
 def push_seed_images(serial: str) -> None:
     print("pushing images...")
-    for task_dir in DAY_DIR.iterdir():
-        if not task_dir.is_dir():
-            continue
-        sf = task_dir / "seed_files"
-        if not sf.is_dir():
-            continue
-        for f in sorted(sf.iterdir()):
-            if f.suffix.lower() in (".jpg", ".jpeg", ".png"):
-                dest = SCREENSHOTS if f.name.startswith("old_shot") else CAMERA
-                adb(serial, "shell", "mkdir", "-p", dest)
-                push_with_mtime(serial, f, dest, mtime_for(f.name))
+    if not DAY_DIR.is_dir():
+        print("  (missing assets/seeds/day_1/ - materialise first)")
+        return
+    for f in sorted(DAY_DIR.iterdir()):
+        if f.suffix.lower() in (".jpg", ".jpeg", ".png"):
+            dest = SCREENSHOTS if f.name.startswith("old_shot") else CAMERA
+            adb(serial, "shell", "mkdir", "-p", dest)
+            push_with_mtime(serial, f, dest, mtime_for(f.name))
     # rescan media so Gallery picks them up
     adb(serial, "shell", "content", "call", "--uri", "content://media/none", "--method", "scan_volume", "--arg", "external_primary")
     print("  media rescan triggered")
@@ -287,11 +284,11 @@ def push_seed_images(serial: str) -> None:
 def push_obsidian_seed(serial: str, cfg: dict[str, str]) -> None:
     note_title = cfg["stock note title"]
     print(f"pushing Obsidian '{note_title}' note...")
-    sf = DAY_DIR / "hard__google-search-obsidian-telegram__057" / "seed_files"
+    sf = DAY_DIR
     note = next((sf / f for f in sorted(sf.iterdir())
                  if f.suffix == ".md" and f.name != "DEVICE_PATHS.md"), None) if sf.is_dir() else None
     if note is None or not note.exists():
-        print("  (missing seed_files/ - build manifests first)")
+        print("  (missing assets/seeds/day_1/ - materialise first)")
         return
     vault = device_paths.vault_path(serial, cfg)
     remote = f"{vault}/{note_title}.md"  # slash AFTER the trailing space -> inside the vault dir
@@ -413,8 +410,8 @@ def seed_day2(serial: str) -> None:
     Everything else on Day 2 depends on the real web / real Gmail/Photos/YouTube/
     Music state / app-private data.
     """
-    task_dir = REPO_ROOT / "assets" / "seeds" / "full_tasks" / "day_2" / "hard__files-notes__011"
-    sf = task_dir / "seed_files"
+    task_dir = REPO_ROOT / "assets" / "seeds" / "day_2"
+    sf = task_dir
     sf.mkdir(parents=True, exist_ok=True)
     pdf = sf / "invoice_seed.pdf"
     if not pdf.exists():
@@ -455,13 +452,17 @@ def attempt_content_seeds(serial: str, cfg: dict[str, str]) -> None:
 # ---------------------------------------------------------------------------
 # Day 4-6 seeding (fabricated ADB-seedable data for the runnable 530 subset).
 # Mirrors the Day-1/2 pattern: materialise the literal seed files into
-# seeds/full_tasks/day_N/<task>/seed_files/, then push them + calendar/contact
+# seeds/day_N/ (flat real artifacts) + manifests/day_N/, then push them + calendar/contact
 # content-provider rows to the device. Anything app-private is reported honestly
 # as a manual/operator step instead (see docs/fabricated-test-data.md).
 # ---------------------------------------------------------------------------
 
 def day_seed_dir(day: int) -> Path:
-    return REPO_ROOT / "assets" / "seeds" / "full_tasks" / f"day_{day}"
+    return REPO_ROOT / "assets" / "seeds" / "manifests" / f"day_{day}"
+
+
+def day_artifacts_dir(day: int) -> Path:
+    return REPO_ROOT / "assets" / "seeds" / f"day_{day}"
 
 
 def push_obsidian_note(serial: str, day: int, task_id: str, fname: str, vault_title: str) -> None:
@@ -472,10 +473,10 @@ def push_obsidian_note(serial: str, day: int, task_id: str, fname: str, vault_ti
     AFTER it (`{vault}/{title}`) - joining without it would create a stray file
     at the Obsidian root instead.
     """
-    sf = day_seed_dir(day) / task_id / "seed_files"
+    sf = day_artifacts_dir(day)
     note = sf / fname
     if not note.exists():
-        print(f"  [skip] {task_id}: no seed_files/{fname}")
+        print(f"  [skip] {task_id}: no assets/seeds/day_{day}/{fname}")
         return
     vault = device_paths.vault_path(serial)
     adb(serial, "shell", "mkdir", "-p", vault)
@@ -485,13 +486,11 @@ def push_obsidian_note(serial: str, day: int, task_id: str, fname: str, vault_ti
 
 
 def make_day4_seed_images() -> None:
-    """Materialise Day-4 fabricated photos into seed_files/ (trip + today)."""
+    """Materialise Day-4 fabricated photos into assets/seeds/day_4/ (trip + today)."""
     def img(day: int, task: str, fname: str, rgb: tuple[int, int, int], size=(64, 64)):
-        sf = day_seed_dir(day) / task / "seed_files"
-        if not (day_seed_dir(day) / task / "manifest.json").exists():
-            return
-        sf.mkdir(parents=True, exist_ok=True)
-        p = sf / fname
+        d = day_artifacts_dir(day)
+        d.mkdir(parents=True, exist_ok=True)
+        p = d / fname
         if not p.exists():
             write_png(p, size[0], size[1], rgb)
 
@@ -503,7 +502,7 @@ def make_day4_seed_images() -> None:
     today_colors = [(30, 90, 180), (60, 160, 90), (200, 160, 30), (120, 70, 180), (220, 90, 140)]
     for i, c in enumerate(today_colors, 1):
         img(4, "hard__gallery-obsidian__035", f"today_photo_{i}.jpg", c, (80, 80))
-    print("materialised Day-4 seed images into seed_files/")
+    print("materialised Day-4 seed images into assets/seeds/day_4/")
 
 
 def push_day4_obsidian(serial: str) -> None:
@@ -516,11 +515,9 @@ def push_day4_obsidian(serial: str) -> None:
 def push_day4_images(serial: str) -> None:
     """Push Day-4 photo seeds to /sdcard/DCIM/Camera with today's mtime."""
     adb(serial, "shell", "mkdir", "-p", CAMERA)
-    for task in ("medium__gallery__003", "hard__gallery-obsidian__035"):
-        sf = day_seed_dir(4) / task / "seed_files"
-        if not sf.is_dir():
-            continue
-        for f in sorted(sf.iterdir()):
+    d = day_artifacts_dir(4)
+    if d.is_dir():
+        for f in sorted(d.iterdir()):
             if f.suffix.lower() not in (".jpg", ".jpeg", ".png"):
                 continue
             push_with_mtime(serial, f, CAMERA,
@@ -569,17 +566,17 @@ def seed_day3_music(serial: str) -> None:
     bedtime = cfg.get("bedtime", "10:30 PM")
     push_obsidian_note(
         serial, 3, "hard__music-obsidian__077", "bedtime.md", "Bedtime.md")
-    # The template file may not exist under seeds/full_tasks/day_3 yet; ensure it.
-    sf = day_seed_dir(3) / "hard__music-obsidian__077" / "seed_files"
-    if not (sf / "bedtime.md").exists():
-        sf.mkdir(parents=True, exist_ok=True)
-        (sf / "bedtime.md").write_text(
+    # The template file may not exist under assets/seeds/day_3 yet; ensure it.
+    d3 = day_artifacts_dir(3)
+    if not (d3 / "bedtime.md").exists():
+        d3.mkdir(parents=True, exist_ok=True)
+        (d3 / "bedtime.md").write_text(
             f"# Bedtime\n\n- {bedtime}\n", encoding="utf-8")
-        print(f"  materialised seed_files/bedtime.md (Bedtime={bedtime})")
+        print(f"  materialised assets/seeds/day_3/bedtime.md (Bedtime={bedtime})")
         # (re)push now that the file exists
         vault = device_paths.vault_path(serial)
         adb(serial, "shell", "mkdir", "-p", vault)
-        adb(serial, "push", str(sf / "bedtime.md"), f"{vault}/Bedtime.md")
+        adb(serial, "push", str(d3 / "bedtime.md"), f"{vault}/Bedtime.md")
         print(f"  pushed Bedtime.md -> {vault}/Bedtime.md")
     else:
         print(f"  Bedtime.md already seeded (Bedtime={bedtime})")
@@ -706,16 +703,15 @@ def seed_day6_calendar(serial: str) -> None:
 def seed_day6_files(serial: str) -> None:
     """medium__files__002: push files with mtimes > 3 months old to Downloads so
     the 'not opened in over 3 months' filter has real targets."""
-    task_dir = day_seed_dir(6) / "medium__files__002"
-    sf = task_dir / "seed_files"
-    sf.mkdir(parents=True, exist_ok=True)
+    d6 = day_artifacts_dir(6)
+    d6.mkdir(parents=True, exist_ok=True)
     for i in range(1, 4):
-        f = sf / f"old_doc_{i}.txt"
+        f = d6 / f"old_doc_{i}.txt"
         if not f.exists():
             f.write_text(f"Old archived document {i}\n", encoding="utf-8")
     adb(serial, "shell", "mkdir", "-p", "/sdcard/Download")
     for i in range(1, 4):
-        push_with_mtime(serial, sf / f"old_doc_{i}.txt", "/sdcard/Download",
+        push_with_mtime(serial, d6 / f"old_doc_{i}.txt", "/sdcard/Download",
                         f"2026-04-{10 + i:02d} 10:00:00")  # >3 months before Aug
     print("  pushed old_doc_1..3.txt -> Download (2026-04 mtimes)")
 
@@ -859,7 +855,7 @@ def main() -> int:
     if args.day in (4, 5, 6):
         d = day_seed_dir(args.day)
         if not (d / "manifest_index.json").exists():
-            raise SystemExit(f"No assets/seeds/full_tasks/day_{args.day}/manifest_index.json - run scripts/build_day_seed_manifest.py --day {args.day} first")
+            raise SystemExit(f"No assets/seeds/manifests/day_{args.day}/manifest_index.json - run scripts/build_day_seed_manifest.py --day {args.day} first")
         if args.day == 4:
             make_day4_seed_images()
         if args.no_push:
@@ -882,16 +878,16 @@ def main() -> int:
         return 0
 
     if args.day == 2:
-        day_dir = REPO_ROOT / "assets" / "seeds" / "full_tasks" / "day_2"
+        day_dir = day_seed_dir(2)
         if not (day_dir / "manifest_index.json").exists():
-            raise SystemExit("No assets/seeds/full_tasks/day_2/manifest_index.json - run scripts/build_day_seed_manifest.py --day 2 first")
+            raise SystemExit("No assets/seeds/manifests/day_2/manifest_index.json - run scripts/build_day_seed_manifest.py --day 2 first")
         if args.no_push:
             return 0
         seed_day2(args.serial)
         return 0
 
-    if not (DAY_DIR / "manifest_index.json").exists():
-        raise SystemExit("No assets/seeds/full_tasks/day_1/manifest_index.json - run scripts/build_day_seed_manifest.py --day 1 first")
+    if not (day_seed_dir(1) / "manifest_index.json").exists():
+        raise SystemExit("No assets/seeds/manifests/day_1/manifest_index.json - run scripts/build_day_seed_manifest.py --day 1 first")
 
     make_seed_images()
     if args.no_push:

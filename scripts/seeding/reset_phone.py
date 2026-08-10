@@ -151,7 +151,7 @@ PROFILES: dict[str, dict] = {
             "Notes app: restore the font-size note's text size 20 -> 16 (easy__notes__001)",
             "Obsidian: delete the run-created send-record note from hard__photos-gmail-obsidian__012 (title from that run's note)",
             "Gmail: unstar the urgent Myntra email + unread the 8 marked-read (medium__gmail__001); delete the forwarded email sent to Yuvraj Airtel (easy__gmail__001); delete the sent event-photo email (hard__photos-gmail-obsidian__012)",
-            "Google Photos: delete the shared 'GOA TRIP' album + unfavorite the 6 photos (medium__google-photos__001); unstar the event photo (hard__photos-gmail-obsidian__012)",
+            "Google Photos: delete the shared 'Memories 2021' album (medium__google-photos__001; prior run also created a hallucinated 'GOA TRIP' album - remove that too if present) + unfavorite the 6 photos; unstar the event photo (hard__photos-gmail-obsidian__012)",
             "YouTube Music: remove 'THATS WHAT I WANT' from favorites (medium__music__001); unsubscribe from the Harsha visa Times channel (medium__youtube__001)",
             "Telegram: clear the YouTube link sent to Yuvraj Airtel (medium__youtube__001)",
         ],

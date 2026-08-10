@@ -333,7 +333,7 @@ uv run dailybench_tasks.py \
 
 `--day N` is a selector on its own (works for any day 1..28) and combines with `--bucket`/`--app`/`--task-id`; add `--dry-run` first to inspect the exact per-task commands, or `--list` to print the day's task ids. Each one carries the **raw goal** (placeholders kept) plus the task's resolved `--var` variables (rendered into the agent's system prompt), and — for ASK USER tasks — the hidden ground-truth fact only via `--ask-user-context` (never as a variable).
 
-Every run lands under `assets/runs/<batch>/day<N>/...` automatically (see [Run artifacts](#run-artifacts)), and every day's fabricated-data manifests are generated under `assets/seeds/full_tasks/day_<N>/` (per-task `manifest.json` + `manifest_index.json` + `day_<N>_fabricated_data.jsonl`) so the benchmark is fully inspectable and extensible day by day — see [docs/benchmark-spec.md](docs/benchmark-spec.md).
+Every run lands under `assets/runs/<batch>/day<N>/...` automatically (see [Run artifacts](#run-artifacts)), and every day's fabricated-data manifests are generated under `assets/seeds/manifests/day_<N>/` (per-task `manifest.json` + `manifest_index.json` + `day_<N>_fabricated_data.jsonl`), with the real seed files (photos/pdf/notes) materialised flat under `assets/seeds/day_<N>/`, so the benchmark is fully inspectable and extensible day by day — see [docs/benchmark-spec.md](docs/benchmark-spec.md).
 
 ## Run artifacts
 
@@ -353,7 +353,7 @@ Run folders are grouped under `assets/runs/<date-time>/...` automatically, and c
 - [scripts/tools/device_health_check.py](scripts/tools/device_health_check.py): SDK-only device health check used by `smoke_test.sh`
 - [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the 530-task source of truth, `public.md` = public 50-task preview), exported datasets (`.json`/`.jsonl`), and per-day vars (`tasks_vars/`)
 - [config](config): the user config — `user_config.example` is the committed, documented persona template; copy to `user.yaml` (gitignored) and edit
-- [assets](assets): everything generated — `assets/runs/` (run artifacts), `assets/seeds/` (per-day fabricated-data manifests + materialised seed artifacts with on-device paths), `assets/db/dayN/phoenix.db` (per-day Phoenix DBs)
+- [assets](assets): everything generated — `assets/runs/` (run artifacts), `assets/seeds/` (per-day real seed files + generated manifests with on-device paths), `assets/db/dayN/phoenix.db` (per-day Phoenix DBs)
 - [docs](docs): CLI reference, advanced features, run artifacts, methodology, and task authoring notes
 - [reports](reports): benchmark reports and notes
 - [tests](tests): pytest coverage for CLI, parsing, helpers, and process wiring

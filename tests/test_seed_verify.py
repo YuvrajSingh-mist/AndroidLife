@@ -43,8 +43,8 @@ def _write_manifest(day_dir: Path, task_id: str, paths: list[str],
 
 @pytest.fixture()
 def fake_day(tmp_path):
-    """A fake seeds/full_tasks/day_3 with an index + one task declaring 2 paths."""
-    day_dir = tmp_path / "seeds" / "full_tasks" / "day_3"
+    """A fake assets/seeds/manifests/day_3 with an index + one task declaring 2 paths."""
+    day_dir = tmp_path / "seeds" / "manifests" / "day_3"
     day_dir.mkdir(parents=True, exist_ok=True)
     index = {"schema_version": 1, "day": 3, "tasks": ["easy__fake__001"]}
     (day_dir / "manifest_index.json").write_text(json.dumps(index), encoding="utf-8")
