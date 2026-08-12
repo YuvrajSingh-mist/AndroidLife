@@ -102,10 +102,17 @@ are the ones present on essentially every phone and thus in most daily mixes;
 low-penetration ones (shopping, weather) are genuinely *occasional*.
 
 **What this means for the benchmark's per-day composition (and our honest caveat):**
-- Real daily app time is dominated by **social + video/entertainment + messaging**
-  (passive-consumption categories), with **communication and tools** as the
-  ever-present structural core and **productivity/docs/weather/shopping** as the
-  occasional tail.
+- ⚠️ **This next claim is an inference, not a measured statistic.** No source has
+  published the *sector breakdown of the actual ~9-10 apps a person opens in a
+  day*. What we *infer* from time-share + penetration + essential-app lists:
+  real daily app time is dominated by **social + video/entertainment + messaging**
+  (passive-consumption categories, per time-share), with **communication and
+  tools** as the ever-present structural core (per ~99-100% penetration) and
+  **productivity/docs/weather/shopping** as the occasional tail (lower
+  penetration / infrequent use). In short: "communication + media/entertainment
+  dominate; tools are the always-on core; productivity/docs/weather/shopping are
+  occasional" is a **reasonable synthesis of three proxies — not a directly
+  measured "daily mix by sector"**.
 - DrainBench cannot mirror that time-share (social/video/gaming are excluded for
   ToS + ungradeable-passive-consumption reasons — see the next section). What it
   **does** preserve is the *shape*: a small ever-present communication/tool core

@@ -1309,7 +1309,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find the 3 highest-rated items in a product category, note the top choice, and check its current price in Chrome? <!--medium__shopping-delivery-browser__012-->
 
 **[Files]**
-- Easy (1pt): Can you open the PDF 'invoice_seed.pdf' in Files and tell me the total amount shown on it? <!--easy__files__014-->
+- Easy (1pt): Can you open the flight ticket PDF 'boarding_pass.pdf' in Files and tell me the departure terminal, gate, and date? <!--easy__files__014-->
 - Medium (3pt): Could you rank recently downloaded files by size, delete the largest if it's unneeded, and note the result in Files? <!--medium__files__013-->
 
 **[Gallery]**

@@ -73,7 +73,8 @@ that fabricates a plausible-sounding answer.
 > task each on the new apps, keeping every day at ≤11 apps, 216/242/72, 36/36, and
 > 55 HC. (Adobe Scan was briefly added for PDF open/scan but removed on request —
 > it's a mostly-human scanning app; instead the corpus keeps its PDF open+read
-> tasks and gained a new easy Files PDF-read task.) Per-app, per-day, and difficulty
+> tasks and gained a new easy Files PDF-read task — a flight ticket the agent
+> opens and reads the terminal/gate/date from.) Per-app, per-day, and difficulty
 > numbers below all reflect the pinned 530-task corpus.
 
 Cross-app tasks are the mechanism that forces multi-app reasoning (an agent must switch apps mid-task, not camp on one screen). After the 2026-08-12 rebalance the **unrelated multi-intent** flavor makes up ~20% of cross-app tasks: a compound real-user request bundles two *independent* actions (e.g. "rank next week's meetings in Calendar **and** message [contact] the longest one's time"), each with its own verifiable end-state. The rest split ~46% note-anchored (research/summarize → save) and ~34% info→comm action chains. Cross-app load is spread across every day (4-10 per day, avg ~6.4) so no day is all-single-app or all-cross-app.
@@ -235,7 +236,9 @@ from day 4 onward — see `future-directions.md`. The 2026-08-12 diversification
 pass added real apps for the biggest real-world gaps (food, OTT, travel, tickets,
 news, shopping). PDF handling stays in Files/Drive/Gmail (open + read only — no
 editing, which is a premium feature); a dedicated easy Files PDF-read task now
-lives on day 27.
+lives on day 27 — the agent opens a flight ticket (`boarding_pass.pdf`) and reads
+back the departure terminal, gate, and date, mirroring how people really use
+PDFs (tickets, boarding passes) rather than just file management.
 
 ## Sector coverage vs. real-world daily app usage (grounded)
 

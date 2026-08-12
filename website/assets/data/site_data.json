@@ -9806,7 +9806,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 0,
-      "prompt": "Can you open the PDF 'invoice_seed.pdf' in Files and tell me the total amount shown on it?",
+      "prompt": "Can you open the flight ticket PDF 'boarding_pass.pdf' in Files and tell me the departure terminal, gate, and date?",
       "note": ""
     },
     {

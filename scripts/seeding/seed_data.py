@@ -107,6 +107,44 @@ def write_invoice_pdf(path: Path) -> None:
     path.write_bytes(bytes(out))
 
 
+def write_boarding_pass_pdf(path: Path) -> None:
+    """Minimal valid one-page PDF (pure python, no deps) - a fabricated flight ticket.
+
+    easy__files__014 (day 27) needs a flight ticket PDF in Downloads with a flight
+    number, date, departure terminal, gate, and boarding time so the agent opens it
+    in Files and reads back the terminal + gate + date (a realistic "people interact
+    with PDFs a lot" task - no editing, just open + read).
+    """
+    content = (
+        "BT /F1 16 Tf 72 730 Td (BOARDING PASS) Tj ET\n"
+        "BT /F1 10 Tf 72 700 Td (Passenger: Yuvraj Singh) Tj ET\n"
+        "BT /F1 10 Tf 72 682 Td (Flight: 6E 2042) Tj ET\n"
+        "BT /F1 10 Tf 72 664 Td (Route: BBI - DEL) Tj ET\n"
+        "BT /F1 10 Tf 72 646 Td (Date: 2026-08-20) Tj ET\n"
+        "BT /F1 10 Tf 72 628 Td (Departure Terminal: T3) Tj ET\n"
+        "BT /F1 10 Tf 72 610 Td (Gate: B4) Tj ET\n"
+        "BT /F1 10 Tf 72 592 Td (Boarding Time: 07:45 AM) Tj ET\n"
+        "BT /F1 9 Tf 72 562 Td (Please arrive at the gate 30 minutes before boarding.) Tj ET\n"
+    ).encode("latin-1")
+    objs = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
+        b"<< /Length " + str(len(content)).encode() + b" >>\nstream\n" + content + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    ]
+    out = bytearray(b"%PDF-1.4\n")
+    offsets: list[int] = []
+    for i, body in enumerate(objs, start=1):
+        offsets.append(len(out))
+        out += f"{i} 0 obj\n".encode() + body + b"\nendobj\n"
+    xref_pos = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n".encode() + b"0000000000 65535 f \n"
+    out += b"".join(f"{off:010d} 00000 n \n".encode() for off in offsets)
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref_pos}\n%%EOF\n".encode()
+    path.write_bytes(bytes(out))
+
+
 # ---------------------------------------------------------------------------
 # seed definitions: task_id -> list of (filename, [w,h], rgb, mtime_iso, dest_dir)
 # ---------------------------------------------------------------------------
@@ -427,6 +465,28 @@ def seed_day2(serial: str) -> None:
     # them if so' branch can trigger (the caption is an operator step - manifest).
     cfg = load_user_config(CONFIG_PATH)
     seed_contact_email(serial, cfg["contact"], device_paths.contact_email(cfg))
+
+
+def seed_day27(serial: str) -> None:
+    """Seed the Day-27 ADB-seedable artifacts.
+
+    - easy__files__014: flight ticket PDF (boarding_pass.pdf) in Downloads so the
+      agent opens it in Files and reads back the terminal, gate, and date.
+
+    Everything else on Day 27 depends on the real web / real app state.
+    """
+    task_dir = REPO_ROOT / "assets" / "seeds" / "day_27"
+    sf = task_dir
+    sf.mkdir(parents=True, exist_ok=True)
+    pdf = sf / "boarding_pass.pdf"
+    if not pdf.exists():
+        write_boarding_pass_pdf(pdf)
+    adb(serial, "shell", "mkdir", "-p", "/sdcard/Download")
+    push_with_mtime(serial, pdf, "/sdcard/Download",
+                    time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(NOW)))
+    adb(serial, "shell", "content", "call", "--uri", "content://media/none",
+        "--method", "scan_volume", "--arg", "external_primary")
+    print("seeded Day-27 flight ticket PDF -> /sdcard/Download/boarding_pass.pdf")
 
 
 def attempt_content_seeds(serial: str, cfg: dict[str, str]) -> None:
@@ -877,6 +937,15 @@ def main() -> int:
         # still exits cleanly without a manifest_index.json.
         if not args.no_push:
             seed_day3_music(args.serial)
+        return 0
+
+    if args.day == 27:
+        day_dir = day_seed_dir(27)
+        if not (day_dir / "manifest_index.json").exists():
+            raise SystemExit("No assets/seeds/manifests/day_27/manifest_index.json - run scripts/build_day_seed_manifest.py --day 27 first")
+        if args.no_push:
+            return 0
+        seed_day27(args.serial)
         return 0
 
     if args.day == 2:

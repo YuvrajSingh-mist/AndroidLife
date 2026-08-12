@@ -1008,6 +1008,20 @@ DAY6_ORDER = [
     "medium__google-sheets__001",
 ]
 
+# Day-27 spec overrides on top of the auto-generated days-7..28 fallback. The
+# flight-ticket PDF-read task needs an explicit seed entry (boarding_pass.pdf in
+# Downloads, ADB-pushed by seed_data.py --day 27) so the manifest documents the
+# fabricated artifact instead of the generic /sdcard (real) files default.
+DAY27_OVERRIDES: dict[str, dict] = {
+    "easy__files__014": {
+        "vars": {},
+        "seed": [{"type": "pdf", "location": "/sdcard/Download/",
+                  "value": "A fabricated flight ticket (boarding_pass.pdf): flight 6E 2042, date 2026-08-20, terminal T3, gate B4, boarding 07:45 AM.",
+                  "status": "needs_seed", "device_path": "/sdcard/Download/boarding_pass.pdf"}],
+        "end_state": "The agent opens boarding_pass.pdf in Files and reports the departure terminal (T3), gate (B4), and date (2026-08-20).",
+    },
+}
+
 # Literal seed-file templates written into each task's seed_files/ dir. Each
 # entry maps local artifact filename -> {content template, on-device path}.
 # {key} templates are resolved from config/user.yaml at build time.
@@ -1230,6 +1244,9 @@ def build_day(day: int) -> Path:
             # only declare vars that resolve from config, so resolve_templates never KeyErrors
             spec["vars"] = {ph: "{" + ph + "}" for ph in spec["vars"] if ph in cfg}
             spec_map[task_id] = spec
+        # Day 27: hand-authored override for the flight-ticket PDF-read task.
+        if day == 27:
+            spec_map.update(DAY27_OVERRIDES)
 
     day_dir = MANIFESTS_ROOT / f"day_{day}"
     day_dir.mkdir(parents=True, exist_ok=True)
