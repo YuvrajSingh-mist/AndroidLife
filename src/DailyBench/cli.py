@@ -173,8 +173,9 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     # Its simulated user holds only that task's hidden fact; on every other task it would have
     # nothing to reveal, so exposing it there only tempts the agent to "ask" instead of either
     # finding the data on-device or honestly reporting it absent (the correct outcome for a
-    # hallucination control). Gating it also keeps the system prompt's ASK USER section
-    # (rendered only when the ask_user tool is available) from appearing on other tasks.
+    # hallucination control). The model decides on its own when to call ask_user from the tool's
+    # own description (which instructs it to search the device first and ask only when the fact is
+    # genuinely absent) — the system prompt does not announce that a task is an ASK USER task.
     custom_tools = dict(CUSTOM_TOOLS)
     if args.ask_user_context:
         custom_tools.update(

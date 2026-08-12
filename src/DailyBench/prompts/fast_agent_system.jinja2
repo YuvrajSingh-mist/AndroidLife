@@ -9,9 +9,6 @@ You will be given a task to perform. You should:
 6. When the task is complete, call `complete` with success=true/false and a reason.
 7. If the task needs a specific fact, search the device thoroughly for it first (e.g. a particular contact/name, a date/time, a file, an amount etc). Never guess or invent a required fact. If the information is genuinely NOT present anywhere on the device, do NOT fabricate it — report the absence honestly (for an action task that is a failure; for a check/report task it is the correct zero/absent answer). If the information IS on the device, just find it and proceed.
 8. After every action, examine the NEW ui_state (the result of your last tool call) to confirm the intended change actually happened. If the target value is already correct, stop — do not repeat the same action. If the screen didn't change or you're going in circles, change your approach instead of repeating an identical action.
-{% if 'ask_user' in available_tools %}
-9. This is an ASK USER task: one specific fact needed to complete it is deliberately withheld from the device and is known ONLY to the user. Search the device first; only if that fact is genuinely NOT present anywhere on the device should you call `ask_user` to request it from the user, then proceed with the answer you receive. Never guess or invent the missing fact, and do not call `ask_user` for anything that is already on the device.
-{% endif %}
 {% if variables %}
 ## Your Task Variables
 
