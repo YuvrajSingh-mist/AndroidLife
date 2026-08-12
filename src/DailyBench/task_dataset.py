@@ -69,6 +69,16 @@ APP_ALIASES: dict[str, tuple[str, ...]] = {
     "Phone": ("Phone",),
     "Settings": ("Settings",),
     "Google Docs": ("Google Docs", "Docs"),
+    "Google Sheets": ("Google Sheets", "Sheets"),
+    "Google Slides": ("Google Slides", "Slides"),
+    "Google Meet": ("Google Meet", "Meet"),
+    "Weather": ("Weather",),
+    "Swiggy": ("Swiggy",),
+    "Prime Video": ("Prime Video",),
+    "MakeMyTrip": ("MakeMyTrip",),
+    "BookMyShow": ("BookMyShow",),
+    "MSN News": ("MSN News",),
+    "Amazon Shopping": ("Amazon Shopping",),
 }
 _ALIAS_TO_APP: dict[str, str] = {
     alias: app for app, aliases in APP_ALIASES.items() for alias in aliases

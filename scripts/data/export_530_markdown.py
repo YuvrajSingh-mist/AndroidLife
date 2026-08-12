@@ -33,13 +33,12 @@ OUT = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_530.md"
 
 HEADER = """# DrainBench: The 28-Day Survival Schedule — runnable 530-task set
 
-This is the **canonical runnable schedule**: the deterministic 530-task subset
-(531 dataset rows: 229 easy / 230 medium / 72 hard = 36 ASK USER / 36 DETERMINISTIC) of the 730-task
-corpus, landing each day at the real-world ~9-10 distinct-app density (see
-docs/app-usage-grounding.md). Every task here is also in `tasks.md` (the full 730
-corpus) and traces to it by task_id.
+This is the **canonical runnable schedule**: the deterministic 530-task corpus
+(216 easy / 242 medium / 72 hard = 36 ASK USER / 36 DETERMINISTIC), landing each
+day at the real-world ~9-10 distinct-app density (see
+docs/app-usage-grounding.md).
 
-This file is the **source of truth for the runnable 530 set**: edit it, then run
+This file is the **source of truth for the runnable set**: edit it, then run
 `scripts/export_530_dataset.py` to regenerate `DailyBench_530_v1.json` / `.jsonl`.
 Each task line carries its `task_id` in an HTML comment, so ids survive edits.
 Resync from the JSON with `scripts/export_530_markdown.py`.

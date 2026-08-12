@@ -43,7 +43,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | Flag | Default | Meaning |
 |---|---|---|
 | `--dataset` | `benchmarks/dailyBench-600/DailyBench_530_v1.json` | Which exported task dataset to read |
-| `--day` | *(none)* | Run every task whose schedule `day` equals `N` (any day 1..28 on the 530 set). A selector on its own; combines with `--bucket`/`--app`/`--task-id` |
+| `--day` | *(none)* | Run every task whose schedule `day` equals `N` (any day 1..28 on the 530-task set). A selector on its own; combines with `--bucket`/`--app`/`--task-id` |
 | `--bucket` | *(none)* | Filter to `easy`/`medium`/`hard`/`hard-deterministic`/`open-ended` (`hard` is the current dialect's shuffled DETERMINISTIC+ASK USER battery; `hard-deterministic`/`open-ended` are the older dialect's split buckets) |
 | `--app` | *(none)* | Filter to one app slug (e.g. `gmail`) |
 | `--task-id` | `[]` | Repeatable; run only these specific task IDs |

@@ -506,9 +506,10 @@ def make_day4_seed_images() -> None:
 
 
 def push_day4_obsidian(serial: str) -> None:
-    """Day-4 Obsidian notes: easy__obsidian__003 (add-a-line) + the Photo Log the
-    hard__gallery-obsidian__035 task cross-references for yesterday's count."""
-    push_obsidian_note(serial, 4, "easy__obsidian__003", "daily_log.md", "Daily Log.md")
+    """Day-4 Obsidian notes: only the Photo Log the hard__gallery-obsidian__035
+    task cross-references for yesterday's count. The add-a-line target
+    (was easy__obsidian__003) is now easy__google-docs__001, a real cloud Google
+    Docs document (needs_ui) — no on-device vault note is seeded for it."""
     push_obsidian_note(serial, 4, "hard__gallery-obsidian__035", "photo_log.md", "Photo Log.md")
 
 
@@ -530,7 +531,8 @@ def push_day4_images(serial: str) -> None:
 def seed_day4(serial: str) -> None:
     """Seed Day-4 ADB-seedable artifacts.
 
-    - easy__obsidian__003: 'Daily Log' note in the vault (add-a-line target).
+    - easy__google-docs__001: real cloud Google Docs document (needs_ui; operator
+      ensures an existing doc to add a line to — no ADB seed).
     - hard__gallery-obsidian__035: today's photos + 'Photo Log' note with
       yesterday's count (so the daily-count comparison is satisfiable).
     - medium__gallery__003: trip photos.

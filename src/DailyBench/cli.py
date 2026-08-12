@@ -6,6 +6,8 @@ import argparse
 import asyncio
 import logging
 import os
+import re
+import sqlite3
 import time
 from pathlib import Path
 
@@ -52,6 +54,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-tracing", action="store_true", help="Disable Arize Phoenix tracing (ON by default; needs `phoenix serve` running locally, see docs.mobilerun.ai/framework/features/tracing).")
     parser.add_argument("--phoenix-url", default="http://localhost:6006", help="Phoenix collector endpoint (sets the `phoenix_url` env var mobilerun reads; default local Phoenix on :6006).")
     parser.add_argument("--phoenix-project", default="dailybench", help="Phoenix project name to group traces under (sets the `phoenix_project_name` env var).")
+    parser.add_argument("--phoenix-db", default=None, help="Path to the Phoenix SQLite DB file to stamp this run's model onto the matching trace (e.g. assets/db/day3/phoenix.db). When omitted but --phoenix-project is `dailybench-dayN`, the DB is auto-derived as assets/db/dayN/phoenix.db. Stamping is best-effort and never fails the run.")
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after the run (on by default, for fairness so the next task doesn't inherit this task's UI/navigation state).")
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
@@ -211,6 +214,54 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         handler.close()
 
 
+def _phoenix_db_from_project(project: str | None) -> Path | None:
+    """Derive the Phoenix SQLite DB path from a `dailybench-dayN` project name.
+
+    Returns ``assets/db/dayN/phoenix.db`` for ``dailybench-dayN``, else None (no
+    deterministic mapping). Used to stamp this run's model onto its trace when the
+    user didn't pass an explicit ``--phoenix-db``.
+    """
+    if not project:
+        return None
+    m = re.fullmatch(r"dailybench-day(\d+)", project)
+    if not m:
+        return None
+    return Path(__file__).resolve().parents[2] / "assets" / "db" / f"day{m.group(1)}" / "phoenix.db"
+
+
+def stamp_model_on_phoenix_trace(db_path: Path, model: str, start_utc: str, end_utc: str) -> None:
+    """Best-effort: set ``traces.model`` for the trace(s) overlapping this run's time window.
+
+    The Phoenix collector (mobilerun) writes the trace with a ``start_time`` inside
+    [run start, run end]; update any matching row whose model is NULL. Never raises:
+    a stamping failure must not lose an otherwise-successful run. ``start_utc`` /
+    ``end_utc`` are ISO-8601 UTC strings from the run's meta.json.
+    """
+    if db_path is None or not db_path.exists() or not model:
+        return
+    try:
+        from datetime import datetime, timezone
+
+        start = datetime.fromisoformat(start_utc.replace("Z", "+00:00")).astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        end = datetime.fromisoformat(end_utc.replace("Z", "+00:00")).astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        conn = sqlite3.connect(str(db_path))
+        try:
+            # Ensure the model column exists (older DBs), then stamp the matching trace.
+            cols = [r[1] for r in conn.execute("PRAGMA table_info(traces)")]
+            if "model" not in cols:
+                conn.execute("ALTER TABLE traces ADD COLUMN model TEXT")
+            conn.execute(
+                "UPDATE traces SET model=? WHERE start_time BETWEEN ? AND ? AND model IS NULL",
+                (model, start, end),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+        logging.getLogger("mobilerun").debug("stamped model %r on phoenix trace(s) in %s", model, db_path)
+    except Exception:  # noqa: BLE001 - best-effort stamping must never break the run
+        logging.getLogger("mobilerun").debug("phoenix model stamping skipped for %s", db_path)
+
+
 def main() -> int:
     """Run one fully instrumented benchmark task and write one run folder."""
     args = build_parser().parse_args()
@@ -296,6 +347,14 @@ def main() -> int:
     summary["ask_user_call_count"] = len(read_jsonl(run_dir / "ask_user_metrics.jsonl", 0))
     summary["app_battery"] = summarize_app_battery(preflight, postflight)
     write_json(run_dir / "run_metrics.json", summary)
+    # Future-proofing: stamp this run's model onto its Phoenix trace (best-effort).
+    # `--phoenix-db` wins; otherwise auto-derive from `--phoenix-project` (dailybench-dayN).
+    if not args.no_tracing and args.phoenix_url:
+        phoenix_db = Path(args.phoenix_db) if args.phoenix_db else _phoenix_db_from_project(args.phoenix_project)
+        stamp_model_on_phoenix_trace(
+            phoenix_db, args.model,
+            meta.get("started_at_utc", ""), meta.get("ended_at_utc", ""),
+        )
     print(f"Run directory: {run_dir}")
     print((run_dir / "run_metrics.json").read_text())
     return return_code

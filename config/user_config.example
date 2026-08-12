@@ -37,6 +37,15 @@ destination: Cuttack
 # Maps / weather target place near the device (`[place]`).
 place: Bhubaneswar Airport
 
+# Traffic check on the user's usual commute route (`[usual route]`).
+usual route: 42 MG Road, Bhubaneswar
+
+# Google workspace task sets (day 4+): Sheets workbook, column, Slides deck, Meet link.
+spreadsheet name: SPORTS_VIDEO_DATA
+sheet column: Views
+presentation name: Q3 Review
+meeting link: https://meet.google.com/abc-defg-hij
+
 # ---- stock tracker (hard task #57) --------------------------------------
 # Stock the agent tracks (`[stock name]`).
 stock name: Reliance Industries

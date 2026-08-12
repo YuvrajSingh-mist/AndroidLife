@@ -2,24 +2,24 @@
   "file": "Global var->tasks index",
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
-  "generated_at": "2026-08-10",
-  "var_key_count_in_local_env": 38,
-  "placeholder_key_count_in_dataset": 46,
+  "generated_at": "2026-08-12",
+  "var_key_count_in_local_env": 43,
+  "placeholder_key_count_in_dataset": 49,
   "vars": {
     "X": {
       "configured_in_local_env": true,
       "task_count": 5,
       "days": [
         3,
-        5,
-        12
+        12,
+        18
       ],
       "tasks": [
         "easy__google-drive__001",
-        "easy__notes__003",
-        "easy__google-drive__007",
         "easy__calendar__006",
-        "easy__contacts__010"
+        "easy__contacts__010",
+        "easy__google-drive__007",
+        "easy__google-docs__002"
       ]
     },
     "a decision": {
@@ -54,20 +54,16 @@
     },
     "amount": {
       "configured_in_local_env": true,
-      "task_count": 5,
+      "task_count": 3,
       "days": [
         4,
         9,
-        15,
-        21,
-        22
+        15
       ],
       "tasks": [
         "easy__calculator__001",
         "easy__calculator__002",
-        "easy__calculator__004",
-        "easy__calculator__008",
-        "easy__calculator__009"
+        "easy__calculator__004"
       ]
     },
     "article url": {
@@ -78,6 +74,16 @@
       ],
       "tasks": [
         "medium__chrome__001"
+      ]
+    },
+    "artist": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        2
+      ],
+      "tasks": [
+        "medium__music__001"
       ]
     },
     "channel name": {
@@ -93,29 +99,36 @@
     },
     "city": {
       "configured_in_local_env": true,
-      "task_count": 2,
+      "task_count": 3,
       "days": [
         3,
+        11,
         19
       ],
       "tasks": [
         "easy__clock__001",
+        "easy__makemytrip__001",
         "easy__clock__008"
       ]
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 33,
+      "task_count": 67,
       "days": [
         1,
         2,
         3,
         4,
         5,
+        6,
         7,
+        8,
+        9,
         10,
         11,
+        12,
         13,
+        14,
         15,
         16,
         17,
@@ -124,12 +137,14 @@
         20,
         22,
         23,
+        25,
+        26,
         27,
         28
       ],
       "tasks": [
-        "medium__chrome-telegram__001",
         "hard__chrome-telegram-notes__008",
+        "medium__chrome-telegram__001",
         "medium__gallery-telegram__001",
         "easy__gmail__001",
         "hard__photos-gmail-obsidian__012",
@@ -137,30 +152,64 @@
         "easy__messages__003",
         "easy__phone__002",
         "easy__telegram__002",
-        "medium__gmail__004",
+        "medium__calendar__002",
+        "medium__chrome__003",
+        "medium__clock__002",
+        "medium__youtube__002",
+        "medium__google-search__004",
+        "medium__music__004",
+        "medium__chrome__004",
+        "medium__google-maps__003",
+        "medium__calculator__002",
+        "medium__telegram__003",
+        "medium__gmail__007",
         "medium__google-drive__004",
-        "medium__google-maps__004",
-        "medium__files-telegram__001",
-        "medium__music-telegram__001",
+        "medium__music__006",
+        "medium__contacts__008",
+        "medium__youtube__005",
+        "medium__calendar__006",
+        "medium__contacts__009",
         "easy__phone__007",
-        "medium__gmail-telegram__001",
-        "easy__telegram__007",
+        "medium__calculator__003",
+        "medium__google-photos__005",
+        "medium__music-telegram__001",
+        "medium__chrome__007",
         "easy__contacts__011",
+        "medium__gmail-telegram__001",
+        "medium__google-maps__005",
         "medium__messages__008",
+        "medium__telegram__005",
         "medium__chrome__008",
         "medium__music__010",
         "easy__calendar__009",
+        "medium__calendar__008",
+        "medium__gmail__004",
+        "medium__google-search__008",
         "medium__google-maps-telegram__001",
+        "medium__google-maps__004",
         "easy__telegram__009",
         "medium__clock-telegram__001",
         "medium__shopping-delivery-browser__008",
+        "medium__contacts__012",
         "medium__google-photos-telegram__001",
-        "easy__telegram__011",
+        "medium__google-photos__008",
+        "medium__google-photos__010",
         "medium__music-telegram__002",
+        "medium__chrome__011",
+        "medium__google-drive__010",
         "medium__notes-telegram__002",
-        "medium__google-drive__012",
+        "medium__calendar__011",
+        "medium__files-telegram__001",
+        "medium__google-drive__011",
+        "medium__calculator__012",
+        "medium__google-maps__013",
+        "medium__clock__012",
         "medium__google-drive-telegram__001",
-        "medium__gmail__013"
+        "medium__google-drive__012",
+        "medium__google-photos__012",
+        "medium__contacts__013",
+        "medium__gmail__013",
+        "medium__google-search__013"
       ]
     },
     "contact name": {
@@ -187,13 +236,21 @@
     },
     "date range": {
       "configured_in_local_env": true,
-      "task_count": 1,
+      "task_count": 2,
       "days": [
-        2
+        2,
+        17
       ],
       "tasks": [
-        "easy__google-photos__001"
+        "easy__google-photos__001",
+        "medium__calendar__008"
       ]
+    },
+    "digits": {
+      "configured_in_local_env": true,
+      "task_count": 0,
+      "days": [],
+      "tasks": []
     },
     "food delivery site": {
       "configured_in_local_env": true,
@@ -245,6 +302,16 @@
         "hard__calendar-telegram-obsidian__002"
       ]
     },
+    "meeting link": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        19
+      ],
+      "tasks": [
+        "medium__google-meet__003"
+      ]
+    },
     "meeting title": {
       "configured_in_local_env": true,
       "task_count": 2,
@@ -289,39 +356,9 @@
         "easy__notes__001"
       ]
     },
-    "number": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        21
-      ],
-      "tasks": [
-        "easy__calculator__008"
-      ]
-    },
-    "numberA": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        26
-      ],
-      "tasks": [
-        "easy__calculator__014"
-      ]
-    },
-    "numberB": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        26
-      ],
-      "tasks": [
-        "easy__calculator__014"
-      ]
-    },
     "place": {
       "configured_in_local_env": true,
-      "task_count": 6,
+      "task_count": 7,
       "days": [
         2,
         4,
@@ -334,6 +371,7 @@
         "medium__google-maps__001",
         "medium__google-maps__002",
         "easy__google-maps__005",
+        "easy__makemytrip__001",
         "medium__google-maps__005",
         "medium__google-maps__013"
       ]
@@ -348,14 +386,32 @@
         "medium__settings__017"
       ]
     },
+    "presentation name": {
+      "configured_in_local_env": true,
+      "task_count": 6,
+      "days": [
+        9,
+        15,
+        24
+      ],
+      "tasks": [
+        "easy__google-slides__001",
+        "medium__google-slides__001",
+        "easy__google-slides__002",
+        "medium__google-slides__002",
+        "easy__google-slides__003",
+        "medium__google-slides__003"
+      ]
+    },
     "product": {
       "configured_in_local_env": true,
-      "task_count": 5,
+      "task_count": 6,
       "days": [
         3,
         6,
         10,
         13,
+        20,
         25
       ],
       "tasks": [
@@ -363,6 +419,7 @@
         "medium__shopping-delivery-browser__002",
         "medium__chrome-notes__001",
         "easy__shopping-delivery-browser__007",
+        "easy__amazon-shopping__001",
         "easy__shopping-delivery-browser__013"
       ]
     },
@@ -423,8 +480,25 @@
         2
       ],
       "tasks": [
-        "medium__gmail__001",
-        "medium__gmail-notes__001"
+        "medium__gmail-notes__001",
+        "medium__gmail__001"
+      ]
+    },
+    "sheet column": {
+      "configured_in_local_env": true,
+      "task_count": 5,
+      "days": [
+        6,
+        12,
+        20,
+        27
+      ],
+      "tasks": [
+        "easy__google-sheets__001",
+        "medium__google-sheets__001",
+        "medium__google-sheets__002",
+        "easy__google-sheets__003",
+        "easy__google-sheets__004"
       ]
     },
     "shopping_website_1": {
@@ -461,6 +535,26 @@
         "easy__music__009"
       ]
     },
+    "spreadsheet name": {
+      "configured_in_local_env": true,
+      "task_count": 8,
+      "days": [
+        6,
+        12,
+        20,
+        27
+      ],
+      "tasks": [
+        "easy__google-sheets__001",
+        "medium__google-sheets__001",
+        "easy__google-sheets__002",
+        "medium__google-sheets__002",
+        "easy__google-sheets__003",
+        "medium__google-sheets__003",
+        "easy__google-sheets__004",
+        "medium__google-sheets__004"
+      ]
+    },
     "stock name": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -480,6 +574,12 @@
       "tasks": [
         "hard__google-search-obsidian-telegram__057"
       ]
+    },
+    "store": {
+      "configured_in_local_env": true,
+      "task_count": 0,
+      "days": [],
+      "tasks": []
     },
     "subject": {
       "configured_in_local_env": false,
@@ -503,13 +603,11 @@
     },
     "time": {
       "configured_in_local_env": false,
-      "task_count": 2,
+      "task_count": 1,
       "days": [
-        8,
         12
       ],
       "tasks": [
-        "easy__clock__003",
         "easy__calendar__006"
       ]
     },
@@ -556,8 +654,8 @@
         "medium__chrome__004",
         "easy__chrome__006",
         "medium__chrome__007",
-        "medium__chrome__009",
         "easy__google-search__009",
+        "medium__chrome__009",
         "medium__google-search__010",
         "easy__google-search__012",
         "medium__youtube__013"
@@ -565,24 +663,37 @@
     },
     "trip name": {
       "configured_in_local_env": true,
-      "task_count": 1,
+      "task_count": 4,
       "days": [
-        2
+        2,
+        4,
+        13
       ],
       "tasks": [
-        "medium__google-photos__001"
+        "hard__photos-gmail-obsidian__012",
+        "medium__google-photos__001",
+        "medium__gallery__003",
+        "medium__google-photos__005"
       ]
     },
     "type of place": {
       "configured_in_local_env": false,
-      "task_count": 2,
+      "task_count": 1,
       "days": [
-        20,
         23
       ],
       "tasks": [
-        "easy__google-maps__010",
         "medium__google-maps__011"
+      ]
+    },
+    "usual route": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "easy__google-maps__002"
       ]
     }
   },
@@ -605,36 +716,6 @@
       ],
       "tasks": [
         "easy__google-search__005"
-      ]
-    },
-    "number": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        21
-      ],
-      "tasks": [
-        "easy__calculator__008"
-      ]
-    },
-    "numberA": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        26
-      ],
-      "tasks": [
-        "easy__calculator__014"
-      ]
-    },
-    "numberB": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        26
-      ],
-      "tasks": [
-        "easy__calculator__014"
       ]
     },
     "route": {
@@ -679,31 +760,26 @@
     },
     "time": {
       "configured_in_local_env": false,
-      "task_count": 2,
+      "task_count": 1,
       "days": [
-        8,
         12
       ],
       "tasks": [
-        "easy__clock__003",
         "easy__calendar__006"
       ]
     },
     "type of place": {
       "configured_in_local_env": false,
-      "task_count": 2,
+      "task_count": 1,
       "days": [
-        20,
         23
       ],
       "tasks": [
-        "easy__google-maps__010",
         "medium__google-maps__011"
       ]
     }
   },
   "local_env_keys_with_no_task": [
-    "artist",
     "digits",
     "store"
   ]

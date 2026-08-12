@@ -167,8 +167,8 @@ PROFILES: dict[str, dict] = {
         ],
         "manual_ui_cleanup": [
             "Contacts: restore 'Maa''s saved email to its original value (easy__contacts__003 changed it to yuvraj.new@example.com)",
-            "Messages: re-create the 'Yuvraj Airtel' conversation deleted by easy__messages__003 (SMS insert blocked - send a real message); delete the 'Testing custom notification tone' test message (hard__messages-notes__078)",
-            "Messages: restore Akash Kumar's thread notification tone from 'Shooting star' (Nature) to default (hard__messages-notes__078)",
+            "Messages: re-create the 'Yuvraj Airtel' conversation deleted by easy__messages__003 (SMS insert blocked - send a real message); delete any agent-sent 'Test message for custom tone' / 'Testing custom notification tone' run artifacts (hard__messages-notes__078)",
+            "Messages: restore Yuvraj Airtel's thread notification tone (hard__messages-notes__078 may leave a custom tone, e.g. 'Allay') back to Default; the device has NO 'Akash Kumar' contact/thread (verified 2026-08-11) - the ask_user_fact now targets Yuvraj Airtel",
             "Google Drive: delete the 'Copy of Weekly Review' created by easy__google-drive__001",
             "YouTube Music: remove the 'Raining Night ASMR' download + clear the sleep timer set by hard__music-obsidian__077",
             "Clock: remove any run-created alarm (hard__music-obsidian__077 only read existing alarms)",

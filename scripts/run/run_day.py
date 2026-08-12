@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Run one day's tasks (or the whole 530) straight from tasks_530.md in ONE command.
+"""Run one day's tasks (or the whole corpus) straight from tasks_530.md in ONE command.
 
-Reads the runnable 530 schedule — benchmarks/dailyBench-600/tasks_530.md, the
+Reads the runnable 530-task schedule — benchmarks/dailyBench-600/tasks_530.md, the
 source of truth — extracts a day's task_ids (--day N) or every task (--all), and
 hands them to the dataset-backed runner (dailybench_tasks.py) as a single batch.
 
@@ -95,6 +95,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--save-trajectory", choices=["none", "step", "action"])
     ap.add_argument("--no-tracing", action="store_true")
     ap.add_argument("--phoenix-url")
+    ap.add_argument("--run-root", default=None,
+                    help="Forwarded to the runner: put runs under this root (e.g. assets/runs/full-bench/<ts>) instead of the default assets/runs/<ts>.")
     # Default per-day: running `--day N` auto-targets the `dailybench-dayN` Phoenix
     # project (and its per-day DB under assets/db/dayN/). Override to opt out.
     ap.add_argument("--phoenix-project", default=None,
@@ -154,6 +156,8 @@ def main() -> int:
         cmd += ["--save-trajectory", args.save_trajectory]
     if args.phoenix_url:
         cmd += ["--phoenix-url", args.phoenix_url]
+    if args.run_root:
+        cmd += ["--run-root", args.run_root]
     if phoenix_project:
         cmd += ["--phoenix-project", phoenix_project]
     if args.dry_run:

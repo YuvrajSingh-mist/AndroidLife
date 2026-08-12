@@ -314,16 +314,15 @@ def device_checks_day3(serial: str, cfg: dict[str, str]) -> None:
 
 
 def device_checks_day4(serial: str, cfg: dict[str, str]) -> None:
-    """Day-4 on-device checks: obsidian add-a-line note, trip + today photos, and
-    the duplicate-contact pair for hard__contacts-obsidian__029."""
+    """Day-4 on-device checks: trip + today photos, the Photo Log note, and the
+    duplicate-contact pair for hard__contacts-obsidian__029. (The add-a-line task
+    is now easy__google-docs__001, a real cloud Google Docs document — needs_ui,
+    not ADB-checkable.)"""
     rc, out = adb(serial, "get-state")
     report("device_online", "PASS" if rc == 0 else "FAIL", out or serial)
 
     vault = device_paths.vault_path(serial, cfg)
     rc, out = shell(serial, f"ls '{vault}'")
-    ok = "Daily Log.md" in out
-    report("obsidian_daily_log", "PASS" if ok else "FAIL",
-           "'Daily Log.md' in vault (easy__obsidian__003 target)" if ok else "missing Daily Log.md")
     ok = "Photo Log.md" in out
     report("obsidian_photo_log", "PASS" if ok else "FAIL",
            "'Photo Log.md' in vault (hard__gallery-obsidian__035 yesterday count)" if ok else "missing Photo Log.md")

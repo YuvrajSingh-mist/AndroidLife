@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Generate the runnable 530 JSON/JSONL from tasks_530.md (now the source of truth).
+"""Generate the runnable 530-task JSON/JSONL from tasks_530.md (the source of truth).
 
 This is the reverse of scripts/export_530_markdown.py. It reads `tasks_530.md` —
 the canonical runnable schedule — and writes `DailyBench_530_v1.json` +
-`DailyBench_530_v1.jsonl`. Each task line carries its `task_id` in an HTML comment
+`DailyBench_530_v1.jsonl` ("530" in the filenames is the corpus size; the current
+corpus is exactly 530 tasks: Google Workspace sets replaced repetitive tasks).
+Each task line carries its `task_id` in an HTML comment
 (`<!--task_id-->`), so the ids survive edits and are preserved exactly here (gaps
 included). ASK USER facts are merged from the `ask_user_facts_730.json` sidecar
 (keyed by task_id).
@@ -258,9 +260,11 @@ def build_dataset(tasks: list[dict]) -> dict:
 def verify(tasks: list[dict]) -> int:
     ok = True
     counts = Counter(t["bucket"] for t in tasks)
-    # 230/231/72 = 530 core + 1 experimental hallucination-control medium (Day 2)
-    # + 2 added day-3 hallucination controls (easy__clock__017, medium__settings__017).
-    expected = {"easy": 230, "medium": 231, "hard": 72}
+    # Google Workspace task sets (Docs/Sheets/Slides/Meet, 31 tasks) were authored as
+    # REPLACEMENTS for repetitive tasks, not net additions — corpus must stay 530.
+    # 25 most-repetitive easy tasks removed -> 530 total; easy 241 -> 216, medium 242,
+    # hard 72 (36 ASK USER / 36 DETERMINISTIC unchanged).
+    expected = {"easy": 216, "medium": 242, "hard": 72}
     if counts != expected:
         print(f"FAIL bucket counts: {dict(counts)} != {expected}")
         ok = False

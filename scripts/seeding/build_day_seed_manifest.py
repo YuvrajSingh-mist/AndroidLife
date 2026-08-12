@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the fabricated-data manifests for one day of the 730-task schedule.
+"""Build the fabricated-data manifests for one day of the 28-day (530-task) schedule.
 
 Manifests (metadata, used for verification + audit) are written to:
   seeds/manifests/day_<N>/manifest_index.json           - day-level index
@@ -48,7 +48,7 @@ from DailyBench.user_config import (  # noqa: E402
     template_keys,
 )
 
-# Runnable dataset (the deterministic 530-task subset; the 730 corpus is the parent).
+# Runnable dataset (the 530-task corpus; tasks_530.md is the source of truth).
 DATASET = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
 ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
 # Generated manifest metadata (per-task manifest.json + index + jsonl).
@@ -487,8 +487,8 @@ DAY3_TASKS: dict[str, dict] = {
         "end_state": "A pinned ~200-word Obsidian note summarises the top 5 results for '{topic}'.",
     },
     "hard__google-search-notes__019": {
-        "vars": {"product 1": "{product 1}", "product 2": "{product 2}"},
-        "seed": [{"type": "web", "location": "Google Search (real)", "value": "Live review overviews of '{product 1}' vs '{product 2}' (10+ reviews each).", "status": "web"}],
+        "vars": {"product 1": "{product 1}", "product 2": "{product 2}", "shopping_website_1": "{shopping_website_1}", "shopping_website_2": "{shopping_website_2}"},
+        "seed": [{"type": "web", "location": "Google Search (real)", "value": "Live review overviews of '{product 1}' vs '{product 2}' (10+ reviews each), prices compared across '{shopping_website_1}' and '{shopping_website_2}'.", "status": "web"}],
         "end_state": "A Notes note records only the name of the more favorably reviewed product.",
     },
     "easy__clock__001": {
@@ -512,14 +512,14 @@ DAY3_TASKS: dict[str, dict] = {
         "end_state": "Agent reports whether '{food delivery site}' shows a weather-related surcharge notice.",
     },
     "medium__shopping-delivery-browser__001": {
-        "vars": {"shopping_website_1": "{shopping_website_1}", "shopping_website_2": "{shopping_website_2}"},
-        "seed": [{"type": "web", "location": "Chrome (real)", "value": "Live total cost (item+shipping) across '{shopping_website_1}' and '{shopping_website_2}'.", "status": "web"}],
+        "vars": {"product": "{product}", "shopping_website_1": "{shopping_website_1}", "shopping_website_2": "{shopping_website_2}"},
+        "seed": [{"type": "web", "location": "Chrome (real)", "value": "Live total cost (item+shipping) of '{product}' across '{shopping_website_1}' and '{shopping_website_2}'.", "status": "web"}],
         "end_state": "The cheaper option is noted with its delivery time.",
     },
     "easy__contacts__003": {
-        "vars": {"contact name": "{contact name}"},
-        "seed": [{"type": "contact_email", "location": "Contacts (real)", "value": "The '{contact name}' persona contact has a saved email address to edit.", "status": "present"}],
-        "end_state": "{contact name}'s saved email address is edited.",
+        "vars": {"contact name": "{contact name}", "new email": "{new email}"},
+        "seed": [{"type": "contact_email", "location": "Contacts (real)", "value": "The '{contact name}' persona contact has a saved email address to edit (to '{new email}').", "status": "present"}],
+        "end_state": "{contact name}'s saved email address is edited to {new email}.",
     },
     "medium__contacts__002": {
         "vars": {"letter": "{letter}"},
@@ -603,8 +603,8 @@ DAY3_ORDER = [
 # ---------------------------------------------------------------------------
 DAY4_TASKS: dict[str, dict] = {
     "easy__google-maps__002": {
-        "vars": {},
-        "seed": [{"type": "web", "location": "Google Maps (real)", "value": "Live traffic conditions on the usual commute route.", "status": "web"}],
+        "vars": {"usual route": "{usual route}"},
+        "seed": [{"type": "web", "location": "Google Maps (real)", "value": "Live traffic conditions on the usual commute route to '{usual route}'.", "status": "web"}],
         "end_state": "Agent replies with the current traffic conditions on the usual commute.",
     },
     "medium__google-maps__002": {
@@ -632,10 +632,10 @@ DAY4_TASKS: dict[str, dict] = {
         "seed": [{"type": "none", "location": "Calculator + Notes (real)", "value": "Real exam scores with different weights; final grade written to a note and checked against a passing threshold.", "status": "sanity"}],
         "end_state": "A note has the weighted-average final grade and whether it meets the passing threshold.",
     },
-    "easy__obsidian__003": {
+    "easy__google-docs__001": {
         "vars": {},
-        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "An existing note to add a line to (e.g. 'Daily Log').", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /Daily Log.md"}],
-        "end_state": "A line is added to the existing 'Daily Log' note.",
+        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "An existing document to add a line to (operator ensures at least one document exists in the Docs account, e.g. 'Daily Log').", "status": "needs_ui"}],
+        "end_state": "A line is added to an existing Google Docs document.",
     },
     "easy__notes__002": {
         "vars": {},
@@ -663,8 +663,8 @@ DAY4_TASKS: dict[str, dict] = {
         "end_state": "Agent reports the location metadata on a specific photo.",
     },
     "medium__gallery__003": {
-        "vars": {},
-        "seed": [{"type": "trip_photos", "location": "/sdcard/DCIM/Camera/", "value": "A set of trip photos (trip_1.jpg..trip_4.jpg, ADB-seeded) the agent filters by trip.", "status": "needs_seed", "device_path": "/sdcard/DCIM/Camera/trip_1.jpg (and trip_2-4.jpg)"}],
+        "vars": {"trip name": "{trip name}"},
+        "seed": [{"type": "trip_photos", "location": "/sdcard/DCIM/Camera/", "value": "A set of trip photos (trip_1.jpg..trip_4.jpg, ADB-seeded) the agent filters by '{trip name}' trip.", "status": "needs_seed", "device_path": "/sdcard/DCIM/Camera/trip_1.jpg (and trip_2-4.jpg)"}],
         "end_state": "The best trip photo is starred and a note records which one; duplicates checked.",
     },
     "hard__gallery-obsidian__035": {
@@ -713,7 +713,7 @@ DAY4_ORDER = [
     "medium__google-photos__002",
     "easy__calculator__001",
     "medium__calculator__001",
-    "easy__obsidian__003",
+    "easy__google-docs__001",
     "easy__notes__002",
     "medium__notes__001",
     "easy__camera__003",
@@ -734,15 +734,15 @@ DAY4_ORDER = [
 # Drive/Telegram state is real (needs_ui / present). Three ASK USER tasks.
 # ---------------------------------------------------------------------------
 DAY5_TASKS: dict[str, dict] = {
-    "easy__chrome__003": {
+    "easy__weather__002": {
         "vars": {},
-        "seed": [{"type": "web", "location": "Chrome (real)", "value": "Live 'weather tomorrow' search; open the first result.", "status": "web"}],
-        "end_state": "The first weather result is opened.",
+        "seed": [{"type": "weather", "location": "OnePlus Weather (real)", "value": "Live tomorrow forecast.", "status": "sanity"}],
+        "end_state": "Agent reports tomorrow's forecast from the Weather app.",
     },
     "medium__chrome__003": {
-        "vars": {},
+        "vars": {"contact": "{contact}"},
         "seed": [{"type": "chrome_history", "location": "Chrome (real history)", "value": "5 most recently visited pages today (real browsing history).", "status": "needs_ui"}],
-        "end_state": "The most useful page is bookmarked, the rest closed, and a note records which one was kept.",
+        "end_state": "The most useful page is bookmarked, the rest closed, and the kept page's link is messaged to {contact}.",
     },
     "easy__google-drive__003": {
         "vars": {},
@@ -803,9 +803,9 @@ DAY5_TASKS: dict[str, dict] = {
         "end_state": "Agent reports the conflicts tomorrow afternoon.",
     },
     "medium__calendar__002": {
-        "vars": {},
+        "vars": {"contact": "{contact}"},
         "seed": [{"type": "calendar_event", "location": "Calendar (ADB-seeded)", "value": "Three meetings next week with distinct durations (30m / 60m / 90m) so the agent can rank them.", "status": "needs_seed", "device_path": "Calendar (cal_id=16): next-week meetings"}],
-        "end_state": "The longest next-week meeting is saved in a note with its attendee count.",
+        "end_state": "The longest next-week meeting's time is messaged to {contact}.",
     },
     "hard__calendar-telegram-notes__025": {
         "vars": {},
@@ -829,20 +829,15 @@ DAY5_TASKS: dict[str, dict] = {
         ],
         "end_state": "Contacts filtered by company are exported; a note saves the export location.",
     },
-    "easy__notes__003": {
-        "vars": {"X": "{X}"},
-        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "A note titled '{X}' exists (operator ensures it).", "status": "needs_ui"}],
-        "end_state": "The note titled '{X}' is found.",
-    },
     "medium__obsidian__004": {
         "vars": {},
         "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "A research note with several paragraphs (ADB-seeded 'Research Notes.md') to summarize.", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /Research Notes.md"}],
         "end_state": "A short takeaway is saved at the top of the research note and the note is starred.",
     },
     "easy__music__004": {
-        "vars": {"name": "{name}"},
-        "seed": [{"type": "web", "location": "Music app (real)", "value": "Live search for podcast '{name}'.", "status": "web"}],
-        "end_state": "The '{name}' podcast is shown.",
+        "vars": {},
+        "seed": [{"type": "web", "location": "Music app (real)", "value": "Live search for the 'The Midnight Cast' podcast (no config var - the title is literal in the prompt).", "status": "web"}],
+        "end_state": "The 'The Midnight Cast' podcast is shown.",
     },
     "medium__music__003": {
         "vars": {},
@@ -863,7 +858,7 @@ DAY5_TASKS: dict[str, dict] = {
 
 # Schedule order for Day 5 of the RUNNABLE 530 subset (21 tasks).
 DAY5_ORDER = [
-    "easy__chrome__003",
+    "easy__weather__002",
     "medium__chrome__003",
     "easy__google-drive__003",
     "medium__google-drive__002",
@@ -878,7 +873,6 @@ DAY5_ORDER = [
     "hard__calendar-telegram-notes__025",
     "easy__contacts__005",
     "medium__contacts-obsidian__001",
-    "easy__notes__003",
     "medium__obsidian__004",
     "easy__music__004",
     "medium__music__003",
@@ -906,15 +900,10 @@ DAY6_TASKS: dict[str, dict] = {
         ],
         "end_state": "A calendar reminder is set 3h before departure; agent replies with only the countdown in hours.",
     },
-    "easy__youtube__002": {
-        "vars": {},
-        "seed": [{"type": "none", "location": "YouTube (real)", "value": "Agent mutes the currently playing video.", "status": "sanity"}],
-        "end_state": "The current video is muted.",
-    },
     "medium__youtube__002": {
-        "vars": {},
+        "vars": {"contact": "{contact}"},
         "seed": [{"type": "youtube_history", "location": "YouTube (real history)", "value": "Watch-history videos over 20 minutes (real).", "status": "needs_ui"}],
-        "end_state": "The oldest >20-min video is removed, the remainder counted, and the count noted.",
+        "end_state": "The oldest >20-min video is removed, the remainder counted, and a history video is emailed to {contact}.",
     },
     "easy__clock__002": {
         "vars": {},
@@ -922,9 +911,9 @@ DAY6_TASKS: dict[str, dict] = {
         "end_state": "The alarm is renamed.",
     },
     "medium__clock__002": {
-        "vars": {},
+        "vars": {"contact": "{contact}"},
         "seed": [{"type": "alarm", "location": "Clock (app-private)", "value": "Two alarms with different snooze settings (operator ensures them).", "status": "needs_ui"}],
-        "end_state": "Snooze settings made consistent; both saved; the change noted.",
+        "end_state": "Snooze settings made consistent; both saved; the updated wake-up time emailed to {contact}.",
     },
     "hard__clock-calendar__023": {
         "vars": {},
@@ -950,10 +939,10 @@ DAY6_TASKS: dict[str, dict] = {
         "seed": [{"type": "calendar_event", "location": "Calendar (ADB-seeded)", "value": "Tomorrow availability for the three invitees (ADB-seeded events showing each invitee busy except the 1-3 PM window).", "status": "needs_seed", "device_path": "Calendar (cal_id=16): tomorrow availability"}],
         "end_state": "A meeting time tomorrow is suggested and booked that works for everyone's apparent availability.",
     },
-    "easy__shopping-delivery-browser__002": {
+    "easy__swiggy__001": {
         "vars": {},
-        "seed": [{"type": "web", "location": "Chrome (real)", "value": "Live search for a specific brand's page on a shopping site.", "status": "web"}],
-        "end_state": "The brand's shopping-site page is opened.",
+        "seed": [{"type": "web", "location": "Swiggy (real)", "value": "Live order/restaurant data; delivery status of the most recent order is shown in the app.", "status": "web"}],
+        "end_state": "The most recent Swiggy order's delivery status is reported.",
     },
     "medium__shopping-delivery-browser__002": {
         "vars": {"product": "{product}"},
@@ -985,13 +974,22 @@ DAY6_TASKS: dict[str, dict] = {
         "seed": [{"type": "creation", "location": "Camera", "value": "Agent takes a photo with manual focus vs auto-focus, compares sharpness, keeps the sharper one.", "status": "creation"}],
         "end_state": "The sharper (manual vs auto) photo is kept.",
     },
+    "easy__google-sheets__001": {
+        "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a '[sheet column]' column of data (operator ensures it exists and is populated).", "status": "needs_ui"}],
+        "end_state": "Agent reports the first row's value in the '[sheet column]' column.",
+    },
+    "medium__google-sheets__001": {
+        "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a numeric '[sheet column]' column to sum.", "status": "needs_ui"}],
+        "end_state": "A total row is added at the bottom with the summed '[sheet column]' value.",
+    },
 }
 
 # Schedule order for Day 6 of the RUNNABLE 530 subset (17 tasks).
 DAY6_ORDER = [
     "easy__gmail__003",
     "hard__gmail-calendar__003",
-    "easy__youtube__002",
     "medium__youtube__002",
     "easy__clock__002",
     "medium__clock__002",
@@ -999,13 +997,15 @@ DAY6_ORDER = [
     "easy__calendar__003",
     "medium__calendar__003",
     "hard__calendar__097",
-    "easy__shopping-delivery-browser__002",
+    "easy__swiggy__001",
     "medium__shopping-delivery-browser__002",
     "medium__contacts__005",
     "easy__files__002",
     "medium__files__002",
     "easy__camera__004",
     "medium__camera__004",
+    "easy__google-sheets__001",
+    "medium__google-sheets__001",
 ]
 
 # Literal seed-file templates written into each task's seed_files/ dir. Each
@@ -1024,14 +1024,8 @@ SEED_FILE_TEMPLATES: dict[str, dict[str, dict[str, str]]] = {
             "device_path": "/sdcard/Obsidian/Papers vault oneplus /{stock note title}.md",
         },
     },
-    # Day 4: easy__obsidian__003 needs an EXISTING note to add a line to.
-    "easy__obsidian__003": {
-        "daily_log.md": {
-            "content": "# Daily Log\n\n- Wake up: 07:15\n- Coffee: 1\n",
-            "device_path": "/sdcard/Obsidian/Papers vault oneplus /Daily Log.md",
-        },
-    },
-    # Day 4: hard__gallery-obsidian__035 needs yesterday's photo count in Obsidian.
+    # Day 4: easy__google-docs__001 uses a real cloud Google Docs document (needs_ui);
+    # no ADB-seeded file is required (was easy__obsidian__003, seeded Daily Log.md on-device).
     "hard__gallery-obsidian__035": {
         "photo_log.md": {
             "content": "# Photo Log\n\n- 2026-08-06: 6 photos\n- 2026-08-05: 4 photos\n",
@@ -1083,6 +1077,10 @@ def load_ask_user_facts() -> dict:
 APP_SEED_DEFAULTS: dict[str, dict[str, str]] = {
     "gmail": {"type": "gmail", "location": "Gmail (real)", "status": "sanity"},
     "google-drive": {"type": "google_drive", "location": "Google Drive (real, operator-signed-in)", "status": "needs_ui"},
+    "google-docs": {"type": "google_docs", "location": "Google Docs (real account)", "status": "needs_ui"},
+    "google-sheets": {"type": "google_sheets", "location": "Google Sheets (real account)", "status": "needs_ui"},
+    "google-slides": {"type": "google_slides", "location": "Google Slides (real account)", "status": "needs_ui"},
+    "google-meet": {"type": "google_meet", "location": "Google Meet (real; UI-reachable only, no live calls)", "status": "needs_ui"},
     "google-photos": {"type": "google_photos", "location": "Google Photos (app-private)", "status": "needs_ui"},
     "google-search": {"type": "web", "location": "Google Search (real)", "status": "web"},
     "google-maps": {"type": "web", "location": "Google Maps (real)", "status": "web"},
@@ -1103,6 +1101,13 @@ APP_SEED_DEFAULTS: dict[str, dict[str, str]] = {
     "obsidian": {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "status": "needs_ui"},
     "calculator": {"type": "none", "location": "Calculator (real)", "status": "sanity"},
     "settings": {"type": "settings", "location": "Settings (real)", "status": "sanity"},
+    "weather": {"type": "weather", "location": "OnePlus Weather (real)", "status": "sanity"},
+    "swiggy": {"type": "web", "location": "Swiggy (real app, live order/restaurant data)", "status": "web"},
+    "prime-video": {"type": "web", "location": "Prime Video (real app, live catalog)", "status": "web"},
+    "makemytrip": {"type": "web", "location": "MakeMyTrip (real app, live flights)", "status": "web"},
+    "bookmyshow": {"type": "web", "location": "BookMyShow (real app, live showtimes)", "status": "web"},
+    "msn-news": {"type": "web", "location": "MSN News (real app, live headlines)", "status": "web"},
+    "amazon-shopping": {"type": "web", "location": "Amazon Shopping (real app, live catalog)", "status": "web"},
 }
 
 
@@ -1210,7 +1215,7 @@ def build_day(day: int) -> Path:
         spec_map = DAY6_TASKS
         auto_generated = False
     else:
-        # Any other day (7..28 on the 530 set): auto-generate a per-task spec in the same
+        # Any other day (7..28 on the 530-task set): auto-generate a per-task spec in the same
         # shape as the hand-authored DAY1..6 entries (app-aware seed + resolved vars + a
         # readable end_state), so every day builds a complete manifest_index.json with zero
         # hand-authored entries. Schedule order = dataset order. Vars are declared ONLY for

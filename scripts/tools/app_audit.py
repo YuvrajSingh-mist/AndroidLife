@@ -30,7 +30,7 @@ import json
 import subprocess
 import sys
 
-# The 22 apps the runnable 530-task dataset targets, mapped to the Android
+# The 32 apps the runnable 530-task dataset targets, mapped to the Android
 # packages that commonly provide them (most common first). Ordering = display
 # order in the report. Extend the candidate lists if your OEM uses a different
 # package (run `adb shell pm list packages` to find it).
@@ -65,6 +65,18 @@ BENCHMARK_APPS: dict[str, list[str]] = {
     "Google Drive": ["com.google.android.apps.docs"],
     "Google Docs": [
         "com.google.android.apps.docs.editors.docs",
+        "com.google.android.apps.docs",
+    ],
+    "Google Sheets": [
+        "com.google.android.apps.docs.editors.sheets",
+        "com.google.android.apps.docs",
+    ],
+    "Google Slides": [
+        "com.google.android.apps.docs.editors.slides",
+        "com.google.android.apps.docs",
+    ],
+    "Google Meet": [
+        "com.google.android.apps.meetings",
         "com.google.android.apps.docs",
     ],
     "Gallery": [
@@ -115,16 +127,26 @@ BENCHMARK_APPS: dict[str, list[str]] = {
     ],
     "Telegram": ["org.telegram.messenger"],
     "Settings": ["com.android.settings"],
+    "Weather": [
+        "net.oneplus.weather",
+        "com.coloros.weather.service",
+        "com.google.android.apps.weather",
+        "com.android.weather",
+    ],
+    "Swiggy": ["in.swiggy.android"],
+    "Prime Video": ["com.amazon.avod.thirdpartyclient"],
+    "MakeMyTrip": ["com.makemytrip"],
+    "BookMyShow": ["com.bt.bms"],
+    "MSN News": ["com.microsoft.amp.apps.bingnews"],
+    "Amazon Shopping": ["in.amazon.mShop.android.shopping"],
 }
 
-# Apps the docs flag as NOT expected on a fresh device (need install/provision
-# before those tasks can run). Reported separately so a missing app that the
-# benchmark genuinely doesn't ship with isn't silently treated as "everything
-# ready".
+# Apps referenced by the docs/future directions that are NOT expected on a fresh
+# device (need install/provision before those tasks can run). Google Meet is the
+# only one still absent from the current device; Sheets/Slides are first-class in
+# BENCHMARK_APPS above.
 OPTIONAL_APPS: dict[str, str] = {
     "Google Meet": "com.google.android.apps.meetings",
-    "Google Sheets": "com.google.android.apps.docs.editors.sheets",
-    "Google Slides": "com.google.android.apps.docs.editors.slides",
 }
 
 

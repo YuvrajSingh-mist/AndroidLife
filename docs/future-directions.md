@@ -99,7 +99,7 @@ purely about grading and anti-gaming.
 
 ---
 
-## 4) Close the Google Sheets gap (tasks exist, app not in the inventory)
+## 4) Close the Google Sheets gap — DONE (2026-08-12)
 
 **Today:** the benchmark has **no `sheets` app_slug**, yet at least one task in
 `benchmarks/dailyBench-600/public.md` explicitly says *"open it in the google
@@ -113,15 +113,17 @@ sum a column, sort rows, add a note/freeze a header, share a sheet link, etc.
 Make sure the seed ships a `SPORTS_VIDEO_DATA`-style workbook so the Files→Sheets
 handoff is actually testable.
 
-**Why it matters:** Sheets is a core everyday app; skipping it leaves a visible
-coverage hole (the public task currently can't be graded cleanly because there's no
-sheets bucket/slug to route it to).
+**Done (2026-08-12):** the `google-sheets` app_slug, `SPORTS_VIDEO_DATA` seed vars
+(`spreadsheet name`, `sheet column`), and an 8-task Sheets set (days 6/12/20/27:
+read first row, sum a column, count rows, sort, freeze header, append date row)
+were added to `tasks_530.md`, `task_dataset.py` aliases, `app_audit.py`,
+`build_day_seed_manifest.py`, and `config/user.yaml`.
 
-**Open questions:** verify the exact launcher label / package for the agent's
-`open_app` step; confirm Sheets needs a Google account sign-in on a fresh device;
-define the read-back verification (cells → text dump) for grading.
+**Remaining open questions:** verify the exact launcher label / package for the
+agent's `open_app` step; confirm Sheets needs a Google account sign-in on a fresh
+device; define the read-back verification (cells → text dump) for grading.
 
-## 5) Add Google Meet tasks
+## 5) Add Google Meet tasks — DONE (2026-08-12)
 
 **Today:** no `meet` app_slug, and Google Meet is **not installed** on the current
 device (no `com.google.android.apps.meetings` package — confirmed via `pm list`).
@@ -135,12 +137,18 @@ meeting by link (landing screen), toggle camera/mic off, check the meeting roste
 schedule a Meet via Calendar. Keep it to UI-reachable states — no real call
 needed.
 
-**Why it matters:** Meet is a top everyday app for calls/meetings; adding it rounds
-out the Google-app coverage (Docs, Drive, Sheets, Photos, Meet).
+**Done (2026-08-12):** the `google-meet` app_slug, `meeting link` var, and an
+8-task UI-only Meet set (days 7/14/19/26: view schedule, open next meeting
+details, mute/unmute + camera off, open join-by-code / landing screen, copy
+link) were added to `tasks_530.md`, `task_dataset.py` aliases, `app_audit.py`
+(Mark as OPTIONAL — app not yet installed on the device), `build_day_seed_manifest.py`,
+and `config/user.yaml`. All tasks stay on the join/landing + controls surface — no
+live calls.
 
-**Open questions:** Meet must be installed first (device provisioning / seed step
-for the app itself); sign-in requirements; whether joining a real meeting is in
-scope (probably keep to the join/landing + controls surface to stay deterministic).
+**Remaining open questions:** Meet must be installed first (device provisioning /
+seed step for the app itself); sign-in requirements; whether joining a real
+meeting is in scope (probably keep to the join/landing + controls surface to stay
+deterministic).
 
 ## 6) Real-world end-to-end "booking / checkout" tasks
 
@@ -184,4 +192,8 @@ how to verify "reached payment page" as the end state without making a purchase.
 | 3 | Web lookup for app steps | Agent may search how-tos before acting | Yes |
 | 4 | Close Google Sheets gap | Add `sheets` app_slug + task set (device has it) | Yes |
 | 5 | Add Google Meet tasks | Add `meet` app + install + UI-reachable tasks | Yes |
+
+**Implemented 2026-08-12:** roadmap items 4 (Google Sheets) and 5 (Google Meet)
+were shipped along with a Google Docs rotation and a Google Slides task set — see
+`benchmark-spec.md` → "App coverage & sector distribution".
 | 6 | Real-world booking/checkout | Flight / movie / shopping → payment-page flows | Yes |

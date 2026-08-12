@@ -48,6 +48,11 @@ SCHEMA: dict[str, tuple[str, str]] = {
     # location
     "destination": ("Train-departure ASK USER fact destination (`{destination}`).", "Cuttack"),
     "place": ("Maps/weather target place near the device (`[place]`).", "Bhubaneswar Airport"),
+    "usual route": ("Traffic-check route for the 'usual commute' Maps task (`[usual route]`).", "42 MG Road, Bhubaneswar"),
+    "spreadsheet name": ("Title of the Google Sheets workbook used by the Sheets task set (`[spreadsheet name]`).", "SPORTS_VIDEO_DATA"),
+    "sheet column": ("Column header the Sheets task set sums/sorts (`[sheet column]`).", "Views"),
+    "presentation name": ("Title of the Google Slides deck used by the Slides task set (`[presentation name]`).", "Q3 Review"),
+    "meeting link": ("Google Meet link the Meet set copies/opens (`[meeting link]`).", "https://meet.google.com/abc-defg-hij"),
     # stock tracker (hard task #57)
     "stock name": ("Stock ticker/company the agent tracks (`[stock name]`).", "Reliance Industries"),
     "stock note title": ("Title of the Obsidian note holding the threshold + last value "

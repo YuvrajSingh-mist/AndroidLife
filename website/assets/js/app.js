@@ -181,15 +181,27 @@ function taskTagsMarkup(task) {
   return tags.join("");
 }
 
+// task_id -> trajectory availability, loaded from data/trajectories/index.json
+let TRAJECTORY_INDEX = null;
+
+function taskHasTrajectory(taskId) {
+  return Boolean(TRAJECTORY_INDEX && TRAJECTORY_INDEX.tasks && TRAJECTORY_INDEX.tasks[taskId] && TRAJECTORY_INDEX.tasks[taskId].has_trajectory);
+}
+
 function taskCardMarkup(task) {
+  const hasTraj = taskHasTrajectory(task.task_id);
+  const trajTag = hasTraj
+    ? `<a class="card-trajectory-link" href="./task.html?task_id=${encodeURIComponent(task.task_id)}" title="View trajectory replay + model trace">&#9654; View trajectory</a>`
+    : "";
   return `
-    <article class="public-example task-card">
+    <article class="public-example task-card" data-task-id="${escapeHtml(task.task_id)}">
       <div class="public-example-meta">
         <span class="public-example-cat">${escapeHtml(task.app)} <span class="public-example-id">${escapeHtml(task.task_id)}</span></span>
         <span class="public-example-diff">${capitalize(task.bucket)}${task.day ? ` &middot; Day ${task.day}` : ""}</span>
       </div>
       <div class="public-example-tags">${taskTagsMarkup(task)}</div>
       <pre class="public-example-prompt"><code>${escapeHtml(task.prompt)}</code></pre>
+      <div class="card-footer">${trajTag}</div>
     </article>
   `;
 }
@@ -262,23 +274,47 @@ function initTaskBrowser(tasks) {
     renderTaskList(tasks);
   });
 
+  // Click a task card (not the trajectory link itself) -> open the detail page.
+  const list = document.getElementById("task-list");
+  if (list) {
+    list.addEventListener("click", (event) => {
+      const link = event.target.closest("a");
+      if (link) return; // let the anchor handle it
+      const card = event.target.closest(".task-card");
+      if (card && card.dataset.taskId) {
+        window.location.href = `./task.html?task_id=${encodeURIComponent(card.dataset.taskId)}`;
+      }
+    });
+  }
+
   renderTaskList(tasks);
 }
 
+function loadTrajectoryIndex() {
+  const dataPath = document.body.dataset.trajectoryIndex;
+  if (!dataPath) return Promise.resolve(null);
+  return fetch(dataPath)
+    .then((resp) => (resp.ok ? resp.json() : null))
+    .catch(() => null);
+}
+
 loadData()
-  .then((data) => {
-    renderStatsInline(data.stats);
-    renderCategoryTable(data.categories);
-    renderBenchmarkSummary(data.categories);
-    renderDayTable(data.days);
-    renderPublicExampleList(
-      "featured-examples-list",
-      (data.public_examples || []).filter((example) => example.difficulty === "hard")
-    );
-    renderPublicExampleList("public-examples-list", data.public_examples);
-    initTaskBrowser(data.tasks || []);
-    attachLightbox();
-  })
+  .then((data) =>
+    loadTrajectoryIndex().then((trajIndex) => {
+      TRAJECTORY_INDEX = trajIndex;
+      renderStatsInline(data.stats);
+      renderCategoryTable(data.categories);
+      renderBenchmarkSummary(data.categories);
+      renderDayTable(data.days);
+      renderPublicExampleList(
+        "featured-examples-list",
+        (data.public_examples || []).filter((example) => example.difficulty === "hard")
+      );
+      renderPublicExampleList("public-examples-list", data.public_examples);
+      initTaskBrowser(data.tasks || []);
+      attachLightbox();
+    })
+  )
   .catch((error) => {
     const statsRoot = document.getElementById("stats-inline");
     const summaryRoot = document.getElementById("benchmark-summary-body");

@@ -138,5 +138,30 @@ invent steps; this is the agreed, verified workflow:
 10. **Update the site data** if tasks changed, then push (auto-deploys GH Pages):
     `node website/tools/build_site_data.mjs && git add -A && git commit -m "..." && git push origin master`
 
+## 7b. Website trajectories (per-task detail pages)
+
+Each task card on `pages/tasks.html` links to a per-task detail page
+(`pages/task.html?task_id=…`) that shows the task description, its state (difficulty,
+type, cross-app, points, day), the run's **trajectory replay GIF**, run details
+(model, result, duration), and a **step-by-step "Model Trajectory" viewer** (every
+thought → function call → tool args → result, as traced into Phoenix), with the
+**phone screenshot for the current step** shown in a phone frame beside the JSON.
+
+- Export (run from repo root, regenerates index + copies GIFs + downscaled step
+  screenshots into `website/assets/`):
+  `node website/tools/export_trajectories.mjs`
+- Canonical run roots used: day1 `assets/runs/full-bench/2026-08-09-153930/day1`,
+  day2 `assets/runs/full-bench/2026-08-10-234158/day2`,
+  day3 `assets/runs/2026-08-11-040846/day3` (reruns merged).
+- Output: `website/assets/data/trajectories/{index.json,dayN/<task_id>.json}`
+  (condensed FastAgent steps, each tagged with its `screenshot` filename + a
+  `screenshot_base` path) + `website/assets/trajectories/dayN/<task_id>/trajectory.gif`
+  + `…/screenshots/NNNN.jpg` (downscaled via `sips`/`ffmpeg` to ~560px, ~28KB each).
+- Renamed tasks are aliased (e.g. `medium__obsidian__001` → `medium__google-docs__001`)
+  so old runs show under the current id — see `TASK_ID_ALIASES` in the exporter.
+- The "Open full trajectory in Phoenix" button only appears when previewing from
+  localhost (no Phoenix on the public GH Pages site); the step viewer is the
+  Phoenix-traced trajectory.
+
 Constraints: never re-run completed tasks; keep the MobileWorld SR gate for ASK
 USER tasks; per-day Phoenix DB lives at `assets/db/dayN/phoenix.db`.

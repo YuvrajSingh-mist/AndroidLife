@@ -272,7 +272,7 @@ Full flag reference for both entry points, including the app-reset fairness beha
 
 ## Task dataset
 
-The benchmark is a **28-day schedule of 530 runnable tasks** (533 dataset rows: 230 easy / 231 medium / 72 hard, of which 36 ASK USER + 36 DETERMINISTIC hard; ~9-10 apps/day, max 1279 pts). It ships as `tasks_530.md` + `DailyBench_530_v1.json`/`.jsonl` (the dataset the runner reads by default).
+The benchmark is a **28-day schedule of 530 runnable tasks** (530 dataset rows: 216 easy / 242 medium / 72 hard, of which 36 ASK USER + 36 DETERMINISTIC hard; 32 apps, ~10-12 apps/day (mean ~10.8), max 1302 pts). It ships as `tasks_530.md` + `DailyBench_530_v1.json`/`.jsonl` (the dataset the runner reads by default). The corpus is **exactly 530 tasks** — the Google Workspace task sets (Docs/Sheets/Slides/Meet), the Weather app, and 6 newly-installed real apps (Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping) replaced repetitive tasks rather than adding to the count (see `docs/benchmark-spec.md` → "Benchmark at a glance" for the full stats).
 
 - **`benchmarks/dailyBench-600/tasks_530.md`** — the source of truth. Edit it and regenerate the JSON/JSONL with `scripts/data/export_530_dataset.py`; each task line carries its `task_id` in an HTML comment so ids survive edits.
 - **`benchmarks/dailyBench-600/public.md`** — the public 50-task preview (same structure, a curated sample you can publish/share).
@@ -281,7 +281,7 @@ The benchmark is a **28-day schedule of 530 runnable tasks** (533 dataset rows: 
 ### Prep the dataset (from scratch)
 
 ```bash
-# 1. Regenerate the runnable 530 dataset from tasks_530.md (the source of truth):
+# 1. Regenerate the runnable dataset from tasks_530.md (the source of truth):
 uv run scripts/data/export_530_dataset.py
 
 # 2. One-time resync: render tasks_530.md from the JSON (embeds task_ids, round-trips itself):
@@ -296,7 +296,7 @@ uv run scripts/seeding/verify_config.py
 # 5. Generate per-day vars files (tasks_vars/day_N.env) from config + tasks_vars.local.env:
 uv run scripts/seeding/generate_day_vars.py --all
 
-# 6. Build a day's fabricated-data seed manifests (any day 1..28 on the 530 set;
+# 6. Build a day's fabricated-data seed manifests (any day 1..28 on the set;
 #    days 1-6 have hand-authored specs; days 7-28 are auto-generated per-task):
 uv run scripts/seeding/build_day_seed_manifest.py --day 1
 
@@ -308,11 +308,11 @@ uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL" --day 3 --veri
 
 `--verify` (any `--day`) is the check that catches "the manifest says the seed exists but it was never pushed" — it runs `adb shell ls` on every `seed_device_path` a day's tasks declare and exits 1 if any is missing. Run it before a batch so you never start a run on half-seeded data.
 
-The 530 `.jsonl` is the easiest artifact to push to Hugging Face datasets (`uv sync --extra hf` first).
+The `.jsonl` is the easiest artifact to push to Hugging Face datasets (`uv sync --extra hf` first).
 
-### Run a day (530)
+### Run a day
 
-The 530 set is the default `--dataset`; `config/user.yaml` supplies the persona values and the per-day vars file supplies that day's overrides. **The runner takes any schedule day directly** — no need to hand-list task ids:
+The runnable set is the default `--dataset`; `config/user.yaml` supplies the persona values and the per-day vars file supplies that day's overrides. **The runner takes any schedule day directly** — no need to hand-list task ids:
 
 **Prepare the device before any run** — wake it, dismiss the lock screen, and return to the
 home screen so the first task's agent starts from a clean launcher (not a lock screen / stale
@@ -351,7 +351,7 @@ Run folders are grouped under `assets/runs/<date-time>/...` automatically, and c
 - [scripts/data/export_530_dataset.py](scripts/data/export_530_dataset.py): tasks_530.md -> DailyBench_530_v1.json/.jsonl exporter
 - [scripts/run/smoke_test.sh](scripts/run/smoke_test.sh): pre-flight check for the LLM server, wired/wireless ADB + mobilerun, and one real end-to-end task
 - [scripts/tools/device_health_check.py](scripts/tools/device_health_check.py): SDK-only device health check used by `smoke_test.sh`
-- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the 530-task source of truth, `public.md` = public 50-task preview), exported datasets (`.json`/`.jsonl`), and per-day vars (`tasks_vars/`)
+- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the source of truth for the 530-task corpus, `public.md` = public 50-task preview), exported datasets (`.json`/`.jsonl`), and per-day vars (`tasks_vars/`)
 - [config](config): the user config — `user_config.example` is the committed, documented persona template; copy to `user.yaml` (gitignored) and edit
 - [assets](assets): everything generated — `assets/runs/` (run artifacts), `assets/seeds/` (per-day real seed files + generated manifests with on-device paths), `assets/db/dayN/phoenix.db` (per-day Phoenix DBs)
 - [docs](docs): CLI reference, advanced features, run artifacts, methodology, and task authoring notes
@@ -375,4 +375,6 @@ make test-cli
 - [docs/advanced-features.md](docs/advanced-features.md) — starting the mini2 model server, tracing, trajectory recording
 - [docs/run-artifacts.md](docs/run-artifacts.md) — run folder contents and metric definitions
 - [docs/benchmark-spec.md](docs/benchmark-spec.md), [docs/evaluation-policy.md](docs/evaluation-policy.md), [docs/task-authoring.md](docs/task-authoring.md), [docs/leaderboard-format.md](docs/leaderboard-format.md)
-- [reports/benchmark-report.md](reports/benchmark-report.md) — benchmark stats & distribution, failures summary, and task trace
+- [reports/day1-run-2026-08-09.md](reports/day1-run-2026-08-09.md) — Day-1 run report
+- [reports/day-2.md](reports/day-2.md) — Day-2 run report
+- [reports/metrics/](reports/metrics/) — per-day metric JSON/MD and hallucination-control evals
