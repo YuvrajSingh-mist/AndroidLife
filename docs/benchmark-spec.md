@@ -331,6 +331,34 @@ Slides, Meet).
 > `app-usage-grounding.md` §"Two different numbers" and §"Why the task mix is NOT
 > proportional to real time-share".
 
+## Honest answer on the research claim — what's real vs. inferred (2026-08-12)
+
+The claim that "**real daily use is dominated by communication +
+media/entertainment, with a tools core and an occasional
+productivity/docs/weather/shopping tail**" is **not a single published
+finding — it is a synthesis**. No public dataset breaks down the
+"~9-10 apps a person opens today" by sector; the closest published numbers are
+category **time-share** and category **penetration**, which are different stats
+(see the ⚠️ callout above). Here is exactly what is grounded vs. what is inferred:
+
+| Claim | Status |
+|---|---|
+| Social media ≈ **35.1%** of app *time* (largest category) | **Real data** — Statista 1465726 (2024, Android only) |
+| TikTok **95 min** / YouTube **74 min** per day (most time-consuming apps) | **Real data** — data.ai *State of Mobile 2023* |
+| Communication **99.39%** / Tools **99.81%** / Video Players **96.63%** penetration | **Real data** — Statista 200855 (2019, newest public release) |
+| "Essential daily apps" = social, IM, email, video, maps, browser, shopping | **Real but qualitative** — BuildFire / Statista "can't live without" lists |
+| "**Communication + media/entertainment dominate the daily mix**" | **Inference** from the above — not measured directly |
+
+**Bottom line:** the *parts* are real and citable (time-share says media/social
+dominate time; penetration says comm/tools are on ~every phone); the *daily
+sector mix* itself is an **inference** assembled from those two proxies plus
+qualitative essential-apps lists — there is no directly-measured "daily active
+apps by sector" statistic in the public record. The benchmark therefore grounds
+**density** on the daily-active-app count and **app selection** on
+penetration + time-share, and is transparent that the daily sector mix is
+approximated rather than measured. (The full, cited breakdown lives in
+`app-usage-grounding.md` §"What actually fills a person's daily ~9-10 apps".)
+
 ## Why the missing apps are absent: a grounded ToS assessment (2026-08-12)
 
 The categories still without apps (social, gaming, finance/UPI, health, ride) are
