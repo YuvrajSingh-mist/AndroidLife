@@ -88,6 +88,12 @@ Phoenix DBs are **per-day**: each day's run writes into its own SQLite DB at
 you're running:
 
 ```bash
+uv run python scripts/run/start_phoenix.py --day 4   # helper: creates assets/db/day4/phoenix.db, project dailybench-day4
+```
+
+or, equivalently (raw command, for custom ports/hosts):
+
+```bash
 PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/day1/phoenix.db" \
 PHOENIX_PROJECT_NAME=dailybench-day1 \
 uv run phoenix serve --port 6006
@@ -99,6 +105,11 @@ This must be running **before** you start any benchmark run. The server's web UI
 traces land in that day's own project + DB. Query a day's spans directly with `sqlite3`
 against `assets/db/dayN/phoenix.db`, or use the Phoenix UI to explore span trees, token
 counts, and latency.
+>
+> **Guard (added 2026-08-13):** `run_day.py` and the per-task runner now **fail fast
+> when tracing is ON but the Phoenix collector isn't reachable** — a silent miss like
+> day-4 (2026-08-13, no `day4/phoenix.db` because `phoenix serve` was never started)
+> can't happen again. Pass `--no-tracing` only to deliberately skip trace capture.
 
 ### How traces flow
 

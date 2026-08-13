@@ -7,9 +7,11 @@ import asyncio
 import logging
 import os
 import re
+import socket
 import sqlite3
 import time
 from pathlib import Path
+from urllib.request import urlopen
 
 from dotenv import load_dotenv
 from llama_index.llms.openai_like import OpenAILike
@@ -230,6 +232,48 @@ def _phoenix_db_from_project(project: str | None) -> Path | None:
     return Path(__file__).resolve().parents[2] / "assets" / "db" / f"day{m.group(1)}" / "phoenix.db"
 
 
+def check_phoenix_ready(url: str, warn_only: bool = False) -> bool:
+    """Pre-run guard: confirm the Phoenix collector is actually reachable.
+
+    The mobilerun SDK silently drops traces when ``phoenix serve`` is not running
+    (traces are sent on port 4317, dashboard on :6006). This guard fails fast so a
+    run never silently loses its trace data. ``url`` is the ``--phoenix-url`` (e.g.
+    ``http://localhost:6006``); when warn_only we log a loud warning instead of
+    returning failure (used by paths that intentionally pass a remote collector).
+    Returns True when the collector looks reachable.
+    """
+    if not url:
+        return True
+    try:
+        host = re.sub(r"^https?://", "", url).split(":")[0]
+        port = int(re.sub(r"^https?://", "", url).split(":")[1]) if ":" in re.sub(r"^https?://", "", url) else 6006
+    except (ValueError, IndexError):
+        host, port = "localhost", 6006
+    # Phoenix serves both the dashboard (HTTP :6006) and the OTLP/gRPC collector
+    # (:4317 by default). Reaching the dashboard is a good proxy for "server up".
+    reachable = False
+    try:
+        with urlopen(f"http://{host}:{port}", timeout=2.0) as resp:  # noqa: S310 - local collector health check
+            reachable = resp.status < 500
+    except Exception:  # noqa: BLE001
+        reachable = False
+    if not reachable:
+        try:
+            with socket.create_connection((host, 4317), timeout=2.0):
+                reachable = True
+        except OSError:
+            reachable = False
+    if reachable:
+        logging.getLogger("mobilerun").info("phoenix collector reachable at %s (traces will be captured)", url)
+        return True
+    msg = f"Phoenix collector NOT reachable at {url} — run will silently lose trace data. Start `phoenix serve` first (see README)."
+    if warn_only:
+        logging.getLogger("mobilerun").warning("WARNING: %s", msg)
+        return False
+    logging.getLogger("mobilerun").error("ABORTING run: %s", msg)
+    return False
+
+
 def stamp_model_on_phoenix_trace(db_path: Path, model: str, start_utc: str, end_utc: str) -> None:
     """Best-effort: set ``traces.model`` for the trace(s) overlapping this run's time window.
 
@@ -317,6 +361,13 @@ def main() -> int:
     recording = start_scrcpy(args.serial, run_dir, args.screen_bit_rate, args.screen_size) if args.screen_record else None
     sampler = Sampler(args.serial, args.sample_interval, run_dir / "samples.ndjson")
     sampler.start()
+    # Phoenix pre-run guard: if tracing is on but the collector is down, fail fast
+    # instead of silently dropping all trace data (day-4 2026-08-13 lost its traces
+    # because `phoenix serve` was never started for the day).
+    if not args.no_tracing and not check_phoenix_ready(args.phoenix_url):
+        write_text(run_dir / "PHOENIX_NOT_READY", f"phoenix not reachable at {args.phoenix_url}")
+        logging.error("ABORTING run: Phoenix collector down at %s — start `phoenix serve` for this day first.", args.phoenix_url)
+        return 3
     start_monotonic = time.monotonic()
     outcome = asyncio.run(run_agent(args, run_dir, api_base))
     elapsed = time.monotonic() - start_monotonic

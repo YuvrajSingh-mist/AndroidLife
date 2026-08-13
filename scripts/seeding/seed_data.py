@@ -282,6 +282,75 @@ def verify_day_seeds(serial: str, day: int) -> int:
     return 0
 
 
+def seed_auto_day(serial: str, day: int) -> None:
+    """Push every ADB-verifiable seed file an auto-generated day declares.
+
+    Reads assets/seeds/manifests/day_N/*/manifest.json, collects every
+    `seed_device_paths` entry (all filesystem paths), and pushes the matching
+    materialised artifact from assets/seeds/day_N/ to that exact device path.
+    Skips non-filesystem seeds (calendar events, contact rows, needs_ui) - those
+    are handled by their day-specific functions / the operator.
+    """
+    d = day_seed_dir(day)
+    vault = device_paths.vault_path(serial)
+    pushed = 0
+    for task_dir in sorted(x for x in d.iterdir() if x.is_dir()):
+        mf = task_dir / "manifest.json"
+        if not mf.exists():
+            continue
+        man = json.loads(mf.read_text(encoding="utf-8"))
+        for _, raw in sorted((man.get("seed_device_paths") or {}).items()):
+            path = _seed_path_for_ls(raw)
+            if path is None:
+                continue  # non-filesystem (calendar/contact/etc.) - handled elsewhere
+            local = _find_materialised_file(day, path)
+            if local is None:
+                print(f"  [warn] {man.get('task_id')}: no materialised file for {path}")
+                continue
+            # ensure parent dir exists, then push (vault may not exist yet)
+            remote_parent = path.rsplit("/", 1)[0] if "/" in path else ""
+            if remote_parent:
+                adb(serial, "shell", "mkdir", "-p", remote_parent)
+            adb(serial, "push", str(local), path)
+            print(f"  pushed {man.get('task_id')}: {local.name} -> {path}")
+            pushed += 1
+    print(f"seed_auto_day day {day}: pushed {pushed} file(s)")
+
+
+def _find_materialised_file(day: int, device_path: str) -> Path | None:
+    """Match a declared device path back to the materialised seed file on disk.
+
+    SEED_FILE_TEMPLATES write artifacts flat into assets/seeds/day_N/ with the
+    template's own filename (e.g. monthly_budget.md), and the device path points
+    at `.../{budget note title}.md` (the resolved title). The manifest doesn't
+    record the local filename, so we infer it: if a day dir has exactly ONE .md
+    file whose content was just built, prefer it; else fall back to a direct
+    basename match against the device path.
+    """
+    art = day_artifacts_dir(day)
+    if not art.is_dir():
+        return None
+    base = device_path.rsplit("/", 1)[-1]
+    direct = art / base
+    if direct.exists():
+        return direct
+    # Obsidian notes: vault title on device often differs from the template
+    # filename (e.g. 'Monthly Budget.md' vs 'monthly_budget.md'). When a day has
+    # a single .md artifact that isn't already claimed, reuse it.
+    mds = sorted(p for p in art.glob("*.md") if p.name != "DEVICE_PATHS.md")
+    if len(mds) == 1:
+        return mds[0]
+    # multi-file day: try a slugified basename match (spaces -> underscores)
+    for p in art.glob("*.md"):
+        if _slugify(p.stem) == _slugify(base):
+            return p
+    return None
+
+
+def _slugify(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", s.lower())
+
+
 def push_with_mtime(serial: str, local: Path, remote_dir: str, mtime_iso: str) -> None:
     remote = f"{remote_dir}/{local.name}"
     adb(serial, "push", str(local), remote)
@@ -566,11 +635,19 @@ def make_day4_seed_images() -> None:
 
 
 def push_day4_obsidian(serial: str) -> None:
-    """Day-4 Obsidian notes: only the Photo Log the hard__gallery-obsidian__035
-    task cross-references for yesterday's count. The add-a-line target
-    (was easy__obsidian__003) is now easy__google-docs__001, a real cloud Google
-    Docs document (needs_ui) — no on-device vault note is seeded for it."""
-    push_obsidian_note(serial, 4, "hard__gallery-obsidian__035", "photo_log.md", "Photo Log.md")
+    """Day-4 Obsidian notes: Photo Log (hard__gallery-obsidian__035), the
+    Exam Scores note (medium__calculator__001) the weighted-average task reads,
+    and the Contact Updates note (hard__contacts-obsidian__029) the number-sync
+    task reads. The add-a-line target (was easy__obsidian__003) is now
+    easy__google-docs__001, a real cloud Google Docs document (needs_ui) — no
+    on-device vault note is seeded for it."""
+    cfg = load_user_config(CONFIG_PATH)
+    push_obsidian_note(serial, 4, "hard__gallery-obsidian__035", "photo_log.md",
+                       f"{cfg.get('photo journal title', 'Photo Log')}.md")
+    push_obsidian_note(serial, 4, "medium__calculator__001", "exam_scores.md",
+                       f"{cfg.get('exam scores note title', 'Exam Scores')}.md")
+    push_obsidian_note(serial, 4, "hard__contacts-obsidian__029", "contact_updates.md",
+                       f"{cfg.get('contact updates title', 'Contact Updates')}.md")
 
 
 def push_day4_images(serial: str) -> None:
@@ -596,19 +673,17 @@ def seed_day4(serial: str) -> None:
     - hard__gallery-obsidian__035: today's photos + 'Photo Log' note with
       yesterday's count (so the daily-count comparison is satisfiable).
     - medium__gallery__003: trip photos.
-    - hard__contacts-obsidian__029: duplicate contacts sharing one number (the
-      merge task needs real duplicates to merge).
+    - hard__contacts-obsidian__029: the Obsidian 'Contact Updates' note listing
+      names + updated numbers (the number-sync task reads it and updates
+      Contacts).
     - medium__phone__002: a missed call from a number matching an existing
       contact (call-log insert usually allowed on this device).
     """
     make_day4_seed_images()
     push_day4_images(serial)
     push_day4_obsidian(serial)
-    # hard__contacts-obsidian__029: ensure a duplicate contact shares the same
-    # number as an existing persona contact, so 'merge the duplicates' is real.
-    cfg = load_user_config(CONFIG_PATH)
-    seed_duplicate_contact(serial, cfg["contact name"], "Maa Home")
     # medium__phone__002: a missed call from the persona {contact} number.
+    cfg = load_user_config(CONFIG_PATH)
     seed_missed_call(serial, cfg["digits"])
 
 
@@ -928,6 +1003,21 @@ def main() -> int:
             seed_day5(args.serial)
         else:
             seed_day6(args.serial)
+        return 0
+
+    if 7 <= args.day <= 28 and args.day != 27:
+        # Auto-generated days: push every ADB-verifiable seed file (obsidian_note
+        # and other filesystem `device_path` seeds) the manifest declares. The
+        # materialised files live in assets/seeds/day_N/ (written by the manifest
+        # builder's SEED_FILE_TEMPLATES); this mirrors the days-4-6 pattern for
+        # the whole corpus so a task never references a doc that wasn't pushed.
+        # Day 27 keeps its dedicated branch (flight-ticket PDF) below.
+        d = day_seed_dir(args.day)
+        if not (d / "manifest_index.json").exists():
+            raise SystemExit(f"No assets/seeds/manifests/day_{args.day}/manifest_index.json - run scripts/build_day_seed_manifest.py --day {args.day} first")
+        if args.no_push:
+            return 0
+        seed_auto_day(args.serial, args.day)
         return 0
 
     if args.day == 3:

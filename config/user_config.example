@@ -59,7 +59,77 @@ stock threshold: 1,400 INR
 
 # Last recorded value in the stock note (written into the seed note).
 stock last value: 1,385 INR
+# ---- exam scores (day-4 medium__calculator__001) -------------------------
+# Title of the Obsidian note holding the exam scores + weights the agent must
+# read before computing the weighted average (`[exam scores note title]`). The
+# seed script creates this note on-device (exam_scores.md).
+exam scores note title: Exam Scores
 
+# Minimum weighted average to pass (`[passing threshold]`). Written into the
+# seeded Exam Scores note too, so the agent reads it from the same doc.
+passing threshold: 60
+
+# ---- calculator task data (day 4+) --------------------------------------
+# Each of these names an Obsidian note the seed script materialises so the
+# agent has a concrete doc to open and read the numbers from (never fabricate).
+# Day-9 expense budget (medium__calculator__002): 5 categories + income.
+budget note title: Monthly Budget
+
+# Day-13 financing plans (medium__calculator__003): two plans for one purchase.
+financing note title: Financing Plans
+
+# Day-13 group bill split (hard__calculator-telegram-notes__020).
+group bill note title: Group Bill
+
+# Day-13 loan-vs-budget check (hard__calculator-obsidian-telegram__060, ASK USER).
+# The Obsidian note holds the monthly budget the loan payment is compared against.
+loan budget note title: Budget
+
+# Day-15 shared bill (medium__calculator__005): bill + per-roommate usage levels.
+shared bill note title: Shared Bill
+
+# Day-18 trip fuel (medium__calculator__006): distance / mileage / gas / budget.
+trip fuel note title: Trip Fuel
+
+# Day-18 recipe cups->grams (medium__calculator-notes__001): 6 ingredients.
+recipe note title: Recipe
+
+# Day-19 debt payoff (medium__calculator__007): debt / payment / target date.
+debt note title: Debt
+
+# Day-21 compound interest (medium__calculator__008): principal + rate.
+savings note title: Savings
+
+# Day-21 recipe scale + pantry (hard__calculator-obsidian__058).
+pasta recipe note title: Pasta Recipe
+pantry list title: Pantry List
+
+# Day-22 currency-adjusted price (medium__calculator__009): two country prices.
+product prices note title: Product Prices
+
+# Day-23 running total (easy__calculator__011): a list of numbers.
+numbers list title: Numbers List
+
+# Day-24 side-project break-even (medium__calculator__011): costs / earnings.
+side project note title: Side Project
+
+# Day-26 overtime pay (medium__calculator__012): rate / hours.
+overtime note title: Overtime
+
+# Day-26 savings goal (medium__calculator-calendar__001): goal + months.
+savings goal note title: Savings Goal
+
+# Day-18 temperature conversion value (`[temperature]`).
+temperature: 25
+
+# Day-19 bill split amount (`[bill amount]`).
+bill amount: 120
+
+# Day-24 square-root value (`[number]`).
+number: 144
+
+# Day-9 currency pair (`[currency pair]`, easy__calculator__002).
+currency pair: USD to INR
 # ---- notes ---------------------------------------------------------------
 # Obsidian folder where the reschedule/confirm log is saved (`[meeting folder]`).
 meeting folder: Meeting Notes

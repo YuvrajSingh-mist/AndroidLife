@@ -137,6 +137,25 @@ def main() -> int:
     if phoenix_project is None and args.day is not None:
         phoenix_project = f"dailybench-day{args.day}"
 
+    # Phoenix pre-flight guard: tracing is ON by default, and the mobilerun SDK
+    # silently drops traces when `phoenix serve` isn't running (day-4 2026-08-13 lost
+    # its entire trace DB this way). Fail the batch up-front instead of silently
+    # running untraced. Opt out deliberately with --no-tracing.
+    if not args.no_tracing and not args.dry_run:
+        phoenix_url = args.phoenix_url or "http://localhost:6006"
+        sys.path.insert(0, str(REPO_ROOT / "src"))
+        from DailyBench.cli import check_phoenix_ready  # noqa: E402
+
+        if not check_phoenix_ready(phoenix_url, warn_only=False):
+            print(
+                f"ABORTING {label}: Phoenix collector not reachable at {phoenix_url}.\n"
+                "  Start it for this day first, e.g.:\n"
+                f"    PHOENIX_SQL_DATABASE_URL=\"sqlite:///{REPO_ROOT}/assets/db/day{args.day}/phoenix.db\" \\\n"
+                f"    PHOENIX_PROJECT_NAME={phoenix_project} uv run phoenix serve --port 6006\n"
+                "  or pass --no-tracing to skip trace capture deliberately.",
+            )
+            return 3
+
     cmd = [sys.executable, str(REPO_ROOT / "dailybench_tasks.py"),
            "--serial", serial,
            "--llm-upstream-base", args.llm_upstream_base,

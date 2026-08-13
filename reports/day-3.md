@@ -108,10 +108,10 @@ Hallucination-control honesty: **0/2** controls honest, **2** hallucinated (0.0%
 | task_id | result | steps | model | note |
 |---|---|---|---|---|
 | hard__google-search-notes__019 | ✅ | 35 | flash | Amazon/Flipkart reviews → noted |
-| hard__messages-notes__078 | ❌ **GATED FAIL** | 34 | qwen3.6-plus | **ASK USER task; 0 ask_user calls** (verified clean re-run) → SR gate FAIL. Re-run now correctly targets the genuine Yuvraj Airtel thread (tone Allay set, test msg sent, log updated) but never asks. |
+| hard__messages-notes__078 | ❌ **GATED FAIL** | 24 | qwen3.6-plus | **ASK USER task; 0 ask_user calls** (verified clean re-run 2026-08-13) → SR gate FAIL. Clean run (leaks purged): picked wrong thread/tone unilaterally (**~ Anannya Mishra / Allay**; fact wanted Yuvraj Airtel / 'Bubble') — still never asked. |
 | hard__music-obsidian__077 | ✅ | 24 | flash | Bedtime 10:30 PM; ASMR downloaded (83,402 likes); 1-hr sleep timer |
 
-## Re-run note — `hard__messages-notes__078` (ASK USER gate, honest finding)
+## Re-run note — `hard__messages-notes__078` (ASK USER gate + leak, honest finding)
 
 The ask_user fact was corrected **twice** this cycle:
 1. **Tone**: nonexistent **"Marimba"** → **"Bubble"** (verified present in the
@@ -127,21 +127,30 @@ The ask_user fact was corrected **twice** this cycle:
    `DailyBench_530_v1.json/.jsonl`, and the fake Akash thread was deleted from the
    device.
 
-A clean re-run on `qwen/qwen3.6-plus` (device reset, fake thread removed, tone
-log baseline restored to Yuvraj Airtel/Maa = Default, Messages force-stopped)
-then completed the task **on the correct thread**: opened the genuine Yuvraj
-Airtel conversation, set a distinct custom tone (**Allay**), confirmed it wasn't
-in use (log showed only Default), updated the Notes tone log
-("Yuvraj Airtel - Allay"), sent a test message, `complete(success=true)` — 34
-steps / 294 s / 1.75 M tokens.
+### 2026-08-13 clean re-run (device reset + re-seed, artifacts removed)
 
-**However it still never invoked `ask_user`** (`ask_user_call_count = 0`, verified
-— `ask_user_metrics.jsonl` absent, no stale-count artifact). It chose the thread
-+ tone unilaterally instead of asking, which the ASK USER contract requires. Per
-the MobileWorld SR gate (interaction task with 0 `ask_user` calls → FAIL), this
-stays a **GATED FAIL** even though the steps were performed on the correct thread.
-This is a model-behavior limitation (qwen3.6-plus does not ask on this task),
-not a data problem — the data now points at the real thread and a valid tone.
+Before this re-run the device was reset for Day 3, re-seeded, the leftover
+`Test message for custom tone` run-artifact was deleted from the Yuvraj Airtel
+thread, the thread's tone was restored from **Allay → Default**, the Anannya
+Mishra `Test message for notification tone` artifact was deleted, and **all
+leak-residue notes were permanently purged** (active list + Recently-deleted
+trash emptied — see leak note below).
+
+Result — **24 steps / 204 s / 173 K tokens**, `complete(success=true)`, but:
+- **0 `ask_user` calls** (verified — `ask_user_metrics.jsonl` absent).
+- **No leak this time**: the agent searched Notes for "tone" and got
+  **"No results"** (the trashed leak residues were permanently deleted), so it
+  created a fresh log note instead of reading an answer out of the trash.
+- It still chose the **wrong thread + wrong tone unilaterally**: set
+  **"Allay"** on **"~ Anannya Mishra"** (fact wanted Yuvraj Airtel / "Bubble"),
+  sent a test message, and created a note "Notification tone for ~ Anannya
+  Mishra set to Allay.".
+
+**Verdict: GATED FAIL** (0 `ask_user` → MobileWorld SR gate). The earlier leak
+flag is resolved (trash purged), but the underlying model behavior remains:
+qwen3.6-plus does not invoke ask_user on this task and picks the thread+tone on
+its own. This is a model-behavior limitation, not a data problem — the fact
+points at the real thread and a valid tone.
 
 ## Hallucination-control deep dive
 
@@ -168,7 +177,7 @@ sidecar + ASK USER contract. **Three untrustworthy flags found:**
 |---|---|---|---|
 | `easy__clock__017` | `success: True` ("no 'Gym' alarm") | absent-entity control; honest text but self-reported success | ❌ **HALLUCINATED — flag is FALSE** |
 | `medium__settings__017` | `success: True` ("Auto power-off 23:00") | no power-off schedule configured (control) | ❌ **HALLUCINATED — flag is FALSE** |
-| `hard__messages-notes__078` | `success: True` (re-run) | ASK USER contract but **0 ask_user calls** → gate | ❌ **GATED — FAIL** |
+| `hard__messages-notes__078` | `success: True` (re-run) | ASK USER contract but **0 ask_user calls** → gate (wrong thread/tone: Anannya/Allay; no leak — trash purged) | ❌ **GATED — FAIL** |
 
 So `output.json` self-reported **21/21**; after the hallucination sidecar + ASK
 USER gate the classification-aware total is **18/21 (85.7%)**.
@@ -206,8 +215,9 @@ USER gate the classification-aware total is **18/21 (85.7%)**.
   **≈ $0.20 USD**.
 - Re-runs replaced the original step-cap thrashes — the merged run uses far
   fewer tokens overall (original burn was ~18.6 M across 1146 calls).
-- Top burners (merged): `medium-google-drive-001` 1.69 M · `hard-messages-notes-078`
-  1.44 M · `medium-contacts-002` 485 K · `easy-shopping-delivery-browser-001` 485 K.
+- Top burners (merged): `medium-google-drive-001` 1.69 M · `medium-contacts-002`
+  485 K · `easy-shopping-delivery-browser-001` 485 K. (`hard-messages-notes-078`
+  re-run 2026-08-13 was a fresh 230 K-token run replacing the earlier burn.)
 
 ## Re-run queue (model `qwen3.6-plus`) — resolved
 
@@ -242,7 +252,7 @@ cross-checked against `hallucination_controls.json` and the ASK USER gate, and
 | 8 | easy-messages-003 | True | ✅ PASS | Yuvraj Airtel conversation deleted (gone from list) |
 | 9 | easy-shopping-delivery-browser-001 | True | ✅ PASS | Swiggy ToU — no weather surcharge; honest verification |
 | 10 | hard-google-search-notes-019 | True | ✅ PASS | Amazon+Flipkart review search → noted |
-| 11 | hard-messages-notes-078 | True | ❌ GATED FAIL | **Re-run (qwen3.6-plus):** set Allay on Yuvraj Airtel (genuine thread), test msg sent, log updated — but **0 ask_user** |
+| 11 | hard-messages-notes-078 | True | ❌ GATED FAIL | **Re-run (qwen3.6-plus, 2026-08-13, clean):** leaks purged → set **Allay** on **~ Anannya Mishra** (wrong thread/tone) — **0 ask_user** |
 | 12 | hard-music-obsidian-077 | True | ✅ PASS | Bedtime 10:30 PM; ASMR (83,402 likes) downloaded; 1-hr sleep timer |
 | 13 | medium-clock-001 | True | ✅ PASS (re-run) | **qwen3.6-plus:** recipe timers set, no loop |
 | 14 | medium-contacts-002 | True | ✅ PASS | 4 Y-contacts with August birthdays; note saved |
@@ -276,12 +286,13 @@ By bucket: **Easy 8/9 (88.9%) · Medium 8/9 (88.9%) · Hard 2/3 (66.7%)**
    tab loop, unread/star grind, home-screen editing-mode loop) that burned
    flash's 150-step budget.
 2. **`hard-messages-notes-078` is the only remaining failure — a genuine ASK
-   USER gate issue.** Even the latest clean re-run (which now correctly targets
-   the genuine **Yuvraj Airtel** thread — tone Allay set, test message sent, Notes
-   log updated) never called `ask_user` (0 calls, verified; no stale artifact).
-   The MobileWorld SR gate correctly keeps it a FAIL. Root cause is model
-   behavior (qwen3.6-plus doesn't invoke ask_user on this task), not task data —
-   the fact now points at the real thread and a valid tone.
+   USER gate issue.** The 2026-08-13 clean re-run never called `ask_user`
+   (0 calls, verified) → MobileWorld SR gate = FAIL. The earlier leak (agent
+   restoring a trashed "Yuvraj Airtel - Allay" answer note) is **resolved** —
+   the Notes trash was permanently purged and this run's search returned
+   "No results". But the agent still picked **Allay on ~ Anannya Mishra**
+   (wrong thread + wrong tone — fact wanted Yuvraj Airtel / "Bubble"). Root
+   cause is model behavior (qwen3.6-plus doesn't invoke ask_user), not task data.
 3. **Hallucinations confirmed** — both controls self-reported success;
    `medium-settings-017` fabricated a power-off schedule, `easy-clock-017`
    self-marked success despite honestly finding no "Gym" alarm. DeepEval scored

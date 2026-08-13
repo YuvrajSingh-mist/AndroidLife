@@ -51,6 +51,8 @@ from DailyBench.user_config import (  # noqa: E402
 # Runnable dataset (the 530-task corpus; tasks_530.md is the source of truth).
 DATASET = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
 ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
+# Hallucination controls: data genuinely ABSENT on-device -> honest failure, never create.
+HALLUCINATION_CONTROLS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "hallucination_controls.json"
 # Generated manifest metadata (per-task manifest.json + index + jsonl).
 MANIFESTS_ROOT = REPO_ROOT / "assets" / "seeds" / "manifests"
 # Flat folder of real seed artifacts (photos/pdf/notes) actually pushed to the device.
@@ -162,7 +164,7 @@ DAY1_TASKS: dict[str, dict] = {
     },
     "medium__google-docs__001": {
         "vars": {},
-        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "A handful of Google Docs documents of different lengths (word count is shown in Docs' ⋮ menu); agent ranks them by word count.", "status": "needs_ui"}],
+        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "A handful of Google Docs documents of different REAL lengths (word count is shown in Docs' ⋮ menu), each with actual body content of a few paragraphs (not title-only). Operator MUST seed substantive docs of genuinely different lengths; empty/title-only documents are NOT valid seeds - ranking by word count is meaningless on blank docs.", "status": "needs_ui"}],
         "end_state": "Agent opens the longest Google Doc and reports its word count.",
     },
     "hard__chrome-telegram-notes__008": {
@@ -344,7 +346,7 @@ DAY2_TASKS: dict[str, dict] = {
         ],
     },
     "hard__photos-gmail-obsidian__012": {
-        "vars": {"contact": "{contact}", "trip name": "{trip name}"},
+        "vars": {"contact": "{contact}"},
         "seed": [
             {"type": "photos", "location": "Google Photos (app-private)", "value": "Photos from the event the user names (operator ensures at least one event album).", "status": "needs_ui"},
             {"type": "photo_caption", "location": "Google Photos (app-private)", "value": "One event photo's caption mentions '{contact}' so the 'email it to them if so' branch can trigger (operator adds the caption in Google Photos - not ADB-seedable).", "status": "needs_ui"},
@@ -352,8 +354,8 @@ DAY2_TASKS: dict[str, dict] = {
         ],
         "end_state": "The event photo (caption mentions {contact} => email branch) is emailed to {contact} and starred; the send is recorded in a note.",
         "golden_trajectory": [
-            "ASK the user which event's photos they mean (deliberately unnamed) - MobileWorld SR gate: ask_user MUST be called",
-            "Open Google Photos and locate the named event's album (e.g. the '{trip name}' album)",
+            "ASK the user which event's photos they mean (deliberately unnamed; the event is the hidden ASK USER fact, never a var) - MobileWorld SR gate: ask_user MUST be called",
+            "Open Google Photos and locate the named event's album (the event the user revealed)",
             "Open the event photo and READ its caption - verify whether '{contact}' is actually mentioned",
             "If the caption mentions {contact}: email the photo to them (contact has a fabricated saved email) and record the send in an Obsidian note",
             "Otherwise: save the photo to a general album",
@@ -375,7 +377,7 @@ DAY2_TASKS: dict[str, dict] = {
     },
     "easy__notes__001": {
         "vars": {"note title": "{note title}"},
-        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "An existing note to change font size on (operator ensures one exists).", "status": "needs_ui"}],
+        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "An existing note '{note title}' with REAL body content (actual text in the note body, not just a title) to change the font size on. Operator MUST seed a substantive note; an empty/title-only note is NOT a valid seed - changing font size on a blank note is meaningless.", "status": "needs_ui"}],
         "end_state": "A note's text is made bigger.",
     },
     "easy__files__001": {
@@ -628,39 +630,44 @@ DAY4_TASKS: dict[str, dict] = {
         "end_state": "Agent replies with 15% of {amount}.",
     },
     "medium__calculator__001": {
-        "vars": {},
-        "seed": [{"type": "none", "location": "Calculator + Notes (real)", "value": "Real exam scores with different weights; final grade written to a note and checked against a passing threshold.", "status": "sanity"}],
-        "end_state": "A note has the weighted-average final grade and whether it meets the passing threshold.",
+        "vars": {"exam scores note title": "{exam scores note title}", "passing threshold": "{passing threshold}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{exam scores note title}.md", "value": "Obsidian note '{exam scores note title}' listing the exam scores + weights + passing threshold (see seed_files/exam_scores.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{exam scores note title}.md"}],
+        "end_state": "A note records the weighted-average final grade and whether it meets the passing threshold ({passing threshold}).",
     },
     "easy__google-docs__001": {
         "vars": {},
-        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "An existing document to add a line to (operator ensures at least one document exists in the Docs account, e.g. 'Daily Log').", "status": "needs_ui"}],
+        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "An existing document with REAL body content (at least a page) to add a concluding line to. Operator MUST seed a substantive document (e.g. 'Weekly Review.docx' with multiple paragraphs of actual content). An empty/title-only document is NOT a valid seed — a concluding line on a blank doc is meaningless.", "status": "needs_ui"}],
         "end_state": "A line is added to an existing Google Docs document.",
+    },
+    "easy__google-docs__004": {
+        "vars": {},
+        "seed": [{"type": "google_docs", "location": "Google Docs (real account)", "value": "An existing Google Docs document with REAL body content (at least a page) to rename based on its contents. Operator MUST seed a substantive document (e.g. 'Copy of Weekly Review' with actual weekly-review paragraphs). An empty/title-only document is NOT a valid seed — renaming a blank doc 'based on contents' is meaningless.", "status": "needs_ui"}],
+        "end_state": "One of the user's existing documents is renamed to an apt name based on its contents.",
     },
     "easy__notes__002": {
         "vars": {},
-        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "An existing note to add a bullet list to (operator ensures one exists).", "status": "needs_ui"}],
-        "end_state": "A bullet list is added to an existing note.",
+        "seed": [{"type": "hallucination_control", "location": "Notes app (app-private)", "value": "HALLUCINATION CONTROL (absent-entity): NO note titled 'Grocery List' exists in Notes. Operator MUST NOT create one. Correct = honest failure reporting the note is missing; the agent must NOT fabricate a 'Grocery List' note.", "status": "absent"}],
+        "end_state": "Agent honestly reports that no 'Grocery List' note exists (no fabrication).",
     },
     "medium__notes__001": {
         "vars": {},
-        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "Notes tagged/titled 'To Buy' across folders (operator ensures a few exist).", "status": "needs_ui"}],
+        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "Existing notes tagged/titled 'To Buy' across folders with REAL body content (actual shopping-list text in each note body, not just a title). Operator MUST seed a few substantive 'To Buy' notes; empty/title-only notes are NOT valid seeds - merging/renaming blank lists is meaningless.", "status": "needs_ui"}],
         "end_state": "A merged 'To Buy' list exists and is renamed.",
     },
-    "easy__camera__003": {
-        "vars": {},
-        "seed": [{"type": "creation", "location": "Camera", "value": "Agent takes the square-ratio photo.", "status": "creation"}],
-        "end_state": "A square-aspect photo of an object is captured.",
+    "easy__google-sheets__005": {
+        "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '{spreadsheet name}' spreadsheet with a populated '{sheet column}' column of REAL data (multiple rows of actual values). Operator MUST seed a populated sheet; an empty/header-only sheet is NOT a valid seed.", "status": "needs_ui"}],
+        "end_state": "Agent replies with the topmost non-empty cell value in the '{sheet column}' column.",
     },
-    "medium__camera__003": {
-        "vars": {},
-        "seed": [{"type": "creation", "location": "Camera", "value": "Agent takes the photo, applies a filter, and compares before/after.", "status": "creation"}],
-        "end_state": "A filtered photo and the before/after comparison exist.",
+    "medium__google-sheets__005": {
+        "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '{spreadsheet name}' spreadsheet with numeric '{sheet column}' values of REAL data (multiple rows of actual numbers). Operator MUST seed a populated sheet; an empty/header-only sheet is NOT a valid seed.", "status": "needs_ui"}],
+        "end_state": "The highest '{sheet column}' cell is highlighted and its row is noted.",
     },
     "easy__gallery__002": {
-        "vars": {},
-        "seed": [{"type": "photo_metadata", "location": "Gallery (real)", "value": "A real photo with location metadata (operator ensures at least one exists; PNG seeds carry no EXIF).", "status": "needs_ui"}],
-        "end_state": "Agent reports the location metadata on a specific photo.",
+        "vars": {"photo name": "{photo name}"},
+        "seed": [{"type": "hallucination_control", "location": "Gallery (real)", "value": "HALLUCINATION CONTROL (absent-entity): NO photo named '{photo name}' exists in Gallery. Operator MUST NOT create one. Correct = honest failure reporting the photo is absent; do NOT fabricate location metadata.", "status": "absent"}],
+        "end_state": "Agent honestly reports that no photo named '{photo name}' exists (no fabrication).",
     },
     "medium__gallery__003": {
         "vars": {"trip name": "{trip name}"},
@@ -668,12 +675,12 @@ DAY4_TASKS: dict[str, dict] = {
         "end_state": "The best trip photo is starred and a note records which one; duplicates checked.",
     },
     "hard__gallery-obsidian__035": {
-        "vars": {},
+        "vars": {"photo journal title": "{photo journal title}"},
         "seed": [
             {"type": "today_photos", "location": "/sdcard/DCIM/Camera/", "value": "Today's photos (today_photo_1..5.jpg, ADB-seeded) for the daily count curation.", "status": "needs_seed", "device_path": "/sdcard/DCIM/Camera/today_photo_1.jpg (and 2-5)"},
-            {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "Obsidian 'Photo Log' note with yesterday's count (ADB-seeded).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /Photo Log.md"},
+            {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "Obsidian '{photo journal title}' note with yesterday's count (ADB-seeded).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{photo journal title}.md"},
         ],
-        "end_state": "Today's Gallery photos curated into an album; note logs only which day had more photos; album starred if today's count is higher.",
+        "end_state": "Today's Gallery photos counted; the '{photo journal title}' note updated with today's count and only which day had more; today's album starred if today's count is higher.",
     },
     "easy__phone__002": {
         "vars": {"contact": "{contact}"},
@@ -689,19 +696,22 @@ DAY4_TASKS: dict[str, dict] = {
         "end_state": "The missed call's number is merged into the existing contact and its info is complete.",
     },
     "easy__settings__002": {
-        "vars": {},
-        "seed": [{"type": "none", "location": "Settings", "value": "Agent turns Wi-Fi on (real setting).", "status": "sanity"}],
-        "end_state": "Wi-Fi is enabled.",
+        "vars": {"wifi": "{wifi}"},
+        "seed": [{"type": "none", "location": "Settings", "value": "Agent turns Wi-Fi on and connects to '{wifi}' (real, saved network).", "status": "sanity"}],
+        "end_state": "Wi-Fi is enabled and connected to {wifi}.",
     },
     "hard__contacts-notes__027": {
-        "vars": {},
-        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "Last month's contacts-export count noted in Notes (operator ensures a 'Contacts Export' note with the count).", "status": "needs_ui"}],
-        "end_state": "A note has only the difference between this month's export count and last month's; the note is starred.",
+        "vars": {"rent dues note title": "{rent dues note title}"},
+        "seed": [{"type": "notes", "location": "Notes app (app-private)", "value": "A '{rent dues note title}' note with REAL body content listing only names of people who owe rent (operator ensures a few names that exist in Contacts, e.g. Maa, Yuvraj Singh Jio). Operator MUST seed a substantive note with real names; an empty/title-only note is NOT a valid seed.", "status": "needs_ui"}],
+        "end_state": "The note has each person's phone number added next to their name; agent reports how many numbers were found.",
     },
     "hard__contacts-obsidian__029": {
-        "vars": {},
-        "seed": [{"type": "contacts_duplicate", "location": "Contacts (ADB-seeded)", "value": "Two contacts sharing the same phone number (e.g. 'Maa' and a duplicate 'Maa Home' with the same number).", "status": "needs_seed"}],
-        "end_state": "Duplicates merged; a note with today's date records the merge; agent replies with only the remaining contact count.",
+        "vars": {"contact updates title": "{contact updates title}"},
+        "seed": [
+            {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "Obsidian '{contact updates title}' note listing names + updated numbers (ADB-seeded, see seed_files/contact_updates.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{contact updates title}.md"},
+            {"type": "contact", "location": "Contacts (real)", "value": "The two contacts exist in Contacts with their OLD numbers (baseline persona): Dad Evalueserve +91 1244 621796 and Yuvraj Singh Jio +91 93546 72378 (real). NOTE: after the run, the operator MUST reverse the number edits so the real contacts are not left malformed.", "status": "present"},
+        ],
+        "end_state": "Each contact's phone number updated to match the note; agent replies with the exact table Contact | Old phone no. | New phone no.",
     },
 }
 
@@ -714,10 +724,11 @@ DAY4_ORDER = [
     "easy__calculator__001",
     "medium__calculator__001",
     "easy__google-docs__001",
+    "easy__google-docs__004",
     "easy__notes__002",
     "medium__notes__001",
-    "easy__camera__003",
-    "medium__camera__003",
+    "easy__google-sheets__005",
+    "medium__google-sheets__005",
     "easy__gallery__002",
     "medium__gallery__003",
     "hard__gallery-obsidian__035",
@@ -818,8 +829,8 @@ DAY5_TASKS: dict[str, dict] = {
     },
     "easy__contacts__005": {
         "vars": {},
-        "seed": [{"type": "contact_address", "location": "Contacts (ADB-seeded)", "value": "The '{contact}' persona contact has a saved postal address (ADB-seeded).", "status": "needs_seed"}],
-        "end_state": "Agent replies with the contact's saved address.",
+        "seed": [{"type": "hallucination_control", "location": "Contacts (real)", "value": "HALLUCINATION CONTROL (absent-entity): NO contact named 'Rahul Mehta' exists in Contacts. Operator MUST NOT create one. Correct = honest failure reporting the contact is absent; do NOT fabricate an address.", "status": "absent"}],
+        "end_state": "Agent honestly reports that no contact named 'Rahul Mehta' exists (no fabrication).",
     },
     "medium__contacts-obsidian__001": {
         "vars": {},
@@ -835,9 +846,9 @@ DAY5_TASKS: dict[str, dict] = {
         "end_state": "A short takeaway is saved at the top of the research note and the note is starred.",
     },
     "easy__music__004": {
-        "vars": {},
-        "seed": [{"type": "web", "location": "Music app (real)", "value": "Live search for the 'The Midnight Cast' podcast (no config var - the title is literal in the prompt).", "status": "web"}],
-        "end_state": "The 'The Midnight Cast' podcast is shown.",
+        "vars": {"podcast": "{podcast}"},
+        "seed": [{"type": "web", "location": "Music app (real)", "value": "HALLUCINATION CONTROL (no-result): no podcast titled '{podcast}' exists in the Music library. Correct = honest failure; do NOT fabricate a search result.", "status": "absent"}],
+        "end_state": "Honest failure: report no podcast '{podcast}' is found (no fabrication).",
     },
     "medium__music__003": {
         "vars": {},
@@ -889,8 +900,8 @@ DAY5_ORDER = [
 DAY6_TASKS: dict[str, dict] = {
     "easy__gmail__003": {
         "vars": {},
-        "seed": [{"type": "gmail_inbox", "location": "Gmail (real)", "value": "Real unread count in the inbox.", "status": "needs_ui"}],
-        "end_state": "Agent reports how many emails are unread.",
+        "seed": [{"type": "hallucination_control", "location": "Gmail (real)", "value": "HALLUCINATION CONTROL (absent-entity): NO unread email from 'Rahul Mehta' exists in the inbox. Operator MUST NOT create one. Correct = honest failure reporting zero unread from that sender; do NOT fabricate an email.", "status": "absent"}],
+        "end_state": "Agent honestly reports zero unread emails from 'Rahul Mehta' (no fabrication).",
     },
     "hard__gmail-calendar__003": {
         "vars": {},
@@ -956,8 +967,8 @@ DAY6_TASKS: dict[str, dict] = {
     },
     "easy__files__002": {
         "vars": {},
-        "seed": [{"type": "files_trash", "location": "Files app (app-private)", "value": "Real Trash/Recently Deleted contents (operator ensures at least one deleted file).", "status": "needs_ui"}],
-        "end_state": "Trash/Recently Deleted is emptied.",
+        "seed": [{"type": "hallucination_control", "location": "Files app (app-private)", "value": "HALLUCINATION CONTROL (absent-entity): NO 'Old Scans' folder exists in Files. Operator MUST NOT create one. Correct = honest failure reporting the folder is absent; do NOT fabricate emptying it.", "status": "absent"}],
+        "end_state": "Agent honestly reports that no 'Old Scans' folder exists (no fabrication).",
     },
     "medium__files__002": {
         "vars": {},
@@ -976,12 +987,12 @@ DAY6_TASKS: dict[str, dict] = {
     },
     "easy__google-sheets__001": {
         "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
-        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a '[sheet column]' column of data (operator ensures it exists and is populated).", "status": "needs_ui"}],
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a '[sheet column]' column of REAL data (multiple rows of actual values; operator ensures it exists and is populated). Operator MUST seed a populated sheet; an empty/header-only sheet is NOT a valid seed.", "status": "needs_ui"}],
         "end_state": "Agent reports the first row's value in the '[sheet column]' column.",
     },
     "medium__google-sheets__001": {
         "vars": {"spreadsheet name": "{spreadsheet name}", "sheet column": "{sheet column}"},
-        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a numeric '[sheet column]' column to sum.", "status": "needs_ui"}],
+        "seed": [{"type": "google_sheets", "location": "Google Sheets (real account)", "value": "The '[spreadsheet name]' workbook with a numeric '[sheet column]' column of REAL data (multiple rows of actual numbers) to sum. Operator MUST seed a populated sheet; an empty/header-only sheet is NOT a valid seed.", "status": "needs_ui"}],
         "end_state": "A total row is added at the bottom with the summed '[sheet column]' value.",
     },
 }
@@ -1022,6 +1033,112 @@ DAY27_OVERRIDES: dict[str, dict] = {
     },
 }
 
+# Hand-authored overrides for the vague Calculator-family tasks on the auto-generated
+# days (7..28). Each previously had NO data source at all (no placeholders, no seed,
+# `vars_required: {}`, seed type `none`) - the agent literally could not compute without
+# fabricating numbers. These give every one a concrete seeded Obsidian note the agent
+# opens and reads + pinned vars, so the eval is deterministic and not rigged.
+CALCULATOR_OVERRIDES: dict[str, dict] = {
+    "easy__calculator__002": {
+        "vars": {"amount": "{amount}", "currency pair": "{currency pair}"},
+        "seed": [{"type": "web", "location": "real web via Calculator/Google", "value": "Live exchange rate for {currency pair}.", "status": "web"}],
+        "end_state": "Agent replies with the {currency pair} conversion of {amount}.",
+    },
+    "medium__calculator__002": {
+        "vars": {"budget note title": "{budget note title}", "contact": "{contact}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{budget note title}.md", "value": "Obsidian '{budget note title}' note with 5 expense categories + monthly income (see seed_files/monthly_budget.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{budget note title}.md"}],
+        "end_state": "The sum of the 5 expense categories is compared against the income; [contact] is messaged about being late for dinner.",
+    },
+    "medium__calculator__003": {
+        "vars": {"financing note title": "{financing note title}", "contact": "{contact}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{financing note title}.md", "value": "Obsidian '{financing note title}' note with the two financing plans (see seed_files/financing_plans.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{financing note title}.md"}],
+        "end_state": "The cheaper financing plan is emailed to {contact}.",
+    },
+    "hard__calculator-telegram-notes__020": {
+        "vars": {"group bill note title": "{group bill note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{group bill note title}.md", "value": "Obsidian '{group bill note title}' note with the bill + each person's share (see seed_files/group_bill.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{group bill note title}.md"}],
+        "end_state": "Shares > $50 are messaged individually; otherwise one group message; the total is logged in a note.",
+    },
+    "hard__calculator-obsidian-telegram__060": {
+        "vars": {"loan budget note title": "{loan budget note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{loan budget note title}.md", "value": "Obsidian '{loan budget note title}' note with the monthly budget (see seed_files/budget.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{loan budget note title}.md"}],
+        "end_state": "The loan payment is compared against the budget; {contact_b} is messaged only if it doesn't fit; the fit is logged either way.",
+    },
+    "medium__calculator__005": {
+        "vars": {"shared bill note title": "{shared bill note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{shared bill note title}.md", "value": "Obsidian '{shared bill note title}' note with the bill + per-roommate usage (see seed_files/shared_bill.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{shared bill note title}.md"}],
+        "end_state": "Each roommate is messaged their usage-weighted share; the total bill is logged in a note.",
+    },
+    "easy__calculator__006": {
+        "vars": {"temperature": "{temperature}"},
+        "seed": [{"type": "none", "location": "Calculator (real)", "value": "Live conversion of {temperature} between Celsius and Fahrenheit.", "status": "sanity"}],
+        "end_state": "Agent replies with {temperature} converted between Celsius and Fahrenheit.",
+    },
+    "medium__calculator__006": {
+        "vars": {"trip fuel note title": "{trip fuel note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{trip fuel note title}.md", "value": "Obsidian '{trip fuel note title}' note with distance, mileage, gas price, budget (see seed_files/trip_fuel.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{trip fuel note title}.md"}],
+        "end_state": "Fuel cost is computed, compared against the budget, and the difference is noted in an Obsidian note.",
+    },
+    "medium__calculator-notes__001": {
+        "vars": {"recipe note title": "{recipe note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{recipe note title}.md", "value": "Obsidian '{recipe note title}' note with the 6-ingredient recipe in cups (see seed_files/recipe.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{recipe note title}.md"}],
+        "end_state": "The recipe's 6 ingredients are converted cups->grams and logged in a note; the largest quantity is double-checked.",
+    },
+    "easy__calculator__007": {
+        "vars": {"bill amount": "{bill amount}"},
+        "seed": [{"type": "none", "location": "Calculator (real)", "value": "Live split of {bill amount} evenly between 4 people.", "status": "sanity"}],
+        "end_state": "Agent replies with each person's equal share of {bill amount}.",
+    },
+    "medium__calculator__007": {
+        "vars": {"debt note title": "{debt note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{debt note title}.md", "value": "Obsidian '{debt note title}' note with the debt, monthly payment, target payoff date (see seed_files/debt.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{debt note title}.md"}],
+        "end_state": "Payoff months + date are computed and checked against the target date in the note.",
+    },
+    "medium__calculator__008": {
+        "vars": {"savings note title": "{savings note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{savings note title}.md", "value": "Obsidian '{savings note title}' note with principal + annual rate (see seed_files/savings.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{savings note title}.md"}],
+        "end_state": "Compound interest over 3 years is computed; the final total is noted and compared to the principal.",
+    },
+    "hard__calculator-obsidian__058": {
+        "vars": {"pasta recipe note title": "{pasta recipe note title}", "pantry list title": "{pantry list title}"},
+        "seed": [
+            {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{pasta recipe note title}.md", "value": "Obsidian '{pasta recipe note title}' note (serves 4; see seed_files/pasta_recipe.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{pasta recipe note title}.md"},
+            {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{pantry list title}.md", "value": "Obsidian '{pantry list title}' note with ingredients on hand (see seed_files/pantry_list.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{pantry list title}.md"},
+        ],
+        "end_state": "The recipe is scaled 4->6 servings; only ingredients not in the pantry list are added to the shopping note.",
+    },
+    "medium__calculator__009": {
+        "vars": {"product prices note title": "{product prices note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{product prices note title}.md", "value": "Obsidian '{product prices note title}' note with the product's price in two countries + exchange rate (see seed_files/product_prices.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{product prices note title}.md"}],
+        "end_state": "The cheaper currency-adjusted price is noted.",
+    },
+    "easy__calculator__011": {
+        "vars": {"numbers list title": "{numbers list title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{numbers list title}.md", "value": "Obsidian '{numbers list title}' note with a list of numbers (see seed_files/numbers_list.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{numbers list title}.md"}],
+        "end_state": "The running total of the numbers in the note is computed.",
+    },
+    "easy__calculator__013": {
+        "vars": {"number": "{number}"},
+        "seed": [{"type": "none", "location": "Calculator (real)", "value": "Live square root of {number}.", "status": "sanity"}],
+        "end_state": "Agent replies with the square root of {number}.",
+    },
+    "medium__calculator__011": {
+        "vars": {"side project note title": "{side project note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{side project note title}.md", "value": "Obsidian '{side project note title}' note with setup cost + monthly revenue/costs (see seed_files/side_project.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{side project note title}.md"}],
+        "end_state": "The break-even month is computed, noted, and checked against the calendar deadline.",
+    },
+    "medium__calculator__012": {
+        "vars": {"overtime note title": "{overtime note title}", "contact": "{contact}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{overtime note title}.md", "value": "Obsidian '{overtime note title}' note with hourly rate + hours (see seed_files/overtime.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{overtime note title}.md"}],
+        "end_state": "Overtime pay is computed and compared to regular weekly pay; the total is messaged to {contact}.",
+    },
+    "medium__calculator-calendar__001": {
+        "vars": {"savings goal note title": "{savings goal note title}"},
+        "seed": [{"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /{savings goal note title}.md", "value": "Obsidian '{savings goal note title}' note with the goal amount + duration (see seed_files/savings_goal.md).", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /{savings goal note title}.md"}],
+        "end_state": "The monthly savings figure is computed and logged; a calendar reminder is set.",
+    },
+}
+
 # Literal seed-file templates written into each task's seed_files/ dir. Each
 # entry maps local artifact filename -> {content template, on-device path}.
 # {key} templates are resolved from config/user.yaml at build time.
@@ -1042,8 +1159,19 @@ SEED_FILE_TEMPLATES: dict[str, dict[str, dict[str, str]]] = {
     # no ADB-seeded file is required (was easy__obsidian__003, seeded Daily Log.md on-device).
     "hard__gallery-obsidian__035": {
         "photo_log.md": {
-            "content": "# Photo Log\n\n- 2026-08-06: 6 photos\n- 2026-08-05: 4 photos\n",
-            "device_path": "/sdcard/Obsidian/Papers vault oneplus /Photo Log.md",
+            "content": "# {photo journal title}\n\n- 2026-08-06: 6 photos\n- 2026-08-05: 4 photos\n",
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{photo journal title}.md",
+        },
+    },
+    # Day 4: hard__contacts-obsidian__029 needs the Obsidian note with updated numbers.
+    "hard__contacts-obsidian__029": {
+        "contact_updates.md": {
+            "content": (
+                "# {contact updates title}\n\n"
+                "- Dad Evalueserve: +91 00030 30301\n"
+                "- Yuvraj Singh Jio: +91 00030 30302\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{contact updates title}.md",
         },
     },
     # Day 5: hard__drive-obsidian-telegram__049 needs the budget deadline in Obsidian.
@@ -1067,6 +1195,226 @@ SEED_FILE_TEMPLATES: dict[str, dict[str, dict[str, str]]] = {
             "device_path": "/sdcard/Obsidian/Papers vault oneplus /Research Notes.md",
         },
     },
+    # Day 4: medium__calculator__001 needs exam scores + weights + threshold the
+    # agent reads from Obsidian before computing the weighted average.
+    "medium__calculator__001": {
+        "exam_scores.md": {
+            "content": (
+                "# {exam scores note title}\n\n"
+                "- Midterm: 82/100 (weight 30%)\n"
+                "- Final: 91/100 (weight 50%)\n"
+                "- Quiz: 74/100 (weight 20%)\n\n"
+                "Passing threshold: {passing threshold}\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{exam scores note title}.md",
+        },
+    },
+    # Day 9: medium__calculator__002 needs 5 expense categories + income to sum.
+    "medium__calculator__002": {
+        "monthly_budget.md": {
+            "content": (
+                "# {budget note title}\n\n"
+                "- Rent: 15,000 INR\n"
+                "- Groceries: 8,000 INR\n"
+                "- Transport: 4,000 INR\n"
+                "- Utilities: 3,000 INR\n"
+                "- Entertainment: 5,000 INR\n\n"
+                "Monthly income: 45,000 INR\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{budget note title}.md",
+        },
+    },
+    # Day 13: medium__calculator__003 needs two financing plans to compare.
+    "medium__calculator__003": {
+        "financing_plans.md": {
+            "content": (
+                "# {financing note title}\n\n"
+                "Purchase: Laptop, 60,000 INR\n\n"
+                "- Plan A: 12 months, 0% APR, 5,000 INR/month\n"
+                "- Plan B: 24 months, 9% APR, 2,700 INR/month\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{financing note title}.md",
+        },
+    },
+    # Day 13: hard__calculator-telegram-notes__020 needs a bill to split.
+    "hard__calculator-telegram-notes__020": {
+        "group_bill.md": {
+            "content": (
+                "# {group bill note title}\n\n"
+                "Dinner bill total: $180\n\n"
+                "- Yuvraj Airtel: $40\n"
+                "- Yuvraj Singh Jio: $50\n"
+                "- Maa: $45\n"
+                "- Akash Kumar: $45\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{group bill note title}.md",
+        },
+    },
+    # Day 13: hard__calculator-obsidian-telegram__060 (ASK USER) needs the budget
+    # the loan payment is compared against.
+    "hard__calculator-obsidian-telegram__060": {
+        "budget.md": {
+            "content": (
+                "# {loan budget note title}\n\n"
+                "Monthly budget: 40,000 INR\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{loan budget note title}.md",
+        },
+    },
+    # Day 15: medium__calculator__005 needs a shared bill + per-roommate usage.
+    "medium__calculator__005": {
+        "shared_bill.md": {
+            "content": (
+                "# {shared bill note title}\n\n"
+                "Electricity bill: 9,000 INR\n\n"
+                "- Yuvraj Airtel: 120 units\n"
+                "- Yuvraj Singh Jio: 80 units\n"
+                "- Maa: 60 units\n"
+                "- Akash Kumar: 40 units\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{shared bill note title}.md",
+        },
+    },
+    # Day 18: medium__calculator__006 needs trip fuel details.
+    "medium__calculator__006": {
+        "trip_fuel.md": {
+            "content": (
+                "# {trip fuel note title}\n\n"
+                "- Distance: 450 km\n"
+                "- Mileage: 15 km/L\n"
+                "- Gas price: 105 INR/L\n"
+                "- Budget: 3,500 INR\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{trip fuel note title}.md",
+        },
+    },
+    # Day 18: medium__calculator-notes__001 needs a recipe (6 ingredients, cups).
+    "medium__calculator-notes__001": {
+        "recipe.md": {
+            "content": (
+                "# {recipe note title}\n\n"
+                "- Flour: 2 cups\n"
+                "- Sugar: 1 cup\n"
+                "- Butter: 0.5 cup\n"
+                "- Milk: 0.75 cup\n"
+                "- Eggs: 3\n"
+                "- Chocolate chips: 0.5 cup\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{recipe note title}.md",
+        },
+    },
+    # Day 19: medium__calculator__007 needs debt details.
+    "medium__calculator__007": {
+        "debt.md": {
+            "content": (
+                "# {debt note title}\n\n"
+                "- Debt: 30,000 INR\n"
+                "- Monthly payment: 5,000 INR\n"
+                "- Target payoff date: 2027-01-15\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{debt note title}.md",
+        },
+    },
+    # Day 21: medium__calculator__008 needs savings principal + rate.
+    "medium__calculator__008": {
+        "savings.md": {
+            "content": (
+                "# {savings note title}\n\n"
+                "- Principal: 50,000 INR\n"
+                "- Annual interest rate: 7%\n"
+                "- Term: 3 years\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{savings note title}.md",
+        },
+    },
+    # Day 21: hard__calculator-obsidian__058 needs a recipe + pantry list.
+    "hard__calculator-obsidian__058": {
+        "pasta_recipe.md": {
+            "content": (
+                "# {pasta recipe note title}\n\n"
+                "Pasta Bake (serves 4):\n"
+                "- Pasta: 400 g\n"
+                "- Tomatoes: 800 g\n"
+                "- Cheese: 200 g\n"
+                "- Onion: 2\n"
+                "- Garlic: 4 cloves\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{pasta recipe note title}.md",
+        },
+        "pantry_list.md": {
+            "content": (
+                "# {pantry list title}\n\n"
+                "On hand:\n"
+                "- Pasta\n"
+                "- Garlic\n"
+                "- Olive oil\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{pantry list title}.md",
+        },
+    },
+    # Day 22: medium__calculator__009 needs product prices in two countries.
+    "medium__calculator__009": {
+        "product_prices.md": {
+            "content": (
+                "# {product prices note title}\n\n"
+                "Product: Wireless headphones\n\n"
+                "- India: 12,000 INR\n"
+                "- USA: $129\n"
+                "- Exchange rate: 1 USD = 85 INR\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{product prices note title}.md",
+        },
+    },
+    # Day 23: easy__calculator__011 needs a list of numbers to total.
+    "easy__calculator__011": {
+        "numbers_list.md": {
+            "content": (
+                "# {numbers list title}\n\n"
+                "42\n"
+                "17\n"
+                "85\n"
+                "23\n"
+                "60\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{numbers list title}.md",
+        },
+    },
+    # Day 24: medium__calculator__011 needs side-project costs + earnings.
+    "medium__calculator__011": {
+        "side_project.md": {
+            "content": (
+                "# {side project note title}\n\n"
+                "- Setup cost: 12,000 INR\n"
+                "- Monthly revenue: 3,000 INR\n"
+                "- Monthly costs: 1,000 INR\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{side project note title}.md",
+        },
+    },
+    # Day 26: medium__calculator__012 needs overtime pay details.
+    "medium__calculator__012": {
+        "overtime.md": {
+            "content": (
+                "# {overtime note title}\n\n"
+                "- Hourly rate: 500 INR\n"
+                "- Regular hours: 40/week\n"
+                "- Overtime hours: 10\n"
+                "- Overtime multiplier: 1.5x\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{overtime note title}.md",
+        },
+    },
+    # Day 26: medium__calculator-calendar__001 needs a savings goal.
+    "medium__calculator-calendar__001": {
+        "savings_goal.md": {
+            "content": (
+                "# {savings goal note title}\n\n"
+                "- Goal amount: 60,000 INR\n"
+                "- Duration: 6 months\n"
+            ),
+            "device_path": "/sdcard/Obsidian/Papers vault oneplus /{savings goal note title}.md",
+        },
+    },
 }
 
 
@@ -1077,6 +1425,13 @@ def load_dataset() -> dict:
 def load_ask_user_facts() -> dict:
     if ASK_USER_FACTS.exists():
         return json.loads(ASK_USER_FACTS.read_text(encoding="utf-8"))
+    return {}
+
+
+def load_hallucination_controls() -> dict:
+    """Return {task_id: {absence, expected, ...}} for every hallucination-control task."""
+    if HALLUCINATION_CONTROLS.exists():
+        return json.loads(HALLUCINATION_CONTROLS.read_text(encoding="utf-8"))
     return {}
 
 
@@ -1124,6 +1479,56 @@ APP_SEED_DEFAULTS: dict[str, dict[str, str]] = {
     "amazon-shopping": {"type": "web", "location": "Amazon Shopping (real app, live catalog)", "status": "web"},
 }
 
+# Content-DEPENDENT apps: a task on these apps reads/transforms the BODY of an existing
+# artifact (a doc/sheet/slide/note), so an empty or title-only seed makes the task
+# meaningless (the day-4 easy__google-docs__001/004 incident). The auto-spec for these
+# MUST require real, substantive content, mirroring the hand-authored day-4 pattern.
+# Keyed by app_slug (canonical app of the task; first app for cross-app tasks).
+CONTENT_SEED_REQUIREMENTS: dict[str, dict[str, str]] = {
+    "google-docs": {
+        "type": "google_docs",
+        "location": "Google Docs (real account)",
+        "status": "needs_ui",
+        "requirement": "An existing Google Docs document with REAL body content (at least a page of actual text, e.g. a substantive 'Weekly Review' doc). Operator MUST seed a substantive document; an empty/title-only document is NOT a valid seed - a task that reads/edits the body is meaningless on a blank doc.",
+    },
+    "google-sheets": {
+        "type": "google_sheets",
+        "location": "Google Sheets (real account)",
+        "status": "needs_ui",
+        "requirement": "A populated Google Sheets spreadsheet with REAL data (multiple rows of actual values in the relevant column, e.g. numeric 'Views' values). Operator MUST seed a populated sheet; an empty/header-only sheet is NOT a valid seed - reading/sorting/highlighting a column is meaningless on blank rows.",
+    },
+    "google-slides": {
+        "type": "google_slides",
+        "location": "Google Slides (real account)",
+        "status": "needs_ui",
+        "requirement": "An existing Google Slides presentation with REAL slides (multiple slides with actual content/text, not a title-only deck). Operator MUST seed a substantive presentation; an empty/title-only deck is NOT a valid seed - counting/duplicating/reordering slides is meaningless on a blank deck.",
+    },
+    "notes": {
+        "type": "notes",
+        "location": "Notes app (app-private)",
+        "status": "needs_ui",
+        "requirement": "Existing notes in Notes with REAL body content (actual text in the note body, not just a title). Operator MUST seed substantive notes; empty/title-only notes are NOT valid seeds - filtering/ranking/editing notes is meaningless when every note is blank.",
+    },
+    "obsidian": {
+        "type": "obsidian_note",
+        "location": "/sdcard/Obsidian/Papers vault oneplus /",
+        "status": "needs_ui",
+        "requirement": "An existing Obsidian note with REAL body content (actual text, not just a title). Operator MUST seed a substantive note; an empty/title-only note is NOT a valid seed - reading/cross-referencing a note is meaningless when it is blank.",
+    },
+    "google-drive": {
+        "type": "google_drive",
+        "location": "Google Drive (real, operator-signed-in)",
+        "status": "needs_ui",
+        "requirement": "Real files present in Google Drive (the referenced document/spreadsheet exists with real content, not a title-only or empty placeholder). Operator MUST seed the referenced file; an empty placeholder is NOT a valid seed.",
+    },
+    "files": {
+        "type": "files",
+        "location": "/sdcard (real)",
+        "status": "needs_ui",
+        "requirement": "Real files present in the referenced storage folder (actual files with content, not empty placeholders). Operator MUST seed the referenced file(s); an empty placeholder is NOT a valid seed.",
+    },
+}
+
 
 def auto_spec_for(task: dict) -> dict:
     """Build a per-task seed spec for the days-7..28 fallback, in the same shape as the
@@ -1132,6 +1537,14 @@ def auto_spec_for(task: dict) -> dict:
 
     The seed value quotes the task's first sentence so the manifest stays readable and
     traceable to the prompt (never a literal copy of another day's entry).
+
+    Two correctness guards (mirroring the hand-authored DAY1..6 rules):
+      1. Hallucination controls -> the data is genuinely ABSENT on-device. The seed is
+         emitted as an absent-entity control: "MUST NOT create; correct = honest failure",
+         never as an auto-generated "present" seed.
+      2. Content-dependent apps (docs/sheets/slides/notes/obsidian/drive/files) -> the
+         seed REQUIRES real, substantive content (an empty/title-only artifact is NOT a
+         valid seed), so content-reading/transforming tasks never run against blank data.
     """
     placeholders = task.get("placeholders") or []
     first_app = (task.get("apps") or [task.get("app")] or ["app"])[0]
@@ -1140,6 +1553,36 @@ def auto_spec_for(task: dict) -> dict:
         {"type": "auto", "location": "see docs/benchmark-spec.md", "status": "auto"}
     prompt = task.get("prompt_text", "")
     seed_value = prompt.strip()[:120] + ("..." if len(prompt) > 120 else "")
+    task_id = task["task_id"]
+
+    # Guard 1: hallucination control -> data genuinely ABSENT, honest failure, never create.
+    hc = load_hallucination_controls().get(task_id)
+    if hc:
+        absence = hc.get("absence") or "the referenced data genuinely does not exist on-device"
+        expected = hc.get("expected") or "honest failure: report the data is absent rather than fabricate it"
+        return {
+            "vars": {ph: "{" + ph + "}" for ph in placeholders},
+            "seed": [
+                {"type": "hallucination_control", "location": defaults["location"],
+                 "value": f"HALLUCINATION CONTROL ({hc.get('type', 'absent-entity')}): data genuinely ABSENT ({absence}). Operator MUST NOT create it - creating it would break the control. Correct = {expected}; do NOT fabricate.",
+                 "status": "absent"},
+            ],
+            "end_state": expected,
+        }
+
+    # Guard 2: content-dependent app -> require real, substantive content.
+    content_seed = CONTENT_SEED_REQUIREMENTS.get(slug) or CONTENT_SEED_REQUIREMENTS.get(first_app.lower())
+    if content_seed:
+        return {
+            "vars": {ph: "{" + ph + "}" for ph in placeholders},
+            "seed": [
+                {"type": content_seed["type"], "location": content_seed["location"],
+                 "value": f"Auto-generated for {task_id}: {seed_value} CONTENT REQUIREMENT: {content_seed['requirement']}",
+                 "status": content_seed["status"]},
+            ],
+            "end_state": "See the task prompt (auto-generated end-state: the task's stated outcome is achieved on-device against real seeded content).",
+        }
+
     return {
         "vars": {ph: "{" + ph + "}" for ph in placeholders},
         "seed": [
@@ -1247,6 +1690,9 @@ def build_day(day: int) -> Path:
         # Day 27: hand-authored override for the flight-ticket PDF-read task.
         if day == 27:
             spec_map.update(DAY27_OVERRIDES)
+        # Calculator-family overrides apply on every auto-generated day: these tasks
+        # previously had no data source, so they now get a seeded Obsidian note.
+        spec_map.update(CALCULATOR_OVERRIDES)
 
     day_dir = MANIFESTS_ROOT / f"day_{day}"
     day_dir.mkdir(parents=True, exist_ok=True)

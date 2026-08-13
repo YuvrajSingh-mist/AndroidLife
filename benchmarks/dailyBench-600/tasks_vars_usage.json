@@ -3,15 +3,16 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 43,
-  "placeholder_key_count_in_dataset": 49,
+  "var_key_count_in_local_env": 51,
+  "placeholder_key_count_in_dataset": 78,
   "vars": {
     "X": {
       "configured_in_local_env": true,
-      "task_count": 5,
+      "task_count": 6,
       "days": [
         3,
         12,
+        17,
         18
       ],
       "tasks": [
@@ -19,6 +20,7 @@
         "easy__calendar__006",
         "easy__contacts__010",
         "easy__google-drive__007",
+        "medium__obsidian__005",
         "easy__google-docs__002"
       ]
     },
@@ -86,6 +88,26 @@
         "medium__music__001"
       ]
     },
+    "bill amount": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        19
+      ],
+      "tasks": [
+        "easy__calculator__007"
+      ]
+    },
+    "budget note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        9
+      ],
+      "tasks": [
+        "medium__calculator__002"
+      ]
+    },
     "channel name": {
       "configured_in_local_env": true,
       "task_count": 2,
@@ -113,7 +135,7 @@
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 67,
+      "task_count": 68,
       "days": [
         1,
         2,
@@ -185,6 +207,7 @@
         "medium__calendar__008",
         "medium__gmail__004",
         "medium__google-search__008",
+        "medium__google-docs__004",
         "medium__google-maps-telegram__001",
         "medium__google-maps__004",
         "easy__telegram__009",
@@ -224,14 +247,26 @@
         "easy__contacts__003"
       ]
     },
-    "currency pair": {
+    "contact updates title": {
       "configured_in_local_env": true,
       "task_count": 1,
       "days": [
-        1
+        4
       ],
       "tasks": [
-        "easy__google-search__001"
+        "hard__contacts-obsidian__029"
+      ]
+    },
+    "currency pair": {
+      "configured_in_local_env": true,
+      "task_count": 2,
+      "days": [
+        1,
+        9
+      ],
+      "tasks": [
+        "easy__google-search__001",
+        "easy__calculator__002"
       ]
     },
     "date range": {
@@ -246,11 +281,58 @@
         "medium__calendar__008"
       ]
     },
+    "debt note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        19
+      ],
+      "tasks": [
+        "medium__calculator__007"
+      ]
+    },
     "digits": {
       "configured_in_local_env": true,
       "task_count": 0,
       "days": [],
       "tasks": []
+    },
+    "doc name": {
+      "configured_in_local_env": true,
+      "task_count": 5,
+      "days": [
+        10,
+        13,
+        16,
+        18
+      ],
+      "tasks": [
+        "easy__google-docs__003",
+        "medium__google-docs__003",
+        "easy__google-docs__005",
+        "easy__google-docs__007",
+        "medium__google-docs__004"
+      ]
+    },
+    "exam scores note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "medium__calculator__001"
+      ]
+    },
+    "financing note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "medium__calculator__003"
+      ]
     },
     "food delivery site": {
       "configured_in_local_env": true,
@@ -282,6 +364,26 @@
         "medium__gallery__001"
       ]
     },
+    "group bill note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "hard__calculator-telegram-notes__020"
+      ]
+    },
+    "keyword": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "medium__google-docs__003"
+      ]
+    },
     "letter": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -290,6 +392,16 @@
       ],
       "tasks": [
         "medium__contacts__002"
+      ]
+    },
+    "loan budget note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "hard__calculator-obsidian-telegram__060"
       ]
     },
     "meeting folder": {
@@ -346,14 +458,98 @@
     },
     "note title": {
       "configured_in_local_env": true,
-      "task_count": 2,
+      "task_count": 4,
       "days": [
         1,
-        2
+        2,
+        17,
+        18
       ],
       "tasks": [
         "easy__obsidian__001",
-        "easy__notes__001"
+        "easy__notes__001",
+        "easy__notes__005",
+        "medium__notes__005"
+      ]
+    },
+    "number": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        24
+      ],
+      "tasks": [
+        "easy__calculator__013"
+      ]
+    },
+    "numbers list title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        23
+      ],
+      "tasks": [
+        "easy__calculator__011"
+      ]
+    },
+    "overtime note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        26
+      ],
+      "tasks": [
+        "medium__calculator__012"
+      ]
+    },
+    "pantry list title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__calculator-obsidian__058"
+      ]
+    },
+    "passing threshold": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "medium__calculator__001"
+      ]
+    },
+    "pasta recipe note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__calculator-obsidian__058"
+      ]
+    },
+    "photo journal title": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "hard__gallery-obsidian__035"
+      ]
+    },
+    "photo name": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "easy__gallery__002"
       ]
     },
     "place": {
@@ -376,6 +572,16 @@
         "medium__google-maps__013"
       ]
     },
+    "podcast": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        5
+      ],
+      "tasks": [
+        "easy__music__004"
+      ]
+    },
     "power off time": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -388,11 +594,12 @@
     },
     "presentation name": {
       "configured_in_local_env": true,
-      "task_count": 6,
+      "task_count": 7,
       "days": [
         9,
         15,
-        24
+        24,
+        26
       ],
       "tasks": [
         "easy__google-slides__001",
@@ -400,12 +607,13 @@
         "easy__google-slides__002",
         "medium__google-slides__002",
         "easy__google-slides__003",
-        "medium__google-slides__003"
+        "medium__google-slides__003",
+        "medium__google-slides__004"
       ]
     },
     "product": {
       "configured_in_local_env": true,
-      "task_count": 6,
+      "task_count": 7,
       "days": [
         3,
         6,
@@ -420,6 +628,7 @@
         "medium__chrome-notes__001",
         "easy__shopping-delivery-browser__007",
         "easy__amazon-shopping__001",
+        "easy__amazon-shopping__002",
         "easy__shopping-delivery-browser__013"
       ]
     },
@@ -443,6 +652,16 @@
         "hard__google-search-notes__019"
       ]
     },
+    "product prices note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        22
+      ],
+      "tasks": [
+        "medium__calculator__009"
+      ]
+    },
     "recipe": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -453,6 +672,26 @@
         "medium__clock__001"
       ]
     },
+    "recipe note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__calculator-notes__001"
+      ]
+    },
+    "rent dues note title": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "hard__contacts-notes__027"
+      ]
+    },
     "route": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -461,6 +700,26 @@
       ],
       "tasks": [
         "medium__chrome__008"
+      ]
+    },
+    "savings goal note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        26
+      ],
+      "tasks": [
+        "medium__calculator-calendar__001"
+      ]
+    },
+    "savings note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "medium__calculator__008"
       ]
     },
     "search word": {
@@ -484,20 +743,34 @@
         "medium__gmail__001"
       ]
     },
+    "shared bill note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        15
+      ],
+      "tasks": [
+        "medium__calculator__005"
+      ]
+    },
     "sheet column": {
       "configured_in_local_env": true,
-      "task_count": 5,
+      "task_count": 8,
       "days": [
+        4,
         6,
         12,
         20,
         27
       ],
       "tasks": [
-        "easy__google-sheets__001",
+        "easy__google-sheets__005",
+        "medium__google-sheets__005",
         "medium__google-sheets__001",
         "medium__google-sheets__002",
         "easy__google-sheets__003",
+        "hard__google-sheets-amazon-shopping__074",
+        "medium__google-sheets__006",
         "easy__google-sheets__004"
       ]
     },
@@ -525,6 +798,16 @@
         "medium__shopping-delivery-browser__001"
       ]
     },
+    "side project note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        24
+      ],
+      "tasks": [
+        "medium__calculator__011"
+      ]
+    },
     "song": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -537,20 +820,25 @@
     },
     "spreadsheet name": {
       "configured_in_local_env": true,
-      "task_count": 8,
+      "task_count": 12,
       "days": [
+        4,
         6,
         12,
         20,
         27
       ],
       "tasks": [
+        "easy__google-sheets__005",
+        "medium__google-sheets__005",
         "easy__google-sheets__001",
         "medium__google-sheets__001",
         "easy__google-sheets__002",
         "medium__google-sheets__002",
         "easy__google-sheets__003",
+        "hard__google-sheets-amazon-shopping__074",
         "medium__google-sheets__003",
+        "medium__google-sheets__006",
         "easy__google-sheets__004",
         "medium__google-sheets__004"
       ]
@@ -601,6 +889,16 @@
         "medium__chrome__012"
       ]
     },
+    "temperature": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "easy__calculator__006"
+      ]
+    },
     "time": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -633,7 +931,7 @@
     },
     "topic": {
       "configured_in_local_env": true,
-      "task_count": 12,
+      "task_count": 14,
       "days": [
         1,
         3,
@@ -642,6 +940,7 @@
         9,
         14,
         17,
+        18,
         21,
         24,
         26
@@ -656,21 +955,32 @@
         "medium__chrome__007",
         "easy__google-search__009",
         "medium__chrome__009",
+        "medium__obsidian__005",
+        "easy__msn-news__002",
         "medium__google-search__010",
         "easy__google-search__012",
         "medium__youtube__013"
       ]
     },
+    "trip fuel note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__calculator__006"
+      ]
+    },
     "trip name": {
       "configured_in_local_env": true,
-      "task_count": 4,
+      "task_count": 3,
       "days": [
         2,
         4,
         13
       ],
       "tasks": [
-        "hard__photos-gmail-obsidian__012",
         "medium__google-photos__001",
         "medium__gallery__003",
         "medium__google-photos__005"
@@ -695,6 +1005,16 @@
       "tasks": [
         "easy__google-maps__002"
       ]
+    },
+    "wifi": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "easy__settings__002"
+      ]
     }
   },
   "vars_with_no_config": {
@@ -708,6 +1028,56 @@
         "medium__google-search__012"
       ]
     },
+    "bill amount": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        19
+      ],
+      "tasks": [
+        "easy__calculator__007"
+      ]
+    },
+    "budget note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        9
+      ],
+      "tasks": [
+        "medium__calculator__002"
+      ]
+    },
+    "debt note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        19
+      ],
+      "tasks": [
+        "medium__calculator__007"
+      ]
+    },
+    "exam scores note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "medium__calculator__001"
+      ]
+    },
+    "financing note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "medium__calculator__003"
+      ]
+    },
     "food item": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -718,6 +1088,106 @@
         "easy__google-search__005"
       ]
     },
+    "group bill note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "hard__calculator-telegram-notes__020"
+      ]
+    },
+    "loan budget note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "hard__calculator-obsidian-telegram__060"
+      ]
+    },
+    "number": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        24
+      ],
+      "tasks": [
+        "easy__calculator__013"
+      ]
+    },
+    "numbers list title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        23
+      ],
+      "tasks": [
+        "easy__calculator__011"
+      ]
+    },
+    "overtime note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        26
+      ],
+      "tasks": [
+        "medium__calculator__012"
+      ]
+    },
+    "pantry list title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__calculator-obsidian__058"
+      ]
+    },
+    "passing threshold": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "medium__calculator__001"
+      ]
+    },
+    "pasta recipe note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__calculator-obsidian__058"
+      ]
+    },
+    "product prices note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        22
+      ],
+      "tasks": [
+        "medium__calculator__009"
+      ]
+    },
+    "recipe note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__calculator-notes__001"
+      ]
+    },
     "route": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -726,6 +1196,46 @@
       ],
       "tasks": [
         "medium__chrome__008"
+      ]
+    },
+    "savings goal note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        26
+      ],
+      "tasks": [
+        "medium__calculator-calendar__001"
+      ]
+    },
+    "savings note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "medium__calculator__008"
+      ]
+    },
+    "shared bill note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        15
+      ],
+      "tasks": [
+        "medium__calculator__005"
+      ]
+    },
+    "side project note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        24
+      ],
+      "tasks": [
+        "medium__calculator__011"
       ]
     },
     "song": {
@@ -758,6 +1268,16 @@
         "medium__chrome__012"
       ]
     },
+    "temperature": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "easy__calculator__006"
+      ]
+    },
     "time": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -766,6 +1286,16 @@
       ],
       "tasks": [
         "easy__calendar__006"
+      ]
+    },
+    "trip fuel note title": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__calculator__006"
       ]
     },
     "type of place": {

@@ -123,8 +123,10 @@ invent steps; this is the agreed, verified workflow:
 3. **Verify seeds for that day on-device**:
    `uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL" --day N --verify`
 4. **Start Phoenix for that day** (fresh per-day DB; project `dailybench-dayN`):
-   `PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/dayN/phoenix.db" PHOENIX_PROJECT_NAME=dailybench-dayN uv run phoenix serve --port 6006`
-5. **Run the day** (auto-targets the `dailybench-dayN` project):
+   `uv run python scripts/run/start_phoenix.py --day N`
+   (raw equivalent: `PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/dayN/phoenix.db" PHOENIX_PROJECT_NAME=dailybench-dayN uv run phoenix serve --port 6006`)
+5. **Run the day** (auto-targets the `dailybench-dayN` project; a pre-run guard
+   now **aborts if Phoenix isn't reachable** so traces are never silently lost):
    `uv run python scripts/run/run_day.py --day N --dry-run` first, then without `--dry-run`.
 6. **Register pricing into that day's DB** (default is day1 — pass `--db` for other days):
    `uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash --db assets/db/dayN/phoenix.db`

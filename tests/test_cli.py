@@ -25,6 +25,32 @@ from DailyBench import cli, processes
 DEVICE_SERIAL = first_adb_device()
 
 
+def test_check_phoenix_ready_false_when_server_down() -> None:
+    """The phoenix pre-run guard must report DOWN when no collector is listening (the
+    day-4 2026-08-13 incident: no `phoenix serve` -> no trace DB, silent data loss)."""
+    # Use a port that is almost certainly closed (IETF TEST-NET, non-routable).
+    assert cli.check_phoenix_ready("http://127.0.0.1:59999") is False
+
+
+def test_check_phoenix_ready_true_when_server_up() -> None:
+    """When a collector IS listening, the guard must let the run proceed."""
+    class _OKHandler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:  # noqa: N802
+            self.send_response(200)
+            self.end_headers()
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _OKHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        port = server.server_address[1]
+        assert cli.check_phoenix_ready(f"http://127.0.0.1:{port}") is True
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+
+
+
 def _newest_run_dir(label: str) -> Path:
     """Return the most recently created run folder for a label.
 
@@ -120,6 +146,7 @@ def test_cli_main_writes_run_artifacts(monkeypatch, tmp_path: Path) -> None:
                 "--llm-proxy-port", str(proxy_port),
                 "--goal", "Check how many unread emails are in the inbox",
                 "--model", "stub-model",
+                "--no-tracing",  # CI has no phoenix server; this test covers run mechanics only
             ],
         )
         assert cli.main() == 0
@@ -175,6 +202,7 @@ def test_cli_main_records_failure_when_agent_raises(monkeypatch, tmp_path: Path)
             "--sample-interval", "0.5",
             "--goal", "irrelevant",
             "--model", "stub-model",
+            "--no-tracing",  # CI has no phoenix server; this test covers run mechanics only
         ],
     )
     assert cli.main() == 1

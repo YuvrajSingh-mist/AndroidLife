@@ -24,7 +24,7 @@ checked against real device state and classified as a true success, an honest fa
 hallucination — the difference between a model that admits it couldn't find something and one
 that fabricates a plausible-sounding answer.
 
-## Benchmark at a glance (as of 2026-08-12)
+## Benchmark at a glance (as of 2026-08-14)
 
 **Corpus (source of truth: `benchmarks/dailyBench-600/tasks_530.md`):**
 
@@ -39,9 +39,9 @@ that fabricates a plausible-sounding answer.
 | Max achievable points | **1302** (easy 216 + medium 726 + hard 360) |
 | Single-app tasks | **352 (66.4%)** |
 | Cross-app tasks | **178 (33.6%)** — 153 two-app + 25 three-app |
-| Hallucination controls | **55** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
+| Hallucination controls | **61** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
 | ASK USER fact sidecars | 36 (`ask_user_facts_730.json`) |
-| Placeholders used | 172 uses across **51 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
+| Placeholders used | 220 uses across **78 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
 | Public preview | 50 curated tasks (`public.md`) |
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
@@ -71,11 +71,36 @@ that fabricates a plausible-sounding answer.
 > (travel), BookMyShow (movie tickets), MSN News, and Amazon Shopping (shopping).
 > 7 repetitive easy Chrome/Search/YouTube/Files/Photos tasks were swapped for one
 > task each on the new apps, keeping every day at ≤11 apps, 216/242/72, 36/36, and
-> 55 HC. (Adobe Scan was briefly added for PDF open/scan but removed on request —
+> 61 HC. (Adobe Scan was briefly added for PDF open/scan but removed on request —
 > it's a mostly-human scanning app; instead the corpus keeps its PDF open+read
 > tasks and gained a new easy Files PDF-read task — a flight ticket the agent
 > opens and reads the terminal/gate/date from.) Per-app, per-day, and difficulty
 > numbers below all reflect the pinned 530-task corpus.
+
+> 📌 **Strict-output + Notes/Docs reading rebalance (2026-08-14).** Two more
+> replacement passes (again, dist unchanged — corpus stays exactly 530/216/242/72,
+> 36/36, 61 HC, 0 dupes):
+> 1. **Strict-format output.** Audited the corpus: only 7 tasks genuinely demanded
+>    a constrained reply shape (`"Contact" | "Link" strictly`, "reply with only X,
+>    no other text"). Replaced 12 weak medium tasks (days 5-28) with **strict-format
+>    output** variants — `'X' | 'Y' strictly` line lists (Drive filename|last-opened,
+>    Drive filename|folder, Contacts name|phone, Obsidian note-title|date) and
+>    "reply with only <value>, no other text" single-value answers (Sheets sum/sort/
+>    max, Messages contact, Calculator total, Docs keyword count, Maps cheapest,
+>    Chrome cheaper site). Strict-output tasks went **7 → 21 (4.0%)**.
+> 2. **Notes/Obsidian/Docs reading & essay balance.** Audited Notes/Obsidian/Docs/
+>    Drive tasks: too many write-only side-effects ("save X in a note", "make a
+>    copy", "note the count") and then (after the first pass) too many pure-read
+>    asks ("tell me what it's about"). Replaced 8 easy/medium tasks (days 5-28)
+>    with genuine, varied **everyday** content tasks: add a one-sentence summary at
+>    the top of a doc, turn a note's tasks into a checkbox checklist, add a
+>    'Summary' section at the end, add a bullet-point key-points list, rewrite a
+>    messy note into clean sections, and — school-student style — **research a
+>    topic on the web via Google Search then write a 150-200 word research report
+>    (intro / 3 key points / conclusion) into a new Obsidian note**, replying with
+>    only the note title. `medium__obsidian__005` became a **Google Search+Obsidian**
+>    cross-app task (day-17 cross count 8 → 9). Notes/Docs tasks now skew READ 51 /
+>    BOTH 39 / WRITE 4 instead of WRITE-heavy.
 
 Cross-app tasks are the mechanism that forces multi-app reasoning (an agent must switch apps mid-task, not camp on one screen). After the 2026-08-12 rebalance the **unrelated multi-intent** flavor makes up ~20% of cross-app tasks: a compound real-user request bundles two *independent* actions (e.g. "rank next week's meetings in Calendar **and** message [contact] the longest one's time"), each with its own verifiable end-state. The rest split ~46% note-anchored (research/summarize → save) and ~34% info→comm action chains. Cross-app load is spread across every day (4-10 per day, avg ~6.4) so no day is all-single-app or all-cross-app.
 
@@ -85,20 +110,20 @@ Cross-app tasks are the mechanism that forces multi-app reasoning (an agent must
 |---|---|---|---|---|---|---|---|
 | 1 | 22 | 12 | 6 | 15 | 20 | 11 | 7 |
 | 2 | 18 | 10 | 7 | 16 | 16 | 11 | 6 |
-| 3 | 21 | 12 | 7 | 17 | 19 | 10 | 8 |
-| 4 | 20 | 11 | 6 | 18 | 22 | 11 | 10 |
-| 5 | 20 | 11 | 8 | 19 | 19 | 11 | 5 |
-| 6 | 19 | 11 | 6 | 20 | 19 | 11 | 6 |
+| 3 | 21 | 11 | 7 | 17 | 19 | 10 | 9 |
+| 4 | 20 | 11 | 6 | 18 | 22 | 10 | 10 |
+| 5 | 20 | 11 | 8 | 19 | 19 | 10 | 5 |
+| 6 | 19 | 11 | 6 | 20 | 19 | 10 | 6 |
 | 7 | 18 | 11 | 5 | 21 | 15 | 11 | 6 |
 | 8 | 17 | 11 | 5 | 22 | 17 | 10 | 7 |
 | 9 | 21 | 11 | 7 | 23 | 20 | 10 | 8 |
 | 10 | 18 | 11 | 9 | 24 | 18 | 10 | 4 |
 | 11 | 18 | 11 | 5 | 25 | 19 | 10 | 5 |
 | 12 | 19 | 11 | 6 | 26 | 22 | 11 | 7 |
-| 13 | 18 | 11 | 8 | 27 | 19 | 10 | 4 |
-| 14 | 18 | 11 | 5 | 28 | 18 | 10 | 5 |
+| 13 | 18 | 12 | 8 | 27 | 19 | 10 | 4 |
+| 14 | 18 | 10 | 5 | 28 | 18 | 10 | 5 |
 
-Per-day distinct apps run **10-12, mean ~10.8** (real-world ~9-10 apps/day — see
+Per-day distinct apps run **10-12, mean ~10.6** (real-world ~9-10 apps/day — see
 `app-usage-grounding.md`); the target density keeps a day looking like a real
 person's phone. Cross-app per day is **4-10, mean ~6.4**. (2026-08-12: the days
 4-28 over-cap days were trimmed to ≤11 apps by moving 14 tasks between days, 25

@@ -183,6 +183,53 @@ how to verify "reached payment page" as the end state without making a purchase.
 
 ---
 
+## 7) Logged-out-state recovery via secure OS re-authentication
+
+**Today:** every app is pre-authenticated as part of seeding. No task in the
+dataset ever starts from a signed-out state, so the agent never has to recognize
+"this app needs me to sign back in" or recover from it — the benchmark is silent
+on a real, common phone-usage event.
+
+**Proposal:** seed a subset of tasks where a specific app's session has been
+deliberately expired/logged out before the run, and grade whether the agent:
+
+- recognizes the signed-out state instead of stalling or hallucinating success
+  on the original task
+- correctly triggers the OS-level secure re-authentication path — Android's
+  Credential Manager / saved-password chooser / passkey — confirming with
+  whatever biometric or PIN prompt the OS itself surfaces
+- proceeds with the original task once re-authenticated
+
+**Explicitly out of scope, and why:** the agent must never type, read, or
+otherwise handle a raw password or a live OTP/2FA code itself. This isn't a
+hedge — it's documented industry consensus: LLMs mishandling credentials is a
+known failure class (accidental leakage into logs/output), and agents reliably
+stall on 2FA challenges, which in practice pushes people toward disabling 2FA on
+the automated account just to keep the pipeline working — the exact anti-pattern
+this benchmark shouldn't model or reward. MobileWorld itself sidesteps this by
+self-hosting backends for apps that need auth rather than driving real login
+flows against real accounts. The secret exchange has to stay entirely outside
+the model, in a deterministic channel it can't see, type, or alter.
+
+**Why it matters:** session expiry is a real, ordinary phone-usage event (app
+updates force sign-out, tokens lapse, a fresh install) that nothing in the
+corpus currently tests. It's also a safe complement to the existing
+hallucination controls: a stale-assumption trap where the honest move is
+noticing the device isn't in the state you assumed, not barreling ahead as if
+it still were.
+
+**Open questions:** how to reliably and reproducibly force one specific app into
+a logged-out state via ADB (revoking a token, `pm clear` on part of an app's
+data, or scripting Settings → Accounts → Remove) without corrupting other seeded
+state that app depends on; which of the 22 apps actually support OS-level
+Credential Manager / passkey re-auth — not all will, and that determines which
+apps this direction can even be built for; how to grade the case where no saved
+credential or passkey exists and a typed password would be the only path —
+should that be a hard boundary the agent must recognize and either `ask_user`
+or cleanly refuse on, rather than attempt itself?
+
+---
+
 ### Summary
 
 | # | Direction | Core change | Keeps UI-honest? |
@@ -197,3 +244,4 @@ how to verify "reached payment page" as the end state without making a purchase.
 were shipped along with a Google Docs rotation and a Google Slides task set — see
 `benchmark-spec.md` → "App coverage & sector distribution".
 | 6 | Real-world booking/checkout | Flight / movie / shopping → payment-page flows | Yes |
+| 7 | Logged-out-state recovery | Seed session expiry, grade OS-level secure re-auth (never raw creds/OTP) | Yes |
