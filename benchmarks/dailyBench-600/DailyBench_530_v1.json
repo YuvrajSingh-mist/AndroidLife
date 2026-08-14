@@ -2758,17 +2758,15 @@
       "is_ask_user": false,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I need someone's address in a hurry. Can you open Contacts and check the saved address for 'Rahul Mehta'?",
-      "prompt_template": "I need someone's address in a hurry. Can you open Contacts and check the saved address for 'Rahul Mehta'?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need someone's address in a hurry. Can you open Contacts and check the saved address for [contact]?",
+      "prompt_template": "I need someone's address in a hurry. Can you open Contacts and check the saved address for {{ contact }}?",
+      "placeholders": [
+        "contact"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No contact named 'Rahul Mehta' exists in Contacts."
+      "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
       "task_id": "medium__contacts-obsidian__001",
@@ -3505,8 +3503,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want to pick up where I left off. Can you open Prime Video and tell me what's in my Continue Watching list?",
-      "prompt_template": "I want to pick up where I left off. Can you open Prime Video and tell me what's in my Continue Watching list?",
+      "prompt_text": "I want to pick up where I left off. Can you open Prime Video and tell me what's in my \"Continue Watching\" or something like that kind ?",
+      "prompt_template": "I want to pick up where I left off. Can you open Prime Video and tell me what's in my \"Continue Watching\" or something like that kind ?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
