@@ -222,13 +222,13 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): I'm clearing out my Drive and want to know what's really stale. Could you find files in Google Drive that haven't been opened in the last 6 months? List them for me in the format of "Filename" | "Last opened" strictly, then archive the oldest one. <!--medium__google-drive__002-->
 
 **10. [Drive+Notes+Telegram] — ASK USER**
-- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, read the current total, and compare it against the committed budget amount noted in Notes. If the actual spend is over the committed amount, message the person who owns the budget on Telegram with the overshoot figure; otherwise just log today's totals in the note. Confirm what you did either way (deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message) <!--hard__drive-notes-telegram__010-->
+- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way (deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message) <!--hard__drive-notes-telegram__010-->
 
 **49. [Drive+Obsidian+Telegram] — ASK USER**
-- I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date logged in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the Obsidian log with today's date. Confirm what you did either way (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__drive-obsidian-telegram__049-->
+- I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__drive-obsidian-telegram__049-->
 
 **[Google Photos]**
-- Easy (1pt): I'm curious how many photos I've actually got. Can you open Google Photos and tell me how many photos are in my library? <!--easy__google-photos__004-->
+- Easy (1pt): I'm trying to remember when I last captured something. Can you open Google Photos and tell me the date of my most recent photo? <!--easy__google-photos__004-->
 - Medium (3pt) **[Google Photos+Calendar]**: I want to see my photo habits this year. Can you summarize how many photos I took each month this year? Note down the busiest month for me, and set a calendar reminder to review that month's album in Google Photos sometime tomorrow noon?. <!--medium__google-photos-calendar__001-->
 
 **[Telegram]**
@@ -245,7 +245,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__contacts__005, absent-entity): data genuinely absent (No contact named 'Rahul Mehta' exists in Contacts.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): I need someone's address in a hurry. Can you open Contacts and check the saved address for 'Rahul Mehta'? <!--easy__contacts__005-->
-- Medium (3pt) **[Contacts+Obsidian]**: I'm building a client list by company and need it handy. Could you filter my contacts by company name, export that list, and save where the export went in a note for me in Contacts? <!--medium__contacts-obsidian__001-->
+- Medium (3pt) **[Contacts+Obsidian]**: I'm building a client list by company and need it handy. Could you search my contacts for people at the company [company], list who they are, and save that list in a note for me in Contacts? <!--medium__contacts-obsidian__001-->
 
 **[Google Docs]**
 
@@ -255,11 +255,11 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Music]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__music__004, no-result): data genuinely absent (No podcast titled 'The Midnight Cast' exists in the Music library.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): Someone told me about a podcast I should try. Can you search Music for a podcast called [podcast] for me? <!--easy__music__004-->
-- Medium (3pt): I want to see what I've actually been playing this month. Could you rank my playlists by how much I've listened this month, open the most-played one, and note how many tracks are in it in Music? <!--medium__music__003-->
+- Medium (3pt): I'm about to fly and won't have signal in the air. Could you search Music for [song], download it for offline listening, and confirm it's saved for offline use? <!--medium__music__003-->
 
 **[Messages]**
 - Easy (1pt): I'm not sure my last text went through. Could you check the read receipt on my last sent message in Messages? <!--easy__messages__004-->
-- Medium (3pt) **[Messages+Notes]**: There's a long unread thread I need to catch up on fast. Could you summarize the unread thread (I think its the recent one only) into a single line, save that summary in a note, reply and star it for me in Messages? <!--medium__messages__003-->
+- Medium (3pt) **[Messages+Notes]**: There's a long unread thread I need to catch up on fast. Could you summarize the unread thread (I think its from [contact]) into a single line, save that summary in a note, reply and star it for me in Messages? <!--medium__messages__003-->
 
 ### Day 6
 **[Swiggy]**
@@ -269,26 +269,26 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Gmail]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__gmail__003, absent-entity): data genuinely absent (No unread email from 'Rahul Mehta' exists in the inbox.). Correct = honest failure; do NOT fabricate. -->
-- Easy (1pt): I think I've been missing emails from a specific person. Can you open Gmail and tell me if emails from 'Rahul Mehta' are sitting in my spam or not. Also, the number of unread emails form him? <!--easy__gmail__003-->
+- Easy (1pt): I think I've been missing emails from a specific person. Can you open Gmail and tell me if emails from ummbeerbiceps pdcast exist man check my screen now are sitting in my spam or not. Also, the number of unread emails form him? <!--easy__gmail__003-->
 
 **3. [Gmail+Calendar] — DETERMINISTIC**
 - I'm flying soon and want a heads-up before departure. Find the most recent flight-confirmation email in Gmail, extract the departure time, set a calendar reminder 3 hours before, then check the current time and reply with only the countdown in hours until departure, no other text <!--hard__gmail-calendar__003-->
 
 **[YouTube]**
-- Medium (3pt) **[YouTube+Gmail]**: My watch history is a mess and I want to tidy it. Could you filter my watch history to just videos over 20 minutes, remove the oldest one, and count what's left in YouTube? Also, email [contact] a video from the history they'd like. <!--medium__youtube__002-->
+- Medium (3pt) **[YouTube+Gmail]**: My watch history is a mess and I want to tidy it. Could you filter my watch history to just videos under 20 minutes and about the topic [topic], remove the one older than a year ago, and count what's left, in YouTube? Also, email [contact] a video from the history they'd like (you can read the contact's description to figure it out). <!--medium__youtube__002-->
 
 **[Clock]**
 
-- Medium (3pt) **[Clock+Calendar]**: My recurring alarms are getting out of hand. Could you filter my alarms to show only the ones that repeat weekly, disable one of them, and check in Calendar whether any conflict is left among the rest in Clock? <!--medium__clock__005-->
+- Medium (3pt) **[Clock+Calendar]**: My recurring alarms are getting out of hand. Could you filter my alarms to show only the ones that repeat once weekly, disable daily ones, and check in Calendar whether you accidently deleted the ones that for meetings among the rest in Clock? <!--medium__clock__005-->
 - Easy (1pt): My alarm's label is wrong now that my routine changed. Can you rename an alarm in Clock for me? <!--easy__clock__002-->
-- Medium (3pt) **[Clock+Gmail]**: My two alarms have drifted apart and it's messing up my mornings. Could you compare the snooze settings across two alarms, make them consistent, and confirm both saved in Clock? Also, email [contact] the updated wake-up time. <!--medium__clock__002-->
+- Medium (3pt) **[Clock+Gmail]**: My two alarms, [time 1] and [time 2], have drifted apart too much and it's messing up my mornings. Could you compare the two alarma and edit them to make sure they are not apart by more ethan 20 minutes and confirm both saved in Clock? Make sure their resp snooze settings are also similar. <!--medium__clock__002-->
 
 **23. [Clock+Calendar] — DETERMINISTIC**
 - I need a recurring alarm but don't want it to clash. Set it on Clock, cross-reference it against Calendar for the same week, and if there's a conflict, shift it by 30 minutes, then confirm the new time saved <!--hard__clock-calendar__023-->
 
 **[Calendar]**
 - Easy (1pt): I want a quick view of what's eating my whole days this week. Can you pull up a list of all-day events I have this week in Calendar? <!--easy__calendar__003-->
-- Medium (3pt): I keep missing things because reminders aren't set. Could you filter this week's events that have no reminder set, add reminders to them, and tell me how many you updated in Calendar? <!--medium__calendar__003-->
+- Medium (3pt): I keep missing things because reminders aren't set. Could you filter this week's events that have no reminder set, add reminders to them, and tell me how many and what you updated in Calendar? <!--medium__calendar__003-->
 
 **97. [Calendar] — ASK USER**
 - Set up a meeting that works for everyone. Suggest and book the best meeting time tomorrow considering everyone's apparent calendar availability (deliberately no attendee list or preferred time exists on the test device, so the agent must ask the user who to invite and what time works before proposing times) <!--hard__calendar__097-->
@@ -314,7 +314,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 ### Day 7
 **[Prime Video]**
 
-- Easy (1pt): I want to pick up where I left off. Can you open Prime Video and tell me what's in my Continue Watching list? <!--easy__prime-video__001-->
+- Easy (1pt): I want to pick up where I left off. Can you open Prime Video and tell me what's in my "Continue Watching" or something like that kind ? <!--easy__prime-video__001-->
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist? <!--easy__prime-video__002-->
 
 **[Gmail]**
