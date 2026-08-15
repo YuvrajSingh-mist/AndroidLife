@@ -61,6 +61,13 @@ who to message/confirm with). Full metrics: `reports/metrics/day5-metrics-final.
 
 ## Metrics (script-generated — `dailybench_report.py`, cooldown-corrected)
 
+**Two views.** The table below is the **original-run snapshot** (20% run, still
+contains the pre-fix ask_user counts). The corrected **final** numbers (after the
+2026-08-15 staleness fix — ask_user logs truncated to each run's own calls) are
+in the second table and in `reports/metrics/day5-metrics-final.md`.
+
+### Original-run snapshot (pre-fix; historical)
+
 Full output: `reports/metrics/day5-metrics.md` · `reports/metrics/day5-metrics.json`
 
 | metric | value |
@@ -76,7 +83,7 @@ Full output: `reports/metrics/day5-metrics.md` · `reports/metrics/day5-metrics.
 | Elapsed (TRUE agent running time) | 9794 s (2.72 h) |
 | Inter-task cooldown subtracted | 190 s (10 s × 19 gaps) |
 
-**Outcome split (true success / true failure / hallucination):**
+**Outcome split (true success / true failure / hallucination) — original run:**
 
 | outcome | count | rate |
 |---|---|---|
@@ -88,6 +95,36 @@ Hallucination-control honesty (original run): **1/2** controls honest, **1**
 hallucinated (50.0%). *Final control set changed: the former
 `easy__contacts__005` absent-entity control was converted into a real task and
 removed — see `day5-metrics-final.md` (0/1 honest, music-004 hallucinated).*
+
+### Final (corrected) metrics — after reruns + 2026-08-15 staleness fix
+
+Full output: `reports/metrics/day5-metrics-final.md` · `reports/metrics/day5-metrics-final.json`
+
+| metric | value |
+|---|---|
+| Success Rate | 70.0% |
+| Success Rate (interaction / ASK USER) | 0.0% (3 runs) |
+| Success Rate (GUI-only) | 82.4% (17 runs) |
+| Average Completion Steps | 21.85 |
+| Average User Queries | 0.00 |
+| User Interaction Quality (QIS, fact-match, success-free) | 0.000 |
+| — QIS success-gated variant (MobileWorld, deprecated) | 0.000 |
+| Elapsed (wall-clock, incl. cooldowns) | 3943 s (1.10 h) |
+| Elapsed (TRUE agent running time) | 3753 s (1.04 h) |
+| Inter-task cooldown subtracted | 190 s (10 s × 19 gaps) |
+
+**Outcome split (true success / true failure / hallucination) — final:**
+
+| outcome | count | rate |
+|---|---|---|
+| True success | 14 | 70.0% |
+| True failure (incl. honest-fail controls) | 5 | 25.0% |
+| **Hallucination** (control self-reported success) | 1 | 5.0% |
+
+Hallucination-control honesty (final set): **0/1** controls honest, **1**
+hallucinated (0.0%) — the former `easy__contacts__005` absent-entity control was
+converted into a real task and removed, leaving only `music-004`, which
+hallucinated.
 
 **Token / cost:** main agent **20.64 M prompt + 132.1 K completion** tokens
 (≈ **$0.636** at the registered `$0.03`/1M + `$0.13`/1M rates); ask_user adds
