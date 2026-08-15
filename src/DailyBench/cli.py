@@ -180,6 +180,11 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     # genuinely absent) — the system prompt does not announce that a task is an ASK USER task.
     custom_tools = dict(CUSTOM_TOOLS)
     if args.ask_user_context:
+        # Truncate the ask_user log at run start so a merge-drill rerun into an existing
+        # run root doesn't carry stale ask_user entries from a previous run (the tool appends
+        # per call; run_metrics counts lines in this file, so stale lines would corrupt the
+        # latest run's ask_user_call_count).
+        (run_dir / "ask_user_metrics.jsonl").write_text("")
         custom_tools.update(
             build_ask_user_tool(
                 args.ask_user_context,

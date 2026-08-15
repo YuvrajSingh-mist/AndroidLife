@@ -50,14 +50,14 @@ failure, 1 real hallucination.** All 20 tasks' current results are merged into
 this folder (see addendum + per-task tables below). Summary of the transition:
 `google-photos-004`, `messages-004`, `chrome-003`, `telegram-002`, `music-003`,
 `calendar-002`, `telegram-002`, `google-photos-calendar-001`, `obsidian-004`,
-`contacts-obsidian-001`, `calendar-telegram-notes-025`, `music-004`-as-real-HC
+`contacts-obsidian-001`, `music-004`-as-real-HC
 all resolved on qwen3.6-plus; `music-004` is a **real hallucination** (control
 working). Remaining true failures: `contacts-005` (control → **real task**: address
 IS saved on-device for `[contact]=Yuvraj Airtel` (`A-42, Kalinga Nagar,
 Bhubaneswar 751003`) but the agent gave up after one swipe → **model failure**),
 `messages-003` (star not found), `drive-notes-telegram-010` + `drive-obsidian-
-telegram-049` (ASK USER gate — agent assumed owner instead of asking who to
-message). Full metrics: `reports/metrics/day5-metrics-final.md`.
+telegram-049` + `calendar-telegram-notes-025` (ASK USER gate — agent never asked
+who to message/confirm with). Full metrics: `reports/metrics/day5-metrics-final.md`.
 
 ## Metrics (script-generated — `dailybench_report.py`, cooldown-corrected)
 
@@ -123,13 +123,13 @@ hard tasks that burned their full 150-step budgets re-asking the wrong question.
 | medium__messages__003 | ❌ FAIL | 150 | **Rerun: 3/4 done, star missing** — model never long-presses a bubble (see audit) |
 | medium__music__003 | ✅ | 8 | **Fixed prompt ("saved for offline use") + rerun:** actually downloads (see audit) |
 
-### Hard (1 PASS / 2 FAIL — all ASK USER)
+### Hard (0 PASS / 3 FAIL — all ASK USER)
 
 | task_id | result | steps | ask_user | note |
 |---|---|---|---|---|
 | hard__drive-notes-telegram__010 | ❌ FAIL | 24 | gate | **Date-compare fix works** (read last-edited Aug 14 > deadline Aug 10 → overdue) but **ASK USER gate fails** — agent assumed owner="Rani Singh" instead of asking who to message |
 | hard__drive-obsidian-telegram__049 | ❌ FAIL | 29 | gate | **Date-compare fix works** (Aug 14 > last-reviewed Jul 10) but **ASK USER gate fails** — same owner-assumption mistake |
-| hard__calendar-telegram-notes__025 | ✅ | 7 | 1 | **Rerun (was 0 calls):** asked, confirmed early event → passes |
+| hard__calendar-telegram-notes__025 | ❌ FAIL | 7 | gate | **ASK USER gate fails** — agent found the 12 PM event and took the "intimate the user" branch without ever asking who to confirm with (0 ask_user calls; output.success=True but the gate requires a question) |
 
 ## Hallucination-control deep dive
 
@@ -215,13 +215,14 @@ Metrics: `reports/metrics/day5-metrics-final.md` · HC judge:
 | 17 | medium__music__003 | ✅ | 8 | fixed prompt — downloads (passes) |
 | 18 | hard__drive-notes-telegram__010 | ❌ FAIL | 24 | **ASK USER gate** — agent assumed owner=Rani Singh instead of asking who to message (date-compare fix works) |
 | 19 | hard__drive-obsidian-telegram__049 | ❌ FAIL | 29 | **ASK USER gate** — same assumption failure (date-compare fix works) |
-| 20 | hard__calendar-telegram-notes__025 | ✅ | 7 | rerun (was 0 ask_user) |
+| 20 | hard__calendar-telegram-notes__025 | ❌ FAIL | 7 | **ASK USER gate** — never asked who to confirm with (0 calls; took "intimate the user" branch) |
 
 **Remaining true failures (5):** `contacts-005` (control → **real task**; address
 saved on-device for `[contact]` but agent gave up after one swipe — model),
 `messages-003` (star action not found — model), `drive-notes-telegram-010` +
-`drive-obsidian-telegram-049` (ASK USER gate — model asks wrong question),
-`music-004` is the single **real hallucination** (control working as designed).
+`drive-obsidian-telegram-049` + `calendar-telegram-notes-025` (ASK USER gate —
+model never asked who to message/confirm with), `music-004` is the single
+**real hallucination** (control working as designed).
 
 **Task/seed fixes that were validated on-device this round:**
 - `medium__contacts-obsidian-001` → rewritten to **search contacts by company
@@ -456,7 +457,7 @@ are **not** task-ability):
 |---|---|---|---|
 | 1 | **Device PIN-lockout** (agent guessed PINs → "security lockout"; subsequent tasks couldn't unlock) | `medium__music__003`, `easy__messages__004`, `medium__messages__003` | 3 |
 | 2 | **Malformed tool-call markup** (model emitted bad `<function_calls>` 3× → aborted pre-work) | `medium__chrome__003`, `medium__telegram__002` | 2 |
-| 3 | **ASK USER wrong-question / no-question** (asked about the wrong fact the simulated user can't answer, or didn't ask) | `hard__drive-notes-telegram__010`, `hard__drive-obsidian-telegram__049`, `hard__calendar-telegram-notes__025` | 3 |
+| 3 | **ASK USER wrong-question / no-question** (asked about the wrong fact the simulated user can't answer, or never asked) | `hard__drive-notes-telegram__010`, `hard__drive-obsidian-telegram__049`, `hard__calendar-telegram-notes__025` | 3 |
 | 4 | **150-step cap thrash** (looping through the app, never converging) | `easy__telegram__002`, `easy__calendar__002`, `medium__google-photos-calendar__001`, `medium__contacts-obsidian__001`, `medium__obsidian__004` | 5 |
 | 5 | **Task/UI not solvable as written** (no UI affordance for the asked value) | `easy__google-photos__004` (no total-count in Photos UI) | 1 |
 | — | **Control → real task, model failure** (address saved on-device; agent gave up after one swipe) | `easy__contacts__005` | 1 |
@@ -510,8 +511,10 @@ authoring issue (Photos exposes no library total).
   `medium-contacts-obsidian-001` after the search-by-company reword,
   `medium-obsidian-004`). Consistent with day-3/4: qwen3.6-plus converges where
   qwen3.7-flash thrashed.
-- ⚠️ **3 ASK USER hard tasks — RERUN on qwen3.6-plus: 1 pass / 2 ASK USER gate
-  fails.** `hard-calendar-telegram-notes-025` PASSES (7 steps, asked). 
+- ❌ **3 ASK USER hard tasks — RERUN on qwen3.6-plus: 0 pass / 3 ASK USER gate
+  fails.** `hard-calendar-telegram-notes-025` (7) found the 12 PM event and took
+  the "intimate the user" branch **without ever asking** who to confirm with —
+  output.success=True but the gate requires an ask_user call, so it FAILS.
   `hard-drive-notes-telegram-010` (24) and `hard-drive-obsidian-telegram-049`
   (29) both correctly read the spreadsheet's last-edited date (date-compare fix
   works) but **fail the ASK USER gate**: the agent assumed the Drive account
@@ -525,5 +528,5 @@ authoring issue (Photos exposes no library total).
   stay-on + 30-min timeout.)
 
 **Final day-5 score: 14/20 (70.0%)** — 5 true failures (1 contacts-005 model
-miss on a real saved address, 1 star-action model miss, 2 ASK USER gate, ...) +
+miss on a real saved address, 1 star-action model miss, 3 ASK USER gate, ...) +
 1 real hallucination (`music-004`). See "Final merged day-5 status" above.
