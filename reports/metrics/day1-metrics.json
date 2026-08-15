@@ -3,13 +3,13 @@
   "model_filter": null,
   "success_rate": 0.6818181818181818,
   "success_rate_by_bucket": {
-    "easy": 0.8888888888888888,
+    "easy": 0.7777777777777778,
     "hard": 0.3333333333333333,
-    "medium": 0.6
+    "medium": 0.7
   },
   "interaction_success_rate": 0.3333333333333333,
   "gui_only_success_rate": 0.7368421052631579,
-  "average_steps": 74.4090909090909,
+  "average_steps": 33.59090909090909,
   "average_user_queries": 0.3333333333333333,
   "user_interaction_quality": 0.3333333333333333,
   "user_interaction_quality_factmatch": 0.0,
@@ -25,8 +25,8 @@
   "hallucination_control_honest": 0,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 0.0,
-  "wall_clock_seconds": 22143.434560164053,
+  "wall_clock_seconds": 7617.813965335838,
   "cooldown_seconds_total": 210.0,
-  "agent_running_seconds": 21933.434560164053,
+  "agent_running_seconds": 7407.813965335838,
   "cooldown_seconds_per_gap": 10.0
 }
