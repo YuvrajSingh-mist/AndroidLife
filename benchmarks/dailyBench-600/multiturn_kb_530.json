@@ -24,11 +24,11 @@
     "profile": {
       "trips": {
         "bbi_del": [
-          {"airline": "IndiGo", "flight": "6E 2031", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
-          {"airline": "Air India", "flight": "AI 723", "depart": "BBI 16:40", "arrive": "DEL 19:05", "fare": "₹5,390"}
+          {"airline": "IndiGo", "flight": "6E 2031", "date": "2026-08-24 (Mon)", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
+          {"airline": "Air India", "flight": "AI 723", "date": "2026-08-24 (Mon)", "depart": "BBI 16:40", "arrive": "DEL 19:05", "fare": "₹5,390"}
         ],
         "bbi_bom": [
-          {"airline": "IndiGo", "flight": "6E 501", "depart": "BBI 09:00", "arrive": "BOM 11:15", "fare": "₹5,100"}
+          {"airline": "IndiGo", "flight": "6E 501", "date": "2026-08-25 (Tue)", "depart": "BBI 09:00", "arrive": "BOM 11:15", "fare": "₹5,100"}
         ]
       },
       "preferences": {"next_trip": "BBI to DEL next week"}
@@ -38,9 +38,9 @@
     "correct_target": "prime-video::reacher",
     "profile": {
       "watchlist": [
-        {"title": "Reacher", "leaving": "2026-08-31", "available": true, "downloadable": true},
-        {"title": "The Boys", "leaving": null, "available": true, "downloadable": true},
-        {"title": "The Office", "leaving": null, "available": true, "downloadable": false}
+        {"title": "Reacher", "platform": "Prime Video", "leaving": "2026-08-31", "available": true, "downloadable": true},
+        {"title": "The Boys", "platform": "Prime Video", "leaving": null, "available": true, "downloadable": true},
+        {"title": "Dark", "platform": "Netflix", "leaving": null, "available": true, "downloadable": true}
       ]
     }
   },

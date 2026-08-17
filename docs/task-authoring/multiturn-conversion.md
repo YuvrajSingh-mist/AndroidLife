@@ -89,7 +89,7 @@ the rule and the agent resolves it from on-device state + one hidden fact.
 > today's news). Everything else (notes, contacts, calendar) is seeded/static.
 
 ### 1. `hard__swiggy__005` — reorder my last order (day 12)
-**Prompt (vague):** "I want the same thing I ordered last Friday. Get it again for me."
+**Prompt (vague):** "Ugh, I'm craving what I ordered last Friday — can you get me that again?"
 Agent must ask: *which service? which order?* → converge on the Swiggy order.
 ```json
 {
@@ -106,7 +106,7 @@ Agent must ask: *which service? which order?* → converge on the Swiggy order.
 🔴 Re-verify the actual most-recent-order state in Swiggy before running.
 
 ### 2. `hard__swiggy__007` — reorder my usual from [restaurant] (day 16)
-**Prompt (vague):** "Order my usual from my go-to place — the same items as last time. Don't place it, just show me the payment page."
+**Prompt (vague):** "Order my usual from my go-to place - my favourite food. Don't place it, just show me the payment page."
 Agent must ask: *which restaurant? which items?* → Biryani Blues + the biryani set.
 ```json
 {
@@ -123,19 +123,19 @@ Agent must ask: *which restaurant? which items?* → Biryani Blues + the biryani
 🔴 Re-verify restaurant still active + last-order items.
 
 ### 3. `hard__makemytrip__003` — cheapest flight fare breakdown (day 11)
-**Prompt (vague):** "I've picked a flight but want to see the fare before paying. Pull it up and show me the payment page with the breakdown."
-Agent must ask: *which route? which airline?* → BBI→DEL, the cheaper of the two.
+**Prompt (vague):** "I've shortlisted a flight for my trip but wanna see the full fare before I pay. Can you open it and show me the breakdown on the payment page?"
+Agent must ask: *which route? which airline? which day/date?* → BBI→DEL next week (Mon 2026-08-24), IndiGo, the cheaper of the two.
 ```json
 {
   "correct_target": "makemytrip::bbi-del-indigo",
   "profile": {
     "trips": {
       "bbi_del": [
-        {"airline":"IndiGo","flight":"6E 2031","depart":"BBI 07:10","arrive":"DEL 09:20","fare":"₹4,850"},
-        {"airline":"Air India","flight":"AI 723","depart":"BBI 16:40","arrive":"DEL 19:05","fare":"₹5,390"}
+        {"airline":"IndiGo","flight":"6E 2031","date":"2026-08-24 (Mon)","depart":"BBI 07:10","arrive":"DEL 09:20","fare":"₹4,850"},
+        {"airline":"Air India","flight":"AI 723","date":"2026-08-24 (Mon)","depart":"BBI 16:40","arrive":"DEL 19:05","fare":"₹5,390"}
       ],
       "bbi_bom": [
-        {"airline":"IndiGo","flight":"6E 501","depart":"BBI 09:00","arrive":"BOM 11:15","fare":"₹5,100"}
+        {"airline":"IndiGo","flight":"6E 501","date":"2026-08-25 (Tue)","depart":"BBI 09:00","arrive":"BOM 11:15","fare":"₹5,100"}
       ]
     },
     "preferences": {"next_trip":"BBI to DEL next week"}
@@ -145,16 +145,16 @@ Agent must ask: *which route? which airline?* → BBI→DEL, the cheaper of the 
 🔴 Re-verify live fares/routes; keep both airlines on the route.
 
 ### 4. `hard__prime-video__005` — [show] leaving soon (day 12)
-**Prompt (vague):** "I heard something I watch is leaving soon. Check if it's still there and save it to my Watchlist."
-Agent must ask: *which show?* → the one leaving (Reacher).
+**Prompt (vague):** "One of my daily shows is apparently leaving soon. Can you check if it's still up and save it so I don't lose it?"
+Agent must ask: *which show? which platform?* → Reacher on Prime Video (leaving 2026-08-31).
 ```json
 {
   "correct_target": "prime-video::reacher",
   "profile": {
     "watchlist": [
-      {"title":"Reacher","leaving":"2026-08-31","available":true,"downloadable":true},
-      {"title":"The Boys","leaving":null,"available":true,"downloadable":true},
-      {"title":"The Office","leaving":null,"available":true,"downloadable":false}
+      {"title":"Reacher","platform":"Prime Video","leaving":"2026-08-31","available":true,"downloadable":true},
+      {"title":"The Boys","platform":"Prime Video","leaving":null,"available":true,"downloadable":true},
+      {"title":"Dark","platform":"Netflix","leaving":null,"available":true,"downloadable":true}
     ]
   }
 }
@@ -162,7 +162,7 @@ Agent must ask: *which show?* → the one leaving (Reacher).
 🔴 Re-verify which title shows a "leaving soon" badge in the app.
 
 ### 5. `hard__bookmyshow__003` — surprise-party movie booking (day 12)
-**Prompt (vague):** "My friends are throwing a surprise party for a close friend. Book movie tickets he'd like — get his details from my contacts, find a fitting movie, and take me to booking. Don't buy."
+**Prompt (vague):** "My friends are planning a surprise for one of our close friends. Can you book tickets to a movie he'd actually like? Pull his info from my contacts — don't buy, just get me to booking."
 Agent must ask: *which friend? what does he like?* → Priyanshu (likes action) → an action movie → booking page.
 ```json
 {
@@ -179,7 +179,7 @@ Agent must ask: *which friend? what does he like?* → Priyanshu (likes action) 
 🔴 Re-verify friend's interests in the contact card + which movies are showing.
 
 ### 6. `hard__bookmyshow__005` — movie night for a group (day 21)
-**Prompt (vague):** "I'm planning a movie night for a few people. Check showtimes and seat prices, and save the best option."
+**Prompt (vague):** "We're doing a movie night this weekend. Could you check showtimes and seat prices and save the best one?"
 Agent must ask: *which movie? which cinema? group size?* → [movie] at [cinema], group of 4.
 ```json
 {
@@ -196,7 +196,7 @@ Agent must ask: *which movie? which cinema? group size?* → [movie] at [cinema]
 🔴 Re-verify movies currently showing + live prices.
 
 ### 7. `hard__amazon-shopping__006` — confirm cart total (day 21)
-**Prompt (vague):** "I'm about to buy something but want to confirm the total first. Add it and take me to the payment page showing the final amount. Don't complete it."
+**Prompt (vague):** "Almost bought something but wanna double-check the total before I commit. Add it and show me the final price on the payment page — don't finish the order."
 Agent must ask: *which product?* → Noise earbuds.
 ```json
 {
@@ -213,7 +213,7 @@ Agent must ask: *which product?* → Noise earbuds.
 🔴 Re-verify the item is in cart + current price.
 
 ### 8. `hard__msn-news__007` — today's biggest story on [topic] (day 26)
-**Prompt (vague):** "I follow a topic closely. Find today's biggest story on it, summarize it, and send it to my contact."
+**Prompt (vague):** "I am following the topic closely. Find today's biggest story on it, summarize it, and send it to my friend the summary."
 Agent must ask: *which topic? which contact?* → cricket → [contact] on Telegram.
 ```json
 {
@@ -228,7 +228,7 @@ Agent must ask: *which topic? which contact?* → cricket → [contact] on Teleg
 🔴 Live: today's top story must be looked up at run time (loose grading).
 
 ### 9. `hard__music-obsidian__077` — sleep timer to match bedtime (day 3)
-**Prompt (vague):** "I fall asleep to music and want it to stop on its own at my bedtime. Play my kind of music and set it up."
+**Prompt (vague):** "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music?"
 Agent must ask: *which music type? what's your bedtime?* → lo-fi → 10:30 PM (Bedtime note).
 ```json
 {
@@ -243,7 +243,7 @@ Agent must ask: *which music type? what's your bedtime?* → lo-fi → 10:30 PM 
 🔴 Re-verify favorite genre from YouTube Music history + the Bedtime note on device.
 
 ### 10. `hard__telegram-calendar__016` — date mentioned in group chat (day 9)
-**Prompt (vague):** "I think a date was mentioned in a group chat. Check recent messages, and if there's a date, set a reminder for it."
+**Prompt (vague):** "Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?"
 Agent must ask: *which group?* → the study group.
 ```json
 {
@@ -261,7 +261,7 @@ Agent must ask: *which group?* → the study group.
 🔴 Live: verify which chat actually mentions a date at run time.
 
 ### 11. `hard__youtube-settings__052` — channel notifications muted at night (day 11)
-**Prompt (vague):** "I want notifications from a channel but not at night. Set that up for the channel I follow."
+**Prompt (vague):** "Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day?"
 Agent must ask: *which channel?* → the one that posts most (Tech Burner).
 ```json
 {
@@ -278,7 +278,7 @@ Agent must ask: *which channel?* → the one that posts most (Tech Burner).
 🔴 Re-verify the channel actually subscribed/followed on the device.
 
 ### 12. `hard__google-sheets-amazon-shopping__074` — top video + related buy (day 20)
-**Prompt (vague):** "I track my videos' performance in a sheet. Find my best one and show me something related to buy."
+**Prompt (vague):** "I've got all my video stats in a sheet. Can you find my best performer and show me something related to grab?"
 Agent must ask: *which spreadsheet? which column?* → SPORTS_VIDEO_DATA → [views] → the top video.
 ```json
 {
@@ -296,7 +296,7 @@ Agent must ask: *which spreadsheet? which column?* → SPORTS_VIDEO_DATA → [vi
 🔴 Re-verify the actual spreadsheet name + top row on device (user.yaml: SPORTS_VIDEO_DATA).
 
 ### 13. `hard__google-meet-files__070` — meeting agenda ready (day 14)
-**Prompt (vague):** "I'm hosting a meeting soon and want the agenda ready. Pull up the next one and prep the doc."
+**Prompt (vague):** "Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready?"
 Agent must ask: *which meeting? which doc?* → the next meeting + its agenda doc.
 ```json
 {
@@ -313,7 +313,7 @@ Agent must ask: *which meeting? which doc?* → the next meeting + its agenda do
 🔴 Verify calendar actually has these events.
 
 ### 14. `hard__gmail-notes__045` — discount code before it expires (day 17)
-**Prompt (vague):** "I've got a discount code somewhere that's about to expire. Find it and keep it before it's gone."
+**Prompt (vague):** "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?"
 Agent must ask: *which email? which code?* → the coupon email → save the code.
 ```json
 {
@@ -330,7 +330,7 @@ Agent must ask: *which email? which code?* → the coupon email → save the cod
 🔴 Re-verify a real coupon email exists in Gmail at run time.
 
 ### 15. `hard__gallery-settings-obsidian__075` — fresh wallpaper (day 23)
-**Prompt (vague):** "I want a fresh wallpaper. Pick one of my photos and set it, and keep a log so I don't reuse it."
+**Prompt (vague):** "Been wanting a fresh look — pick one of my photos and set it as wallpaper. Keep a log so I don't reuse the same one."
 Agent must ask: *which photo?* → the newest one not yet used.
 ```json
 {
@@ -348,7 +348,7 @@ Agent must ask: *which photo?* → the newest one not yet used.
 🔴 Re-verify actual photo names + the wallpaper log on device.
 
 ### 16. `hard__settings-obsidian__044` — today's screen time (day 10)
-**Prompt (vague):** "I think I've been on my phone too much. Check today's usage and compare it to my goal."
+**Prompt (vague):** "I've been glued to my phone lately. Can you check today's usage and see if I'm over my goal?"
 Agent must ask: *which metric? which goal note?* → Screen Time vs the goal in the note.
 ```json
 {
@@ -361,7 +361,7 @@ Agent must ask: *which metric? which goal note?* → Screen Time vs the goal in 
 ```
 
 ### 17. `hard__files-notes__069` — compress files, stay under limit (day 24)
-**Prompt (vague):** "Free up space safely. Compress the big files and only delete the originals if it's under my limit."
+**Prompt (vague):** "Phone's running out of space. Can you compress the big files and only remove the originals if it stays under my limit?"
 Agent must ask: *which files? what's the limit?* → the videos → the storage-limit note.
 ```json
 {
@@ -378,7 +378,7 @@ Agent must ask: *which files? what's the limit?* → the videos → the storage-
 🔴 Re-verify actual file sizes + the limit note on device.
 
 ### 18. `hard__google-search-notes__019` — product comparison (day 3)
-**Prompt (vague):** "I'm torn between two things. Search for an overall review and note which is better for me."
+**Prompt (vague):** "I'm stuck between two products. Can you look up reviews and tell me which one's better for me?"
 Agent must ask: *which two products?* → the two in my notes.
 ```json
 {
