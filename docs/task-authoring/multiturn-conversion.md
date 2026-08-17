@@ -53,7 +53,36 @@ Format (per task_id):
 
 ---
 
-## 3. The 18 tasks (DET → multi-turn), with complete KBs
+## 3. Selection audit — which 18 to convert (and why)
+
+**Rule:** convert only tasks whose success depends on a **fact only the user
+knows** (which order/restaurant/show/product/topic/channel/spreadsheet/files/
+photo/code/group/meeting/bedtime). A vague prompt then *forces* the agent to ask.
+**Keep as DET** the self-contained execution chains — the prompt fully specifies
+the rule and the agent resolves it from on-device state + one hidden fact.
+
+| Convert to multi-turn (user-KB-dependent) | Keep as DET (self-contained) |
+|---|---|
+| `swiggy__005`, `swiggy__007`, `makemytrip__003`, `prime-video__005` | `google-maps-notes__005`, `gallery-obsidian__035` |
+| `bookmyshow__003`, `bookmyshow__005`, `amazon-shopping__006`, `msn-news__007` | `contacts-notes__027`, `contacts-obsidian__029` |
+| `music-obsidian__077`, `youtube-settings__052` | `gmail-calendar__003`, `clock-calendar__023` |
+| `google-sheets-amazon-shopping__074`, `telegram-calendar__016` | `contacts-gmail__026`, `camera-files__034` |
+| `google-meet-files__070`, `settings-obsidian__044` | `settings-notes__081`, `settings-notes__082` |
+| `gmail-notes__045`, `gallery-settings-obsidian__075` | `chrome-files-obsidian__031`, `notes-files__030` |
+| `files-notes__069`, `google-search-notes__019` | `calculator-telegram-notes__020`, `google-search-clock__056` |
+| | `calendar-contacts-telegram__064`, `chrome-obsidian__048` |
+| | `contacts-google-maps-notes__065`, `obsidian-calendar__067` |
+
+> **v2 (this revision):** 6 tasks were pulled back out of the convert set after
+> audit — `settings-notes__081`, `contacts-gmail__026`, `contacts-notes__027`,
+> `notes-files__030`, `chrome-files-obsidian__031`, `obsidian-calendar__067` —
+> because they are strong **single-shot** DET tasks (fully-specified rules the
+> agent resolves from device state; a forced Q&A would be artificial). Replaced
+> with 6 genuinely user-knowledge tasks: `music-obsidian__077`,
+> `youtube-settings__052`, `google-sheets-amazon-shopping__074`, `gmail-notes__045`,
+> `gallery-settings-obsidian__075`, `files-notes__069`.
+
+## 4. The 18 tasks (DET → multi-turn), with complete KBs
 
 > **Live-data flag 🔴:** entries that reflect real-time app state and MUST be
 > re-confirmed on-device immediately before the run (orders, delivery status,
@@ -198,21 +227,20 @@ Agent must ask: *which topic? which contact?* → cricket → [contact] on Teleg
 ```
 🔴 Live: today's top story must be looked up at run time (loose grading).
 
-### 9. `hard__settings-notes__081` — battery saver on (day 8)
-**Prompt (vague):** "My battery's draining fast. Turn on the setting that helps, and check the note to confirm which mode I should use."
-Agent must ask: *which note? which mode?* → Battery note → Battery Saver.
+### 9. `hard__music-obsidian__077` — sleep timer to match bedtime (day 3)
+**Prompt (vague):** "I fall asleep to music and want it to stop on its own at my bedtime. Play my kind of music and set it up."
+Agent must ask: *which music type? what's your bedtime?* → lo-fi → 10:30 PM (Bedtime note).
 ```json
 {
-  "correct_target": "settings::battery-saver-on",
+  "correct_target": "youtube-music::sleep-timer-1030pm",
   "profile": {
-    "notes": {
-      "Battery": {"suggested_mode":"Battery Saver","target_charge":"below 30%"},
-      "Screen Time": {"goal_hours":2}
-    }
+    "music": {"favorite_genre":"lo-fi beats","sleep_artist":"Chillhop"},
+    "notes": {"Bedtime":{"time":"10:30 PM","source":"real on-device note"}},
+    "preferences": {"sleep_timer":"10:30 PM"}
   }
 }
 ```
-*(Note: existing `hard__settings-notes__081`/`082` — check current seed for the actual note title; if only one note exists, fold into a single target.)*
+🔴 Re-verify favorite genre from YouTube Music history + the Bedtime note on device.
 
 ### 10. `hard__telegram-calendar__016` — date mentioned in group chat (day 9)
 **Prompt (vague):** "I think a date was mentioned in a group chat. Check recent messages, and if there's a date, set a reminder for it."
@@ -232,40 +260,40 @@ Agent must ask: *which group?* → the study group.
 ```
 🔴 Live: verify which chat actually mentions a date at run time.
 
-### 11. `hard__contacts-gmail__026` — contacts missing a phone (day 7)
-**Prompt (vague):** "I want to clean up my contacts. Find the ones missing a number and let me know."
-Agent must ask: *which ones?* → the two contacts with no phone.
+### 11. `hard__youtube-settings__052` — channel notifications muted at night (day 11)
+**Prompt (vague):** "I want notifications from a channel but not at night. Set that up for the channel I follow."
+Agent must ask: *which channel?* → the one that posts most (Tech Burner).
 ```json
 {
-  "correct_target": "contacts::missing-phone",
+  "correct_target": "youtube-settings::channel-night-mute",
   "profile": {
-    "contacts": [
-      {"name":"Aaditya","phone":null,"has_email":true},
-      {"name":"Mousi Maa","phone":"+918541806133","has_email":false},
-      {"name":"Nanimaa","phone":"+917781089901","has_email":false},
-      {"name":"Anannya Mishra","phone":null,"has_email":true}
-    ]
+    "channels": [
+      {"name":"Tech Burner","posts_per_week":3,"notify":true},
+      {"name":"Dhruv Rathee","posts_per_week":1,"notify":false}
+    ],
+    "preferences": {"notify_channel":"Tech Burner","quiet_hours":"22:00-08:00"}
   }
 }
 ```
-🔴 Verify current contact list on device.
+🔴 Re-verify the channel actually subscribed/followed on the device.
 
-### 12. `hard__contacts-notes__027` — rent collection day (day 4)
-**Prompt (vague):** "Rent collection day. My notes list who owes what — check and tell me who's paid."
-Agent must ask: *which note? which tenant?* → Rent Dues note → the tenant who hasn't paid.
+### 12. `hard__google-sheets-amazon-shopping__074` — top video + related buy (day 20)
+**Prompt (vague):** "I track my videos' performance in a sheet. Find my best one and show me something related to buy."
+Agent must ask: *which spreadsheet? which column?* → SPORTS_VIDEO_DATA → [views] → the top video.
 ```json
 {
-  "correct_target": "contacts-notes::rent-dues",
+  "correct_target": "sheets-amazon::sports-video-data-top",
   "profile": {
-    "notes": {
-      "Rent Dues": [
-        {"tenant":"Rahul Verma","amount":"₹15,000","paid":true},
-        {"tenant":"Sneha Kapoor","amount":"₹12,000","paid":false}
-      ]
-    }
+    "spreadsheet": {
+      "name":"SPORTS_VIDEO_DATA",
+      "columns":["video_title","views","likes"],
+      "top_video":{"title":"Final Match Highlights","views":"1.2M","column":"views"}
+    },
+    "preferences": {"related_product":"smartphone gimbal"}
   }
 }
 ```
+🔴 Re-verify the actual spreadsheet name + top row on device (user.yaml: SPORTS_VIDEO_DATA).
 
 ### 13. `hard__google-meet-files__070` — meeting agenda ready (day 14)
 **Prompt (vague):** "I'm hosting a meeting soon and want the agenda ready. Pull up the next one and prep the doc."
@@ -284,36 +312,40 @@ Agent must ask: *which meeting? which doc?* → the next meeting + its agenda do
 ```
 🔴 Verify calendar actually has these events.
 
-### 14. `hard__notes-files__030` — sync shopping list with receipts (day 10)
-**Prompt (vague):** "Sync my shopping list with what I already bought. Check the list against the receipt and note what's left."
-Agent must ask: *which list? which receipt?* → the To-Buy list + the grocery receipt.
+### 14. `hard__gmail-notes__045` — discount code before it expires (day 17)
+**Prompt (vague):** "I've got a discount code somewhere that's about to expire. Find it and keep it before it's gone."
+Agent must ask: *which email? which code?* → the coupon email → save the code.
 ```json
 {
-  "correct_target": "notes-files::shopping-sync",
+  "correct_target": "gmail-notes::discount-code-saved",
   "profile": {
-    "notes": {"To Buy":["Rice 5kg","Milk","Eggs","Detergent"]},
-    "files": {
-      "receipt_grocery_2026_08_15.pdf": {"items":["Milk","Eggs"],"total":"₹320"}
-    }
-  }
-}
-```
-
-### 15. `hard__chrome-files-obsidian__031` — download without overwriting (day 10)
-**Prompt (vague):** "I'm downloading a file and don't want to overwrite anything. Download it and make sure the old one is safe."
-Agent must ask: *which file? which destination?* → the report PDF → Obsidian/Downloads.
-```json
-{
-  "correct_target": "chrome-files::download-report",
-  "profile": {
-    "downloads": [
-      {"name":"Q3_Report.pdf","existing":true,"note_in":"Obsidian","folder":"Downloads"},
-      {"name":"Budget.xlsx","existing":true,"note_in":null,"folder":"Drive"}
+    "emails": [
+      {"from":"Flipkart","subject":"Your 15% coupon","code":"FLIP15","expires":"2026-08-20"},
+      {"from":"Amazon","subject":"Deal of the day","code":null,"expires":null}
     ],
-    "preferences": {"download_file":"Q3_Report.pdf"}
+    "preferences": {"code_to_use":"FLIP15"}
   }
 }
 ```
+🔴 Re-verify a real coupon email exists in Gmail at run time.
+
+### 15. `hard__gallery-settings-obsidian__075` — fresh wallpaper (day 23)
+**Prompt (vague):** "I want a fresh wallpaper. Pick one of my photos and set it, and keep a log so I don't reuse it."
+Agent must ask: *which photo?* → the newest one not yet used.
+```json
+{
+  "correct_target": "gallery-settings::new-wallpaper",
+  "profile": {
+    "photos": [
+      {"name":"IMG_20260806_1.jpg","used_as_wallpaper":false,"date":"2026-08-06"},
+      {"name":"IMG_20260806_2.jpg","used_as_wallpaper":false,"date":"2026-08-06"},
+      {"name":"IMG_20260720_1.jpg","used_as_wallpaper":true,"date":"2026-07-20"}
+    ],
+    "notes": {"Wallpaper Log":{"last_used":"IMG_20260720_1.jpg"}}
+  }
+}
+```
+🔴 Re-verify actual photo names + the wallpaper log on device.
 
 ### 16. `hard__settings-obsidian__044` — today's screen time (day 10)
 **Prompt (vague):** "I think I've been on my phone too much. Check today's usage and compare it to my goal."
@@ -328,21 +360,22 @@ Agent must ask: *which metric? which goal note?* → Screen Time vs the goal in 
 }
 ```
 
-### 17. `hard__obsidian-calendar__067` — pin an important note (day 22)
-**Prompt (vague):** "I don't want to forget an important note. Pin it so it stays on top, and set a reminder too."
-Agent must ask: *which note?* → the one with the upcoming deadline.
+### 17. `hard__files-notes__069` — compress files, stay under limit (day 24)
+**Prompt (vague):** "Free up space safely. Compress the big files and only delete the originals if it's under my limit."
+Agent must ask: *which files? what's the limit?* → the videos → the storage-limit note.
 ```json
 {
-  "correct_target": "obsidian-calendar::pin-deadline-note",
+  "correct_target": "files-notes::archive-under-limit",
   "profile": {
-    "notes": [
-      {"title":"Budget Deadline","deadline":"2026-08-10","pinned":false,"important":true},
-      {"title":"Research Notes","deadline":null,"pinned":false,"important":false},
-      {"title":"Internship Application","deadline":"2026-08-25","pinned":false,"important":true}
-    ]
+    "files": [
+      {"name":"holiday_vlog.mp4","size":"1.2 GB"},
+      {"name":"lecture_recording.mkv","size":"900 MB"}
+    ],
+    "notes": {"Storage Limit":{"max_archive_gb":2}}
   }
 }
 ```
+🔴 Re-verify actual file sizes + the limit note on device.
 
 ### 18. `hard__google-search-notes__019` — product comparison (day 3)
 **Prompt (vague):** "I'm torn between two things. Search for an overall review and note which is better for me."
@@ -362,33 +395,33 @@ Agent must ask: *which two products?* → the two in my notes.
 
 ---
 
-## 4. Which 18 of the 36 DET are converted
+## 5. Which 18 of the 36 DET are converted
 
 From the 36 DETERMINISTIC hard tasks, these 18 become multi-turn (the rest stay
 as plain DET):
 `hard__swiggy__005`, `hard__swiggy__007`, `hard__makemytrip__003`,
 `hard__prime-video__005`, `hard__bookmyshow__003`, `hard__bookmyshow__005`,
-`hard__amazon-shopping__006`, `hard__msn-news__007`, `hard__settings-notes__081`,
-`hard__telegram-calendar__016`, `hard__contacts-gmail__026`,
-`hard__contacts-notes__027`, `hard__google-meet-files__070`, `hard__notes-files__030`,
-`hard__chrome-files-obsidian__031`, `hard__settings-obsidian__044`,
-`hard__obsidian-calendar__067`, `hard__google-search-notes__019`.
+`hard__amazon-shopping__006`, `hard__msn-news__007`, `hard__music-obsidian__077`,
+`hard__youtube-settings__052`, `hard__google-sheets-amazon-shopping__074`,
+`hard__telegram-calendar__016`, `hard__google-meet-files__070`,
+`hard__settings-obsidian__044`, `hard__gmail-notes__045`,
+`hard__gallery-settings-obsidian__075`, `hard__files-notes__069`,
+`hard__google-search-notes__019`.
 
-(Day-1/2-only DET tasks like `hard__google-maps-notes__005`,
-`hard__music-obsidian__077` stay as DET — they're already specific enough or
-fall in the locked days 1–4.)
-
-## 5. Vars / seeds needed
+## 6. Vars / seeds needed
 
 - New placeholders: `[product]`, `[product_1]`, `[product_2]`, `[restaurant]`,
-  `[movie]`, `[cinema]`, `[show]`, `[topic]`, `[airline_1]`, `[airline_2]`,
+  `[movie]`, `[cinema]`, `[show]`, `[topic]`, `[channel]`, `[music_type]`,
+  `[spreadsheet_name]`, `[sheet_column]`, `[airline_1]`, `[airline_2]`,
   `[city]`, `[place]`, `[contact]` — pinned in `day_N.env`/`user.yaml` with the
   **current** on-device value (see `docs/task-authoring/occasional-apps.md` §6).
-- Seeds: the Obsidian notes above already exist (Stock Watch, Budget Deadline,
-  Exam Scores, Contact Updates, Photo Log, Bedtime). Add the new notes referenced
-  in tasks 9/12/14/15/16/17/18 to `seed_data.py` where missing.
+- Seeds: Obsidian notes already exist (Stock Watch, Budget Deadline, Exam
+  Scores, Contact Updates, Photo Log, Bedtime). New notes to add where missing:
+  **Wallpaper Log** (task 15), **Storage Limit** (task 17), **Screen Time Goal**
+  (task 16), **Products I'm Considering** (task 18). Spreadsheet
+  **SPORTS_VIDEO_DATA** (task 12) already pinned in `user.yaml`.
 
-## 6. Rollout (after review)
+## 7. Rollout (after review)
 
 1. Confirm the 18 tasks + KB profiles in this doc.
 2. Write the two KB files (`multiturn_kb_public.json`, `multiturn_kb_530.json`).

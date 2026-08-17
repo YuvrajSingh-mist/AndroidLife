@@ -82,13 +82,12 @@
       "preferences": {"followed_topic": "cricket"}
     }
   },
-  "hard__settings-notes__081": {
-    "correct_target": "settings::battery-saver-on",
+  "hard__music-obsidian__077": {
+    "correct_target": "youtube-music::sleep-timer-1030pm",
     "profile": {
-      "notes": {
-        "Battery": {"suggested_mode": "Battery Saver", "target_charge": "below 30%"},
-        "Screen Time": {"goal_hours": 2}
-      }
+      "music": {"favorite_genre": "lo-fi beats", "sleep_artist": "Chillhop"},
+      "notes": {"Bedtime": {"time": "10:30 PM", "source": "real on-device note"}},
+      "preferences": {"sleep_timer": "10:30 PM"}
     }
   },
   "hard__telegram-calendar__016": {
@@ -102,26 +101,25 @@
       "preferences": {"reminder_chat": "Study Group"}
     }
   },
-  "hard__contacts-gmail__026": {
-    "correct_target": "contacts::missing-phone",
+  "hard__youtube-settings__052": {
+    "correct_target": "youtube-settings::channel-night-mute",
     "profile": {
-      "contacts": [
-        {"name": "Aaditya", "phone": null, "has_email": true},
-        {"name": "Mousi Maa", "phone": "+918541806133", "has_email": false},
-        {"name": "Nanimaa", "phone": "+917781089901", "has_email": false},
-        {"name": "Anannya Mishra", "phone": null, "has_email": true}
-      ]
+      "channels": [
+        {"name": "Tech Burner", "posts_per_week": 3, "notify": true},
+        {"name": "Dhruv Rathee", "posts_per_week": 1, "notify": false}
+      ],
+      "preferences": {"notify_channel": "Tech Burner", "quiet_hours": "22:00-08:00"}
     }
   },
-  "hard__contacts-notes__027": {
-    "correct_target": "contacts-notes::rent-dues",
+  "hard__google-sheets-amazon-shopping__074": {
+    "correct_target": "sheets-amazon::sports-video-data-top",
     "profile": {
-      "notes": {
-        "Rent Dues": [
-          {"tenant": "Rahul Verma", "amount": "₹15,000", "paid": true},
-          {"tenant": "Sneha Kapoor", "amount": "₹12,000", "paid": false}
-        ]
-      }
+      "spreadsheet": {
+        "name": "SPORTS_VIDEO_DATA",
+        "columns": ["video_title", "views", "likes"],
+        "top_video": {"title": "Final Match Highlights", "views": "1.2M", "column": "views"}
+      },
+      "preferences": {"related_product": "smartphone gimbal"}
     }
   },
   "hard__google-meet-files__070": {
@@ -134,23 +132,25 @@
       "preferences": {"next_meeting": "Team Standup"}
     }
   },
-  "hard__notes-files__030": {
-    "correct_target": "notes-files::shopping-sync",
+  "hard__gmail-notes__045": {
+    "correct_target": "gmail-notes::discount-code-saved",
     "profile": {
-      "notes": {"To Buy": ["Rice 5kg", "Milk", "Eggs", "Detergent"]},
-      "files": {
-        "receipt_grocery_2026_08_15.pdf": {"items": ["Milk", "Eggs"], "total": "₹320"}
-      }
+      "emails": [
+        {"from": "Flipkart", "subject": "Your 15% coupon", "code": "FLIP15", "expires": "2026-08-20"},
+        {"from": "Amazon", "subject": "Deal of the day", "code": null, "expires": null}
+      ],
+      "preferences": {"code_to_use": "FLIP15"}
     }
   },
-  "hard__chrome-files-obsidian__031": {
-    "correct_target": "chrome-files::download-report",
+  "hard__gallery-settings-obsidian__075": {
+    "correct_target": "gallery-settings::new-wallpaper",
     "profile": {
-      "downloads": [
-        {"name": "Q3_Report.pdf", "existing": true, "note_in": "Obsidian", "folder": "Downloads"},
-        {"name": "Budget.xlsx", "existing": true, "note_in": null, "folder": "Drive"}
+      "photos": [
+        {"name": "IMG_20260806_1.jpg", "used_as_wallpaper": false, "date": "2026-08-06"},
+        {"name": "IMG_20260806_2.jpg", "used_as_wallpaper": false, "date": "2026-08-06"},
+        {"name": "IMG_20260720_1.jpg", "used_as_wallpaper": true, "date": "2026-07-20"}
       ],
-      "preferences": {"download_file": "Q3_Report.pdf"}
+      "notes": {"Wallpaper Log": {"last_used": "IMG_20260720_1.jpg"}}
     }
   },
   "hard__settings-obsidian__044": {
@@ -160,14 +160,14 @@
       "preferences": {"check": "today's screen time"}
     }
   },
-  "hard__obsidian-calendar__067": {
-    "correct_target": "obsidian-calendar::pin-deadline-note",
+  "hard__files-notes__069": {
+    "correct_target": "files-notes::archive-under-limit",
     "profile": {
-      "notes": [
-        {"title": "Budget Deadline", "deadline": "2026-08-10", "pinned": false, "important": true},
-        {"title": "Research Notes", "deadline": null, "pinned": false, "important": false},
-        {"title": "Internship Application", "deadline": "2026-08-25", "pinned": false, "important": true}
-      ]
+      "files": [
+        {"name": "holiday_vlog.mp4", "size": "1.2 GB"},
+        {"name": "lecture_recording.mkv", "size": "900 MB"}
+      ],
+      "notes": {"Storage Limit": {"max_archive_gb": 2}}
     }
   },
   "hard__google-search-notes__019": {
