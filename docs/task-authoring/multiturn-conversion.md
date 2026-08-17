@@ -69,13 +69,13 @@ the rule and the agent resolves it from on-device state + one hidden fact.
 |---|---|
 | `swiggy__005`, `swiggy__007`, `makemytrip__003`, `prime-video__005` | `google-maps-notes__005`, `gallery-obsidian__035` |
 | `bookmyshow__003`, `bookmyshow__005`, `amazon-shopping__006`, `msn-news__007` | `contacts-notes__027`, `contacts-obsidian__029` |
-| `music-obsidian__077`, `youtube-settings__052` | `gmail-calendar__003`, `clock-calendar__023` |
-| `google-sheets-amazon-shopping__074`, `telegram-calendar__016` | `contacts-gmail__026`, `camera-files__034` |
-| `google-meet-files__070`, `settings-obsidian__044` | `settings-notes__081`, `settings-notes__082` |
-| `gmail-notes__045`, `gallery-settings-obsidian__075` | `chrome-files-obsidian__031`, `notes-files__030` |
-| `files-notes__069`, `google-search-notes__019` | `calculator-telegram-notes__020`, `google-search-clock__056` |
+| `music-obsidian__077`, `youtube-settings__052`, `gmail-calendar__003` | `contacts-gmail__026`, `camera-files__034` |
+| `google-sheets-amazon-shopping__074`, `telegram-calendar__016` | `settings-notes__081`, `settings-notes__082` |
+| `google-meet-files__070`, `settings-obsidian__044`, `clock-calendar__023` | `chrome-files-obsidian__031`, `notes-files__030` |
+| `gmail-notes__045`, `google-search-notes__019` | `calculator-telegram-notes__020`, `google-search-clock__056` |
 | | `calendar-contacts-telegram__064`, `chrome-obsidian__048` |
 | | `contacts-google-maps-notes__065`, `obsidian-calendar__067` |
+| | `gallery-settings-obsidian__075`, `files-notes__069` |
 
 > **v2 (this revision):** 6 tasks were pulled back out of the convert set after
 > audit — `settings-notes__081`, `contacts-gmail__026`, `contacts-notes__027`,
@@ -85,6 +85,14 @@ the rule and the agent resolves it from on-device state + one hidden fact.
 > with 6 genuinely user-knowledge tasks: `music-obsidian__077`,
 > `youtube-settings__052`, `google-sheets-amazon-shopping__074`, `gmail-notes__045`,
 > `gallery-settings-obsidian__075`, `files-notes__069`.
+>
+> **v3 (wiring):** `gallery-settings-obsidian__075` and `files-notes__069` were
+> pulled back out again — both are **hallucination-control** tasks (the wallpaper
+> log / storage-limit note are deliberately ABSENT on the device; correct =
+> honest failure). A KB oracle claiming that data exists would contradict the
+> device and break the HC design, so they stay plain DET+HC. Replaced with two
+> more genuine multi-turn tasks: `gmail-calendar__003` (which trip/flight) and
+> `clock-calendar__023` (which alarm schedule).
 
 ## 4. The 18 tasks (DET → multi-turn), with complete KBs
 
@@ -350,23 +358,22 @@ Agent must ask: *which account? which email? which code?* → the Flipkart coupo
 ```
 🔴 Re-verify a real coupon email exists + which Gmail account holds it at run time.
 
-### 15. `hard__gallery-settings-obsidian__075` — fresh wallpaper (day 23)
-**Prompt (vague):** "Been wanting a fresh look — pick one of my photos and set it as wallpaper. Keep a log so I don't reuse the same one."
-Agent must ask: *which photo?* → the newest one not yet used.
+### 15. `hard__gmail-calendar__003` — flight departure heads-up (day 6)
+**Prompt (vague):** "I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure?"
+Agent must ask: *which trip/flight?* → the BBI→DEL IndiGo 6E 2031 (2026-08-24, 07:10) → reminder 3h before.
 ```json
 {
-  "correct_target": "gallery-settings::new-wallpaper",
+  "correct_target": "gmail-calendar::bbi-del-reminder",
   "profile": {
-    "photos": [
-      {"name":"IMG_20260806_1.jpg","used_as_wallpaper":false,"date":"2026-08-06"},
-      {"name":"IMG_20260806_2.jpg","used_as_wallpaper":false,"date":"2026-08-06"},
-      {"name":"IMG_20260720_1.jpg","used_as_wallpaper":true,"date":"2026-07-20"}
+    "flights": [
+      {"airline":"IndiGo","flight":"6E 2031","route":"BBI→DEL","date":"2026-08-24","depart":"07:10","confirmation_email":true},
+      {"airline":"IndiGo","flight":"6E 501","route":"BBI→BOM","date":"2026-09-02","depart":"09:00","confirmation_email":false}
     ],
-    "notes": {"Wallpaper Log":{"last_used":"IMG_20260720_1.jpg"}}
+    "preferences": {"reminder_hours_before":3,"next_trip":"BBI→DEL"}
   }
 }
 ```
-🔴 Re-verify actual photo names + the wallpaper log on device.
+🔴 Re-verify the flight-confirmation email + departure time on device.
 
 ### 16. `hard__settings-obsidian__044` — today's screen time (day 10)
 **Prompt (vague):** "I've been glued to my phone lately. Can you check today's usage and see if I'm over my goal?"
@@ -381,22 +388,23 @@ Agent must ask: *which metric? which goal note?* → Screen Time vs the goal in 
 }
 ```
 
-### 17. `hard__files-notes__069` — compress files, stay under limit (day 24)
-**Prompt (vague):** "Phone's running out of space. Can you compress the big files and only remove the originals if it stays under my limit?"
-Agent must ask: *which files? what's the limit?* → the videos → the storage-limit note.
+### 17. `hard__clock-calendar__023` — recurring alarm that doesn't clash (day 6)
+**Prompt (vague):** "I need an alarm that repeats, but make sure it doesn't clash with anything I've got going on."
+Agent must ask: *what time? which days?* → 7:00 AM weekdays → Calendar shows a clash Mon 07:00–08:00 → shift to 07:30.
 ```json
 {
-  "correct_target": "files-notes::archive-under-limit",
+  "correct_target": "clock-calendar::alarm-0730-shifted",
   "profile": {
-    "files": [
-      {"name":"holiday_vlog.mp4","size":"1.2 GB"},
-      {"name":"lecture_recording.mkv","size":"900 MB"}
+    "alarm": {"requested_time":"07:00","days":["Mon","Tue","Wed","Thu","Fri"]},
+    "calendar": [
+      {"event":"Team Sync","date":"2026-08-17","start":"07:00","end":"08:00"},
+      {"event":"Gym","date":"2026-08-18","start":"06:30","end":"07:30"}
     ],
-    "notes": {"Storage Limit":{"max_archive_gb":2}}
+    "preferences": {"shift_if_clash_min":30}
   }
 }
 ```
-🔴 Re-verify actual file sizes + the limit note on device.
+🔴 Re-verify the recurring-event/weekly calendar on device.
 
 ### 18. `hard__google-search-notes__019` — product comparison (day 3)
 **Prompt (vague):** "I'm stuck between two products. Can you look up reviews and tell me which one's better for me?"
@@ -426,7 +434,7 @@ as plain DET):
 `hard__youtube-settings__052`, `hard__google-sheets-amazon-shopping__074`,
 `hard__telegram-calendar__016`, `hard__google-meet-files__070`,
 `hard__settings-obsidian__044`, `hard__gmail-notes__045`,
-`hard__gallery-settings-obsidian__075`, `hard__files-notes__069`,
+`hard__gmail-calendar__003`, `hard__clock-calendar__023`,
 `hard__google-search-notes__019`.
 
 ## 6. Vars / seeds needed
@@ -438,9 +446,10 @@ as plain DET):
   **current** on-device value (see `docs/task-authoring/occasional-apps.md` §6).
 - Seeds: Obsidian notes already exist (Stock Watch, Budget Deadline, Exam
   Scores, Contact Updates, Photo Log, Bedtime). New notes to add where missing:
-  **Wallpaper Log** (task 15), **Storage Limit** (task 17), **Screen Time Goal**
-  (task 16), **Products I'm Considering** (task 18). Spreadsheet
-  **SPORTS_VIDEO_DATA** (task 12) already pinned in `user.yaml`.
+  **Screen Time Goal** (task 16), **Products I'm Considering** (task 18).
+  Spreadsheet **SPORTS_VIDEO_DATA** (task 12) already pinned in `user.yaml`.
+  `gmail-calendar__003` (task 15) needs a flight-confirmation email in Gmail;
+  `clock-calendar__023` (task 17) needs the weekly calendar populated.
 
 ## 7. Rollout (after review)
 

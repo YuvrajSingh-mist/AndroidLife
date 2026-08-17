@@ -122,7 +122,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Google Search+Obsidian]**: My essay is  due tomorrow so help me out writing one by doing a thorough research yourself, for the topic: [topic], sumarizing the top 5 Google search results as a pinned note in a Obsidian notes for about 200 words. Thanks! <!--medium__google-search__002-->
 
 **19. [Google Search+Notes] — DETERMINISTIC**
-- I'm torn between [product 1] and [product 2]. Search Google for an overview of highly rated reviews of each, record the overall sentiments of each of the products, compare them, save only the name of the more favorably reviewed one as a note. in Notes. Your review pool should atleasr be 10 or more for a more thorough analysis for each product. <!--hard__google-search-notes__019-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I'm stuck between two products. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
 
 **[Clock]**
 - Easy (1pt): What time is it in [city] right now? Check it on the Clock for me. <!--easy__clock__001-->
@@ -154,7 +155,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Music]**
 
 **77. [Music+Obsidian] — DETERMINISTIC**
-- I fall asleep to music and want the timer to match my bedtime. First, search YouTube Music for my favorite music type — a [music type] track — and download the highly-liked video of it. Then set a YouTube Music **sleep timer** so **playback stops at the next upcoming bedtime noted in Obsidian** — pick the nearest bedtime in the future, set the timer to end the music at that time, note the chosen duration, compare it against that bedtime, shorten it if it would run past bedtime, and double-check the final timer length <!--hard__music-obsidian__077-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music? <!--hard__music-obsidian__077-->
 
 ### Day 4
 
@@ -267,7 +269,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I think I've been missing emails from a specific person. Can you open Gmail and tell me if emails from ummbeerbiceps pdcast exist man check my screen now are sitting in my spam or not. Also, the number of unread emails form him? <!--easy__gmail__003-->
 
 **3. [Gmail+Calendar] — DETERMINISTIC**
-- I'm flying soon and want a heads-up before departure. Find the most recent flight-confirmation email in Gmail, extract the departure time, set a calendar reminder 3 hours before, then check the current time and reply with only the countdown in hours until departure, no other text <!--hard__gmail-calendar__003-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure? <!--hard__gmail-calendar__003-->
 
 **[Clock]**
 - Medium (3pt) **[Clock+Calendar]**: My recurring alarms are getting out of hand. Could you filter my alarms to show only the ones that repeat once weekly, disable daily ones, and check in Calendar whether you accidently deleted the ones that for meetings among the rest in Clock? <!--medium__clock__005-->
@@ -275,7 +278,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Clock+Gmail]**: My two alarms, [time 1] and [time 2], have drifted apart too much and it's messing up my mornings. Could you compare the two alarma and edit them to make sure they are not apart by more ethan 20 minutes and confirm both saved in Clock? Make sure their resp snooze settings are also similar. <!--medium__clock__002-->
 
 **23. [Clock+Calendar] — DETERMINISTIC**
-- I need a recurring alarm but don't want it to clash. Set it on Clock, cross-reference it against Calendar for the same week, and if there's a conflict, shift it by 30 minutes, then confirm the new time saved <!--hard__clock-calendar__023-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I need an alarm that repeats, but make sure it doesn't clash with anything I've got going on. <!--hard__clock-calendar__023-->
 
 **[Calendar]**
 - Easy (1pt): I want a quick view of what's eating my whole days this week. Can you pull up a list of all-day events I have this week in Calendar? <!--easy__calendar__003-->
@@ -405,7 +409,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 
 **16. [Telegram+Calendar] — DETERMINISTIC**
-- I think a date was mentioned in the group chat. Check the last 10 messages in the Telegram group for any mention of a date, record the most recent one, and compare it against Calendar. If there's no matching event within 2 days, create a 'Follow-up' event; confirm the check either way <!--hard__telegram-calendar__016-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one? <!--hard__telegram-calendar__016-->
 
 **[Calculator]**
 - Easy (1pt): I need to know what that costs in my currency. Can you convert [amount] between [currency pair] in Calculator for me? <!--easy__calculator__002-->
@@ -492,7 +497,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you compare today's battery usage to yesterday's, note the difference, and check which app used the most today in Settings? <!--medium__settings__005-->
 
 **44. [Settings+Obsidian] — DETERMINISTIC**
-- I think I've been on my phone too much. Check today's screen time in Settings, note the total, compare it against yesterday's noted in Obsidian, and set an app timer only if today exceeds yesterday by 30 minutes or more, recording the comparison <!--hard__settings-obsidian__044-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I've been glued to my phone lately. Can you check today's usage and see if I'm over my goal? <!--hard__settings-obsidian__044-->
 
 ### Day 11
 
@@ -500,7 +506,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm planning a trip and don't want to overpay for tickets. Can you open MakeMyTrip and check the cheapest flight from [city] to [place] for next week? <!--easy__makemytrip__001-->
 
 **4. [MakeMyTrip] — DETERMINISTIC**
-- I've picked my flight but want to see the breakdown before paying. Open MakeMyTrip, pull up the cheapest [airline_1] or [airline_2] flight from [city] to [place] next week, and take me to the payment page showing the fare breakdown — don't book. <!--hard__makemytrip__003-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I've shortlisted a flight for my trip but wanna see the full fare before I pay. Can you open it and show me the breakdown on the payment page? <!--hard__makemytrip__003-->
 
 **[Gmail]**
 - Medium (3pt): Could you filter unread emails to just the 1:1 ones (hide mailing lists), reply 'Thanks!' to the oldest, and star it in Gmail? <!--medium__gmail__008-->
@@ -518,7 +525,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[YouTube+Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video. <!--medium__youtube__005-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
-- I want notifications from a channel but not at night. Turn on notifications for the YouTube channel, check its upload history for posting frequency, note how many uploads this week, and mute notifications during 10pm-8am in Settings if it posts more than twice a week, then confirm both settings saved <!--hard__youtube-settings__052-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day? <!--hard__youtube-settings__052-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to buy something and need to know if my size's even available. Can you check the available sizes/colors for a specific product in Chrome? <!--easy__shopping-delivery-browser__004-->
@@ -550,7 +558,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->
 
 **4. [BookMyShow] — DETERMINISTIC**
-- **Surprise-party composite.** My friends are throwing a surprise party for a close friend. Can you book movie tickets he'd like? Get his details and what he's into from his contact info, then search for a movie that fits and take me to the booking page (don't buy anything). <!--hard__bookmyshow__003-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- My friends are planning a surprise for one of our close friends. Can you book tickets to a movie he'd actually like? Pull his info from my contacts — don't buy, just get me to booking. <!--hard__bookmyshow__003-->
 
 **[Google Photos]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__google-photos__005, absent-entity): data genuinely absent (No photo exists in Google Photos dated 2023-06-15.). Correct = honest failure; do NOT fabricate. -->
@@ -585,13 +594,15 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): I'm ordering from a new place. Open Swiggy, find [restaurant]'s menu, rank the top 3 dishes by rating, and tell me the price of the best one. <!--medium__swiggy__006-->
 
 **6. [Swiggy] — DETERMINISTIC**
-- I want the same thing I ordered last Friday. Open Swiggy, find my most recent order from that day, reorder it, then message [contact] to say it's on the way. (Don't complete payment — stop at the payment page.) <!--hard__swiggy__005-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Ugh, I'm craving what I ordered last Friday — can you get me that again? <!--hard__swiggy__005-->
 
 **[Prime Video]**
 - Easy (1pt): I'm about to fly and won't have signal. Open Prime Video and check whether [show] is available to download for offline viewing. <!--easy__prime-video__006-->
 
 **7. [Prime Video] — DETERMINISTIC**
-- I heard [show] is leaving soon. Open Prime Video, search for it, check whether it's still available and can be downloaded, and add it to my Watchlist so I don't lose it. <!--hard__prime-video__005-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- One of my daily shows is apparently leaving soon. Can you check if it's still up and save it so I don't lose it? <!--hard__prime-video__005-->
 
 ### Day 13
 
@@ -669,7 +680,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you open Google Meet, check the participant list of my next scheduled meeting, and tell me who's expected to join? <!--medium__google-meet__005-->
 
 **70. [Google Meet+Files] — DETERMINISTIC**
-- I'm hosting a meeting soon and want the agenda ready. Open the next scheduled meeting in Google Meet, find the attached agenda in Files, open it, and if it lists more than 3 topics, save a copy renamed 'Final Agenda'; otherwise just confirm the file name <!--hard__google-meet-files__070-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready? <!--hard__google-meet-files__070-->
 
 **[Gallery]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__gallery__006, absent-entity): data genuinely absent (No photos tagged/located at 'Bali' exist in Gallery.). Correct = honest failure; do NOT fabricate. -->
@@ -779,7 +791,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Swiggy]**
 
 **7. [Swiggy] — DETERMINISTIC**
-- I want to reorder my usual from [restaurant] with the same items as my last order. Open Swiggy, rebuild that order, and take me to the payment page to confirm — don't place the order. <!--hard__swiggy__007-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Order my usual from my go-to place - my favourite food. Don't place it, just show me the payment page. <!--hard__swiggy__007-->
 
 ### Day 17
 
@@ -796,7 +809,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Gmail+Telegram]**: Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from 'Rahul Mehta'? And if it's more than 10, add the sender to spam and tell 'Rahul Mehta' on Telegram in Gmail? <!--medium__gmail__011-->
 
 **45. [Gmail+Notes] — DETERMINISTIC**
-- I want to use a discount code before it expires. Find the email with the discount code in Gmail, check the expiration date, save the code in a note if not expired, otherwise archive the email, and confirm the action taken <!--hard__gmail-notes__045-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
 
 **[Google Search]**
 - Easy (1pt): I'm curious about [topic] and want something fun to learn. Can you look up a random fact about [topic] on Google Search? <!--easy__google-search__009-->
@@ -949,7 +963,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you open '[spreadsheet name]' in Google Sheets and find the highest value in the [sheet column] column? Reply with only that value, no other text, then highlight it and note which row it's in. <!--medium__google-sheets__006-->
 
 **74. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
-- I keep a record of my videos' performance and want to compare it to the market. Open the '[spreadsheet name]' spreadsheet in Google Sheets, find the video with the highest [sheet column] count, star the winning cell, then search Amazon Shopping for a related product and note its price in the sheet <!--hard__google-sheets-amazon-shopping__074-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I've got all my video stats in a sheet. Can you find my best performer and show me something related to grab? <!--hard__google-sheets-amazon-shopping__074-->
 
 **[Contacts]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__contacts__013, absent-entity): data genuinely absent (No contact named 'Rahul Mehta' exists in Contacts.). Correct = honest failure; do NOT fabricate. -->
@@ -998,12 +1013,14 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Open BookMyShow and tell me which movies are playing at the nearest cinema. <!--easy__bookmyshow__004-->
 
 **5. [BookMyShow] — DETERMINISTIC**
-- I'm planning a movie night for a group. Open BookMyShow, find [movie]'s showtimes at [cinema], check the seat prices for a group of [group size], and save the best option to a note. from Contacts; subtask B: search + reach movie booking page. Independent end-states (contact info retrieved **and** booking page reached). subtask B: message [contact]. Independent. [contact]. Independent. pass must confirm a recent order exists and the named `[restaurant]` is active. composite). text is resolved from `day_N.env`/`user.yaml`, and that resolved value is confirmed to exist on-device right now (restaurant is active, movie is showing, product is in the Wishlist, show is on Prime Video, airline flies the route, news section exists). If it doesn't exist, update the **placeholder value** — never the task text — so the task stays solvable and never becomes an accidental hallucination task. is reachable in the UI and exposes the asked value/state via accessibility. the grader knows the exact phrasing to look for. / 72, 36/36 AU, HC count unchanged for these apps — no new HC). <!--hard__bookmyshow__005-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- We're doing a movie night this weekend. Could you check showtimes and seat prices and save the best one? <!--hard__bookmyshow__005-->
 
 **[Amazon Shopping]**
 
 **7. [Amazon Shopping] — DETERMINISTIC**
-- I'm ready to buy '[product]' but want to confirm the total before I commit. Open Amazon Shopping, add it to cart, and take me to the payment page showing the final total — don't complete the purchase. <!--hard__amazon-shopping__006-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Almost bought something but wanna double-check the total before I commit. Add it and show me the final price on the payment page — don't finish the order. <!--hard__amazon-shopping__006-->
 
 ### Day 22
 
@@ -1229,7 +1246,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): What's the [topic]-related news today? Open MSN News and tell me the top headline in the [topic] section. <!--easy__msn-news__008-->
 
 **8. [MSN News] — DETERMINISTIC**
-- I follow [topic] closely. Open MSN News, find today's biggest story on it, summarize it, and send the summary to [contact] on Telegram. <!--hard__msn-news__007-->
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I am following the topic closely. Find today's biggest story on it, summarize it, and send it to my friend the summary. <!--hard__msn-news__007-->
 
 **[Amazon Shopping]**
 - Medium (3pt): I want to know if the price dropped before I buy. Open Amazon Shopping, check the price of the '[product]' in my Wishlist, and if it's cheaper than [price threshold], message [contact] to say I'm buying it. <!--medium__amazon-shopping__005-->

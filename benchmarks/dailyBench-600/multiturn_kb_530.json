@@ -155,15 +155,14 @@
       "preferences": {"code_to_use": "FLIP15"}
     }
   },
-  "hard__gallery-settings-obsidian__075": {
-    "correct_target": "gallery-settings::new-wallpaper",
+  "hard__gmail-calendar__003": {
+    "correct_target": "gmail-calendar::bbi-del-reminder",
     "profile": {
-      "photos": [
-        {"name": "IMG_20260806_1.jpg", "used_as_wallpaper": false, "date": "2026-08-06"},
-        {"name": "IMG_20260806_2.jpg", "used_as_wallpaper": false, "date": "2026-08-06"},
-        {"name": "IMG_20260720_1.jpg", "used_as_wallpaper": true, "date": "2026-07-20"}
+      "flights": [
+        {"airline": "IndiGo", "flight": "6E 2031", "route": "BBI→DEL", "date": "2026-08-24", "depart": "07:10", "confirmation_email": true},
+        {"airline": "IndiGo", "flight": "6E 501", "route": "BBI→BOM", "date": "2026-09-02", "depart": "09:00", "confirmation_email": false}
       ],
-      "notes": {"Wallpaper Log": {"last_used": "IMG_20260720_1.jpg"}}
+      "preferences": {"reminder_hours_before": 3, "next_trip": "BBI→DEL"}
     }
   },
   "hard__settings-obsidian__044": {
@@ -173,14 +172,15 @@
       "preferences": {"check": "today's screen time"}
     }
   },
-  "hard__files-notes__069": {
-    "correct_target": "files-notes::archive-under-limit",
+  "hard__clock-calendar__023": {
+    "correct_target": "clock-calendar::alarm-0730-shifted",
     "profile": {
-      "files": [
-        {"name": "holiday_vlog.mp4", "size": "1.2 GB"},
-        {"name": "lecture_recording.mkv", "size": "900 MB"}
+      "alarm": {"requested_time": "07:00", "days": ["Mon", "Tue", "Wed", "Thu", "Fri"]},
+      "calendar": [
+        {"event": "Team Sync", "date": "2026-08-17", "start": "07:00", "end": "08:00"},
+        {"event": "Gym", "date": "2026-08-18", "start": "06:30", "end": "07:30"}
       ],
-      "notes": {"Storage Limit": {"max_archive_gb": 2}}
+      "preferences": {"shift_if_clash_min": 30}
     }
   },
   "hard__google-search-notes__019": {
