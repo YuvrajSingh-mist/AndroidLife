@@ -135,9 +135,22 @@
   "hard__gmail-notes__045": {
     "correct_target": "gmail-notes::discount-code-saved",
     "profile": {
-      "emails": [
-        {"from": "Flipkart", "subject": "Your 15% coupon", "code": "FLIP15", "expires": "2026-08-20"},
-        {"from": "Amazon", "subject": "Deal of the day", "code": null, "expires": null}
+      "accounts": [
+        {
+          "email": "yuvraj.singh@gmail.com",
+          "primary": true,
+          "emails": [
+            {"from": "Flipkart", "subject": "Your 15% coupon", "code": "FLIP15", "expires": "2026-08-20"},
+            {"from": "Amazon", "subject": "Deal of the day", "code": null, "expires": null}
+          ]
+        },
+        {
+          "email": "yuvraj@college.edu",
+          "primary": false,
+          "emails": [
+            {"from": "Student Offers", "subject": "Exam-prep coupon", "code": "PREP10", "expires": "2026-08-25"}
+          ]
+        }
       ],
       "preferences": {"code_to_use": "FLIP15"}
     }

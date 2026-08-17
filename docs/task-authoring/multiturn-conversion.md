@@ -26,6 +26,10 @@
   disambiguate (e.g. "check my order status" → *which* service, *which* order).
 - Grading: **outcome** (acted on the correct target, verifiable on-device) as the
   hard gate + **turn count** as the efficiency signal (reference 1–2 turns).
+- **"Agent must ask:"** lines in this doc are **human-review annotations only** —
+  they show a reviewer what info is missing. They are **NOT** part of the agent's
+  input. The agent gets only the natural prompt + the KB oracle and decides on its
+  own how many / how good its clarifying questions are.
 
 ## 2. Two KB files (multi-turn convos only)
 
@@ -87,6 +91,10 @@ the rule and the agent resolves it from on-device state + one hidden fact.
 > **Live-data flag 🔴:** entries that reflect real-time app state and MUST be
 > re-confirmed on-device immediately before the run (orders, delivery status,
 > today's news). Everything else (notes, contacts, calendar) is seeded/static.
+>
+> **ℹ️ "Agent must ask" lines under each task are author annotations for human
+> review only — never sent to the agent.** The agent decides the number and
+> quality of its own questions against the KB oracle.
 
 ### 1. `hard__swiggy__005` — reorder my last order (day 12)
 **Prompt (vague):** "Ugh, I'm craving what I ordered last Friday — can you get me that again?"
@@ -313,21 +321,34 @@ Agent must ask: *which meeting? which doc?* → the next meeting + its agenda do
 🔴 Verify calendar actually has these events.
 
 ### 14. `hard__gmail-notes__045` — discount code before it expires (day 17)
-**Prompt (vague):** "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?"
-Agent must ask: *which email? which code?* → the coupon email → save the code.
+**Prompt (vague):** "I've got a coupon for an online shopping website somewhere that's expiring soon. Can you find it and save it before it's gone?"
+Agent must ask: *which account? which email? which code?* → the Flipkart coupon in the primary Gmail → save FLIP15.
 ```json
 {
   "correct_target": "gmail-notes::discount-code-saved",
   "profile": {
-    "emails": [
-      {"from":"Flipkart","subject":"Your 15% coupon","code":"FLIP15","expires":"2026-08-20"},
-      {"from":"Amazon","subject":"Deal of the day","code":null,"expires":null}
+    "accounts": [
+      {
+        "email": "yuvraj.singh@gmail.com",
+        "primary": true,
+        "emails": [
+          {"from":"Flipkart","subject":"Your 15% coupon","code":"FLIP15","expires":"2026-08-20"},
+          {"from":"Amazon","subject":"Deal of the day","code":null,"expires":null}
+        ]
+      },
+      {
+        "email": "yuvraj@college.edu",
+        "primary": false,
+        "emails": [
+          {"from":"Student Offers","subject":"Exam-prep coupon","code":"PREP10","expires":"2026-08-25"}
+        ]
+      }
     ],
     "preferences": {"code_to_use":"FLIP15"}
   }
 }
 ```
-🔴 Re-verify a real coupon email exists in Gmail at run time.
+🔴 Re-verify a real coupon email exists + which Gmail account holds it at run time.
 
 ### 15. `hard__gallery-settings-obsidian__075` — fresh wallpaper (day 23)
 **Prompt (vague):** "Been wanting a fresh look — pick one of my photos and set it as wallpaper. Keep a log so I don't reuse the same one."
