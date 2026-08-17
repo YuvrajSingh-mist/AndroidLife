@@ -1,0 +1,4 @@
+{
+  "_comment": "Knowledge-base profiles for multi-turn (KB-oracle) tasks in the PUBLIC 3-day preview set. Currently empty: none of the 18 converted multi-turn tasks live in the public preview (all are in the 530 set - see multiturn_kb_530.json). Populate here when the public set gains multi-turn tasks. Format per task_id: { 'correct_target': '<app>::<target>', 'profile': { ... } }.",
+  "tasks": {}
+}

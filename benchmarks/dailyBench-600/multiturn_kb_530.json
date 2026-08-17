@@ -1,0 +1,185 @@
+{
+  "hard__swiggy__005": {
+    "correct_target": "swiggy::order_4821",
+    "profile": {
+      "orders": [
+        {"service": "Swiggy", "order_id": "4821", "date": "2026-08-14 (Fri)", "item": "Chicken Biryani + Gulab Jamun", "restaurant": "Biryani Blues", "status": "delivered", "recent": true},
+        {"service": "Amazon", "order_id": "9032", "date": "2026-08-11", "item": "Noise earbuds", "status": "shipped", "recent": false},
+        {"service": "Swiggy", "order_id": "4790", "date": "2026-08-12", "item": "Paneer Roll", "restaurant": "Rolls King", "status": "delivered", "recent": false}
+      ]
+    }
+  },
+  "hard__swiggy__007": {
+    "correct_target": "swiggy::biryani-blues-usual",
+    "profile": {
+      "orders": [
+        {"service": "Swiggy", "restaurant": "Biryani Blues", "usual_items": ["Chicken Biryani", "Gulab Jamun", "Coke"], "last_total": "₹412", "recent": true},
+        {"service": "Swiggy", "restaurant": "Rolls King", "usual_items": ["Paneer Roll", "Cold Coffee"], "last_total": "₹230", "recent": false}
+      ],
+      "preferences": {"usual_restaurant": "Biryani Blues"}
+    }
+  },
+  "hard__makemytrip__003": {
+    "correct_target": "makemytrip::bbi-del-indigo",
+    "profile": {
+      "trips": {
+        "bbi_del": [
+          {"airline": "IndiGo", "flight": "6E 2031", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
+          {"airline": "Air India", "flight": "AI 723", "depart": "BBI 16:40", "arrive": "DEL 19:05", "fare": "₹5,390"}
+        ],
+        "bbi_bom": [
+          {"airline": "IndiGo", "flight": "6E 501", "depart": "BBI 09:00", "arrive": "BOM 11:15", "fare": "₹5,100"}
+        ]
+      },
+      "preferences": {"next_trip": "BBI to DEL next week"}
+    }
+  },
+  "hard__prime-video__005": {
+    "correct_target": "prime-video::reacher",
+    "profile": {
+      "watchlist": [
+        {"title": "Reacher", "leaving": "2026-08-31", "available": true, "downloadable": true},
+        {"title": "The Boys", "leaving": null, "available": true, "downloadable": true},
+        {"title": "The Office", "leaving": null, "available": true, "downloadable": false}
+      ]
+    }
+  },
+  "hard__bookmyshow__003": {
+    "correct_target": "bookmyshow::priyanshu-action-movie",
+    "profile": {
+      "contacts": {
+        "Priyanshu Kumar": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
+        "Anannya Mishra": {"likes": ["rom-coms"], "birthday": "2026-09-02"}
+      },
+      "preferences": {"surprise_party_for": "Priyanshu Kumar"}
+    }
+  },
+  "hard__bookmyshow__005": {
+    "correct_target": "bookmyshow::group4-movie",
+    "profile": {
+      "cinemas": [
+        {"name": "INOX Bhubaneswar", "showing": ["Kalki 2898 AD", "Pushpa 2"], "seats_per_ticket": "₹240"},
+        {"name": "PVR Esplanade", "showing": ["Kalki 2898 AD"], "seats_per_ticket": "₹280"}
+      ],
+      "preferences": {"group_size": 4, "preferred_cinema": "INOX Bhubaneswar"}
+    }
+  },
+  "hard__amazon-shopping__006": {
+    "correct_target": "amazon::noise-earbuds-cart",
+    "profile": {
+      "cart": [
+        {"item": "Noise wireless earbuds", "price": "₹1,299", "prime_saved": "₹200"},
+        {"item": "boAt Airdopes 131", "price": "₹1,499", "prime_saved": "₹250"}
+      ],
+      "preferences": {"intending_to_buy": "Noise wireless earbuds"}
+    }
+  },
+  "hard__msn-news__007": {
+    "correct_target": "msn-news::cricket-today",
+    "profile": {
+      "topics": {"cricket": true, "economy": false, "technology": true},
+      "contacts": {"primary_share": "Yuvraj Airtel", "telegram_handle": "@yuvraj_airtel"},
+      "preferences": {"followed_topic": "cricket"}
+    }
+  },
+  "hard__settings-notes__081": {
+    "correct_target": "settings::battery-saver-on",
+    "profile": {
+      "notes": {
+        "Battery": {"suggested_mode": "Battery Saver", "target_charge": "below 30%"},
+        "Screen Time": {"goal_hours": 2}
+      }
+    }
+  },
+  "hard__telegram-calendar__016": {
+    "correct_target": "telegram::study-group-date",
+    "profile": {
+      "chats": [
+        {"name": "Study Group", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
+        {"name": "Family", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "Hostel", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
+      ],
+      "preferences": {"reminder_chat": "Study Group"}
+    }
+  },
+  "hard__contacts-gmail__026": {
+    "correct_target": "contacts::missing-phone",
+    "profile": {
+      "contacts": [
+        {"name": "Aaditya", "phone": null, "has_email": true},
+        {"name": "Mousi Maa", "phone": "+918541806133", "has_email": false},
+        {"name": "Nanimaa", "phone": "+917781089901", "has_email": false},
+        {"name": "Anannya Mishra", "phone": null, "has_email": true}
+      ]
+    }
+  },
+  "hard__contacts-notes__027": {
+    "correct_target": "contacts-notes::rent-dues",
+    "profile": {
+      "notes": {
+        "Rent Dues": [
+          {"tenant": "Rahul Verma", "amount": "₹15,000", "paid": true},
+          {"tenant": "Sneha Kapoor", "amount": "₹12,000", "paid": false}
+        ]
+      }
+    }
+  },
+  "hard__google-meet-files__070": {
+    "correct_target": "meet-files::next-meeting-agenda",
+    "profile": {
+      "meetings": [
+        {"title": "Team Standup", "time": "2026-08-18 10:00", "agenda_doc": "Standup Agenda", "attendees": 5},
+        {"title": "Project Review", "time": "2026-08-18 14:00", "agenda_doc": "Review Agenda", "attendees": 8}
+      ],
+      "preferences": {"next_meeting": "Team Standup"}
+    }
+  },
+  "hard__notes-files__030": {
+    "correct_target": "notes-files::shopping-sync",
+    "profile": {
+      "notes": {"To Buy": ["Rice 5kg", "Milk", "Eggs", "Detergent"]},
+      "files": {
+        "receipt_grocery_2026_08_15.pdf": {"items": ["Milk", "Eggs"], "total": "₹320"}
+      }
+    }
+  },
+  "hard__chrome-files-obsidian__031": {
+    "correct_target": "chrome-files::download-report",
+    "profile": {
+      "downloads": [
+        {"name": "Q3_Report.pdf", "existing": true, "note_in": "Obsidian", "folder": "Downloads"},
+        {"name": "Budget.xlsx", "existing": true, "note_in": null, "folder": "Drive"}
+      ],
+      "preferences": {"download_file": "Q3_Report.pdf"}
+    }
+  },
+  "hard__settings-obsidian__044": {
+    "correct_target": "settings-obsidian::screen-time-goal",
+    "profile": {
+      "notes": {"Screen Time Goal": {"daily_limit_hours": 2}},
+      "preferences": {"check": "today's screen time"}
+    }
+  },
+  "hard__obsidian-calendar__067": {
+    "correct_target": "obsidian-calendar::pin-deadline-note",
+    "profile": {
+      "notes": [
+        {"title": "Budget Deadline", "deadline": "2026-08-10", "pinned": false, "important": true},
+        {"title": "Research Notes", "deadline": null, "pinned": false, "important": false},
+        {"title": "Internship Application", "deadline": "2026-08-25", "pinned": false, "important": true}
+      ]
+    }
+  },
+  "hard__google-search-notes__019": {
+    "correct_target": "search-notes::product-comparison",
+    "profile": {
+      "notes": {
+        "Products I'm Considering": [
+          {"name": "Noise wireless earbuds", "price": "₹1,299"},
+          {"name": "boAt Airdopes 131", "price": "₹1,499"}
+        ]
+      },
+      "preferences": {"compare": "headphones"}
+    }
+  }
+}
