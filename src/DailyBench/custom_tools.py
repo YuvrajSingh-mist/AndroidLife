@@ -45,6 +45,29 @@ You need to answer questions from the mobile GUI agent about the task above. You
 The current real date and time is: {current_datetime}. If the question is about the date or time, answer using this real value rather than any date you might otherwise assume."""
 
 
+# Multi-turn / KB persona prompt. Used when the task supplies a knowledge-base
+# profile (--ask-user-kb) instead of a single hidden fact. The simulated user is
+# an honest oracle over the profile: it answers whatever the agent asks, using
+# only the profile + the task goal, and it REMEMBERS the whole conversation so
+# follow-ups are consistent across turns ("I already told you - the Swiggy one").
+ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE = """You are acting as a mobile phone user. A mobile GUI agent is executing a task on your phone. The task goal is: {goal}
+
+Here is everything about you that is relevant: {knowledge_base}
+
+You must answer the mobile GUI agent's questions about the task. Rules:
+- Answer ONLY from the knowledge base above and the task goal - never invent facts.
+- Answer whatever is asked, honestly and directly. You are busy, so keep answers short (one sentence or a few words).
+- If the question is about something not in your knowledge base, say plainly that you don't have that information.
+- Remember everything already said in this conversation (the history below) and stay consistent with it. If the agent asks again about something you already answered, remind it of the earlier answer instead of repeating yourself at length.
+- If the agent asks a question that is ambiguous, answer the most reasonable interpretation and note which one you assumed.
+
+The current real date and time is: {current_datetime}.
+
+Conversation so far:
+{history}
+The mobile GUI agent's latest question is below."""
+
+
 _ask_user_phoenix_tracer: Any = None
 
 
@@ -155,8 +178,9 @@ async def get_current_location(*, ctx: "ActionContext") -> str:
 
 
 def build_ask_user_tool(
-    relevant_information: str,
+    relevant_information: str = "",
     *,
+    kb: dict | None = None,
     model: str = DEFAULT_ASK_USER_MODEL,
     api_key: str | None = None,
     base_url: str | None = None,
@@ -166,48 +190,80 @@ def build_ask_user_tool(
     top_p: float = 0.95,
     seed: int = 42,
 ) -> Dict[str, Dict[str, Any]]:
-    """Build a per-run `ask_user` custom tool, closing over this task's hidden ground-truth fact.
+    """Build a per-run `ask_user` custom tool.
 
-    Hard/ASK-USER tasks are deliberately missing one load-bearing fact (see public.md's Grading
-    model note: "resolved by an LLM playing the user, holding only the omitted fact, answering
-    just what's asked"). `relevant_information` is that fact, supplied per run via
-    `--ask-user-context` - the tool itself never invents it.
+    Two modes (backward compatible):
 
-    When `log_path` is set, each call appends a JSONL entry with timing, token usage, model info,
-    and a USD cost figure — same shape as the main proxy's `llm_proxy_metrics.jsonl` — so
-    ask_user costs are tracked alongside the main agent's LLM costs. The dollar cost is computed
-    from a provider pricing catalog at runtime (see `DailyBench.pricing`), keyed by the model
-    passed here, so it follows whichever model the user selects instead of a hardcoded rate.
+    1. Single-fact (legacy): ``relevant_information`` is the task's hidden
+       ground-truth fact (Hard/ASK-USER tasks). The simulated user holds ONLY
+       that fact and answers just what's asked. This is the pre-v2 behaviour.
 
-    The client is constructed lazily, on first actual call - most tasks never call ask_user at
-    all, and building it eagerly would make every single run require OPENAI_API_KEY to be set,
-    even for tasks that will never touch this tool.
+    2. Knowledge-base / multi-turn: ``kb`` is a JSON profile (dict) of the
+       user's data (orders, contacts, wishlists, preferences...). The simulated
+       user is an honest oracle over the profile: it answers whatever the agent
+       asks, from the profile only, and it keeps a ROLLING MEMORY of the whole
+       conversation so follow-up questions are answered consistently across
+       turns. This is the multi-turn mode: the agent's job is to ask the right
+       clarifying questions to disambiguate a vague task and converge.
+
+    Each call appends a JSONL entry (timing, tokens, cost, turn number) to
+    ``log_path`` when set, so per-turn costs and turn counts are tracked. The
+    client is built lazily on first call so non-ask-user tasks never require
+    OPENAI_API_KEY.
     """
     client: AsyncOpenAI | None = None
+    # Rolling conversation history for multi-turn (KB) mode. Each entry is
+    # {"role": "user"|"assistant", "content": ...}. Persisted across calls so
+    # the simulated user remembers earlier answers.
+    history: list[dict[str, str]] = []
+    turn_count: int = 0
 
     async def ask_user(question: str, *, ctx: "ActionContext") -> str:
-        nonlocal client
+        nonlocal client, history, turn_count
         if client is None:
             client = AsyncOpenAI(api_key=api_key, base_url=base_url)
         current_datetime = await ctx.driver.get_date()
-        system_prompt = ASK_USER_SYSTEM_PROMPT_TEMPLATE.format(
-            goal=ctx.shared_state.instruction,
-            relevant_information=relevant_information or "(none provided for this task)",
-            current_datetime=current_datetime,
-        )
+        turn_count += 1
+        if kb is not None:
+            history_str = "\n".join(
+                f"{'You' if e['role']=='assistant' else 'Agent'}: {e['content']}"
+                for e in history
+            ) or "(no prior conversation)"
+            system_prompt = ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE.format(
+                goal=ctx.shared_state.instruction,
+                knowledge_base=json.dumps(kb, ensure_ascii=False, indent=2),
+                current_datetime=current_datetime,
+                history=history_str,
+            )
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question},
+            ]
+        else:
+            system_prompt = ASK_USER_SYSTEM_PROMPT_TEMPLATE.format(
+                goal=ctx.shared_state.instruction,
+                relevant_information=relevant_information or "(none provided for this task)",
+                current_datetime=current_datetime,
+            )
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question},
+            ]
         start = time.monotonic()
         response = await client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": question},
-            ],
+            messages=messages,
             temperature=temperature,
             top_p=top_p,
             seed=seed,
         )
         elapsed_ms = (time.monotonic() - start) * 1000.0
         content = response.choices[0].message.content
+        # Rolling memory: only persist in KB/multi-turn mode so legacy
+        # single-fact runs behave exactly as before.
+        if kb is not None:
+            history.append({"role": "user", "content": question})
+            history.append({"role": "assistant", "content": content or ""})
         tracer = _get_ask_user_phoenix_tracer()
         if tracer is not None:
             _emit_ask_user_span(tracer, model, system_prompt, question, content, response)
@@ -220,6 +276,7 @@ def build_ask_user_tool(
                 response,
                 elapsed_ms,
                 pricing=pricing if pricing is not None else get_default_pricing(),
+                turn_number=turn_count,
             )
         return content.strip() if content else "Failed: empty response from the simulated user."
 
@@ -239,7 +296,8 @@ def build_ask_user_tool(
                 "time, a file, or an amount etc.). First search the device thoroughly for it — only if you genuinely "
                 "cannot find or infer it should you ask. Use this INSTEAD of guessing or inventing the specific fact "
                 "you think is missing to complete the task. Never ask about things you can look up yourself. Ask "
-                "one specific question at a time."
+                "one specific question at a time. You may ask multiple questions over multiple turns to "
+                "disambiguate a vague request."
             ),
         }
     }
@@ -254,6 +312,7 @@ def _log_ask_user_call(
     elapsed_ms: float,
     *,
     pricing: ModelPricing | None = None,
+    turn_number: int | None = None,
 ) -> None:
     """Append one ask_user completion record to a JSONL log, matching the main proxy's format.
 
@@ -290,6 +349,7 @@ def _log_ask_user_call(
         "source": "ask_user",
         "elapsed_ms": elapsed_ms,
         "request": {"model": model, "message_count": 2, "framework_prompt": question},
+        "turn_number": turn_number,
         "response": answer or "",
         "usage": {
             "prompt_tokens": prompt_tokens,

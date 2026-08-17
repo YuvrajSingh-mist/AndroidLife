@@ -60,6 +60,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after the run (on by default, for fairness so the next task doesn't inherit this task's UI/navigation state).")
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
+    parser.add_argument("--ask-user-kb", default="", help="Path to a JSON knowledge-base profile for the simulated user (multi-turn mode): the user answers whatever the agent asks, from the profile, with rolling memory across turns. When set, takes precedence over --ask-user-context.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="OpenAI model used to play the simulated user for the ask_user tool.")
     parser.add_argument("--run-root", default=None, help="Optional shared run directory created by the batch; the task's run folder is created inside it (instead of assets/runs/full-bench/<timestamp>/<label>).")
     return parser
@@ -179,7 +180,13 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     # own description (which instructs it to search the device first and ask only when the fact is
     # genuinely absent) — the system prompt does not announce that a task is an ASK USER task.
     custom_tools = dict(CUSTOM_TOOLS)
-    if args.ask_user_context:
+    # Multi-turn KB mode takes precedence: if --ask-user-kb points to a JSON profile,
+    # the simulated user becomes an honest oracle over it with rolling memory.
+    kb: dict | None = None
+    if args.ask_user_kb:
+        import json as _json
+        kb = _json.loads(open(args.ask_user_kb).read())
+    if args.ask_user_context or kb is not None:
         # Truncate the ask_user log at run start so a merge-drill rerun into an existing
         # run root doesn't carry stale ask_user entries from a previous run (the tool appends
         # per call; run_metrics counts lines in this file, so stale lines would corrupt the
@@ -188,6 +195,7 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         custom_tools.update(
             build_ask_user_tool(
                 args.ask_user_context,
+                kb=kb,
                 model=args.ask_user_model,
                 log_path=run_dir / "ask_user_metrics.jsonl",
                 temperature=args.temperature,

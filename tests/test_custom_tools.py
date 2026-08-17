@@ -92,3 +92,63 @@ def test_get_current_datetime_and_location_against_the_real_device() -> None:
     datetime_value, location_value = asyncio.run(run())
     assert datetime_value.strip()
     assert "location" in location_value.lower()
+
+
+def test_ask_user_kb_template_injects_kb_and_history() -> None:
+    """The multi-turn KB system prompt carries the profile AND the rolling history."""
+    from DailyBench.custom_tools import ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE
+    kb = {"orders": [{"app": "Swiggy", "eta": "18:40"}]}
+    history = "Agent: which app?\nYou: Swiggy"
+    prompt = ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE.format(
+        goal="check my order", knowledge_base='{"orders": [{"app": "Swiggy"}]}',
+        current_datetime="2026-08-17 12:00:00", history=history,
+    )
+    assert "check my order" in prompt
+    assert "Swiggy" in prompt
+    assert "Agent: which app?" in prompt
+    assert "You: Swiggy" in prompt
+
+
+def test_build_ask_user_tool_kb_mode_spec_unchanged() -> None:
+    """KB mode still exposes the same single `question` parameter (agent-facing API unchanged)."""
+    tool = build_ask_user_tool(
+        kb={"orders": [{"app": "Swiggy"}]}, model="gpt-5.4-mini", api_key="sk-test"
+    )["ask_user"]
+    assert set(tool["parameters"].keys()) == {"question"}
+    # multi-turn allowed in description
+    assert "multiple turns" in tool["description"]
+
+
+def test_ask_user_tool_turn_number_logged(tmp_path, monkeypatch) -> None:
+    """Each call records an increasing turn_number in the ask_user log."""
+    import json as _json
+    import DailyBench.custom_tools as ct
+    from types import SimpleNamespace
+
+    # stub the LLM client to avoid any network (SimpleNamespace attrs aren't bound)
+    async def fake_create(**kwargs):
+        return SimpleNamespace(
+            choices=[SimpleNamespace(message=SimpleNamespace(content="Swiggy"), finish_reason="stop")],
+            usage=SimpleNamespace(prompt_tokens=10, completion_tokens=5, total_tokens=15),
+            id="fake", model="gpt-5.4-mini",
+        )
+    monkeypatch.setattr(ct, "AsyncOpenAI", lambda **kw: SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=fake_create))))
+    monkeypatch.setattr(ct, "_get_ask_user_phoenix_tracer", lambda: None)
+
+    log = tmp_path / "ask_user_metrics.jsonl"
+    tool = build_ask_user_tool(
+        kb={"orders": [{"app": "Swiggy"}]}, model="gpt-5.4-mini", api_key="sk-test",
+        log_path=log, pricing=ct.get_default_pricing(),
+    )["ask_user"]
+
+    async def run():
+        ctx = SimpleNamespace(
+            driver=SimpleNamespace(get_date=lambda: asyncio.sleep(0) or "2026-08-17 12:00:00"),
+            shared_state=SimpleNamespace(instruction="check my order"),
+        )
+        await tool["function"]("which app?", ctx=ctx)
+        await tool["function"]("which order?", ctx=ctx)
+
+    asyncio.run(run())
+    turns = [_json.loads(l)["turn_number"] for l in log.read_text().splitlines()]
+    assert turns == [1, 2]
