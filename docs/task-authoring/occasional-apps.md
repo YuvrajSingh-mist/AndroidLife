@@ -99,8 +99,8 @@ distinct apps and the corpus exactly 530 tasks.
 
 ### Day 11
 - **`medium__makemytrip__002`** (M, ●) — I'm planning a trip and don't want to
-  overpay. Open MakeMyTrip, compare IndiGo and Air India flight options from
-  [city] to [place] for next week, and tell me which is cheaper and the time
+  overpay. Open MakeMyTrip, compare [airline_1] and [airline_2] flight options
+  from [city] to [place] for next week, and tell me which is cheaper and the time
   difference.
 
 ### Day 12
@@ -170,9 +170,9 @@ distinct apps and the corpus exactly 530 tasks.
 
 ### Day 24
 - **`hard__makemytrip__003`** (H, ●, ◆) — I've picked my flight but want to see
-  the breakdown before paying. Open MakeMyTrip, pull up the cheapest IndiGo or
-  Air India flight from [city] to [place] next week, and take me to the payment
-  page showing the fare breakdown — don't book.
+  the breakdown before paying. Open MakeMyTrip, pull up the cheapest [airline_1]
+  or [airline_2] flight from [city] to [place] next week, and take me to the
+  payment page showing the fare breakdown — don't book.
 
 ### Day 25
 - **`medium__prime-video__007`** (M, ✓, ◆) — I want to start a new show. Open
@@ -186,9 +186,9 @@ distinct apps and the corpus exactly 530 tasks.
 
 ### Day 27
 - **`medium__makemytrip__004`** (M, ●, ◆) — I'm comparing two trips. Open
-  MakeMyTrip, check the cheapest IndiGo and Air India flights from [city] to
-  [place_1] and [place_2] for next week, and note which is cheaper in a note for
-  me.
+  MakeMyTrip, check the cheapest [airline_1] and [airline_2] flights from [city]
+  to [place_1] and [place_2] for next week, and note which is cheaper in a note
+  for me.
 
 ### Day 28
 - **`hard__bookmyshow__005`** (H, ●, ◆) — I'm planning a movie night for a
@@ -210,10 +210,10 @@ The "polar-opposite / unrelated subtask" flavor the spec already documents
 
 ## 6. Vars / seeds needed (per new task)
 
-> Entity names (airlines, products, shows, movies, restaurants) are **written
-> into the task text itself** so the agent knows exactly what to look for — they
-> are not generic placeholders. Only genuinely variable values (airports,
-> cinemas, thresholds) stay as pinned vars.
+> Most entity names (products, shows, movies, restaurants, news sections) are
+> **written into the task text itself** so the agent knows exactly what to look
+> for. A few that vary by availability (airlines, airports, cinemas, thresholds)
+> stay as pinned vars in `day_N.env`.
 
 New placeholders to pin in `tasks_vars/day_N.env` + `config/user.yaml`:
 
@@ -223,13 +223,13 @@ New placeholders to pin in `tasks_vars/day_N.env` + `config/user.yaml`:
 | `[group size]` | fixed number (e.g. 4) | bookmyshow 005 |
 | `[comm app]` | Telegram (primary comm app) | msn 005, 007 |
 | `[city]`, `[place]`, `[place_1]`, `[place_2]` | real nearby airports (e.g. BBI → DEL) | makemytrip 002–004 |
+| `[airline_1]`, `[airline_2]` | two airlines that fly the route (e.g. IndiGo, Air India — verify live before each run) | makemytrip 002, 003, 004 |
 | `[cinema]` | a real cinema near the device | bookmyshow 005 |
 
 Concrete entities fixed in the task text (verify they exist live before each run):
 
 | entity | value | used by |
 |---|---|---|
-| `IndiGo`, `Air India` | airlines to compare | makemytrip 002, 003, 004 |
 | `Noise wireless earbuds`, `boAt Airdopes 131` | seeded Amazon Wishlist items | amazon 003–006 |
 | `Biryani Blues` | a real, active Swiggy restaurant | swiggy 006, 007 |
 | `Kalki 2898 AD` | a real movie | bookmyshow 002, 005 |
