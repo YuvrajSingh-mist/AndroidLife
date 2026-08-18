@@ -305,6 +305,30 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-18 — Task-uniqueness audit: files/delete-largest cluster differentiated; unsolvable Phone task fixed.**
+  The public rebalance had already dropped `easy__phone__008` and `medium__files__012` from the
+  57-task sample, but the duplicate "filter-by-size → delete the largest → note size" pattern still
+  lived in the 530 corpus (`medium__files__010/012/013`, `medium__google-drive__007`), and the public
+  still carried it via `medium__files__013` + `medium__google-drive__007`. Rewrote each to a distinct
+  capability in both `tasks_530.md` and `public.md`:
+  - `easy__phone__008` (unsolvable — you can't mute a call you're not on) → "check who my most recent
+    call was with in the call log" (Reply with only the contact name).
+  - `medium__files__012` (duplicate delete-largest) → "total storage used by all my video files"
+    (sum sizes, no delete).
+  - `medium__files__013` (duplicate delete-largest) → "find duplicate files in my Downloads folder,
+    delete the extra copies, count how many you removed" (uses Files' duplicate cleaner).
+  - `medium__google-drive__007` (duplicate delete-largest) → "files that were shared with me that I
+    can edit, tell me how many there are" (no delete).
+  Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes) + `DailyBench_public_v2.json/.jsonl`
+  (57 tasks). This orphaned the `[video size threshold]` and `[file size threshold]` placeholders
+  (only `[size threshold]` remains, used by `medium__files__010`): removed those keys from
+  `config/user_config.example` + `config/user.yaml` + `public_vars.example.env` and the local
+  `public_vars.local.env`/`tasks_vars.local.env`; rebuilt `tasks_vars_usage.json` + the informational
+  `tasks_vars.local.json` reverse index. Also fixed a latent env-parsing bug: in the local envs
+  `email-id=...` was glued to the next key on one line (e.g. `...aghism.comsize threshold=100MB`),
+  which corrupted `email-id`'s value and hid `size threshold` from `parse_flat_config` — split onto
+  separate lines. `verify_config.py` PASS (Day-1 + ASK USER all resolved); 52 tests PASS.
+
 - **2026-08-10 — Fixed "Goa trip" regression in run-time fact + dataset.**
   The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
   `ask_user_facts_730.json` and `DailyBench_530_v1.json/.jsonl` — they still told the

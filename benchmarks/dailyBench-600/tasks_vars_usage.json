@@ -4,7 +4,7 @@
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
   "var_key_count_in_local_env": 54,
-  "placeholder_key_count_in_dataset": 89,
+  "placeholder_key_count_in_dataset": 87,
   "vars": {
     "X": {
       "configured_in_local_env": true,
@@ -179,7 +179,7 @@
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 66,
+      "task_count": 67,
       "days": [
         1,
         2,
@@ -252,6 +252,7 @@
         "easy__telegram__009",
         "medium__clock-telegram__001",
         "medium__shopping-delivery-browser__008",
+        "easy__telegram__010",
         "medium__contacts__012",
         "medium__google-photos-telegram__001",
         "medium__google-photos__008",
@@ -379,13 +380,9 @@
     },
     "file size threshold": {
       "configured_in_local_env": true,
-      "task_count": 1,
-      "days": [
-        14
-      ],
-      "tasks": [
-        "medium__google-drive__007"
-      ]
+      "task_count": 0,
+      "days": [],
+      "tasks": []
     },
     "financing note title": {
       "configured_in_local_env": false,
@@ -1135,13 +1132,9 @@
     },
     "video size threshold": {
       "configured_in_local_env": true,
-      "task_count": 1,
-      "days": [
-        25
-      ],
-      "tasks": [
-        "medium__files__012"
-      ]
+      "task_count": 0,
+      "days": [],
+      "tasks": []
     },
     "wifi": {
       "configured_in_local_env": true,
@@ -1564,9 +1557,11 @@
   },
   "local_env_keys_with_no_task": [
     "digits",
+    "file size threshold",
     "music type",
     "product 1",
     "product 2",
-    "store"
+    "store",
+    "video size threshold"
   ]
 }

@@ -204,11 +204,8 @@ transit line: Route 205
 # `[email-id]` — real recipient email for the professional email tasks (email is
 # only used in professional settings; casual sharing uses `message [contact]`).
 email-id: hafari4025@aghism.com
-# `[size threshold]` / `[video size threshold]` / `[file size threshold]` —
-# device-dependent file-size cutoffs for the Files/Drive size tasks.
+# `[size threshold]` — device-dependent file-size cutoff for the Files size task.
 size threshold: 100MB
-video size threshold: 500MB
-file size threshold: 50MB
 
 # ---- device layout (OPTIONAL overrides) ----------------------------------
 # The seed scripts auto-detect these from the connected phone, so you normally

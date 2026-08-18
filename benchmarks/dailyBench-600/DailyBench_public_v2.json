@@ -144,12 +144,10 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find all files over [file size threshold], list them by size, and delete the largest if it's unneeded in Google Drive?",
-      "prompt_template": "Could you find all files over {{ file size threshold }}, list them by size, and delete the largest if it's unneeded in Google Drive?",
-      "placeholders": [
-        "file size threshold"
-      ],
-      "placeholder_count": 1,
+      "prompt_text": "Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text.",
+      "prompt_template": "Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text.",
+      "placeholders": [],
+      "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -398,8 +396,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you rank recently downloaded files by size, delete the largest if it's unneeded, and note the result in Files?",
-      "prompt_template": "Could you rank recently downloaded files by size, delete the largest if it's unneeded, and note the result in Files?",
+      "prompt_text": "Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text.",
+      "prompt_template": "Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,

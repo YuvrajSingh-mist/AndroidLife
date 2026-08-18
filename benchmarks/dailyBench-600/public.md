@@ -28,7 +28,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
 
 **[Google Drive]**
-- Medium (3pt): Could you find all files over [file size threshold], list them by size, and delete the largest if it's unneeded in Google Drive? <!--medium__google-drive__007-->
+- Medium (3pt): Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text. <!--medium__google-drive__007-->
 
 **6. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day? <!--hard__youtube-settings__052-->
@@ -54,7 +54,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Google Photos + Obsidian]**: I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you open Google Photos Favourites, find the appropriate photo for each heading by looking at each photo's description, and copy each one into the note under the matching heading, one by one? Reply with only the number of photos added, no other text. <!--medium__gallery__007-->
 
 **[Files]**
-- Medium (3pt): Could you rank recently downloaded files by size, delete the largest if it's unneeded, and note the result in Files? <!--medium__files__013-->
+- Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
 
 - Medium (3pt) **[Google Maps + Telegram]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station. <!--medium__google-maps__003-->
 
