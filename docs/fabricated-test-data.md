@@ -514,13 +514,19 @@ following entities were **seeded on the test device** (all recorded in
   check).
 - **530-style output formats added (2026-08-18):** per the operator, every
   public task that "notes something or tells the user the output" now ends with a
-  deterministic output format matching the 530 convention — `Reply with only X,
-  no other text.` (e.g. `easy__google-photos__004` → "…Reply with only the date,
-  no other text", `medium__calculator__001` → "…Reply with only the final grade,
-  no other text"). 16 tasks were updated (17 total with the format, incl. the
-  pre-existing `medium__google-sheets__001`) in `public.md` +
-  `DailyBench_public_v2.json/.jsonl`. This is a deliberate small deviation from
-  the raw 530 prompt text for those tasks (noted in the `public.md` header).
+  deterministic output format, matching the 530 convention AND its variety —
+  a **mix** of single-value (`Reply with only X, no other text.`) and structured
+  pipe formats (`List … in the format of "A" | "B" strictly`). 23 tasks carry an
+  explicit format: **6 structured** (`medium__files__010` "Filename"|"Size",
+  `medium__settings__005` "Difference"|"Top app", `hard__contacts-obsidian__029`
+  "Contact"|"Old"|"New", `medium__calculator__005` "Name"|"Share" + total,
+  `hard__google-search-clock__056` "Time remaining"|"Alarm time",
+  `medium__google-meet__005` "Name") and **17 reply-only** (e.g.
+  `easy__google-photos__004` "date", `medium__calculator__001` "final grade",
+  `easy__messages__013` "number of unread", `easy__phone__015` "number of missed
+  calls", `medium__youtube__006` "number"). Updated in `public.md` +
+  `DailyBench_public_v2.json/.jsonl`; a deliberate small deviation from the raw
+  530 prompt text for those tasks (noted in the `public.md` header).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

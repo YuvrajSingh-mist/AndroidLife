@@ -29,7 +29,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I'm about to time something and need to start right away. Can you start the stopwatch in Clock? <!--easy__clock__010-->
 
 **[Files+Obsidian]**
-- Medium (3pt) **[Files + Obsidian]**: My storage keeps shrinking and I need to find the big offenders. Filter files larger than 100MB across the whole device, note the largest one, star it, and log its size in an Obsidian note in Files? Reply with only the size, no other text. <!--medium__files__010-->
+- Medium (3pt) **[Files + Obsidian]**: My storage keeps shrinking and I need to find the big offenders. Filter files larger than 100MB across the whole device, note the largest one, star it, and log its size in an Obsidian note in Files? List it for me in the format of "Filename" | "Size" strictly. <!--medium__files__010-->
 
 **[Gallery+Obsidian]**
 - Medium (3pt) **[Gallery + Obsidian]**: Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Gallery? Reply with only the space freed, no other text. <!--medium__gallery__007-->
@@ -53,7 +53,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): Could you open my '[note title]' note in Notes, read it, and rewrite it into a cleaner version with clear sections, keeping all the original points? <!--medium__notes__005-->
 
 **[Settings]**
-- Medium (3pt): Could you compare today's battery usage to yesterday's, note the difference, and check which app used the most today in Settings? Reply with only the difference and the top app, no other text. <!--medium__settings__005-->
+- Medium (3pt): Could you compare today's battery usage to yesterday's, note the difference, and check which app used the most today in Settings? Tell me in the format of "Difference" | "Top app" strictly. <!--medium__settings__005-->
 
 **[Swiggy]**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and tell me the delivery status of my most recent order? Reply with only the delivery status, no other text. <!--easy__swiggy__003-->
@@ -81,7 +81,7 @@ Hard tasks — Day 1:
 - Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. Reply with only the final grade, no other text. <!--medium__calculator__001-->
 
 **[Calculator+Telegram]**
-- Medium (3pt) **[Calculator + Telegram]**: Could you open the '[shared bill note title]' note in Obsidian, compute each roommate's share of the shared bill with different usage levels, message each their share, and log the total bill in a note in Calculator? Reply with only the total bill, no other text. <!--medium__calculator__005-->
+- Medium (3pt) **[Calculator + Telegram]**: Could you open the '[shared bill note title]' note in Obsidian, compute each roommate's share of the shared bill with different usage levels, message each their share, and log the total bill in a note in Calculator? List each share for me in the format of "Name" | "Share" strictly, and reply with only the total bill, no other text. <!--medium__calculator__005-->
 
 **[Calendar]**
 - Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? Reply with only the total hours, no other text. <!--medium__calendar__013-->
@@ -100,10 +100,10 @@ Hard tasks — Day 1:
 - Medium (3pt): Could you open '[presentation name]', reorder the slides so the title slide is first, and confirm the new order in Google Slides? <!--medium__google-slides__002-->
 
 **[Messages]**
-- Easy (1pt): I've been busy and haven't checked my chats. Can you check my unread messages in Messages? <!--easy__messages__013-->
+- Easy (1pt): I've been busy and haven't checked my chats. Can you check my unread messages in Messages? Reply with only the number of unread messages, no other text. <!--easy__messages__013-->
 
 **[Phone]**
-- Easy (1pt): I want to see who I need to call back from today. Can you check my missed calls from today only in Phone? <!--easy__phone__015-->
+- Easy (1pt): I want to see who I need to call back from today. Can you check my missed calls from today only in Phone? Reply with only the number of missed calls, no other text. <!--easy__phone__015-->
 
 **[Prime Video]**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist? Reply with only the number, no other text. <!--easy__prime-video__002-->
@@ -115,7 +115,7 @@ Hard tasks — Day 1:
 - Easy (1pt): I'm about to head out and don't want to get caught in the rain. Can you check today's weather in the Weather app and tell me if it looks good for my commute? Reply with only yes or no, no other text. <!--easy__weather__003-->
 
 **[YouTube]**
-- Medium (3pt): Could you filter the Shorts feed for [topic], like the 3 best ones, and count how many you liked in YouTube? <!--medium__youtube__006-->
+- Medium (3pt): Could you filter the Shorts feed for [topic], like the 3 best ones, and count how many you liked in YouTube? Reply with only the number, no other text. <!--medium__youtube__006-->
 
 Hard tasks — Day 2:
 **1. [Chrome+YouTube+Notes] — ASK USER**
@@ -127,7 +127,7 @@ Hard tasks — Day 2:
 **4. [Chrome+Telegram+Notes] — ASK USER**
 - I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
 **5. [Google Search+Clock] — DETERMINISTIC**
-- I'm about to miss my bus. Look up [transit line]'s next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
+- I'm about to miss my bus. Look up [transit line]'s next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time. Reply in the format of "Time remaining" | "Alarm time" strictly. <!--hard__google-search-clock__056-->
 **6. [Gmail+Notes] — DETERMINISTIC**
 - I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
 
@@ -154,7 +154,7 @@ Hard tasks — Day 2:
 - Easy (1pt): I'm about to join a meeting by code and want to be ready. Can you open the 'Join with a code' screen in Google Meet and tell me what's on it? Reply with only what's on the screen, no other text. <!--easy__google-meet__003-->
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? Reply with only the earliest meeting, no other text. <!--easy__google-meet__004-->
 - Medium (3pt): Could you open the meeting link [meeting link] and land on the 'Ready to join?' screen without actually joining in Google Meet? <!--medium__google-meet__003-->
-- Medium (3pt): Could you open Google Meet, check the participant list of my next scheduled meeting, and tell me who's expected to join? Reply with only who's expected, no other text. <!--medium__google-meet__005-->
+- Medium (3pt): Could you open Google Meet, check the participant list of my next scheduled meeting, and tell me who's expected to join? List them for me in the format of "Name" strictly. <!--medium__google-meet__005-->
 
 **[Music+Telegram]**
 - Medium (3pt) **[Music + Telegram]**: Could you summarize what a new album is about based on its track titles, decide whether to add it, and message [contact] on Telegram my verdict in Music? Reply with only your verdict, no other text. <!--medium__music-telegram__002-->
