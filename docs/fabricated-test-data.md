@@ -559,6 +559,28 @@ following entities were **seeded on the test device** (all recorded in
   `Pasted image *.jpg` artifacts between runs (so 3× variance-check runs start
   identical); the photo captions/Favourites live in the app-private Photos DB
   and are read-only for this task, so they persist across runs.
+- **Email vs message policy + hard-task interleaving (2026-08-18):** per the
+  operator, **email is only used in a professional setting** — casual sharing
+  ("address of the nearest station", playlist link, route, photo, etc.) uses
+  `message [contact]` (Telegram, or Messages where the base app is Telegram)
+  instead of Gmail. Professional emails keep the Gmail app and now target the
+  **`[email-id]`** placeholder (a real address: `hafari4025@aghism.com`), not
+  `[contact]` (a person). **530 changes** (`tasks_530.md` +
+  `DailyBench_530_v1.json/.jsonl`): 13 casual `email [contact]` →
+  `message [contact]` with apps updated `*+Gmail` → `*+Telegram` (incl.
+  `medium__google-maps__003`; `medium__telegram__005` → `*+Messages`;
+  `medium__google-drive__011`, `medium__calendar__011`,
+  `medium__google-search__013`, `medium__contacts__013`); 2 professional
+  (`medium__contacts__008`, `medium__calculator__003`) → `email [email-id]`. **Public changes** (`public.md` +
+  `DailyBench_public_v2.json/.jsonl`): `medium__music__004` (meeting prep =
+  professional) → `email [email-id]`; `medium__youtube__005` + already-message
+  `medium__google-maps__003` → `message [contact] on Telegram` with apps
+  `YouTube+Gmail` / `Google Maps+Gmail` → `*+Telegram`. Added `email-id` to
+  `config/user.yaml` + `user_config.example` + `public_vars*.env` +
+  `tasks_vars*.env`; regenerated `tasks_vars_usage.json`. Also, the public sample
+  **no longer groups hard tasks** under "Hard tasks — Day N:" — they are now
+  **interleaved** among the easy/medium tasks (evenly spread, matching the 530
+  layout; `build_public_sample.py` updated so future builds do the same).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

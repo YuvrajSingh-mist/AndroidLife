@@ -201,6 +201,9 @@ product 1: Sony WH-1000XM5
 product 2: Bose QuietComfort Ultra
 # `[transit line]` — a real bus route for the "next departure" alarm task.
 transit line: Route 205
+# `[email-id]` — real recipient email for the professional email tasks (email is
+# only used in professional settings; casual sharing uses `message [contact]`).
+email-id: hafari4025@aghism.com
 
 # ---- device layout (OPTIONAL overrides) ----------------------------------
 # The seed scripts auto-detect these from the connected phone, so you normally

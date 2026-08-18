@@ -329,7 +329,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you filter Downloads to only .apk or installer files, delete the ones I don't need anymore, and count what's left in Files? <!--medium__files__003-->
 
 **[Music]**
-- Medium (3pt) **[Music+Gmail]**: Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email [contact] how much storage that freed up. <!--medium__music__004-->
+- Medium (3pt) **[Music+Telegram]**: Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, message [contact] on Telegram how much storage that freed up. <!--medium__music__004-->
 
 **[Phone]**
 - Easy (1pt): Someone keeps calling and I've had enough. Can you block a specific incoming number in the Phone app for me? <!--easy__phone__003-->
@@ -360,7 +360,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
-- Medium (3pt) **[Google Maps+Gmail]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, email [contact] the address of the nearest station. <!--medium__google-maps__003-->
+- Medium (3pt) **[Google Maps+Telegram]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station. <!--medium__google-maps__003-->
 
 **[YouTube]**
 - Easy (1pt): I want to know what everyone's watching right now. Can you check what's trending on YouTube today? <!--easy__youtube__003-->
@@ -491,7 +491,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Files+Obsidian]**: Could you summarize how storage is split across my folders, note the largest category, and check if it's more than half of my total storage in Files? <!--medium__files-obsidian__002-->
 
 **[Music]**
-- Medium (3pt) **[Music+Gmail]**: Could you find songs I added to a playlist but never played and remove them in Music? Also, email [contact] the playlist link. <!--medium__music__006-->
+- Medium (3pt) **[Music+Telegram]**: Could you find songs I added to a playlist but never played and remove them in Music? Also, message [contact] on Telegram the playlist link. <!--medium__music__006-->
 
 **[Settings]**
 - Medium (3pt): Could you compare today's battery usage to yesterday's, note the difference, and check which app used the most today in Settings? <!--medium__settings__005-->
@@ -522,7 +522,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[YouTube]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__youtube__004, absent-entity): data genuinely absent (No YouTube channel named 'TechDaily' exists (not searched/subscribed).). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel 'TechDaily' has posted anything today? <!--easy__youtube__004-->
-- Medium (3pt) **[YouTube+Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video. <!--medium__youtube__005-->
+- Medium (3pt) **[YouTube+Telegram]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, message [contact] on Telegram the link to the most popular video. <!--medium__youtube__005-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
@@ -534,7 +534,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Contacts]**
 - Easy (1pt): I've been adding people and want to double-check who made it in. Can you show me the contacts I added recently in Contacts? <!--easy__contacts__009-->
-- Medium (3pt) **[Contacts+Gmail]**: Could you filter contacts to only ones added this month in Contacts? List them for me in the format of "Name" | "Phone number" strictly, then star the most recent and check whether any are missing a phone number. Also, email [contact] the list of contacts missing a number. <!--medium__contacts__008-->
+- Medium (3pt) **[Contacts+Gmail]**: Could you filter contacts to only ones added this month in Contacts? List them for me in the format of "Name" | "Phone number" strictly, then star the most recent and check whether any are missing a phone number. Also, email [email-id] the list of contacts missing a number. <!--medium__contacts__008-->
 
 **[Google Photos]**
 - Easy (1pt): I'm looking for a clip I recorded but keep getting photos. Could you search Google Photos for videos only, not photos? <!--easy__gallery__007-->
@@ -612,7 +612,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Google Photos]**
 - Easy (1pt): I'm looking for a clip I recorded last month. Can you search Google Photos for videos from last month? <!--easy__google-photos__006-->
-- Medium (3pt) **[Google Photos+Gmail]**: Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, email [contact] the photo from the [trip name] trip. <!--medium__google-photos__005-->
+- Medium (3pt) **[Google Photos+Telegram]**: Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, message [contact] on Telegram the photo from the [trip name] trip. <!--medium__google-photos__005-->
 
 **[Telegram]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__telegram__006, absent-entity): data genuinely absent (No Telegram group named 'Old College Group' exists.). Correct = honest failure; do NOT fabricate. -->
@@ -621,7 +621,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Telegram+Notes]**: I stepped away from a group chat and want the gist without reading everything. Could you summarize a group discussion into 3 bullet points, save the summary as a note, and pin it in Telegram? <!--medium__telegram-notes__001-->
 
 **[Calculator]**
-- Medium (3pt) **[Calculator+Gmail]**: Could you open the '[financing note title]' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email [contact] the cheaper plan. <!--medium__calculator__003-->
+- Medium (3pt) **[Calculator+Gmail]**: Could you open the '[financing note title]' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email [email-id] the cheaper plan. <!--medium__calculator__003-->
 
 **20. [Calculator+Telegram+Notes] — DETERMINISTIC**
 - Splitting a bill with the group. Open the '[group bill note title]' note in Obsidian, compute the split on the Calculator, check each person's share, and if any share exceeds $50, message those people individually on Telegram; otherwise send one group message. Log the total in a note <!--hard__calculator-telegram-notes__020-->
@@ -706,7 +706,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Gmail+Telegram]**: Could you filter the inbox to only emails with attachments from this week, star the 3 most recent, and message [contact] on Telegram to check one of them in Gmail? <!--medium__gmail-telegram__001-->
 
 **[Google Maps]**
-- Medium (3pt) **[Google Maps+Gmail]**: Could you find the cheapest parking option near [place] in Google Maps and check its distance from [place]? Reply with only the name of the cheapest option, no other text, then email [contact] the address so we can meet there. <!--medium__google-maps__005-->
+- Medium (3pt) **[Google Maps+Telegram]**: Could you find the cheapest parking option near [place] in Google Maps and check its distance from [place]? Reply with only the name of the cheapest option, no other text, then message [contact] on Telegram the address so we can meet there. <!--medium__google-maps__005-->
 
 **[Google Photos]**
 - Easy (1pt): I want to dig out a really old memory. Can you find the oldest photo in my Google Photos library? <!--easy__google-photos__008-->
@@ -719,7 +719,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Which of my favorite channel's latest videos is doing better? Check its two most recent uploads, note both view counts, compare them, and message the person who cares about this on Telegram only the title of whichever performed better, then confirm they replied (deliberately no recipient or channel is named, so the agent must ask the user who to message and which channel they mean) <!--hard__youtube-telegram__015-->
 
 **[Telegram]**
-- Medium (3pt) **[Telegram+Gmail]**: Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, email [contact] which chat you muted. <!--medium__telegram__005-->
+- Medium (3pt) **[Telegram+Messages]**: Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, message [contact] through Messages which chat you muted. <!--medium__telegram__005-->
 
 **54. [Telegram+Calendar] — ASK USER**
 - Schedule a message to the right person without it landing mid-meeting. Schedule the Telegram message, note the intended send time, check it against Calendar for a conflicting event, shift it by 30 minutes if one exists, and double-check the final scheduled time (deliberately no recipient or message content is specified, so the agent must ask the user who the message is for and what to say) <!--hard__telegram-calendar__054-->
@@ -814,7 +814,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Google Search]**
 - Easy (1pt): I'm curious about [topic] and want something fun to learn. Can you look up a random fact about [topic] on Google Search? <!--easy__google-search__009-->
-- Medium (3pt) **[Google Search+Gmail]**: Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, email [contact] the fastest route for tomorrow. <!--medium__google-search__008-->
+- Medium (3pt) **[Google Search+Telegram]**: Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow. <!--medium__google-search__008-->
 - Medium (3pt) **[Google Search+Obsidian]**: I've got a school research report due on [topic]. Research it via Google Search, skim the top results, and write the report in a new note titled '[X]' in Obsidian, about 150-200 words with an intro, 3 key points, and a conclusion. Reply with only the note title, no other text. <!--medium__obsidian__005-->
 
 **[Clock]**
@@ -823,7 +823,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Calendar]**
 - Easy (1pt): I always forget their birthday and want a heads-up this time. Can you add a birthday reminder for [contact] in Calendar? <!--easy__calendar__009-->
-- Medium (3pt) **[Calendar+Gmail]**: Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, email [contact] that I'm free on [date range]. <!--medium__calendar__008-->
+- Medium (3pt) **[Calendar+Telegram]**: Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, message [contact] on Telegram that I'm free on [date range]. <!--medium__calendar__008-->
 - Medium (3pt) **[Calendar+Notes]**: Could you summarize tomorrow's schedule into a short morning briefing, save it as a note, and set a reminder to check it in the morning in Calendar? <!--medium__calendar-notes__001-->
 
 **[Notes]**
@@ -1166,7 +1166,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Drive]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__google-drive__012, absent-entity): data genuinely absent (No file named 'Q3 Budget.xlsx' exists in Google Drive to delete.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): I'm done with that file and want it gone for good. Can you delete the file 'Q3 Budget.xlsx' from Google Drive? <!--easy__google-drive__012-->
-- Medium (3pt) **[Google Drive+Gmail]**: Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, email [contact] the link to the starred file. <!--medium__google-drive__011-->
+- Medium (3pt) **[Google Drive+Telegram]**: Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, message [contact] on Telegram the link to the starred file. <!--medium__google-drive__011-->
 
 **[YouTube]**
 - Easy (1pt): I'm really enjoying this creator and want their future uploads. Can you subscribe to the channel of the video playing right now in YouTube? <!--easy__youtube__014-->
@@ -1183,7 +1183,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Calendar]**
 - Easy (1pt): I've got things lined up after lunch and want to stay on track. Can you check the time of my next event after lunch in Calendar? <!--easy__calendar__013-->
-- Medium (3pt) **[Calendar+Gmail]**: Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, email [contact] the time of the slot. <!--medium__calendar__011-->
+- Medium (3pt) **[Calendar+Telegram]**: Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, message [contact] on Telegram the time of the slot. <!--medium__calendar__011-->
 
 **[Chrome]**
 - Easy (1pt): I'm checking if the price dropped before I buy. Can you search for '[product]' on a shopping site in Chrome and check its current price? <!--easy__shopping-delivery-browser__013-->
@@ -1319,7 +1319,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Google Search]**
 - Easy (1pt): I'm planning an early start and need to know when it gets light. Can you search Google Search for tomorrow's sunrise time? <!--easy__google-search__014-->
-- Medium (3pt) **[Google Search+Gmail]**: Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, email [contact] the link. <!--medium__google-search__013-->
+- Medium (3pt) **[Google Search+Telegram]**: Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, message [contact] on Telegram the link. <!--medium__google-search__013-->
 
 **98. [Google Search+Obsidian] — ASK USER**
 - Point me to a source I can trust. Find the most reputable-seeming source discussing what I asked about via Search (official or a major outlet), open it, and save the link in a note (deliberately no topic or note is specified, so the agent must ask the user what to look up and which note to save the link in) <!--hard__google-search-obsidian__098-->
@@ -1335,7 +1335,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **[Contacts]**
 - Easy (1pt): I always mix them up with someone else. Can you add a nickname to an existing contact in Contacts? <!--easy__contacts__014-->
-- Medium (3pt) **[Contacts+Gmail]**: Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, email [contact] to confirm their new number. <!--medium__contacts__013-->
+- Medium (3pt) **[Contacts+Telegram]**: Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, message [contact] on Telegram to confirm their new number. <!--medium__contacts__013-->
 
 **[Phone]**
 - Easy (1pt): I want to see who I need to call back from today. Can you check my missed calls from today only in Phone? <!--easy__phone__015-->

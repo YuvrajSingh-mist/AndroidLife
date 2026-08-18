@@ -3761,11 +3761,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 7,
-      "app": "Music+Gmail",
+      "app": "Music+Telegram",
       "app_slug": "music",
       "apps": [
         "Music",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -3775,14 +3775,14 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email [contact] how much storage that freed up.",
-      "prompt_template": "Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email {{ contact }} how much storage that freed up.",
+      "prompt_text": "Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, message [contact] on Telegram how much storage that freed up.",
+      "prompt_template": "Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, message {{ contact }} on Telegram how much storage that freed up.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Music+Gmail",
+      "cross_app_label": "Music+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -4042,11 +4042,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 8,
-      "app": "Google Maps+Gmail",
+      "app": "Google Maps+Telegram",
       "app_slug": "google-maps",
       "apps": [
         "Google Maps",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -4056,14 +4056,14 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, email [contact] the address of the nearest station.",
-      "prompt_template": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, email {{ contact }} the address of the nearest station.",
+      "prompt_text": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station.",
+      "prompt_template": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message {{ contact }} on Telegram the address of the nearest station.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Google Maps+Gmail",
+      "cross_app_label": "Google Maps+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -5497,11 +5497,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 10,
-      "app": "Music+Gmail",
+      "app": "Music+Telegram",
       "app_slug": "music",
       "apps": [
         "Music",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -5511,14 +5511,14 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you find songs I added to a playlist but never played and remove them in Music? Also, email [contact] the playlist link.",
-      "prompt_template": "Could you find songs I added to a playlist but never played and remove them in Music? Also, email {{ contact }} the playlist link.",
+      "prompt_text": "Could you find songs I added to a playlist but never played and remove them in Music? Also, message [contact] on Telegram the playlist link.",
+      "prompt_template": "Could you find songs I added to a playlist but never played and remove them in Music? Also, message {{ contact }} on Telegram the playlist link.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Music+Gmail",
+      "cross_app_label": "Music+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -5756,11 +5756,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 11,
-      "app": "YouTube+Gmail",
+      "app": "YouTube+Telegram",
       "app_slug": "youtube",
       "apps": [
         "YouTube",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -5769,15 +5769,15 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 5,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video.",
-      "prompt_template": "Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email {{ contact }} the link to the most popular video.",
+      "task_number_within_dataset_app": 2,
+      "prompt_text": "Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, message [contact] on Telegram the link to the most popular video.",
+      "prompt_template": "Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, message {{ contact }} on Telegram the link to the most popular video.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "YouTube+Gmail",
+      "cross_app_label": "YouTube+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -5909,10 +5909,10 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you filter contacts to only ones added this month in Contacts? List them for me in the format of \"Name\" | \"Phone number\" strictly, then star the most recent and check whether any are missing a phone number. Also, email [contact] the list of contacts missing a number.",
-      "prompt_template": "Could you filter contacts to only ones added this month in Contacts? List them for me in the format of \"Name\" | \"Phone number\" strictly, then star the most recent and check whether any are missing a phone number. Also, email {{ contact }} the list of contacts missing a number.",
+      "prompt_text": "Could you filter contacts to only ones added this month in Contacts? List them for me in the format of \"Name\" | \"Phone number\" strictly, then star the most recent and check whether any are missing a phone number. Also, email [email-id] the list of contacts missing a number.",
+      "prompt_template": "Could you filter contacts to only ones added this month in Contacts? List them for me in the format of \"Name\" | \"Phone number\" strictly, then star the most recent and check whether any are missing a phone number. Also, email {{ email-id }} the list of contacts missing a number.",
       "placeholders": [
-        "contact"
+        "email-id"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
@@ -6699,11 +6699,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 13,
-      "app": "Google Photos+Gmail",
+      "app": "Google Photos+Telegram",
       "app_slug": "google-photos",
       "apps": [
         "Google Photos",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -6712,16 +6712,16 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 5,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, email [contact] the photo from the [trip name] trip.",
-      "prompt_template": "Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, email {{ contact }} the photo from the {{ trip name }} trip.",
+      "task_number_within_dataset_app": 2,
+      "prompt_text": "Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, message [contact] on Telegram the photo from the [trip name] trip.",
+      "prompt_template": "Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, message {{ contact }} on Telegram the photo from the {{ trip name }} trip.",
       "placeholders": [
         "contact",
         "trip name"
       ],
       "placeholder_count": 2,
       "is_cross_app": true,
-      "cross_app_label": "Google Photos+Gmail",
+      "cross_app_label": "Google Photos+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -6831,11 +6831,11 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you open the '[financing note title]' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email [contact] the cheaper plan.",
-      "prompt_template": "Could you open the '{{ financing note title }}' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email {{ contact }} the cheaper plan.",
+      "prompt_text": "Could you open the '[financing note title]' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email [email-id] the cheaper plan.",
+      "prompt_template": "Could you open the '{{ financing note title }}' note in Obsidian, compute the total cost of the two financing plans for the same purchase and compare them in Calculator? Also, email {{ email-id }} the cheaper plan.",
       "placeholders": [
         "financing note title",
-        "contact"
+        "email-id"
       ],
       "placeholder_count": 2,
       "is_cross_app": true,
@@ -7063,7 +7063,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
+      "task_number_within_dataset_app": 3,
       "prompt_text": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music?",
       "prompt_template": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with {{ contact }} on Telegram in Music?",
       "placeholders": [
@@ -7755,11 +7755,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 15,
-      "app": "Google Maps+Gmail",
+      "app": "Google Maps+Telegram",
       "app_slug": "google-maps",
       "apps": [
         "Google Maps",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -7769,15 +7769,15 @@
       "is_ask_user": false,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you find the cheapest parking option near [place] in Google Maps and check its distance from [place]? Reply with only the name of the cheapest option, no other text, then email [contact] the address so we can meet there.",
-      "prompt_template": "Could you find the cheapest parking option near {{ place }} in Google Maps and check its distance from {{ place }}? Reply with only the name of the cheapest option, no other text, then email {{ contact }} the address so we can meet there.",
+      "prompt_text": "Could you find the cheapest parking option near [place] in Google Maps and check its distance from [place]? Reply with only the name of the cheapest option, no other text, then message [contact] on Telegram the address so we can meet there.",
+      "prompt_template": "Could you find the cheapest parking option near {{ place }} in Google Maps and check its distance from {{ place }}? Reply with only the name of the cheapest option, no other text, then message {{ contact }} on Telegram the address so we can meet there.",
       "placeholders": [
         "place",
         "contact"
       ],
       "placeholder_count": 2,
       "is_cross_app": true,
-      "cross_app_label": "Google Maps+Gmail",
+      "cross_app_label": "Google Maps+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -7895,11 +7895,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 15,
-      "app": "Telegram+Gmail",
+      "app": "Telegram+Messages",
       "app_slug": "telegram",
       "apps": [
         "Telegram",
-        "Gmail"
+        "Messages"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -7908,15 +7908,15 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 5,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, email [contact] which chat you muted.",
-      "prompt_template": "Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, email {{ contact }} which chat you muted.",
+      "task_number_within_dataset_app": 2,
+      "prompt_text": "Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, message [contact] through Messages which chat you muted.",
+      "prompt_template": "Could you find the 5 most active group chats this week and mute the least relevant one in Telegram? Also, message {{ contact }} through Messages which chat you muted.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Telegram+Gmail",
+      "cross_app_label": "Telegram+Messages",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -8634,7 +8634,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 10,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 4,
       "prompt_text": "Could you merge two playlists into one, remove duplicates, confirm the final count, and send the new playlist to [contact] on Telegram in Music?",
       "prompt_template": "Could you merge two playlists into one, remove duplicates, confirm the final count, and send the new playlist to {{ contact }} on Telegram in Music?",
       "placeholders": [
@@ -8909,11 +8909,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 17,
-      "app": "Google Search+Gmail",
+      "app": "Google Search+Telegram",
       "app_slug": "google-search",
       "apps": [
         "Google Search",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -8923,14 +8923,14 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, email [contact] the fastest route for tomorrow.",
-      "prompt_template": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, email {{ contact }} the fastest route for tomorrow.",
+      "prompt_text": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow.",
+      "prompt_template": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message {{ contact }} on Telegram the fastest route for tomorrow.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Google Search+Gmail",
+      "cross_app_label": "Google Search+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -9053,11 +9053,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 17,
-      "app": "Calendar+Gmail",
+      "app": "Calendar+Telegram",
       "app_slug": "calendar",
       "apps": [
         "Calendar",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -9066,16 +9066,16 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 8,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, email [contact] that I'm free on [date range].",
-      "prompt_template": "Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, email {{ contact }} that I'm free on {{ date range }}.",
+      "task_number_within_dataset_app": 2,
+      "prompt_text": "Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, message [contact] on Telegram that I'm free on [date range].",
+      "prompt_template": "Could you list the 5 busiest days this month and tell me the busiest one in Calendar? Also, message {{ contact }} on Telegram that I'm free on {{ date range }}.",
       "placeholders": [
         "contact",
         "date range"
       ],
       "placeholder_count": 2,
       "is_cross_app": true,
-      "cross_app_label": "Calendar+Gmail",
+      "cross_app_label": "Calendar+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -9323,7 +9323,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 4,
-      "task_number_within_dataset_app": 1,
+      "task_number_within_dataset_app": 3,
       "prompt_text": "Could you summarize traffic conditions across three routes to work, pick the best one, start navigation on it, and message [contact] the ETA on Telegram in Google Maps?",
       "prompt_template": "Could you summarize traffic conditions across three routes to work, pick the best one, start navigation on it, and message {{ contact }} the ETA on Telegram in Google Maps?",
       "placeholders": [
@@ -9411,7 +9411,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 1,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 4,
       "prompt_text": "Could you list the top 5 highest-rated restaurants within a mile, save the top one to favorites, and message [contact] on Telegram suggesting it in Google Maps?",
       "prompt_template": "Could you list the top 5 highest-rated restaurants within a mile, save the top one to favorites, and message {{ contact }} on Telegram suggesting it in Google Maps?",
       "placeholders": [
@@ -10588,7 +10588,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 1,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 3,
       "prompt_text": "Could you find the 5 most recent photos of [subject], add them to a new album, and share the album name with [contact] on Telegram in Google Photos?",
       "prompt_template": "Could you find the 5 most recent photos of {{ subject }}, add them to a new album, and share the album name with {{ contact }} on Telegram in Google Photos?",
       "placeholders": [
@@ -11809,7 +11809,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 2,
-      "task_number_within_dataset_app": 3,
+      "task_number_within_dataset_app": 5,
       "prompt_text": "Could you summarize what a new album is about based on its track titles, decide whether to add it, and message [contact] on Telegram my verdict in Music?",
       "prompt_template": "Could you summarize what a new album is about based on its track titles, decide whether to add it, and message {{ contact }} on Telegram my verdict in Music?",
       "placeholders": [
@@ -13052,11 +13052,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 25,
-      "app": "Google Drive+Gmail",
+      "app": "Google Drive+Telegram",
       "app_slug": "google-drive",
       "apps": [
         "Google Drive",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -13065,15 +13065,15 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 11,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, email [contact] the link to the starred file.",
-      "prompt_template": "Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, email {{ contact }} the link to the starred file.",
+      "task_number_within_dataset_app": 3,
+      "prompt_text": "Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, message [contact] on Telegram the link to the starred file.",
+      "prompt_template": "Could you filter to only files shared with me, check which ones I can edit vs view-only, and star the most recent editable one in Google Drive? Also, message {{ contact }} on Telegram the link to the starred file.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Google Drive+Gmail",
+      "cross_app_label": "Google Drive+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -13247,11 +13247,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 25,
-      "app": "Calendar+Gmail",
+      "app": "Calendar+Telegram",
       "app_slug": "calendar",
       "apps": [
         "Calendar",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -13260,15 +13260,15 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 11,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, email [contact] the time of the slot.",
-      "prompt_template": "Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, email {{ contact }} the time of the slot.",
+      "task_number_within_dataset_app": 3,
+      "prompt_text": "Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, message [contact] on Telegram the time of the slot.",
+      "prompt_template": "Could you find a free 30-minute slot tomorrow, book it as 'Focus time', and set a reminder for it in Calendar? Also, message {{ contact }} on Telegram the time of the slot.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Calendar+Gmail",
+      "cross_app_label": "Calendar+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -14171,7 +14171,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 12,
-      "task_number_within_dataset_app": 3,
+      "task_number_within_dataset_app": 4,
       "prompt_text": "Could you summarize the comments left on a shared document, reply to the most recent one, star the document, and tell [contact] on Telegram you replied in Google Drive?",
       "prompt_template": "Could you summarize the comments left on a shared document, reply to the most recent one, star the document, and tell {{ contact }} on Telegram you replied in Google Drive?",
       "placeholders": [
@@ -14201,7 +14201,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 1,
-      "task_number_within_dataset_app": 4,
+      "task_number_within_dataset_app": 5,
       "prompt_text": "Could you summarize the contents of a specific document in 2-3 sentences, save the summary as a note, and message [contact] on Telegram that it's ready in Google Drive?",
       "prompt_template": "Could you summarize the contents of a specific document in 2-3 sentences, save the summary as a note, and message {{ contact }} on Telegram that it's ready in Google Drive?",
       "placeholders": [
@@ -14861,11 +14861,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 28,
-      "app": "Google Search+Gmail",
+      "app": "Google Search+Telegram",
       "app_slug": "google-search",
       "apps": [
         "Google Search",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -14875,14 +14875,14 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, email [contact] the link.",
-      "prompt_template": "Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, email {{ contact }} the link.",
+      "prompt_text": "Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, message [contact] on Telegram the link.",
+      "prompt_template": "Could you filter results to only official or government sites, open the most relevant one, and bookmark it in Google Search? Also, message {{ contact }} on Telegram the link.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Google Search+Gmail",
+      "cross_app_label": "Google Search+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -15058,11 +15058,11 @@
       "difficulty": "medium",
       "points": 3,
       "day": 28,
-      "app": "Contacts+Gmail",
+      "app": "Contacts+Telegram",
       "app_slug": "contacts",
       "apps": [
         "Contacts",
-        "Gmail"
+        "Telegram"
       ],
       "num_apps": 2,
       "cross_app_required": true,
@@ -15071,15 +15071,15 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 13,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, email [contact] to confirm their new number.",
-      "prompt_template": "Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, email {{ contact }} to confirm their new number.",
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, message [contact] on Telegram to confirm their new number.",
+      "prompt_template": "Could you find contacts with an outdated area code and update the most recent one in Contacts? Also, message {{ contact }} on Telegram to confirm their new number.",
       "placeholders": [
         "contact"
       ],
       "placeholder_count": 1,
       "is_cross_app": true,
-      "cross_app_label": "Contacts+Gmail",
+      "cross_app_label": "Contacts+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {

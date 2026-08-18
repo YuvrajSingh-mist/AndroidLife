@@ -183,6 +183,7 @@ def main() -> int:
     for t in public_tasks:
         per_day[t["day"]].append(t)
 
+    ordered_task_ids: list[str] = []
     for day in (1, 2, 3):
         md_lines.append(f"### Day {day}")
         md_lines.append("")
@@ -195,22 +196,65 @@ def main() -> int:
         by_app: "OrderedDict[str, list]" = OrderedDict()
         for t in sorted(nonhard, key=lambda r: (r["app"], r["task_id"])):
             by_app.setdefault(t["app"], []).append(t)
-        for app, app_tasks in by_app.items():
-            md_lines.append(f"**[{app}]**")
-            for t in app_tasks:
-                label = "Easy (1pt)" if t["bucket"] == "easy" else "Medium (3pt)"
-                tag = f" **[{' + '.join(t.get('apps') or [])}]**" if t.get("is_cross_app") else ""
-                md_lines.append(f"- {label}{tag}: {t['prompt_text']} <!--{t['task_id']}-->")
-            md_lines.append("")
-        if hard:
-            md_lines.append(f"Hard tasks — Day {day}:")
-            md_lines.append("")
-            for i, t in enumerate(hard, start=1):
-                ahi = t.get("ahi") or "DETERMINISTIC"
-                md_lines.append(f"**{i}. [{t['app']}] — {ahi}**")
-                md_lines.append(f"- {t['prompt_text']} <!--{t['task_id']}-->")
+
+        # Hard tasks are INTERLEAVED among the app groups (no "Hard tasks" heading):
+        # they're placed at evenly-spread positions so they never clump and can't be
+        # predicted by position, matching the 530 corpus layout.
+        hard_blocks: list[str] = []
+        for i, t in enumerate(hard, start=1):
+            ahi = t.get("ahi") or "DETERMINISTIC"
+            hard_blocks.append(f"**{i}. [{t['app']}] — {ahi}**\n- {t['prompt_text']} <!--{t['task_id']}-->")
+
+        app_items = list(by_app.items())
+        n_app, n_hard = len(app_items), len(hard_blocks)
+        seq: "list[tuple[str, object]]" = []
+        if n_hard:
+            # spread positions: before which app block (1-indexed) each hard goes
+            positions = [max(1, min(n_app, round((i + 1) * (n_app + 1) / (n_hard + 1)))) for i in range(n_hard)]
+            used: set[int] = set()
+            cleaned: list[int] = []
+            for p in positions:
+                q = p
+                while q in used and q <= n_app:
+                    q += 1
+                q = min(q, n_app)
+                used.add(q)
+                cleaned.append(q)
+            hi = 0
+            for ai in range(1, n_app + 1):
+                while hi < n_hard and cleaned[hi] == ai:
+                    seq.append(("hard", hard_blocks[hi]))
+                    hi += 1
+                seq.append(("app", app_items[ai - 1]))
+            while hi < n_hard:
+                seq.append(("hard", hard_blocks[hi]))
+                hi += 1
+        else:
+            seq = [("app", it) for it in app_items]
+
+        for kind, item in seq:
+            if kind == "app":
+                app, app_tasks = item  # type: ignore[misc]
+                md_lines.append(f"**[{app}]**")
+                for t in app_tasks:
+                    label = "Easy (1pt)" if t["bucket"] == "easy" else "Medium (3pt)"
+                    tag = f" **[{' + '.join(t.get('apps') or [])}]**" if t.get("is_cross_app") else ""
+                    md_lines.append(f"- {label}{tag}: {t['prompt_text']} <!--{t['task_id']}-->")
+                    ordered_task_ids.append(t["task_id"])
+                md_lines.append("")
+            else:
+                block = item  # type: ignore[misc]
+                md_lines.append(block)
+                ordered_task_ids.append(block.split("<!--")[1].split("-->")[0])
                 md_lines.append("")
         md_lines.append("")
+
+    # keep the dataset task order identical to the md layout (interleaved hard tasks)
+    if len(ordered_task_ids) == len(public_tasks):
+        by_id = {t["task_id"]: t for t in public_tasks}
+        public_tasks = [by_id[tid] for tid in ordered_task_ids]
+    else:
+        print(f"WARNING: ordered id count {len(ordered_task_ids)} != tasks {len(public_tasks)}; keeping sorted order", file=sys.stderr)
 
     OUT_MD.write_text("\n".join(md_lines).rstrip() + "\n")
 
