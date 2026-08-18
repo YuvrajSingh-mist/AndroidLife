@@ -55,8 +55,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome?",
-      "prompt_template": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome?",
+      "prompt_text": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via Chrome?",
+      "prompt_template": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via Chrome?",
       "placeholders": [
         "store"
       ],

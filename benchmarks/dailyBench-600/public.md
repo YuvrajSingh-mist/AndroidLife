@@ -21,7 +21,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've got a packed day tomorrow and want to make sure nothing overlaps. Could you check my Calendar for any scheduling conflicts tomorrow afternoon? <!--easy__calendar__002-->
 
 **[Chrome]**
-- Easy (1pt): I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome? <!--easy__shopping-delivery-browser__012-->
+- Easy (1pt): I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via Chrome? <!--easy__shopping-delivery-browser__012-->
 
 **[Clock]**
 - Easy (1pt): I'm about to time something and need to start right away. Can you start the stopwatch in Clock? <!--easy__clock__010-->
