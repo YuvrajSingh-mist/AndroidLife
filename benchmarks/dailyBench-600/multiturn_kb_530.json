@@ -126,12 +126,12 @@
           "location": "Kalinga Nagar",
           "items": [
             {
-              "name": "Chicken Chetinad Biriyani",
+              "name": "Chicken Biriyani",
               "qty": 1,
-              "price": 279
+              "price": 205
             }
           ],
-          "bill_total": "₹279",
+          "bill_total": "₹205",
           "status": "delivered",
           "delivered_on": "2026-04-12",
           "recent": false,
@@ -171,7 +171,7 @@
         },
         {
           "service": "Swiggy",
-          "restaurant": "EatRight",
+          "restaurant": "Wow! China",
           "items": [
             {
               "name": "Hot Garlic Noodles With Chilli Paneer",
@@ -280,7 +280,7 @@
         },
         {
           "service": "Swiggy",
-          "restaurant": "EatRight",
+          "restaurant": "Wow! China",
           "usual_items": [
             "Hot Garlic Noodles With Chilli Paneer"
           ],
@@ -434,16 +434,26 @@
     "profile": {
       "music": {
         "favorite_genre": "lo-fi beats",
-        "sleep_artist": "Chillhop"
+        "sleep_artist": "Chillhop",
+        "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix",
+        "premium": false,
+        "youtube_music_account": "yuvraj.mist@gmail.com",
+        "downloads_enabled": true
       },
       "notes": {
         "Bedtime": {
           "time": "10:30 PM",
-          "source": "real on-device note"
+          "source": "real on-device note (Obsidian 'Bedtime.md', verified 2026-08-19)"
         }
       },
       "preferences": {
-        "sleep_timer": "10:30 PM"
+        "sleep_timer": "10:30 PM",
+        "wake_up_time": "6:30 AM",
+        "sleep_goal_hours": 8,
+        "wind_down_routine": "listens to lo-fi beats while falling asleep",
+        "volume": "low (~20%)",
+        "repeat_mode": "off (single track)",
+        "fall_asleep_habit": "starts a Chillhop lo-fi track then lets the timer stop it"
       }
     }
   },
@@ -557,11 +567,15 @@
     "profile": {
       "notes": {
         "Screen Time Goal": {
-          "daily_limit_hours": 2
+          "daily_limit_hours": 2,
+          "note": "aim to keep daily screen time under 2 hours"
         }
       },
       "preferences": {
-        "check": "today's screen time"
+        "check": "today's screen time",
+        "device": "OnePlus CPH2423 (Android 15)",
+        "weekly_avg_hours": 3.2,
+        "over_limit_action": "notes whether over/under the goal and by how much"
       }
     }
   },
@@ -572,16 +586,21 @@
         "Products I'm Considering": [
           {
             "name": "Noise wireless earbuds",
-            "price": "₹1,299"
+            "price": "₹1,299",
+            "shortlist_date": "2026-08-10"
           },
           {
             "name": "boAt Airdopes 131",
-            "price": "₹1,499"
+            "price": "₹1,499",
+            "shortlist_date": "2026-08-10"
           }
         ]
       },
       "preferences": {
-        "compare": "headphones"
+        "compare": "headphones",
+        "budget": "under ₹1,500",
+        "key_factors": ["price", "battery life", "mic quality"],
+        "save_winner_as": "note with the chosen product + key pros"
       }
     }
   }

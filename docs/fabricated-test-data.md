@@ -305,7 +305,26 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
-## 8. Revision history (prompt-input / data changes affecting reproducibility)
+- **2026-08-19 — KB real-data pass: swiggy order corrections + music verified + thinner KBs enriched.**
+  - **Swiggy (verified on device):** the "Hot Garlic Noodles With Chilli Paneer" order is from **Wow! China**
+    (not EatRight); **Biriyani Box** is *Chicken Biriyani ₹205* (not Chetinad ₹279). Fixed in the
+    swiggy__005/007 KBs. Real reorder/favourites set on device: Jugaad Jn, Pizza Hut (Choco Volcano ₹119),
+    Wow! China, KFC (Classic Zinger Box ₹399), Biriyani Box, Downtown Delight (Murgh Mughlai ₹449 + Kushka
+    Rice ₹139). **Note:** only Downtown Delight (Aug 14) and Jugaad Jn (May 5) have verified delivery dates;
+    Asia Seven / Biryani Blues / Biriyani Box / KFC / Pizza Hut / Wow! China dates in the KB are inferred
+    from list order.
+  - **Music (hard__music-obsidian__077):** verified the real Obsidian `Bedtime.md` = "10:30 PM" (vault
+    `/sdcard/Obsidian/Papers vault oneplus /`); KB enriched with sleep playlist, account, volume, and
+    wind-down routine data.
+  - **Obsidian vault (real, verified):** Bedtime (10:30 PM), Stock Watch (Reliance Industries, threshold
+    ₹1,400, last 1,320.50 on 2026-08-13), Budget Deadline (2026-08-10), Photo Log (Aug 6: 6 / Aug 5: 4),
+    Food Favourites (Pancakes/Pizza/Veggie Bowl), Photo Sent to Yuvraj Airtel, Contact Updates (Dad
+    Evalueserve, Yuvraj Singh Jio), Shared Bill (₹9,000), Recipe (Lasagna 375°F).
+  - Enriched thinner KBs: `settings-obsidian__044` (device, weekly avg, over-limit action),
+    `google-search-notes__019` (shortlist dates, budget, key factors). **Note:** the `Products I'm
+    Considering` and `Screen Time Goal` Obsidian notes referenced by 019/044 are NOT on the device — those
+    tasks' notes are fabricated ground truth (530-only).
+  - `verify_config.py` PASS; full suite PASS.
 
 - **2026-08-19 — swiggy__005 re-grounded to real order history + rich KBs (swiggy__005/007).**
   Verified the live Swiggy account (Yuvraj Singh +91 9354672378, rajceo2031@gmail.com) on device. Real

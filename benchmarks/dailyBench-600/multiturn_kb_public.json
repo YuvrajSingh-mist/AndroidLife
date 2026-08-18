@@ -126,12 +126,12 @@
           "location": "Kalinga Nagar",
           "items": [
             {
-              "name": "Chicken Chetinad Biriyani",
+              "name": "Chicken Biriyani",
               "qty": 1,
-              "price": 279
+              "price": 205
             }
           ],
-          "bill_total": "₹279",
+          "bill_total": "₹205",
           "status": "delivered",
           "delivered_on": "2026-04-12",
           "recent": false,
@@ -171,7 +171,7 @@
         },
         {
           "service": "Swiggy",
-          "restaurant": "EatRight",
+          "restaurant": "Wow! China",
           "items": [
             {
               "name": "Hot Garlic Noodles With Chilli Paneer",
@@ -250,16 +250,26 @@
     "profile": {
       "music": {
         "favorite_genre": "lo-fi beats",
-        "sleep_artist": "Chillhop"
+        "sleep_artist": "Chillhop",
+        "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix",
+        "premium": false,
+        "youtube_music_account": "yuvraj.mist@gmail.com",
+        "downloads_enabled": true
       },
       "notes": {
         "Bedtime": {
           "time": "10:30 PM",
-          "source": "real on-device note"
+          "source": "real on-device note (Obsidian 'Bedtime.md', verified 2026-08-19)"
         }
       },
       "preferences": {
-        "sleep_timer": "10:30 PM"
+        "sleep_timer": "10:30 PM",
+        "wake_up_time": "6:30 AM",
+        "sleep_goal_hours": 8,
+        "wind_down_routine": "listens to lo-fi beats while falling asleep",
+        "volume": "low (~20%)",
+        "repeat_mode": "off (single track)",
+        "fall_asleep_habit": "starts a Chillhop lo-fi track then lets the timer stop it"
       }
     }
   },
