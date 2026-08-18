@@ -504,6 +504,14 @@ following entities were **seeded on the test device** (all recorded in
   (Sony WH-1000XM5 / Bose QuietComfort Ultra). The same ambiguity exists in the
   530 corpus but the 530 is intentionally left untouched (only the public sample
   was rectified).
+- **Public-vars completed (2026-08-18):** `public_vars.local.env` (gitignored,
+  live) now contains a value for **every** `[placeholder]` used by the 57-task
+  public sample (22 placeholders; was 6) — including the new `store`,
+  `restaurant`, `product 1/2`, `transit line`, `topic`, `food delivery site`,
+  note/sheet/slides titles, etc. A tracked **`public_vars.example.env`** template
+  documents all keys for reproducibility. Verified: all 57 tasks resolve from
+  the vars file alone (mirrors `task_batch.py`'s `unresolved placeholders`
+  check).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'
