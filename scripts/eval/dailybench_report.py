@@ -5,10 +5,9 @@ Computes Success Rate (overall + per bucket + interaction vs GUI-only), Average
 Completion Steps, Average User Queries, and User Interaction Quality (QIS) from
 arXiv:2512.19432 (MobileWorld), excluding the MCP metric by design.
 
-QIS uses the success-free fact-match formula: it grades the quality of each
-ask_user call by whether the LLM user's answer matched the task's ground-truth
-fact, regardless of whether the task succeeded. An ungated ask-efficiency
-variant (1/q, no whole-task-success gate) is also computed and reported.
+User Interaction Quality uses the success-free fact-match formula: it grades the
+quality of each ask_user call by whether the LLM user's answer matched the task's
+ground-truth fact, regardless of whether the task succeeded.
 
 Each run folder contributes:
   output.json          -> success, steps
@@ -48,7 +47,6 @@ from DailyBench.benchmark_metrics import (
     avg_steps,
     avg_user_queries,
     success_rate,
-    user_interaction_quality,
     user_interaction_quality_factmatch,
 )
 from DailyBench.hallucination_judge import judge_control_honesty
@@ -372,7 +370,6 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
         "gui_only_success_rate": success_rate(gui_only),
         "average_steps": avg_steps(records),
         "average_user_queries": avg_user_queries(records),
-        "user_interaction_quality": user_interaction_quality(records),
         "user_interaction_quality_factmatch": user_interaction_quality_factmatch(records),
         "interaction_run_count": len(interaction),
         "gui_only_run_count": len(gui_only),
@@ -413,8 +410,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         # QIS is the success-free fact-match formula (user's new metric): it grades the
         # quality of each ask_user call by whether the LLM user's answer matched the
         # ground-truth fact, regardless of whether the overall task succeeded.
-        f"| User Interaction Quality (QIS, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
-        f"| — QIS ask-efficiency (ungated 1/q, no success gate) | {report['user_interaction_quality']:.3f} |",
+        f"| User Interaction Quality (UIQ, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
         "",
         "### Outcome split (true success / true failure / hallucination)",
         "",

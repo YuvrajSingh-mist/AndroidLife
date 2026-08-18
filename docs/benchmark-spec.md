@@ -218,7 +218,7 @@ per-day vars, and fabricated-data records are generated for the public sample se
   - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
   - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)
   - model token and dollar cost (prompt/completion tokens, USD per run)
-  - interaction quality (does the agent ask for a withheld fact instead of guessing — the MobileWorld SR gate and QIS formulation; see `evaluation-policy.md`)
+  - interaction quality (does the agent ask for the withheld fact and is the returned answer the right one — see `evaluation-policy.md`)
   - hallucination rate (self-reported success vs. verified on-device end-state, on tasks with a known-absent target)
 
 ## Benchmark unit
@@ -530,7 +530,7 @@ only in those files — that is why this spec did not list them. The full set:
 | Success rate (SR) | verified on-device end-state reached / tasks run (overall and per bucket) | `benchmark_metrics.success_rate` |
 | Avg steps | mean agent action-steps per task (efficiency) | `benchmark_metrics.avg_steps` |
 | Avg user queries | mean turns to the simulated user (interaction efficiency) | `benchmark_metrics.avg_user_queries` |
-| Interaction quality (QIS) | does the agent ask for the withheld fact instead of guessing — the ASK USER gate | `benchmark_metrics.user_interaction_quality[_factmatch]` |
+| Interaction quality (UIQ) | success-free fact-match: is each `ask_user` answer the right one, regardless of whole-task success | `benchmark_metrics.user_interaction_quality_factmatch` |
 | Hallucination rate | self-reported success vs. verified end-state on known-absent targets | `hallucination_controls.json` + per-run audit |
 | Cost per task / day | prompt+completion tokens × registered OpenRouter pricing → USD | `run_metrics.json` / `llm_metrics` |
 | Battery / thermal | per-app mAh + peak CPU/GPU/skin/battery °C per run | `run_metrics.json` |
@@ -551,7 +551,7 @@ $$\text{SR} = \frac{1}{N}\sum_{i=1}^{N} s_i$$
 
 $$\text{AvgSteps} = \frac{1}{N}\sum_{i=1}^{N} n_i \qquad \text{AvgUserQueries} = \frac{1}{|I|}\sum_{i \in I} q_i$$
 
-$$\text{QIS} = \frac{\sum_{i \in I,\, q_i > 0} \frac{1}{q_i}}{|I| + |T|} \qquad \text{UIQ (factmatch)} = \frac{\sum c_i}{\sum_{i \in I} q_i + |M| + |T|}$$
+$$\text{UIQ (fact-match)} = \frac{\sum_{i} c_i}{\sum_{i \in I} q_i + |M| + |T|}$$
 
 - **Hallucination rate** = self-reported successes that failed on-device verification, over tasks
   with a known-absent target (`hallucination_controls.json`).

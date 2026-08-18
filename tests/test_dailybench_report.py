@@ -84,8 +84,8 @@ def test_build_report_computes_mobileworld_metrics(tmp_path: Path) -> None:
     assert report["interaction_success_rate"] == pytest.approx(1.0)
     assert report["gui_only_success_rate"] == pytest.approx(2 / 3)
     assert report["average_user_queries"] == pytest.approx(2.0)  # only the interaction task counts
-    # interaction q = 1/2; denominator = 1 interaction + 1 triggered (r4) = 2
-    assert report["user_interaction_quality"] == pytest.approx(0.25)
+    # fact-match: 0 correct answers / (2 interaction ask_user calls + 1 GUI-only triggered (r4)) = 0
+    assert report["user_interaction_quality_factmatch"] == pytest.approx(0.0)
     assert report["success_rate_by_bucket"]["easy"] == pytest.approx(1.0)
     assert report["success_rate_by_bucket"]["medium"] == pytest.approx(0.5)
 
