@@ -305,6 +305,25 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+## 8. Revision history (prompt-input / data changes affecting reproducibility)
+
+- **2026-08-19 — swiggy__005 re-grounded to real order history + rich KBs (swiggy__005/007).**
+  Verified the live Swiggy account (Yuvraj Singh +91 9354672378, rajceo2031@gmail.com) on device. Real
+  past orders: **Downtown Delight** (Murgh Mughlai ₹449 + Kushka Rice ₹139 = ₹523, delivered **Aug 14**,
+  order #245663937163548), Asia Seven (noodles+momos), Biryani Blues, **Jugaad Jn** (Chole Chawal ₹149 +
+  Papdi Chat ₹109 = ₹310, delivered **May 5**, order #236957565092163), Biriyani Box, etc.
+  - New swiggy__005 prompt ("the food I **ate in the past week** … message **him**") → the real past-week
+    order is **Downtown Delight (Aug 14)**, so `correct_target` is now
+    `swiggy::reorder-downtown-delight-murgh-mughlai` (was Jugaad Jn — which was May 5, NOT past week).
+  - To avoid two tasks colliding on Downtown Delight, **swiggy__007** ("my usual") is re-targeted to
+    **Jugaad Jn** (`swiggy::reorder-jugaad-chole-papdi`).
+  - Both KB profiles made **rich** (8 orders / 5 orders with dates, order ids, items+prices, delivery
+    partner, address, payment, favourite/usual flags + full preferences + contacts) so the multi-turn
+    agent is tested to the fullest (oracle can answer many probes). Prompt synced to tasks_530.md;
+    datasets regenerated. `verify_config.py` PASS; full suite PASS.
+  - **Note:** Downtown Delight is the only confirmed within-the-past-week order; other dates in the KB
+    (Asia Seven Jul 30, Biryani Blues Jun 21, etc.) are order-list-order plausible, not verified per-order.
+
 - **2026-08-19 — Flight task grounded to live device + fabricated future flight (per user); swiggy 'that guy' gradable.**
   - **Gmail (hard__gmail-calendar__003):** inspected the live device. Deleted the stale "AirTickets Indigo" (2022,
     ranirajesh786 account) email so the agent must ask which account. Switched to `yuvraj.mist@gmail.com` and searched

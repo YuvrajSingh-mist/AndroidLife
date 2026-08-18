@@ -695,7 +695,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **6. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Also, message that guy on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->

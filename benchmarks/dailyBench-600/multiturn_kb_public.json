@@ -1,49 +1,210 @@
 {
   "hard__swiggy__005": {
-    "correct_target": "swiggy::reorder-jugaad-chole-papdi",
+    "correct_target": "swiggy::reorder-downtown-delight-murgh-mughlai",
     "profile": {
+      "account": {
+        "name": "Yuvraj Singh",
+        "phone": "+91 9354672378",
+        "email": "rajceo2031@gmail.com",
+        "swiggy_one": "EXPIRED (₹120 saved with previous plan)",
+        "addresses": [
+          {
+            "label": "Work",
+            "address": "K 504, IIIT Bhubaneswar, Gothapatna, Odisha, India",
+            "default": true
+          },
+          {
+            "label": "College",
+            "address": "IIIT Bhubaneswar Campus, Gothapatna"
+          }
+        ],
+        "payment_methods": [
+          "Bank (UPI)",
+          "Cash on Delivery"
+        ]
+      },
       "orders": [
         {
           "service": "Swiggy",
-          "restaurant": "Jugaad Jn",
-          "item": "Chole Chawal + Papdi Chat",
-          "total": "₹258",
+          "order_id": "245663937163548",
+          "restaurant": "Downtown Delight",
+          "location": "Khandagiri",
+          "items": [
+            {
+              "name": "Murgh Mughlai",
+              "qty": 1,
+              "price": 449
+            },
+            {
+              "name": "Kushka Rice",
+              "qty": 1,
+              "price": 139
+            }
+          ],
+          "item_total": "₹588",
+          "discount": "-₹130 (FORFOODIE)",
+          "delivery_fee": "FREE",
+          "taxes": "₹25.25",
+          "bill_total": "₹523",
           "status": "delivered",
+          "delivered_on": "2026-08-14",
+          "delivered_time": "1:59 PM",
+          "delivery_by": "Deepak Das",
+          "payment": "Bank (UPI)",
           "recent": true,
+          "this_week": true,
+          "favourite": true,
+          "rating": 4
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "Asia Seven - Sizzling Chinese",
+          "location": "Patrapada",
+          "items": [
+            {
+              "name": "Chilli Garlic Noodles - Veg",
+              "qty": 1,
+              "price": 169
+            },
+            {
+              "name": "Veg Steamed Classic Momo",
+              "qty": 1,
+              "price": 129
+            }
+          ],
+          "bill_total": "₹298",
+          "status": "delivered",
+          "delivered_on": "2026-07-30",
+          "recent": false,
+          "favourite": false
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "Biryani Blues",
+          "location": "Sector 72",
+          "items": [
+            {
+              "name": "Soya Chaap Biryani",
+              "qty": 1,
+              "price": 249
+            }
+          ],
+          "bill_total": "₹249",
+          "status": "delivered",
+          "delivered_on": "2026-06-21",
+          "recent": false,
           "favourite": true
         },
         {
           "service": "Swiggy",
-          "restaurant": "KFC",
-          "item": "Classic Zinger Box",
-          "total": "₹399",
+          "restaurant": "Jugaad Jn",
+          "location": "Baramunda",
+          "items": [
+            {
+              "name": "Chole Chawal",
+              "qty": 1,
+              "price": 149
+            },
+            {
+              "name": "Papdi Chat",
+              "qty": 1,
+              "price": 109
+            }
+          ],
+          "item_total": "₹258",
+          "bill_total": "₹310",
           "status": "delivered",
+          "delivered_on": "2026-05-05",
+          "delivered_time": "7:28 PM",
+          "delivery_by": "Bikash Pradhan",
+          "recent": false,
+          "favourite": true
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "Biriyani Box",
+          "location": "Kalinga Nagar",
+          "items": [
+            {
+              "name": "Chicken Chetinad Biriyani",
+              "qty": 1,
+              "price": 279
+            }
+          ],
+          "bill_total": "₹279",
+          "status": "delivered",
+          "delivered_on": "2026-04-12",
+          "recent": false,
+          "favourite": false
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "KFC",
+          "items": [
+            {
+              "name": "Classic Zinger Box",
+              "qty": 1,
+              "price": 399
+            }
+          ],
+          "bill_total": "₹399",
+          "status": "delivered",
+          "delivered_on": "2026-03-02",
           "recent": false,
           "favourite": true
         },
         {
           "service": "Swiggy",
           "restaurant": "Pizza Hut",
-          "item": "Choco Volcano",
-          "total": "₹119",
+          "items": [
+            {
+              "name": "Choco Volcano",
+              "qty": 1,
+              "price": 119
+            }
+          ],
+          "bill_total": "₹119",
           "status": "delivered",
+          "delivered_on": "2026-02-14",
           "recent": false,
           "favourite": false
         },
         {
           "service": "Swiggy",
           "restaurant": "EatRight",
-          "item": "Hot Garlic Noodles With Chilli Paneer",
-          "total": "₹209",
+          "items": [
+            {
+              "name": "Hot Garlic Noodles With Chilli Paneer",
+              "qty": 1,
+              "price": 209
+            }
+          ],
+          "bill_total": "₹209",
           "status": "delivered",
+          "delivered_on": "2026-01-20",
           "recent": false,
           "favourite": false
         }
       ],
-      "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)",
       "preferences": {
         "recipient": "Yuvraj Singh Jio",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'that guy' is, this is him"
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him",
+        "favourite_restaurants": [
+          "Downtown Delight",
+          "Jugaad Jn",
+          "Biryani Blues"
+        ],
+        "usual_order": "Murgh Mughlai with Kushka Rice from Downtown Delight",
+        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
+        "spice_preference": "medium",
+        "typical_budget": "₹300-₹600 per order",
+        "last_week_craving": "the Downtown Delight order from this week (Aug 14) - Murgh Mughlai + Kushka Rice"
+      },
+      "contacts": {
+        "Maa": "family",
+        "Dad": "family",
+        "Yuvraj Singh Jio": "the friend I share order confirmations with (gets the order totals)",
+        "Yuvraj Airtel": "family / alternate number"
       }
     }
   },
