@@ -106,7 +106,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I want to pick up where I left off. Open Prime Video, find what's in my "Continue Watching", and give me a quick summary of the most recent one. <!--medium__prime-video__003-->
 
 **3. [Gmail+Calendar] — ASK USER - MULTI**
-- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 **5. [Music+Obsidian] — ASK USER - MULTI**
 - I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->

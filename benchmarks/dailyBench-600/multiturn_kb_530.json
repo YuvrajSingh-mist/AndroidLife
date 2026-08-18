@@ -40,7 +40,11 @@
           "favourite": false
         }
       ],
-      "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)"
+      "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)",
+      "preferences": {
+        "recipient": "Yuvraj Singh Jio",
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'that guy' is, this is him"
+      }
     }
   },
   "hard__swiggy__007": {
@@ -70,7 +74,9 @@
         }
       ],
       "preferences": {
-        "usual_restaurant": "Downtown Delight"
+        "usual_restaurant": "Downtown Delight",
+        "recipient": "Yuvraj Singh Jio",
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'that guy' is, this is him"
       }
     }
   },
@@ -307,7 +313,7 @@
       "flights": [
         {
           "airline": "IndiGo",
-          "flight": "6E 6821",
+          "flight": "6E 6893",
           "route": "BBI→DEL",
           "date": "2026-08-24",
           "depart": "07:10",
@@ -315,16 +321,17 @@
         },
         {
           "airline": "IndiGo",
-          "flight": "6E 501",
-          "route": "BBI→BOM",
-          "date": "2026-09-02",
-          "depart": "09:00",
-          "confirmation_email": false
+          "flight": "6E 6737",
+          "route": "BBI→DEL",
+          "date": "2026-05-08",
+          "depart": "12:05",
+          "confirmation_email": true
         }
       ],
       "preferences": {
         "reminder_hours_before": 3,
-        "next_trip": "BBI→DEL"
+        "next_trip": "BBI→DEL",
+        "email_account": "yuvraj.mist@gmail.com"
       }
     }
   },

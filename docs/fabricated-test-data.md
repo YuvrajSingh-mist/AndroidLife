@@ -305,6 +305,21 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Flight task grounded to live device + fabricated future flight (per user); swiggy 'that guy' gradable.**
+  - **Gmail (hard__gmail-calendar__003):** inspected the live device. Deleted the stale "AirTickets Indigo" (2022,
+    ranirajesh786 account) email so the agent must ask which account. Switched to `yuvraj.mist@gmail.com` and searched
+    "airtickets": the real flight emails are **Scapia confirmations — IndiGo 6E 6737 (BBI→DEL, 8 May 2026, 12:05,
+    PNR PCVFNA) and IndiGo 6E 6821 (BBI→DEL, 1 Mar 2026, 07:45, PNR D4WEQF)** — both PAST (today 2026-08-19).
+    Per user choice ("don't want to book another flight"), the KB now carries a **fabricated future next trip**:
+    **IndiGo 6E 6893, BBI→DEL, 2026-08-24, 07:10** plus the real 6E 6737 as a past distractor the oracle dismisses,
+    and `email_account: yuvraj.mist@gmail.com` so the agent must ASK which account/flight. **Note:** no real email
+    for 6E 6893 exists — the agent gets the flight fact from the KB oracle; the real 6E 6737/6E 6821 emails stay in
+    Gmail as past-trip noise. Updated `multiturn_kb_public.json` + `multiturn_kb_530.json`.
+  - **Swiggy 'that guy' (hard__swiggy__005/007):** per user "make it gradable but don't put it in the prompt" — the
+    recipient is NOT in the prompt ("message that guy on Telegram"); the KB profiles now hold
+    `preferences.recipient = "Yuvraj Singh Jio"` (a real selected contact) so the oracle answers "who's that guy?",
+    and the operator/grader verifies the Telegram message went to Yuvraj Singh Jio. Both KB files updated.
+
 - **2026-08-19 — Multi-turn prompts made terse & natural (all 13, public + 530).**
   Per user: the point of ASK USER - MULTI is that the **agent must get the facts by asking**, so the
   verbose 5-step prompts + "Reply with only X, no other text." boilerplate were removed from **all 13**
