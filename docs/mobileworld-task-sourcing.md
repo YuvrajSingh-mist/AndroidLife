@@ -112,10 +112,10 @@ End-state: font scale + display density at max.
 
 **Easy (new, wallpaper):**
 ```
-- Easy (1pt) **[Gallery+Settings]**: Change my wallpaper to the photo of [flower type] from
-my gallery. <!--easy__gallery-settings__001-->
+- Easy (1pt) **[Photos+Settings]**: Change my wallpaper to the photo of [flower type] from
+  my Photos. <!--easy__gallery-settings__001-->
 ```
-Seed: a [flower type] photo in Gallery. End-state: wallpaper is that image.
+Seed: a [flower type] photo in Photos. End-state: wallpaper is that image.
 
 ---
 
@@ -460,10 +460,10 @@ End-state: font scale + display density at min.
 
 **Easy (new, wallpaper with a named photo):**
 ```
-- Easy (1pt) **[Gallery+Settings]**: Change my wallpaper to the photo 'sunset.jpg' from my
-gallery. <!--easy__gallery-settings__002-->
+- Easy (1pt) **[Photos+Settings]**: Change my wallpaper to the photo 'sunset.jpg' from my
+  Photos. <!--easy__gallery-settings__002-->
 ```
-Seed: sunset.jpg in Gallery. End-state: wallpaper is that image.
+Seed: sunset.jpg in Photos. End-state: wallpaper is that image.
 
 ---
 

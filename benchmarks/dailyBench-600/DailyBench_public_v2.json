@@ -126,10 +126,10 @@
       "difficulty": "medium",
       "points": 3,
       "day": 1,
-      "app": "Gallery + Obsidian",
+      "app": "Photos+Obsidian",
       "app_slug": "gallery",
       "apps": [
-        "Gallery",
+        "Google Photos",
         "Obsidian"
       ],
       "num_apps": 2,
@@ -140,8 +140,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Gallery? Reply with only the space freed, no other text.",
-      "prompt_template": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Gallery? Reply with only the space freed, no other text.",
+      "prompt_text": "I am trying to make a collage of various photos of food but I can't seem to find the right ones. Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones for this purpose, and note the space freed in Obsidian in Photos? Reply with only the space freed, no other text.",
+      "prompt_template": "I am trying to make a collage of various photos of food but I can't seem to find the right ones. Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones for this purpose, and note the space freed in Obsidian in Photos? Reply with only the space freed, no other text.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,

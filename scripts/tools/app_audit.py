@@ -80,12 +80,6 @@ BENCHMARK_APPS: dict[str, list[str]] = {
         "com.google.android.apps.meetings",
         "com.google.android.apps.docs",
     ],
-    "Gallery": [
-        "com.oneplus.gallery",
-        "com.sec.android.gallery3d",
-        "com.google.android.apps.photos",
-        "com.android.gallery3d",
-    ],
     "Camera": [
         "com.oneplus.camera",
         "com.oplus.camera",

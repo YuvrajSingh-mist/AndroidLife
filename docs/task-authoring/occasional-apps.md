@@ -51,7 +51,7 @@
 | **Total** | **17** | **13** | **8** | **38** | 10 existing + 28 new (was 10 total) |
 
 Replacement source pools (days 6–28 only): the most repetitive single-app slots —
-Calendar (22), Google Drive (22), Photos (21), Gallery (20), Chrome (19), Files
+Calendar (22), Google Drive (22), Photos (21), Chrome (19), Files
 (21), Settings (16), Clock (19) — swap ~1–2 per day, keeping every day at ≤11
 distinct apps and the corpus exactly 530 tasks.
 

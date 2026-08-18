@@ -1,9 +1,9 @@
 # Setting up on a new device
 
-DrainBench is designed to run on any Android phone that has the ~32 apps the
+DrainBench is designed to run on any Android phone that has the ~31 apps the
 tasks target (Gmail, Chrome, Calendar, Contacts, Photos, Drive, Docs, Sheets,
 Slides, Meet, Maps, Messages, Phone, Camera, Clock, Calculator, Notes, Files,
-Obsidian, YouTube, YouTube Music, Telegram, Gallery, Settings, Google Search,
+Obsidian, YouTube, YouTube Music, Telegram, Settings, Google Search,
 Weather, Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping).
 It is **not** tied to one phone: the seed scripts auto-detect device-specific
 values (Obsidian vault path, Google calendar id, persona contact email) and the

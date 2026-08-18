@@ -75,7 +75,7 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "product": ("The product compared across shopping sites (`[product]`).", "wireless earbuds"),
     "item": ("The item being shopped for, revealed by the ASK USER fact (`{item}`).", "wireless earbuds"),
     # media
-    "food_category": ("Photo category for the Gallery 'best 3 by resolution' task "
+    "food_category": ("Photo category for the Photos 'best 3 by resolution' task "
                        "(`[food_category]`).", "pizza"),
     "search word": ("Word to search Messages for (`[search word]`).", "ticket"),
     # music / clock / sleep

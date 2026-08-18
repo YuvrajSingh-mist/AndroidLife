@@ -37,12 +37,12 @@ The schedule should not make a simulated day denser than reality. Three candidat
 
 ### Why the superset floor is 11-12 at 630 tasks, and how 530 lands at reality
 
-DrainBench's full corpus is **530 runnable tasks over 28 days across 32 apps** (216 easy + 242 medium + 72 hard). Realistically an app contributes **at most 2 tasks on any day** (one easy + one medium). Therefore each app must be active on at least 15 of 28 days, giving:
+DrainBench's full corpus is **530 runnable tasks over 28 days across 31 apps** (216 easy + 242 medium + 72 hard). Realistically an app contributes **at most 2 tasks on any day** (one easy + one medium). Therefore each app must be active on at least 15 of 28 days, giving:
 
-- total app-days ≥ 32 × 15 = 480
-- apps/day ≥ 480 / 28 ≈ **17.1** (before the cross-app/notes-sharing relaxation)
+- total app-days ≥ 31 × 15 = 465
+- apps/day ≥ 465 / 28 ≈ **16.6** (before the cross-app/notes-sharing relaxation)
 
-So 11-12 apps/day is the mathematical minimum for the 630-task superset. The **runnable schedule lands at ~10.8 distinct apps/day (min 10, max 12) and ~18.9 tasks/day (15-22)** — close to the real ~9-10 baseline, while preserving the easy/medium/hard split (216/242/72), the 50/50 ASK USER / DETERMINISTIC hard split (36/36), the cross-app share (178 of 530), and all 32 apps. (The note-taking load is shared between Notes, Obsidian and Google Docs, so the three together occupy the app-days a single note app would; the 6 apps added on 2026-08-12 — Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping — appear as occasional 1-2 task guests rather than daily fixtures, which is why density barely moved.)
+So 11-12 apps/day is the mathematical minimum for the 630-task superset. The **runnable schedule lands at ~10.8 distinct apps/day (min 10, max 12) and ~18.9 tasks/day (15-22)** — close to the real ~9-10 baseline, while preserving the easy/medium/hard split (216/242/72), the 50/50 ASK USER / DETERMINISTIC hard split (36/36), the cross-app share (178 of 530), and all 31 apps. (The note-taking load is shared between Notes, Obsidian and Google Docs, so the three together occupy the app-days a single note app would; the 6 apps added on 2026-08-12 — Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping — appear as occasional 1-2 task guests rather than daily fixtures, which is why density barely moved.)
 
 ### Design consequence
 To land at the target density, each app's tasks are selected **round-robin across its active days** (fewest-kept-so-far wins, deterministic tie-breaks), so every app keeps a spread of active days across the month rather than clustering early, and is **entirely absent the rest**. That keeps per-day density realistic (~19-20 tasks across ~11 apps) while still preventing an agent from camping on any one app's screen across the whole run.
@@ -140,7 +140,7 @@ If the corpus were weighted by real time-share, ~35% of tasks would be social me
 
 **What the distribution actually does (measured 2026-08-12 from `DailyBench_530_v1.json`):**
 
-- **Per-day distinct apps**: 10-12, mean **~10.8** (real baseline ~9-10 → ~10% above, the closest the 28-day/32-app corpus can land without dropping density constraints).
+- **Per-day distinct apps**: 10-12, mean **~10.8** (real baseline ~9-10 → ~10% above, the closest the 28-day/31-app corpus can land without dropping density constraints).
 - **Every-day apps** (present ≥75% of days): Chrome 22/28 — the one always-on "hub" app (Telegram 19/28 and Notes 19/28 just miss the ≥75% bar; Obsidian 17/28). After the 2026-08-12 rebalance the always-on core is slimmer because 36 note-anchored cross tasks became unrelated multi-intent chains that touch Telegram/Gmail/Phone instead of Notes/Obsidian.
 - **Rotating apps** (present ~36-54% of days): Calendar (15/28), Contacts (13), Google Search, Phone, Gmail, Google Maps, Google Photos, Google Drive, Clock (12 each), Gallery, Messages, Files, Music, Settings, Calculator (11 each), Camera, YouTube (10 each) — each appears roughly every other day, round-robin, never every day.
 - **Occasional apps** (the newer sets): Google Docs 5/28, Weather 5/28, Sheets 4/28, Meet 4/28, Slides 3/28 — present on a few dedicated days, matching how real people use office + weather apps sporadically rather than daily. The 2026-08-12 diversification pass added single-task guests for the biggest real-world gaps: Swiggy / Prime Video / MakeMyTrip / BookMyShow / MSN News / Amazon Shopping 1/28 each — occasional, like real food/OTT/travel/news apps.

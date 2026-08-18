@@ -6,8 +6,8 @@ battery percentage, and heat it costs to do so, across a realistic month of ever
 use. It's built on the [mobilerun](https://docs.mobilerun.ai) (Droidrun) SDK, driving one
 physical, non-rooted Android device through the same accessibility-tree UI automation a human
 uses — no emulator, no vision by default, no synthetic sandbox — across a 28-day schedule of
-530 runnable tasks spanning 32 apps people actually install (Telegram, Notes, Obsidian, Chrome,
-Calendar, Clock, Files, Google Search, Gallery, Contacts, Google Maps, Google Drive, Gmail,
+530 runnable tasks spanning 31 apps people actually install (Telegram, Notes, Obsidian, Chrome,
+Calendar, Clock, Files, Google Search, Contacts, Google Maps, Google Drive, Gmail,
 YouTube, Settings, Calculator, Camera, Phone, Google Photos, Music, Messages, Google Docs,
 Google Sheets, Google Slides, Google Meet, Weather, Swiggy, Prime Video, MakeMyTrip, BookMyShow,
 MSN News, Amazon Shopping). Apps with active anti-automation enforcement
@@ -177,7 +177,7 @@ below.
 - **Platform**: one real, non-rooted Android phone — no emulator, no rooted image, no synthetic environment.
 - **Control mode**: accessibility-tree/state-driven UI automation, no vision by default (screenshots are opt-in) — the agent reads the same UI hierarchy a screen reader would, not pixels.
 - **Model serving**: any OpenAI-compatible endpoint external to the device (a local model host, or a hosted provider such as OpenRouter) — the model never runs on the phone being benchmarked, so its own inference cost and heat never contaminate the device-cost measurement.
-- **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 32 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
+- **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 31 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
 - **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps, split evenly between deterministic end-states and tasks that deliberately withhold one fact the agent must ask for instead of guessing).
 - **Measurement axes**:
   - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
@@ -213,7 +213,7 @@ uv run dailybench_tasks.py --serial "$DAILYBENCH_SERIAL" --llm-upstream-base "$L
 
 ## App coverage & sector distribution
 
-The 530-task corpus spans **33 distinct apps** on the device. Every task counts
+The 530-task corpus spans **31 distinct apps** on the device. Every task counts
 once against each app it touches (cross-app tasks count toward every app in their
 `apps` array), so the per-app numbers below sum to more than 530 total tasks
 (733 app-touches across the corpus).
@@ -226,24 +226,24 @@ once against each app it touches (cross-app tasks count toward every app in thei
 | Notes | 53 | | Google Drive | 27 |
 | Chrome | 45 | | Clock | 27 |
 | Gmail | 45 | | Contacts | 27 |
-| Obsidian | 44 | | Gallery | 26 |
-| Calendar | 46 | | Google Photos | 25 |
-| Messages | 33 | | Phone | 31 |
-| Files | 29 | | YouTube | 23 |
-| Google Search | 26 | | Camera | 23 |
-| Calculator | 22 | | Music | 22 |
-| Settings | 22 | | Google Docs | 9 |
-| Google Sheets | 8 | | Google Meet | 8 |
-| Google Slides | 6 | | Weather | 5 |
-| Prime Video | 1 | | Swiggy | 1 |
-| MakeMyTrip | 1 | | BookMyShow | 1 |
-| MSN News | 1 | | Amazon Shopping | 1 |
+| Obsidian | 44 | | Google Photos | 51 |
+| Calendar | 46 | | Phone | 31 |
+| Messages | 33 | | YouTube | 23 |
+| Files | 29 | | Camera | 23 |
+| Google Search | 26 | | Music | 22 |
+| Calculator | 22 | | Google Docs | 9 |
+| Settings | 22 | | Google Meet | 8 |
+| Google Sheets | 8 | | Weather | 5 |
+| Google Slides | 6 | | Swiggy | 1 |
+| Prime Video | 1 | | BookMyShow | 1 |
+| MakeMyTrip | 1 | | Amazon Shopping | 1 |
+| MSN News | 1 | | | |
 
 **Sector distribution (app-touch weighted):**
 
 | sector | apps | tasks |
 |---|---|---|
-| Media & Entertainment | Gallery, Google Photos, Camera, YouTube, Music, Chrome, Google Search, Prime Video, BookMyShow | 192 |
+| Media & Entertainment | Google Photos, Camera, YouTube, Music, Chrome, Google Search, Prime Video, BookMyShow | 192 |
 | Documents & Notes | Notes, Obsidian, Google Docs, Google Slides, Google Drive, Files | 168 |
 | Communication & Messaging | Messages, Phone, Gmail, Telegram, Contacts, Google Meet | 214 |
 | Productivity & Tools | Calculator, Calendar, Clock, Settings, Google Maps, Google Sheets | 150 |

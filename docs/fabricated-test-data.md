@@ -527,6 +527,17 @@ following entities were **seeded on the test device** (all recorded in
   calls", `medium__youtube__006` "number"). Updated in `public.md` +
   `DailyBench_public_v2.json/.jsonl`; a deliberate small deviation from the raw
   530 prompt text for those tasks (noted in the `public.md` header).
+- **Gallery → Google Photos (2026-08-18):** all 25 Gallery tasks in the 530
+  corpus + the 1 in the public sample now use **Google Photos** instead of the
+  Gallery app (which has no search), so search/curation tasks are agent-solvable.
+  Updated in `DailyBench_530_v1.json`, `tasks_530.md`, `tasks.md`,
+  `DailyBench_public_v2.json/.jsonl`, `public.md` (incl. the operator's
+  food-collage edit on `medium__gallery__007`), the gallery seed manifests, and
+  the pipeline scripts (`build_day_seed_manifest.py`, `harvest_real_queries.py`).
+  Task IDs stay `*__gallery__*` (stable identifiers); the app label/counts now
+  read **Google Photos** (31 covered apps; Gallery removed from `app_audit`'s
+  required set — the device still has it installed, it's just no longer used by
+  tasks).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'
