@@ -28,10 +28,11 @@ Easy: 1 app, Medium: 1-2 apps randomly; exactly 1/3 steps respectively, varied p
 
 **[Google Drive]**
 - Easy (1pt): Go to Google Drive and check which folder was modified most recently
+- Easy (1pt): I'm worried I'm running low on Drive space. Can you check how much storage I've used in Google Drive right now?
 - Medium (3pt): Find all files shared by [contact] this month, check which of those is an excel/spreadsheet file that was edited most recently, and download them locally to Documents folder through my gdrive.
 
 **[Google Photos]**
-- Easy (1pt): Save the lastest 3 invoices screenshots in photos to a new album named "Invoices"
+- Easy (1pt): Save the latest 3 invoices screenshots in photos to a new album named "Invoices"
 - Medium (3pt): Find the top 5 best-matched photos taken in 'food' category from the year 2021-23,  and download the ones with highest resolution locally with the appropriate filenames to a folder called "Food Photos≠Memories 2021-23" in Downloads
 
 **[YouTube]**
@@ -40,6 +41,7 @@ Easy: 1 app, Medium: 1-2 apps randomly; exactly 1/3 steps respectively, varied p
 
 **[Telegram]**
 - Easy (1pt): On Telegram, mute notifications for the most recent group chat
+- Medium (3pt): I'm trying to dig up links people sent me recently. Can you find all the messages that contain a link in the past month, list them for me in the format of "Contact" | "Link" strictly, and open the most recent one for me, in Telegram?
 
 Hard tasks — Day 1:
 
@@ -55,6 +57,9 @@ Hard tasks — Day 1:
 
 **9. [Contacts+Telegram+Google Maps] — ASK USER**
 - I'm so late for dinner tonight — pull up Yuvraj Airtel's number in Contacts, text him the address through Messages, check Maps for the current drive time, send that ETA as a follow-up text. Also, check the group thread in case anyone already gave them a heads up (deliberately no dinner address exists on the test device and no prior group thread exists, so the agent must ask the user for both to complete the task)
+
+**12. [Contacts+Gmail] — DETERMINISTIC**
+- I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later
 
 ### Day 2
 
@@ -79,7 +84,7 @@ Hard tasks — Day 1:
 - Medium (3pt) **[Calendar+Contacts]**: From my contacts, find all people starting in the letter 'H' with birthdays this month, check which one will take place this week, and add a reminder in Calendar for it with the title: "Wish [contact] a happy birthday!"
 
 **[Notes]**
-- Easy (1pt): In Notes, rename the most recently edited note to an apprproiate name for its content, pinning it.
+- Easy (1pt): In Notes, rename the most recently edited note to an appropriate name for its content, pinning it.
 - Medium (3pt): On Notes, find all notes containing a checklist, order them by descending order of date and add the first checklists' unchecked items to my shopping cart on Amazon, and get it to the payments page.
 
 **[Files]**
@@ -92,7 +97,7 @@ Hard tasks — Day 2:
 - My cousin's wedding is next month and I've been put in charge of coordinating everyone — pull the family members who should be in the loop out of Contacts, start a new group chat in Messages called "Wedding Plans" so we can all coordinate, post the first planning meeting time in it, and pin the chat so it doesn't get buried (deliberately no family-member names are identifiable on the test device and no meeting time exists anywhere on it, so the agent must ask the user for both which contacts to include and the meeting time to complete the task)
 
 **4. [Messages+Notes] — DETERMINISTIC**
-- I htink my card payments are due — open Messages, find the 5 most recent bank or UPI transaction alert, note the exact amount and the date of the charge to a note called: "Card Payment Due" in the Notes app. Check today's date against it, set a reminder in Calendar with an appropriate title and in it, a line to double-check the charge if it's from today, and pin the same note so I remember to reconcile it
+- I think my card payments are due — open Messages, find the 5 most recent bank or UPI transaction alert, note the exact amount and the date of the charge to a note called: "Card Payment Due" in the Notes app. Check today's date against it, set a reminder in Calendar with an appropriate title and in it, a line to double-check the charge if it's from today, and pin the same note so I remember to reconcile it
 
 **7. [Files+Notes+Telegram] — DETERMINISTIC**
 - The budget file's supposed to get updated every week and I'm worried it's slipping — check when 'budget.xlsx' in Downloads was last modified, note the date, and if it hasn't been touched this week, message [contact] through Telegram that it's overdue; save the last-modified date in a note titled "Budget Tracker" in the Notes app either way so we can track the pattern
@@ -126,7 +131,7 @@ Hard tasks — Day 2:
 
 **[Settings]**
 - Easy (1pt): Set the phone's screen timeout to if unused for over 1 minute
-- Medium (3pt): Get the data on the app's usage for the past two weeks in terms of time spent on each app sorted in descending order, and set an app time limit to alert of about 30 minutes if any app is used for more than 2 hours in a day continuosly for past two weeks 
+- Medium (3pt): Get the data on the app's usage for the past two weeks in terms of time spent on each app sorted in descending order, and set an app time limit to alert of about 30 minutes if any app is used for more than 2 hours in a day continuously for past two weeks 
 
 **[Shopping & Delivery (browser)]**
 - Easy (1pt): Check the estimated restock date for the "ANC enabled wireless earbuds by Samsung" on Amazon
@@ -139,7 +144,7 @@ Hard tasks — Day 3:
 - Everyone's been asking about the trip — pull the vacation photos together in Photos, pick out the best recent ones in terms of resolution, create a new group called: "Trip 2026" and share them these photos on Telegram, pin the message so it doesn't get buried, and star a couple of your favorites for yourself too (deliberately no single obvious group or album exists on the test device)
 
 **10. [Calendar+Gmail+Obsidian] — ASK USER**
-- Sending an important client their quote is due today  — draft the number into mail in Gmail, send it over, andl also save a copy of the quote in Obsidian for my records, flagging it and set a reminder to follow up next week. The number is the sum of the 'Cost' column in the quote. (deliberately no client email id exists on the test device and the quote file's location isn't obvious, so the agent must ask the user for the client email and where the quote file is saved — then open it and total the Cost column itself for the amount)
+- Sending an important client their quote is due today  — draft the number into mail in Gmail, send it over, and also save a copy of the quote in Obsidian for my records, flagging it and set a reminder to follow up next week. The number is the sum of the 'Cost' column in the quote. (deliberately no client email id exists on the test device and the quote file's location isn't obvious, so the agent must ask the user for the client email and where the quote file is saved — then open it and total the Cost column itself for the amount)
 
 **11. [Photos+Settings] — DETERMINISTIC**
 - I want a proper lock screen made from my own photos for once — find 3 sharp photos in Photos, each of a different subject (a sunset, a beach, and a portrait), double-check each one is genuinely sharp at its best resolution, then make a single collage of all three and set that collage as the lock screen wallpaper through Settings, and star the three original photos in Photos so I remember which ones I used
