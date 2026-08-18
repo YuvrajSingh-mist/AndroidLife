@@ -51,8 +51,10 @@ def test_uiq_success_with_more_queries_scores_lower() -> None:
     assert user_interaction_quality([_rec(True, ask_user_calls=2, is_interaction=True)]) == pytest.approx(0.5)
 
 
-def test_uiq_failed_interaction_with_query_scores_zero() -> None:
-    assert user_interaction_quality([_rec(False, ask_user_calls=1, is_interaction=True)]) == pytest.approx(0.0)
+def test_uiq_failed_interaction_with_query_scores_one() -> None:
+    # Ungated: the whole-task-success term is dropped, so asking (1 query) scores
+    # 1.0 even when the task later failed for an unrelated reason.
+    assert user_interaction_quality([_rec(False, ask_user_calls=1, is_interaction=True)]) == pytest.approx(1.0)
 
 
 def test_uiq_interaction_that_never_asked_scores_zero() -> None:

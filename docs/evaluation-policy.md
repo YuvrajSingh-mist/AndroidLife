@@ -37,8 +37,12 @@ correctly counted as a FAIL under the SR gate. This is the intended behavior.
 QIS uses the **success-free fact-match formula** (`user_interaction_quality_factmatch`
 in `DailyBench/benchmark_metrics.py`): it grades the quality of each `ask_user`
 answer by whether the LLM-user's answer matched the task's ground-truth fact,
-regardless of whether the task succeeded. The paper's success-gated variant is
-also computed and reported as deprecated. QIS is independent of the SR gate.
+regardless of whether the task succeeded. The paper's success-gated `s_i / q_i`
+variant has been replaced by an **ungated ask-efficiency variant**
+(`user_interaction_quality`): `q_i = 1 / c_i` — asking at all with few queries
+scores well with **no whole-task-success gate** (a task that asked the right
+question but then failed for an unrelated reason still gets credit for the ask),
+and is also reported. QIS is independent of the SR gate.
 
 Example (Day 1, 2026-08-09): QIS fact-match = 0.000 because the only real
 `ask_user` call (wireless-earbuds price compare) returned an answer that did not

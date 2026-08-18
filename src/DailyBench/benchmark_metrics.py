@@ -19,12 +19,15 @@ Formulas (Section 4.2):
     Ave. Steps    = (1/N) * sum(t_i)
     Ave. Queries  = (1/|I_interact|) * sum_{i in I_interact}(c_i)
     UIQ           = sum_{i in I_interact}(q_i) / (|I_interact| + |I_triggered|)
-      where q_i   = s_i / c_i if c_i > 0 else 0
+      where q_i   = 1 / c_i if c_i > 0 else 0   # UNGATED: no whole-task-success term
       and I_triggered = non-interaction tasks that invoked ask_user >= 1 time
 
-UIQ rewards success with few clarification queries and penalizes both failing to
+UIQ rewards asking with few clarification queries and penalizes both failing to
 ask on interaction tasks (c_i = 0 -> q_i = 0, still counted in the denominator)
-and asking unnecessarily on non-interaction tasks (adds to I_triggered).
+and asking unnecessarily on non-interaction tasks (adds to I_triggered). There
+is deliberately no s_i factor: a task that asked the right question but then
+failed for an unrelated reason still gets credit for the ask (use
+``user_interaction_quality_factmatch`` to grade the correctness of each answer).
 """
 
 from __future__ import annotations
@@ -78,11 +81,18 @@ def avg_user_queries(records: Iterable[Record]) -> float:
 
 
 def user_interaction_quality(records: Iterable[Record]) -> float:
-    """User Interaction Quality (formulas 5-6).
+    """User Interaction Quality (formulas 5-6), ungated.
 
-    ``q_i = s_i / c_i`` for interaction task ``i`` (0 when it never asked), summed
-    over interaction tasks and divided by the number of interaction tasks plus the
-    number of non-interaction tasks that nevertheless invoked ``ask_user``.
+    ``q_i = 1 / c_i`` for interaction task ``i`` that asked the user (0 when it
+    never asked), summed over interaction tasks and divided by the number of
+    interaction tasks plus the number of non-interaction tasks that nevertheless
+    invoked ``ask_user``.
+
+    There is intentionally **no whole-task-success gate**: asking at all, with
+    few queries, scores well even when the overall task later failed for an
+    unrelated reason (e.g. an alarm UI bug). Use
+    :func:`user_interaction_quality_factmatch` to grade whether each answer was
+    the right question.
     """
     interaction = [record for record in records if record["is_interaction"]]
     triggered = [
@@ -94,7 +104,7 @@ def user_interaction_quality(records: Iterable[Record]) -> float:
     for record in interaction:
         queries = record.get("ask_user_calls") or 0
         if queries > 0:
-            numerator += (1.0 if record["success"] else 0.0) / queries
+            numerator += 1.0 / queries
     denominator = len(interaction) + len(triggered)
     return numerator / denominator if denominator else 0.0
 

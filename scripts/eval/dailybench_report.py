@@ -5,10 +5,10 @@ Computes Success Rate (overall + per bucket + interaction vs GUI-only), Average
 Completion Steps, Average User Queries, and User Interaction Quality (QIS) from
 arXiv:2512.19432 (MobileWorld), excluding the MCP metric by design.
 
-QIS uses the success-free fact-match formula (not the paper's success-gated q_i):
-it grades the quality of each ask_user call by whether the LLM user's answer
-matched the task's ground-truth fact, regardless of whether the task succeeded.
-The paper's success-gated variant is still computed and reported as deprecated.
+QIS uses the success-free fact-match formula: it grades the quality of each
+ask_user call by whether the LLM user's answer matched the task's ground-truth
+fact, regardless of whether the task succeeded. An ungated ask-efficiency
+variant (1/q, no whole-task-success gate) is also computed and reported.
 
 Each run folder contributes:
   output.json          -> success, steps
@@ -414,7 +414,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         # quality of each ask_user call by whether the LLM user's answer matched the
         # ground-truth fact, regardless of whether the overall task succeeded.
         f"| User Interaction Quality (QIS, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
-        f"| — QIS success-gated variant (MobileWorld, deprecated) | {report['user_interaction_quality']:.3f} |",
+        f"| — QIS ask-efficiency (ungated 1/q, no success gate) | {report['user_interaction_quality']:.3f} |",
         "",
         "### Outcome split (true success / true failure / hallucination)",
         "",

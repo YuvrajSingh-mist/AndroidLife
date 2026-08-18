@@ -21,9 +21,11 @@ Section 4.2) — excluding the MCP metric:
   (ASK USER) split
 - **Average Completion Steps** — mean action steps per trajectory
 - **Average User Queries** — mean `ask_user` invocations on interaction tasks
-- **User Interaction Quality (UIQ)** — rewards success with few clarification
-  queries and penalizes failing to ask on interaction tasks or asking
-  unnecessarily on GUI-only tasks
+- **User Interaction Quality (UIQ/QIS)** — **ungated** ask-efficiency: rewards
+  asking with few clarification queries (`1/q`, no whole-task-success gate) and
+  penalizes failing to ask on interaction tasks or asking unnecessarily on
+  GUI-only tasks; the fact-match variant grades whether each answer was the
+  right question
 
 ```
 uv run scripts/eval/dailybench_report.py --runs runs/<date-time>            # default scans runs/*/*
