@@ -31,8 +31,8 @@ aren't grouped or predictable by position.**
 **[Files+Obsidian]**
 - Medium (3pt) **[Files + Obsidian]**: My storage keeps shrinking and I need to find the big offenders. Filter files larger than 100MB across the whole device, note the largest one, star it, and log its size in an Obsidian note in Files? List it for me in the format of "Filename" | "Size" strictly. <!--medium__files__010-->
 
-**[Photos+Obsidian]**
-- Medium (3pt) **[Photos + Obsidian]**: I am trying to make a collage of various photos of food but I can't seem to find the right ones. Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones for this purpose, and note the space freed in Obsidian in Photos? Reply with only the space freed, no other text. <!--medium__gallery__007-->
+**[Google Photos+Obsidian]**
+- Medium (3pt) **[Google Photos + Obsidian]**: I am trying to make a collage of various photos of food but I can't seem to find the right ones. Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones for this purpose, and note the space freed in Obsidian in Google Photos? Reply with only the space freed, no other text. <!--medium__gallery__007-->
 
 **[Gmail]**
 - Easy (1pt): Can you forward the most recent email in my Gmail to [contact] pls? <!--easy__gmail__001-->

@@ -6,7 +6,7 @@ DrainBench measures something no existing mobile-agent benchmark reports: not ju
 
 ## What this is
 
-Everyday queries across 32 real apps (Gmail, Maps, Chrome, Drive, Photos, YouTube, Telegram, Search, Calculator, Clock, Calendar, Contacts, Notes, Obsidian, Files, Camera, Photos, Music, Messages, Phone, Settings, a browser-based Shopping & Delivery category, the Google Workspace set — Docs, Sheets, Slides, Meet — plus Weather, Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping), run live on-device via the accessibility service, not an emulator, not screenshots by default, not vision-model grading. Everything is graded by checking the actual end state a human can verify, because the whole point is measuring real cost, and VLM-based judging would quietly tax exactly the setups (locally-run models) this benchmark cares most about.
+Everyday queries across 32 real apps (Gmail, Maps, Chrome, Drive, Google Photos, YouTube, Telegram, Search, Calculator, Clock, Calendar, Contacts, Notes, Obsidian, Files, Camera, Google Photos, Music, Messages, Phone, Settings, a browser-based Shopping & Delivery category, the Google Workspace set — Docs, Sheets, Slides, Meet — plus Weather, Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping), run live on-device via the accessibility service, not an emulator, not screenshots by default, not vision-model grading. Everything is graded by checking the actual end state a human can verify, because the whole point is measuring real cost, and VLM-based judging would quietly tax exactly the setups (locally-run models) this benchmark cares most about.
 
 ## How the difficulty tiers work
 
@@ -70,12 +70,12 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **[Camera]**
 - Easy (1pt): Take a photo of any object on my desk with the Camera and save it with an appropriate name for the object captured
 - Medium (3pt): I'm shooting a dimly lit room this evening, so set up the Camera for low light: turn on night mode, enable HDR, and make sure the flash is off.
-- Medium (3pt) **[Photos]**: Search for [food_category] photos, then in Photos pick the best 3 in terms of resolution and save them to a new album
+- Medium (3pt) **[Google Photos]**: Search for [food_category] photos, then in Google Photos pick the best 3 in terms of resolution and save them to a new album
 
-**[Photos]**
-- Easy (1pt): Hide the specific photo taken about an hour back from the main view in Photos
-- Medium (3pt): My screenshots are really piling up. In Photos, delete every screenshot older than a month, tell me how many went, and check how much storage that freed
-- Medium (3pt) **[Photos+Telegram]**: I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Photos, save it, and share it via Telegram to [contact]
+**[Google Photos]**
+- Easy (1pt): Hide the specific photo taken about an hour back from the main view in Google Photos
+- Medium (3pt): My screenshots are really piling up. In Google Photos, delete every screenshot older than a month, tell me how many went, and check how much storage that freed
+- Medium (3pt) **[Google Photos+Telegram]**: I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Google Photos, save it, and share it via Telegram to [contact]
 
 **[Messages]**
 - Easy (1pt): Search my Messages for the word '[search word]'
@@ -133,8 +133,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): Take a photo of a dimly lit object in Camera with the flash turned on
 - Medium (3pt): Take a self-timer photo of myself with the Camera, check I'm fully in frame, and save it
 
-**12. [Photos+Gmail+Obsidian] — ASK USER**
-- I'd like to send [contact] a photo from the event. Find the photo in Photos, check the caption for whether [contact] is mentioned, and email it to them if so, recording the send in a note; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean)
+**12. [Google Photos+Gmail+Obsidian] — ASK USER**
+- I'd like to send [contact] a photo from the event. Find the photo in Google Photos, check the caption for whether [contact] is mentioned, and email it to them if so, recording the send in a note; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean)
 
 **[Music]**
 - Easy (1pt): Play the most recently added song in a playlist on Music
@@ -227,9 +227,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Camera, switch to a square aspect ratio and take a photo of any object
 - Medium (3pt): In Camera, take a photo of any object, apply a filter, and compare before/after
 
-**[Photos]**
-- Easy (1pt): In Photos, check the location metadata on a specific photo
-- Medium (3pt): In Photos, filter photos to show only ones from a specific trip, star the best one, and check whether any are duplicates
+**[Google Photos]**
+- Easy (1pt): In Google Photos, check the location metadata on a specific photo
+- Medium (3pt): In Google Photos, filter photos to show only ones from a specific trip, star the best one, and check whether any are duplicates
 
 **[Phone]**
 - Easy (1pt): In Phone, call [contact]
@@ -248,8 +248,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **29. [Contacts+Obsidian] — DETERMINISTIC**
 - My contacts have duplicates. Find the Contacts sharing the same number, merge them, write down the merge in a note with today's date, and reply with only the count of contacts remaining after the merge, no other text
 
-**35. [Photos+Obsidian] — DETERMINISTIC**
-- Track how many photos I take each day. Curate today's Photos photos into an album, note the count, match it against yesterday's count noted in Obsidian, log only which day had more, and star the album if today's count is higher
+**35. [Google Photos+Obsidian] — DETERMINISTIC**
+- Track how many photos I take each day. Curate today's Google Photos photos into an album, note the count, match it against yesterday's count noted in Obsidian, log only which day had more, and star the album if today's count is higher
 
 ### Day 5
 
@@ -299,8 +299,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Settings, turn on battery saver mode
 - Medium (3pt): In Settings, filter storage usage to identify apps safe to offload, offload one, and note space freed
 
-**9. [Photos+Telegram] — ASK USER**
-- I want to send someone the photo from the trip with the sunset. Find the photo matching that vague description in Photos and share it via Telegram to [contact] (deliberately no single photo is identifiable from the vague description on the test device, so the agent must ask the user which trip or which sunset photo they mean before sharing)
+**9. [Google Photos+Telegram] — ASK USER**
+- I want to send someone the photo from the trip with the sunset. Find the photo matching that vague description in Google Photos and share it via Telegram to [contact] (deliberately no single photo is identifiable from the vague description on the test device, so the agent must ask the user which trip or which sunset photo they mean before sharing)
 
 **10. [Drive+Notes+Telegram] — ASK USER**
 - The shared budget spreadsheet might be slipping. Check Drive for its last-edited date, note it, and compare it against the deadline in Notes. If it's overdue, message the person who owns the budget on Telegram; if on track, star it. Confirm the check with today's date in the note (deliberately no recipient is named, so the agent must ask the user who to message)
@@ -443,9 +443,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Contacts, star [contact] as a favorite
 - Medium (3pt): In Contacts, filter contacts missing a photo, add a photo to the most important one, and check whether the rest still need one
 
-**[Photos]**
-- Easy (1pt): In Photos, zoom in on my most recent photo
-- Medium (3pt): In Photos, filter photos by which lens they were taken with, count how many used portrait mode, and star one
+**[Google Photos]**
+- Easy (1pt): In Google Photos, zoom in on my most recent photo
+- Medium (3pt): In Google Photos, filter photos by which lens they were taken with, count how many used portrait mode, and star one
 
 **[Messages]**
 - Easy (1pt): In Messages, copy text from a received message
@@ -496,9 +496,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Files, search for all PDF files on the device
 - Medium (3pt): In Files, find empty folders across storage, count them, and delete them
 
-**[Photos]**
-- Easy (1pt): In Photos, undo a recent edit made to a photo
-- Medium (3pt): In Photos, rank recent albums by number of photos, open the largest, and note its cover photo
+**[Google Photos]**
+- Easy (1pt): In Google Photos, undo a recent edit made to a photo
+- Medium (3pt): In Google Photos, rank recent albums by number of photos, open the largest, and note its cover photo
 
 **[Music]**
 - Easy (1pt): In Music, check how long is left in the current song
@@ -515,8 +515,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **16. [Telegram+Calendar] — DETERMINISTIC**
 - I think a date was mentioned in the group chat. Check the last 10 messages in the Telegram group for any mention of a date, record the most recent one, and compare it against Calendar. If there's no matching event within 2 days, create a 'Follow-up' event; confirm the check either way
 
-**36. [Photos+Telegram] — ASK USER**
-- I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date (deliberately no recipient is named, so the agent must ask the user who to send it to)
+**36. [Google Photos+Telegram] — ASK USER**
+- I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Google Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date (deliberately no recipient is named, so the agent must ask the user who to send it to)
 
 **37. [Music+Telegram] — ASK USER**
 - I'm making a two-song playlist and want to compare notes with a friend. Create it in Music, name it, check Telegram for whether that friend has mentioned a similar playlist, message them only if a match exists, and verify the playlist saved (deliberately no recipient is named, so the agent must ask the user who to compare notes with)
@@ -607,9 +607,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Contacts, check recently added contacts
 - Medium (3pt): In Contacts, filter contacts to show only ones added this month, star the most recent, and check whether any are missing a phone number
 
-**[Photos]**
-- Easy (1pt): In Photos, crop the most recent photo
-- Medium (3pt): In Photos, find and tag a group of untagged photos with a shared label, confirm the tag applied, and count how many were tagged
+**[Google Photos]**
+- Easy (1pt): In Google Photos, crop the most recent photo
+- Medium (3pt): In Google Photos, find and tag a group of untagged photos with a shared label, confirm the tag applied, and count how many were tagged
 
 **[Music]**
 - Easy (1pt): In Music, search for '[song]' and play it
@@ -679,8 +679,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Settings, turn on Do Not Disturb
 - Medium (3pt): In Settings, filter location-permission apps to find ones that don't need it, revoke access for one, and count remaining
 
-**13. [Photos+Calendar] — DETERMINISTIC**
-- Are my photo habits slipping? Check Photos for how many photos I took this week versus last week, note both counts, and if this week is less than half of last week's, set a calendar reminder to take more photos next trip, recording the reason in the same reminder
+**13. [Google Photos+Calendar] — DETERMINISTIC**
+- Are my photo habits slipping? Check Google Photos for how many photos I took this week versus last week, note both counts, and if this week is less than half of last week's, set a calendar reminder to take more photos next trip, recording the reason in the same reminder
 
 **40. [Phone+Contacts] — DETERMINISTIC**
 - I missed a call and don't know who it was. Check Phone for the most recent missed call, write down the number, cross-reference it against Contacts, save it as a new contact only if it isn't already saved, and log the call time in the contact's note
@@ -781,9 +781,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Camera, record a 5-second video of my surroundings with sound enabled
 - Medium (3pt): In Camera, record a 5-second video and take a photo of the same stationary object, and decide which captures it better
 
-**[Photos]**
-- Easy (1pt): In Photos, search the photos for photos from [place]
-- Medium (3pt): In Photos, find the 10 photos taking up the most storage, review them, and delete the 3 least useful ones
+**[Google Photos]**
+- Easy (1pt): In Google Photos, search the photos for photos from [place]
+- Medium (3pt): In Google Photos, find the 10 photos taking up the most storage, review them, and delete the 3 least useful ones
 
 **[Phone]**
 - Easy (1pt): In Phone, mute the microphone during an active call
@@ -855,8 +855,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **15. [YouTube+Telegram] — ASK USER**
 - Which of my favorite channel's latest videos is doing better? Check its two most recent uploads, note both view counts, compare them, and message the person who cares about this on Telegram only the title of whichever performed better, then confirm they replied (deliberately no recipient is named, so the agent must ask the user who to message)
 
-**50. [Photos+Telegram] — ASK USER**
-- Share the event photos. Create a shared Photos album for the event, name it, check Telegram chat history for whether the person who should be in it has already been invited, invite them only if not, and verify the invite status (deliberately no recipient is named, so the agent must ask the user who to invite)
+**50. [Google Photos+Telegram] — ASK USER**
+- Share the event photos. Create a shared Google Photos album for the event, name it, check Telegram chat history for whether the person who should be in it has already been invited, invite them only if not, and verify the invite status (deliberately no recipient is named, so the agent must ask the user who to invite)
 
 **54. [Telegram+Calendar] — ASK USER**
 - Schedule a message to the right person without it landing mid-meeting. Schedule the Telegram message, note the intended send time, check it against Calendar for a conflicting event, shift it by 30 minutes if one exists, and double-check the final scheduled time (deliberately no recipient is named, so the agent must ask the user who the message is for)
@@ -892,10 +892,10 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt) **[Obsidian]**: In Obsidian, add today's date as a heading in a new note
 - Medium (3pt): In Notes, find notes not opened in over a month, delete the least useful one, and check whether the rest are still relevant
 
-**[Photos]**
-- Easy (1pt): In Photos, search for videos only, not photos
-- Easy (1pt): In Photos, find my most recent photo
-- Medium (3pt): In Photos, compare storage used by favorited vs. non-favorited photos, note which is larger, and check the total combined size
+**[Google Photos]**
+- Easy (1pt): In Google Photos, search for videos only, not photos
+- Easy (1pt): In Google Photos, find my most recent photo
+- Medium (3pt): In Google Photos, compare storage used by favorited vs. non-favorited photos, note which is larger, and check the total combined size
 
 **[Music]**
 - Easy (1pt): In Music, skip to the next track
@@ -948,10 +948,10 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Notes, add a photo to an existing note
 - Medium (3pt) **[Obsidian]**: In Obsidian, find all notes mentioning a specific person's name, star the most recent, and check whether the oldest one is still accurate
 
-**[Photos]**
-- Easy (1pt): In Photos, check the file size of a specific photo
-- Medium (3pt): In Photos, compare two similar photos, decide which is better, and delete the worse one
-- Medium (3pt) **[Photos+Obsidian]**: In Photos, summarize how many photos were taken this month vs. last month, note the difference, and check which month had more videos too
+**[Google Photos]**
+- Easy (1pt): In Google Photos, check the file size of a specific photo
+- Medium (3pt): In Google Photos, compare two similar photos, decide which is better, and delete the worse one
+- Medium (3pt) **[Google Photos+Obsidian]**: In Google Photos, summarize how many photos were taken this month vs. last month, note the difference, and check which month had more videos too
 
 **[Music]**
 - Easy (1pt): In Music, play a specific genre radio station
@@ -1109,10 +1109,10 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Camera, take a selfie
 - Medium (3pt): In Camera, take a burst of 5 photos of the same object, keep only the best 2, and delete the rest
 
-**[Photos]**
-- Easy (1pt): In Photos, rotate a sideways photo
-- Easy (1pt): In Photos, star three photos in a row
-- Medium (3pt): In Photos, filter photos to find ones missing location metadata, note which album has the most, and star one from that album
+**[Google Photos]**
+- Easy (1pt): In Google Photos, rotate a sideways photo
+- Easy (1pt): In Google Photos, star three photos in a row
+- Medium (3pt): In Google Photos, filter photos to find ones missing location metadata, note which album has the most, and star one from that album
 
 **[Phone]**
 - Easy (1pt): In Phone, check my most recent missed call
@@ -1124,8 +1124,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **61. [Clock+Calendar] — DETERMINISTIC**
 - I have a travel day with multiple legs. Set three alarms on Clock for it, note each time, match them against Calendar for the flight details, adjust any alarm less than 2 hours before its matching event, and confirm all three saved
 
-**71. [Camera+Photos+Telegram] — DETERMINISTIC**
-- Taking a panorama and don't want duplicates. Take it with Camera, check Photos for whether a similar panorama from the same location already exists, compare the two for sharpness, share only the sharper one via Telegram, and confirm the recipient received it
+**71. [Camera+Google Photos+Telegram] — DETERMINISTIC**
+- Taking a panorama and don't want duplicates. Take it with Camera, check Google Photos for whether a similar panorama from the same location already exists, compare the two for sharpness, share only the sharper one via Telegram, and confirm the recipient received it
 
 ### Day 21
 
@@ -1172,8 +1172,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Medium (3pt): In Settings, filter apps to find ones not opened in over a month, uninstall one, and check whether the rest free enough storage
 - Medium (3pt) **[Settings+Obsidian]**: In Settings, summarize which apps are set to run in the background, disable one unnecessary one, and log the change in a note
 
-**51. [Photos+Obsidian] — DETERMINISTIC**
-- I deleted a photo I actually wanted. Restore it from Photos trash, note its date, compare it against my Obsidian trip log, add it to the matching trip's note, and confirm it's no longer in the trash
+**51. [Google Photos+Obsidian] — DETERMINISTIC**
+- I deleted a photo I actually wanted. Restore it from Google Photos trash, note its date, compare it against my Obsidian trip log, add it to the matching trip's note, and confirm it's no longer in the trash
 
 **58. [Calculator+Obsidian] — DETERMINISTIC**
 - Scaling a recipe up and need to know what to buy. Convert it from 4 to 6 servings on the Calculator, record the new quantities, check them against my Obsidian pantry list, add only the ingredients not already on hand, and confirm the shopping note updated
@@ -1247,7 +1247,7 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Medium (3pt): In Google Drive, compare two versions of the same document, note what changed, and keep the latest
 
 **[Google Photos]**
-- Easy (1pt): In Google Photos, check how much storage the Photos backup is using
+- Easy (1pt): In Google Photos, check how much storage the Google Photos backup is using
 - Medium (3pt): In Google Photos, filter photos to show only ones taken at [place], deduplicate any near-identical shots, and star the best one
 
 **[Telegram]**
@@ -1264,9 +1264,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Medium (3pt) **[Obsidian]**: In Obsidian, summarize my 5 most recently edited notes into one overview note, star it, and pin it to the top
 - Medium (3pt) **[Notes+Telegram]**: In Notes, summarize a long meeting note into 3 action items, save them as a checklist, and share them with [contact] on Telegram
 
-**[Photos]**
-- Easy (1pt): In Photos, set a specific photo as a contact's photo
-- Medium (3pt): In Photos, filter for blurry or near-duplicate photos, review them, and clean them up
+**[Google Photos]**
+- Easy (1pt): In Google Photos, set a specific photo as a contact's photo
+- Medium (3pt): In Google Photos, filter for blurry or near-duplicate photos, review them, and clean them up
 
 **[Messages]**
 - Easy (1pt): In Messages, check the spam/blocked messages folder
@@ -1278,14 +1278,14 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Medium (3pt): In Settings, rank apps by notification count this week, turn off notifications for the noisiest, and note the change
 - Medium (3pt): In Settings, filter apps by storage usage, list the 5 largest, and clear cache for the top one
 
-**74. [Photos+Notes] — DETERMINISTIC**
-- Tag a batch of photos and track progress. Tag a group of Photos photos with a label, note the tagged count, match it against the target count in Notes, log only whether the target was met, and star one tagged photo as an example
+**74. [Google Photos+Notes] — DETERMINISTIC**
+- Tag a batch of photos and track progress. Tag a group of Google Photos photos with a label, note the tagged count, match it against the target count in Notes, log only whether the target was met, and star one tagged photo as an example
 
-**75. [Photos+Settings+Obsidian] — DETERMINISTIC**
-- I want a fresh wallpaper. Set a Photos photo as wallpaper via Settings, check the Obsidian log for whether it was already used as wallpaper this month, star the photo, update the log only if it's a new choice, and confirm the wallpaper applied
+**75. [Google Photos+Settings+Obsidian] — DETERMINISTIC**
+- I want a fresh wallpaper. Set a Google Photos photo as wallpaper via Settings, check the Obsidian log for whether it was already used as wallpaper this month, star the photo, update the log only if it's a new choice, and confirm the wallpaper applied
 
-**83. [Photos+Obsidian+Telegram] — ASK USER**
-- Is my trip-place photo count a record? Check Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message [contact] on Telegram the total count only if it's a new personal best, and update the log (deliberately no place is specified, so the agent must ask the user which place they mean)
+**83. [Google Photos+Obsidian+Telegram] — ASK USER**
+- Is my trip-place photo count a record? Check Google Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message [contact] on Telegram the total count only if it's a new personal best, and update the log (deliberately no place is specified, so the agent must ask the user which place they mean)
 
 ### Day 24
 
@@ -1317,16 +1317,16 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Files, move a file to the Trash
 - Medium (3pt): In Files, rank folders by total size, open the largest, and note what's inside
 
-**[Photos]**
-- Easy (1pt): In Photos, check the total number of videos in the photos
-- Medium (3pt): In Photos, merge two albums covering the same event into one, delete the duplicate album, and rename the merged album
+**[Google Photos]**
+- Easy (1pt): In Google Photos, check the total number of videos in the photos
+- Medium (3pt): In Google Photos, merge two albums covering the same event into one, delete the duplicate album, and rename the merged album
 
 **[Phone]**
 - Easy (1pt): In Phone, turn on speakerphone during an active call
 - Medium (3pt): In Phone, filter call log for international calls this month, total the duration, and note the total
 
-**85. [Photos] — ASK USER**
-- I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Photos album (deliberately no album or person is specified on the test device, so the agent must ask the user which album and which person they mean)
+**85. [Google Photos] — ASK USER**
+- I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Google Photos album (deliberately no album or person is specified on the test device, so the agent must ask the user which album and which person they mean)
 
 **94. [Chrome+Obsidian] — ASK USER**
 - I'd like to understand both sides. Research two competing viewpoints on the question I have in mind via Chrome and note a balanced summary in a note (deliberately no topic is specified, so the agent must ask the user what to research)
@@ -1475,9 +1475,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Files, check when a specific file was last opened
 - Medium (3pt): In Files, rank recently downloaded files by size, delete the largest if unneeded, and note the result
 
-**[Photos]**
-- Easy (1pt): In Photos, check how many photos were taken today
-- Medium (3pt): In Photos, rank videos by length, flag the longest ones for review, and delete one if unneeded
+**[Google Photos]**
+- Easy (1pt): In Google Photos, check how many photos were taken today
+- Medium (3pt): In Google Photos, rank videos by length, flag the longest ones for review, and delete one if unneeded
 
 **[Messages]**
 - Easy (1pt): In Messages, mute notifications for a specific thread
@@ -1490,8 +1490,8 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 **89. [Drive] — ASK USER**
 - Leave feedback on a document a colleague shared. Find it in Google Drive, read it, add a comment with feedback on its main point, and note which document I commented on (deliberately no person is named for the shared document, so the agent must ask the user who shared it)
 
-**95. [Photos] — DETERMINISTIC**
-- Keep only the best shot from that burst. Pick the sharpest photo from the recent burst of similar shots in Photos and delete the rest
+**95. [Google Photos] — DETERMINISTIC**
+- Keep only the best shot from that burst. Pick the sharpest photo from the recent burst of similar shots in Google Photos and delete the rest
 
 **100. [Telegram] — ASK USER**
 - Decline that invitation for me, politely. Open the Telegram chat with the person who invited me, find the recent invitation, draft a polite decline reply referencing it, and send it (deliberately no sender is named for the invitation, so the agent must ask the user who invited them)
@@ -1529,9 +1529,9 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 - Easy (1pt): In Contacts, call [contact]
 - Medium (3pt): In Contacts, find contacts with an outdated area code, update the most recent one, and note how many remain
 
-**[Photos]**
-- Easy (1pt): In Photos, delete the most recent photo
-- Medium (3pt): In Photos, find photos taken at night, check which ones came out usable, and delete the unusable ones
+**[Google Photos]**
+- Easy (1pt): In Google Photos, delete the most recent photo
+- Medium (3pt): In Google Photos, find photos taken at night, check which ones came out usable, and delete the unusable ones
 
 **[Phone]**
 - Easy (1pt): In Phone, check missed calls from today only

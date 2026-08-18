@@ -480,7 +480,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 1,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -493,8 +493,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Search for [food_category] photos, then in Photos pick the best 3 in terms of resolution and save them to a new album",
-      "prompt_template": "Search for {{ food_category }} photos, then in Photos pick the best 3 in terms of resolution and save them to a new album",
+      "prompt_text": "Search for [food_category] photos, then in Google Photos pick the best 3 in terms of resolution and save them to a new album",
+      "prompt_template": "Search for {{ food_category }} photos, then in Google Photos pick the best 3 in terms of resolution and save them to a new album",
       "placeholders": [
         "food_category"
       ],
@@ -509,7 +509,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 1,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -522,8 +522,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Hide the specific photo taken about an hour back from the main view in Photos",
-      "prompt_template": "Hide the specific photo taken about an hour back from the main view in Photos",
+      "prompt_text": "Hide the specific photo taken about an hour back from the main view in Google Photos",
+      "prompt_template": "Hide the specific photo taken about an hour back from the main view in Google Photos",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -536,7 +536,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 1,
-      "app": "Photos+Telegram",
+      "app": "Google Photos+Telegram",
       "app_slug": "gallery-telegram",
       "apps": [
         "Google Photos",
@@ -550,8 +550,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Photos, save it, and share it via Telegram to [contact]",
-      "prompt_template": "I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Photos, save it, and share it via Telegram to {{ contact }}",
+      "prompt_text": "I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Google Photos, save it, and share it via Telegram to [contact]",
+      "prompt_template": "I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Google Photos, save it, and share it via Telegram to {{ contact }}",
       "placeholders": [
         "contact"
       ],
@@ -893,7 +893,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 2,
-      "app": "Photos+Gmail+Obsidian",
+      "app": "Google Photos+Gmail+Obsidian",
       "app_slug": "photos-gmail-obsidian",
       "apps": [
         "Google Photos",
@@ -908,8 +908,8 @@
       "is_ask_user": true,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'd like to send [contact] a photo from the event. Find the event photo in Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way",
-      "prompt_template": "I'd like to send {{ contact }} a photo from the event. Find the event photo in Photos, for which the caption has the {{ contact }} mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way",
+      "prompt_text": "I'd like to send [contact] a photo from the event. Find the event photo in Google Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way",
+      "prompt_template": "I'd like to send {{ contact }} a photo from the event. Find the event photo in Google Photos, for which the caption has the {{ contact }} mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way",
       "placeholders": [
         "contact"
       ],
@@ -2136,7 +2136,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 4,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -2149,8 +2149,8 @@
       "is_ask_user": false,
       "task_number_within_app": 2,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Can you open Photos and check the location metadata on the photo named '[photo name]' for me pls?",
-      "prompt_template": "Can you open Photos and check the location metadata on the photo named '{{ photo name }}' for me pls?",
+      "prompt_text": "Can you open Google Photos and check the location metadata on the photo named '[photo name]' for me pls?",
+      "prompt_template": "Can you open Google Photos and check the location metadata on the photo named '{{ photo name }}' for me pls?",
       "placeholders": [
         "photo name"
       ],
@@ -2169,7 +2169,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 4,
-      "app": "Photos+Notes",
+      "app": "Google Photos+Notes",
       "app_slug": "gallery",
       "apps": [
         "Google Photos",
@@ -2183,8 +2183,8 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Can you go through Photos and, um, check all my photos for duplicates? Wait no. Filter the photos to just the ones from my [trip name] trip first. Then star the best one. Hmm, also check whether any of those are duplicates. And save a note saying which photo you starred so that I can check later. Forget the all-photos thing, that's what I want.",
-      "prompt_template": "Can you go through Photos and, um, check all my photos for duplicates? Wait no. Filter the photos to just the ones from my {{ trip name }} trip first. Then star the best one. Hmm, also check whether any of those are duplicates. And save a note saying which photo you starred so that I can check later. Forget the all-photos thing, that's what I want.",
+      "prompt_text": "Can you go through Google Photos and, um, check all my photos for duplicates? Wait no. Filter the photos to just the ones from my [trip name] trip first. Then star the best one. Hmm, also check whether any of those are duplicates. And save a note saying which photo you starred so that I can check later. Forget the all-photos thing, that's what I want.",
+      "prompt_template": "Can you go through Google Photos and, um, check all my photos for duplicates? Wait no. Filter the photos to just the ones from my {{ trip name }} trip first. Then star the best one. Hmm, also check whether any of those are duplicates. And save a note saying which photo you starred so that I can check later. Forget the all-photos thing, that's what I want.",
       "placeholders": [
         "trip name"
       ],
@@ -2199,7 +2199,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 4,
-      "app": "Photos+Obsidian",
+      "app": "Google Photos+Obsidian",
       "app_slug": "gallery-obsidian",
       "apps": [
         "Google Photos",
@@ -2213,8 +2213,8 @@
       "is_ask_user": false,
       "task_number_within_app": 35,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I've been keeping a photo journal and want to stay on top of it. Count today's photos in Photos, then open my '[photo journal title]' Obsidian note and check the count I logged for yesterday. Update the note with today's count, log only which day had more, and star today's album if today's count is higher.",
-      "prompt_template": "I've been keeping a photo journal and want to stay on top of it. Count today's photos in Photos, then open my '{{ photo journal title }}' Obsidian note and check the count I logged for yesterday. Update the note with today's count, log only which day had more, and star today's album if today's count is higher.",
+      "prompt_text": "I've been keeping a photo journal and want to stay on top of it. Count today's photos in Google Photos, then open my '[photo journal title]' Obsidian note and check the count I logged for yesterday. Update the note with today's count, log only which day had more, and star today's album if today's count is higher.",
+      "prompt_template": "I've been keeping a photo journal and want to stay on top of it. Count today's photos in Google Photos, then open my '{{ photo journal title }}' Obsidian note and check the count I logged for yesterday. Update the note with today's count, log only which day had more, and star today's album if today's count is higher.",
       "placeholders": [
         "photo journal title"
       ],
@@ -4184,7 +4184,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 8,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -4197,8 +4197,8 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you filter photos by which lens they were taken with, count how many used portrait mode, and star one of them in Photos?",
-      "prompt_template": "Could you filter photos by which lens they were taken with, count how many used portrait mode, and star one of them in Photos?",
+      "prompt_text": "Could you filter photos by which lens they were taken with, count how many used portrait mode, and star one of them in Google Photos?",
+      "prompt_template": "Could you filter photos by which lens they were taken with, count how many used portrait mode, and star one of them in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -4792,7 +4792,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 9,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -4805,8 +4805,8 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I messed up a photo edit and want it back the way it was. Can you undo a recent edit I made to a photo in Photos?",
-      "prompt_template": "I messed up a photo edit and want it back the way it was. Can you undo a recent edit I made to a photo in Photos?",
+      "prompt_text": "I messed up a photo edit and want it back the way it was. Can you undo a recent edit I made to a photo in Google Photos?",
+      "prompt_template": "I messed up a photo edit and want it back the way it was. Can you undo a recent edit I made to a photo in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -4819,7 +4819,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 9,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -4832,8 +4832,8 @@
       "is_ask_user": false,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "Could you rank my recent albums by number of photos, open the largest, and note its cover photo in Photos?",
-      "prompt_template": "Could you rank my recent albums by number of photos, open the largest, and note its cover photo in Photos?",
+      "prompt_text": "Could you rank my recent albums by number of photos, open the largest, and note its cover photo in Google Photos?",
+      "prompt_template": "Could you rank my recent albums by number of photos, open the largest, and note its cover photo in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -4846,7 +4846,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 9,
-      "app": "Photos+Telegram",
+      "app": "Google Photos+Telegram",
       "app_slug": "gallery-telegram",
       "apps": [
         "Google Photos",
@@ -4860,8 +4860,8 @@
       "is_ask_user": true,
       "task_number_within_app": 36,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date",
-      "prompt_template": "I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date",
+      "prompt_text": "I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Google Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date",
+      "prompt_template": "I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Google Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -5925,7 +5925,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 11,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -5938,8 +5938,8 @@
       "is_ask_user": false,
       "task_number_within_app": 7,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "I'm looking for a clip I recorded but keep getting photos. Could you search Photos for videos only, not photos?",
-      "prompt_template": "I'm looking for a clip I recorded but keep getting photos. Could you search Photos for videos only, not photos?",
+      "prompt_text": "I'm looking for a clip I recorded but keep getting photos. Could you search Google Photos for videos only, not photos?",
+      "prompt_template": "I'm looking for a clip I recorded but keep getting photos. Could you search Google Photos for videos only, not photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -5952,7 +5952,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 11,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -5965,8 +5965,8 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "Could you find a group of untagged photos, tag them all with a shared label, confirm the tag applied, and count how many were tagged in Photos?",
-      "prompt_template": "Could you find a group of untagged photos, tag them all with a shared label, confirm the tag applied, and count how many were tagged in Photos?",
+      "prompt_text": "Could you find a group of untagged photos, tag them all with a shared label, confirm the tag applied, and count how many were tagged in Google Photos?",
+      "prompt_template": "Could you find a group of untagged photos, tag them all with a shared label, confirm the tag applied, and count how many were tagged in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -7527,7 +7527,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 14,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -7558,7 +7558,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 14,
-      "app": "Photos+Obsidian",
+      "app": "Google Photos+Obsidian",
       "app_slug": "gallery",
       "apps": [
         "Google Photos",
@@ -7572,8 +7572,8 @@
       "is_ask_user": false,
       "task_number_within_app": 7,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Photos?",
-      "prompt_template": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Photos?",
+      "prompt_text": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Google Photos?",
+      "prompt_template": "Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -9169,7 +9169,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 17,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -9182,8 +9182,8 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Photos?",
-      "prompt_template": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Photos?",
+      "prompt_text": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Google Photos?",
+      "prompt_template": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -10893,7 +10893,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 20,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -10906,8 +10906,8 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "Could you open Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Photos?",
-      "prompt_template": "Could you open Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Photos?",
+      "prompt_text": "Could you open Google Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
+      "prompt_template": "Could you open Google Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -12199,7 +12199,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 23,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -12212,8 +12212,8 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Photos?",
-      "prompt_template": "I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Photos?",
+      "prompt_text": "I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Google Photos?",
+      "prompt_template": "I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -12226,7 +12226,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 23,
-      "app": "Photos+Notes",
+      "app": "Google Photos+Notes",
       "app_slug": "gallery",
       "apps": [
         "Google Photos",
@@ -12240,8 +12240,8 @@
       "is_ask_user": false,
       "task_number_within_app": 11,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you filter for blurry or near-duplicate photos, review them, clean them up, and note how many were removed in Photos?",
-      "prompt_template": "Could you filter for blurry or near-duplicate photos, review them, clean them up, and note how many were removed in Photos?",
+      "prompt_text": "Could you filter for blurry or near-duplicate photos, review them, clean them up, and note how many were removed in Google Photos?",
+      "prompt_template": "Could you filter for blurry or near-duplicate photos, review them, clean them up, and note how many were removed in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -12254,7 +12254,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 23,
-      "app": "Photos+Settings+Obsidian",
+      "app": "Google Photos+Settings+Obsidian",
       "app_slug": "gallery-settings-obsidian",
       "apps": [
         "Google Photos",
@@ -12269,8 +12269,8 @@
       "is_ask_user": false,
       "task_number_within_app": 75,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want a fresh wallpaper. Set a Photos photo as wallpaper via Settings and star it, then check my Obsidian wallpaper log for whether it was already used this month. Update the log only if it's a new choice. If no such log exists, tell me instead of creating a fake history. Confirm the wallpaper applied",
-      "prompt_template": "I want a fresh wallpaper. Set a Photos photo as wallpaper via Settings and star it, then check my Obsidian wallpaper log for whether it was already used this month. Update the log only if it's a new choice. If no such log exists, tell me instead of creating a fake history. Confirm the wallpaper applied",
+      "prompt_text": "I want a fresh wallpaper. Set a Google Photos photo as wallpaper via Settings and star it, then check my Obsidian wallpaper log for whether it was already used this month. Update the log only if it's a new choice. If no such log exists, tell me instead of creating a fake history. Confirm the wallpaper applied",
+      "prompt_template": "I want a fresh wallpaper. Set a Google Photos photo as wallpaper via Settings and star it, then check my Obsidian wallpaper log for whether it was already used this month. Update the log only if it's a new choice. If no such log exists, tell me instead of creating a fake history. Confirm the wallpaper applied",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -12287,7 +12287,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 23,
-      "app": "Photos+Obsidian+Telegram",
+      "app": "Google Photos+Obsidian+Telegram",
       "app_slug": "gallery-obsidian-telegram",
       "apps": [
         "Google Photos",
@@ -12302,8 +12302,8 @@
       "is_ask_user": true,
       "task_number_within_app": 83,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Is my trip-place photo count a record? Check Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message the person I share travel updates with on Telegram the total count only if it's a new personal best, and update the log",
-      "prompt_template": "Is my trip-place photo count a record? Check Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message the person I share travel updates with on Telegram the total count only if it's a new personal best, and update the log",
+      "prompt_text": "Is my trip-place photo count a record? Check Google Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message the person I share travel updates with on Telegram the total count only if it's a new personal best, and update the log",
+      "prompt_template": "Is my trip-place photo count a record? Check Google Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message the person I share travel updates with on Telegram the total count only if it's a new personal best, and update the log",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -12823,7 +12823,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 24,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -12836,8 +12836,8 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 8,
-      "prompt_text": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Photos?",
-      "prompt_template": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Photos?",
+      "prompt_text": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Google Photos?",
+      "prompt_template": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -12854,7 +12854,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 24,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -12867,8 +12867,8 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "Could you merge two albums covering the same event into one, delete the duplicate album, and rename the merged album in Photos?",
-      "prompt_template": "Could you merge two albums covering the same event into one, delete the duplicate album, and rename the merged album in Photos?",
+      "prompt_text": "Could you merge two albums covering the same event into one, delete the duplicate album, and rename the merged album in Google Photos?",
+      "prompt_template": "Could you merge two albums covering the same event into one, delete the duplicate album, and rename the merged album in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -12881,7 +12881,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 24,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -12894,8 +12894,8 @@
       "is_ask_user": true,
       "task_number_within_app": 85,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Photos album",
-      "prompt_template": "I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Photos album",
+      "prompt_text": "I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Google Photos album",
+      "prompt_template": "I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Google Photos album",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -14440,7 +14440,7 @@
       "difficulty": "easy",
       "points": 1,
       "day": 27,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -14453,8 +14453,8 @@
       "is_ask_user": false,
       "task_number_within_app": 14,
       "task_number_within_dataset_app": 9,
-      "prompt_text": "I've been snapping a lot and want to see the count. Can you check how many photos were taken today in Photos?",
-      "prompt_template": "I've been snapping a lot and want to see the count. Can you check how many photos were taken today in Photos?",
+      "prompt_text": "I've been snapping a lot and want to see the count. Can you check how many photos were taken today in Google Photos?",
+      "prompt_template": "I've been snapping a lot and want to see the count. Can you check how many photos were taken today in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -14467,7 +14467,7 @@
       "difficulty": "medium",
       "points": 3,
       "day": 27,
-      "app": "Photos",
+      "app": "Google Photos",
       "app_slug": "gallery",
       "apps": [
         "Google Photos"
@@ -14480,8 +14480,8 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "Could you rank videos by length, flag the longest ones for review, and delete one if it's unneeded in Photos?",
-      "prompt_template": "Could you rank videos by length, flag the longest ones for review, and delete one if it's unneeded in Photos?",
+      "prompt_text": "Could you rank videos by length, flag the longest ones for review, and delete one if it's unneeded in Google Photos?",
+      "prompt_template": "Could you rank videos by length, flag the longest ones for review, and delete one if it's unneeded in Google Photos?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
