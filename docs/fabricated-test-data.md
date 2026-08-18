@@ -305,6 +305,37 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-18 — Hard DETERMINISTIC tasks expanded to explicit 5-step tasks (uniqueness/difficulty pass).**
+  The terse one-line hard DET prompts in the public sample (and their 530 counterparts) read as vague even
+  though the spec requires hard = 2-3 apps / 5 steps (`benchmark-spec.md`). Rewrote all 9 in
+  `tasks_530.md` + `public.md`:
+  - **Fully explicit (plain DET, no oracle):** `hard__youtube-settings__052` (names channel **Tech Burner**
+    + Settings Do Not Disturb 22:00-08:00), `hard__google-sheets-amazon-shopping__074` (SPORTS_VIDEO_DATA
+    max-views row + Amazon search 'smartphone gimbal'), `hard__bookmyshow__005` (INOX Bhubaneswar, group of
+    4, ₹240/ticket + message [contact]; **was 1-app, now BookMyShow+Telegram 2-app**),
+    `hard__clock-calendar__023` (7:00 AM weekday alarm shifted to 07:30 on the seeded clash),
+    `hard__google-meet-files__070` (next meeting = Monday Weekly Sync 10:00 + open 'Weekly Agenda' in Files).
+    These 5 were vague but had **no KB oracle in the public**, so they were genuinely unsolvable before;
+    they are now **removed from `multiturn_kb_530.json`** (13 profiles remain) and their
+    `<!-- 🔄 MULTI-TURN -->` markers stripped from `tasks_530.md`.
+  - **Expanded but kept multi-turn (KB oracle, ONE withheld fact):** `hard__swiggy__005` (**was 1-app; now
+    + Telegram** — Downtown Delight Murgh Mughlai reorder → payment page → message [contact] total),
+    `hard__telegram-calendar__016` (which chat has the date → Forever 21, create Calendar event),
+    `hard__music-obsidian__077` (read Bedtime note → search lo-fi beats by Chillhop → download highly-liked
+    → play → sleep timer), `hard__gmail-calendar__003` (which flight → IndiGo 6E 6821 BBI→DEL + reminder 3h
+    before). Their KB profiles already matched these facts, so `multiturn_kb_*.json` needed no fact changes;
+    the prompts now spell out the 5 steps while keeping the single ask-point.
+  - Fixed the 2 single-app spec violations: `hard__swiggy__005` + `hard__bookmyshow__005` each gained a
+    Telegram step → 2 apps each.
+  - Orphaned `[music type]` placeholder (was only used by `hard__music-obsidian__077`): removed from
+    `config/user_config.example`, `config/user.yaml`, `tasks_vars.local.env`,
+    `src/DailyBench/user_config.py` DEFAULT_CONFIG, and the `build_day_seed_manifest.py` day-3 spec
+    (vars now `{}`, seed/end_state updated to 'lo-fi beats by Chillhop'); updated
+    `tests/test_task_dataset.py`; regenerated `tasks_vars_usage.json` (91 keys).
+  - Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes, 36 AU / 36 DET) +
+    `DailyBench_public_v2.json/.jsonl` (57 tasks). `verify_config.py` PASS; full test suite PASS (218,
+    1 hardware skip).
+
 - **2026-08-18 — Task-uniqueness audit: files/delete-largest cluster differentiated; unsolvable Phone task fixed.**
   The public rebalance had already dropped `easy__phone__008` and `medium__files__012` from the
   57-task sample, but the duplicate "filter-by-size → delete the largest → note size" pattern still

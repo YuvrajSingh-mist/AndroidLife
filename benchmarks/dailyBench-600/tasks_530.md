@@ -184,7 +184,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **77. [Music+Obsidian] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music? <!--hard__music-obsidian__077-->
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you open Obsidian, find my 'Bedtime' note, and read what time I usually go to bed? Then open YouTube Music, search for a lo-fi beats track by Chillhop, download the highly-liked video of it, start it playing, and set a sleep timer so it stops at my bedtime. Reply with only the track name and the sleep timer time, no other text. <!--hard__music-obsidian__077-->
 
 **[Chrome]**
 - Medium (3pt): In Chrome, compare total cost, item plus shipping, of [product] across [shopping_website_1] and [shopping_website_2], note the cheaper option, and check the delivery time for that option, outputting the same. <!--medium__shopping-delivery-browser__001-->
@@ -333,8 +333,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): I need a quick total for a column and don't want to do the math. Could you open '[spreadsheet name]' and sum up the [sheet column] column in Google Sheets? Reply with only the total, no other text, then add it as a new row at the bottom and adjust any other columns' values that need fixing because of that change. <!--medium__google-sheets__001-->
 
 **23. [Clock+Calendar] — DETERMINISTIC**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I need an alarm that repeats, but make sure it doesn't clash with anything I've got going on. <!--hard__clock-calendar__023-->
+- I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a Weekly Sync on Monday and Gym on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
 
 **[Swiggy]**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? <!--easy__swiggy__001-->
@@ -353,7 +352,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **3. [Gmail+Calendar] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure? <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip — I think it's IndiGo to Delhi — and note the flight number, date, and departure time? Then open Calendar and create a reminder 3 hours before departure so I get a heads-up. Reply with only the flight number and the reminder time, no other text. <!--hard__gmail-calendar__003-->
 
 **[Camera]**
 - Easy (1pt): I need a quick scan of this paper without a scanner. Could you take a photo of a printed page or receipt in Camera and save it as a scanned file? <!--easy__camera__004-->
@@ -509,7 +508,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **16. [Telegram+Calendar] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one? <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text. <!--hard__telegram-calendar__016-->
 
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 
@@ -635,8 +634,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - I've shortlisted a flight for my trip but wanna see the full fare before I pay. Can you open it and show me the breakdown on the payment page? <!--hard__makemytrip__003-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day? <!--hard__youtube-settings__052-->
+- Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
 
 - Medium (3pt) **[Contacts+Gmail]**: Could you filter contacts to only ones added this month in Contacts? List them for me in the format of "Name" | "Phone number" strictly, then star the most recent and check whether any are missing a phone number. Also, email [email-id] the list of contacts missing a number. <!--medium__contacts__008-->
 
@@ -695,9 +693,9 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just met someone and want to save their number before I lose it. Can you add a new contact named [X] with a phone number in Contacts? <!--easy__contacts__010-->
 
-**6. [Swiggy] — DETERMINISTIC**
+**6. [Swiggy+Telegram] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Murgh Mughlai with Kushka Rice from Downtown Delight — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->
@@ -816,8 +814,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm looking for something fun happening nearby. Can you search for a nearby holiday or public event on Google Search? <!--easy__google-search__007-->
 
 **70. [Google Meet+Files] — DETERMINISTIC**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready? <!--hard__google-meet-files__070-->
+- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday Weekly Sync at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called 'Weekly Agenda', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Chrome]**
 - Easy (1pt): I keep running into a word I don't know. Can you look up a word's definition in Chrome? <!--easy__chrome__008-->
@@ -1144,8 +1141,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you open '[spreadsheet name]' in Google Sheets and find the highest value in the [sheet column] column? Reply with only that value, no other text, then highlight it and note which row it's in. <!--medium__google-sheets__006-->
 
 **74. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've got all my video stats in a sheet. Can you find my best performer and show me something related to grab? <!--hard__google-sheets-amazon-shopping__074-->
+- I've got all my video stats in the SPORTS_VIDEO_DATA spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
 
 - Medium (3pt) **[Google Photos+Telegram]**: Could you find the 5 most recent photos of [subject], add them to a new album, and share the album name with [contact] on Telegram in Google Photos? <!--medium__google-photos-telegram__001-->
 
@@ -1183,9 +1179,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 ### Day 21
 
-**5. [BookMyShow] — DETERMINISTIC**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- We're doing a movie night this weekend. Could you check showtimes and seat prices and save the best one? <!--hard__bookmyshow__005-->
+**5. [BookMyShow+Telegram] — DETERMINISTIC**
+- We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at INOX Bhubaneswar this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price (₹240)? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
 
 **[Chrome]**
 - Easy (1pt): Something broke and I need to know if it's still covered. Can you search for a specific product's warranty information in Chrome? <!--easy__shopping-delivery-browser__011-->

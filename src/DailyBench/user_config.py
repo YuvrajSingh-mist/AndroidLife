@@ -79,9 +79,6 @@ SCHEMA: dict[str, tuple[str, str]] = {
                        "(`[food_category]`).", "pizza"),
     "search word": ("Word to search Messages for (`[search word]`).", "ticket"),
     # music / clock / sleep
-    "music type": ("Favorite music type for the Music sleep-timer task to search + "
-                    "download the highly-liked video of in YouTube Music "
-                    "(`[music type]`).", "Raining Night ASMR"),
     "bedtime": ("Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must "
                  "not run past (seed value).", "10:30 PM"),
     "recipe": ("Recipe (name + URL) for the Clock multi-timer task; must have explicit "

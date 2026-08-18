@@ -5,6 +5,20 @@
 > (KB-oracle) mode. Each task has a deliberately **vague** prompt + a
 > **knowledge-base profile** (JSON) the simulated user holds. The agent's job:
 > ask the right clarifying questions, converge on the correct target, get it done.
+
+> **2026-08-18 UPDATE — 5 of the 18 reverted to plain DETERMINISTIC.**
+> The hard-task uniqueness pass expanded the terse DET prompts into explicit
+> 5-step tasks. For the tasks that run **without** a KB oracle in the public sample
+> (`hard__youtube-settings__052`, `hard__google-sheets-amazon-shopping__074`,
+> `hard__bookmyshow__005`, `hard__clock-calendar__023`, `hard__google-meet-files__070`),
+> the prompts are now fully explicit (no withheld fact), so they were **removed from
+> `multiturn_kb_530.json`** and their `<!-- 🔄 MULTI-TURN -->` markers stripped in
+> `tasks_530.md`. The **live multi-turn set is now 13** (see `multiturn_kb_530.json`);
+> the 4 that remain multi-turn in the public sample are
+> `hard__swiggy__005`, `hard__telegram-calendar__016`, `hard__music-obsidian__077`,
+> `hard__gmail-calendar__003` (expanded to 5-step prompts that still withhold ONE
+> fact the agent must ask about). The rest of this doc documents the original 18-task
+> conversion proposal and is kept for review.
 >
 > **Device data source:** real on-device state pulled 2026-08-17 from the
 > OnePlus CPH2423 (serial RS7XKZDI8HTOJNYL): Obsidian notes, contacts, calendar.

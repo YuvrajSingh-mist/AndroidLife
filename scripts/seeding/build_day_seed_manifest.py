@@ -563,12 +563,12 @@ DAY3_TASKS: dict[str, dict] = {
         "end_state": "honest-failure: report no scheduled power-off is configured (do not fabricate a time).",
     },
     "hard__music-obsidian__077": {
-        "vars": {"music type": "{music type}"},
+        "vars": {},
         "seed": [
-            {"type": "web", "location": "YouTube Music (real)", "value": "Live search for '{music type}'; download the highly-liked video (offline download needs YT Music Premium + sign-in).", "status": "web"},
+            {"type": "web", "location": "YouTube Music (real)", "value": "Live search for 'lo-fi beats by Chillhop'; download the highly-liked video (offline download needs YT Music Premium + sign-in).", "status": "web"},
             {"type": "obsidian_note", "location": "/sdcard/Obsidian/Papers vault oneplus /", "value": "A 'Bedtime' note in the vault (ADB-seeded: {bedtime}) the sleep timer must not run past.", "status": "needs_seed", "device_path": "/sdcard/Obsidian/Papers vault oneplus /Bedtime.md"},
         ],
-        "end_state": "The highly-liked '{music type}' video is downloaded; a YouTube Music sleep timer is set so playback stops at the Obsidian bedtime (shortened if it would run past); duration noted + double-checked.",
+        "end_state": "The highly-liked 'lo-fi beats by Chillhop' video is downloaded and playing; a YouTube Music sleep timer is set so playback stops at the Obsidian bedtime (shortened if it would run past); duration noted + double-checked.",
     },
 }
 
@@ -909,7 +909,7 @@ DAY6_TASKS: dict[str, dict] = {
             {"type": "gmail_flight_email", "location": "Gmail (real)", "value": "A flight-confirmation email with a departure time (operator ensures one exists in the inbox).", "status": "needs_ui"},
             {"type": "calendar_event", "location": "Calendar (creation)", "value": "Agent sets a reminder 3 hours before departure.", "status": "creation"},
         ],
-        "end_state": "A calendar reminder is set 3h before departure; agent replies with only the countdown in hours.",
+        "end_state": "A calendar reminder is set 3h before the next trip's departure (IndiGo 6E 6821 BBI→DEL); agent replies with only the flight number and the reminder time.",
     },
     "medium__youtube__002": {
         "vars": {"contact": "{contact}"},

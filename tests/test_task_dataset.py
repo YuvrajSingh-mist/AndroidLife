@@ -260,7 +260,7 @@ def test_select_tasks_by_day() -> None:
             {"task_id": "easy__gmail__001", "day": 1, "bucket": "easy", "placeholders": []},
             {"task_id": "medium__gmail__002", "day": 3, "bucket": "medium", "placeholders": []},
             {"task_id": "easy__clock__001", "day": 3, "bucket": "easy", "placeholders": ["city"]},
-            {"task_id": "hard__music-obsidian__077", "day": 3, "bucket": "hard", "placeholders": ["music type"]},
+            {"task_id": "hard__music-obsidian__077", "day": 3, "bucket": "hard", "placeholders": []},
         ]
     }
     day3 = select_tasks(dataset, day=3)

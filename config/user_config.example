@@ -166,10 +166,6 @@ food_category: pizza
 search word: ticket
 
 # ---- music / clock / sleep ------------------------------------------------
-# Favorite music type to search + download the highly-liked video of in
-# YouTube Music for the sleep-timer task (`[music type]`).
-music type: Raining Night ASMR
-
 # Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must not run past.
 bedtime: 10:30 PM
 

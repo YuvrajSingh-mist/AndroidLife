@@ -55,16 +55,6 @@
       "preferences": {"surprise_party_for": "Maa", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
     }
   },
-  "hard__bookmyshow__005": {
-    "correct_target": "bookmyshow::group4-movie",
-    "profile": {
-      "cinemas": [
-        {"name": "INOX Bhubaneswar", "showing": ["Kalki 2898 AD", "Pushpa 2"], "seats_per_ticket": "₹240"},
-        {"name": "PVR Esplanade", "showing": ["Kalki 2898 AD"], "seats_per_ticket": "₹280"}
-      ],
-      "preferences": {"group_size": 4, "preferred_cinema": "INOX Bhubaneswar"}
-    }
-  },
   "hard__amazon-shopping__006": {
     "correct_target": "amazon::noise-earbuds-cart",
     "profile": {
@@ -100,43 +90,6 @@
         {"name": "New Flat", "type": "pm", "recent_date_mentioned": "2026-08-18", "topic": "flat matters"}
       ],
       "preferences": {"reminder_chat": "Forever 21", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"], "group_note": "real Telegram group 'Forever 21' (2 members) confirmed on device"}
-    }
-  },
-  "hard__youtube-settings__052": {
-    "correct_target": "youtube-settings::channel-night-mute",
-    "profile": {
-      "channels": [
-        {"name": "Tech Burner", "posts_per_week": 3, "notify": true},
-        {"name": "Dhruv Rathee", "posts_per_week": 1, "notify": false}
-      ],
-      "preferences": {"notify_channel": "Tech Burner", "quiet_hours": "22:00-08:00"}
-    }
-  },
-  "hard__google-sheets-amazon-shopping__074": {
-    "correct_target": "sheets-amazon::sports-top-views-12.5m",
-    "profile": {
-      "spreadsheet": {
-        "name": "SPORTS_VIDEO_DATA",
-        "file": "SPORTS_VIDEO_DATA.xlsx in Downloads / Google Sheets (Shared, sheet 'Sports')",
-        "columns": {"B": "views", "C": "likes"},
-        "rows_by_views": [
-          {"row": 2, "views": 12500000, "likes": 285, "title": "Final Match Highlights"},
-          {"row": 3, "views": 9800000, "likes": 612, "title": "Opening Ceremony Best Moments"},
-          {"row": 4, "views": 7200000, "likes": 1845, "title": "Winning Goal 90+3"}
-        ],
-        "top_video": {"row": 2, "views": 12500000, "title": "Final Match Highlights", "column": "views"}
-      },
-      "preferences": {"related_product": "smartphone gimbal"}
-    }
-  },
-  "hard__google-meet-files__070": {
-    "correct_target": "meet-files::next-meeting-agenda",
-    "profile": {
-      "meetings": [
-        {"title": "Weekly Sync", "time": "2026-08-24 (Mon) 10:00", "agenda_doc": "Weekly Agenda", "attendees": 5},
-        {"title": "Project Review", "time": "2026-08-24 (Mon) 14:00", "agenda_doc": "Review Agenda", "attendees": 8}
-      ],
-      "preferences": {"next_meeting": "Weekly Sync", "calendar_note": "device has a recurring Monday event"}
     }
   },
   "hard__gmail-notes__045": {
@@ -177,17 +130,6 @@
     "profile": {
       "notes": {"Screen Time Goal": {"daily_limit_hours": 2}},
       "preferences": {"check": "today's screen time"}
-    }
-  },
-  "hard__clock-calendar__023": {
-    "correct_target": "clock-calendar::alarm-0730-shifted",
-    "profile": {
-      "alarm": {"requested_time": "07:00", "days": ["Mon", "Tue", "Wed", "Thu", "Fri"]},
-      "calendar": [
-        {"event": "Weekly Sync", "date": "2026-08-24", "start": "07:00", "end": "08:00"},
-        {"event": "Gym", "date": "2026-08-25", "start": "06:30", "end": "07:30"}
-      ],
-      "preferences": {"shift_if_clash_min": 30}
     }
   },
   "hard__google-search-notes__019": {

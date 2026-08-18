@@ -3,7 +3,7 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 54,
+  "var_key_count_in_local_env": 52,
   "placeholder_key_count_in_dataset": 87,
   "vars": {
     "X": {
@@ -179,7 +179,7 @@
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 67,
+      "task_count": 69,
       "days": [
         1,
         2,
@@ -200,6 +200,7 @@
         18,
         19,
         20,
+        21,
         22,
         23,
         25,
@@ -229,6 +230,7 @@
         "medium__google-drive__004",
         "medium__music__006",
         "medium__youtube__005",
+        "hard__swiggy__005",
         "medium__calendar__006",
         "medium__contacts__009",
         "easy__phone__007",
@@ -256,6 +258,7 @@
         "medium__contacts__012",
         "medium__google-photos-telegram__001",
         "medium__google-photos__008",
+        "hard__bookmyshow__005",
         "medium__google-photos__010",
         "medium__music-telegram__002",
         "medium__chrome__011",
@@ -378,12 +381,6 @@
         "medium__calculator__001"
       ]
     },
-    "file size threshold": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
-    },
     "financing note title": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -505,12 +502,6 @@
       "tasks": [
         "medium__bookmyshow__002"
       ]
-    },
-    "music type": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
     },
     "new email": {
       "configured_in_local_env": true,
@@ -921,7 +912,7 @@
       ]
     },
     "size threshold": {
-      "configured_in_local_env": false,
+      "configured_in_local_env": true,
       "task_count": 1,
       "days": [
         18
@@ -1129,12 +1120,6 @@
       "tasks": [
         "easy__google-maps__002"
       ]
-    },
-    "video size threshold": {
-      "configured_in_local_env": true,
-      "task_count": 0,
-      "days": [],
-      "tasks": []
     },
     "wifi": {
       "configured_in_local_env": true,
@@ -1472,16 +1457,6 @@
         "medium__calculator__011"
       ]
     },
-    "size threshold": {
-      "configured_in_local_env": false,
-      "task_count": 1,
-      "days": [
-        18
-      ],
-      "tasks": [
-        "medium__files__010"
-      ]
-    },
     "song": {
       "configured_in_local_env": false,
       "task_count": 2,
@@ -1557,11 +1532,8 @@
   },
   "local_env_keys_with_no_task": [
     "digits",
-    "file size threshold",
-    "music type",
     "product 1",
     "product 2",
-    "store",
-    "video size threshold"
+    "store"
   ]
 }
