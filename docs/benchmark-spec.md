@@ -171,6 +171,42 @@ the app ships on this device as `com.google.android.apps.tachyon` (Google Duo, w
 to "Meet"); it appears in the launcher as **Meet** and opens into its HomeActivity. The Meet task set
 (days 7/14/19/26) is therefore runnable.
 
+## Public sample (3-day preview) — spec & distribution
+
+`benchmarks/dailyBench-600/public.md` (`DailyBench_public_v2.json`/`.jsonl`) is a **true sample** drawn from
+the 530 corpus — every task keeps its real 530 `task_id`, exact prompt text, and placeholder slots — rebuilt
+as a 3-day (Day 1-3) preview. It is **not** the eval set; it exists so the pipeline, seeds, and grading can be
+exercised on a small, self-contained slice before full-corpus runs.
+
+**Composition (as of 2026-08-19):**
+
+| metric | value |
+|---|---|
+| Tasks | **57** (Day 1: 20 · Day 2: 20 · Day 3: 17) |
+| Buckets | **21 easy / 20 medium / 16 hard** |
+| Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 6 DETERMINISTIC** |
+| Apps covered | **29** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
+| Placeholders used | **21 distinct keys** (most-used: `[contact]`, 15 uses) |
+| App-distribution fidelity | **\|dev\| = 17** vs. the 530's proportional per-app target (Σ \|public_i − round(530_i·57/530)\|) |
+| Duplicate task_ids | 0 |
+
+**Distribution (per day):**
+
+| day | easy | medium | hard | hard split (SINGLE / MULTI / DET) | total |
+|---|---|---|---|---|---|
+| 1 | 7 | 7 | 6 | 1 / 2 / 3 | 20 |
+| 2 | 7 | 7 | 6 | 3 / 2 / 1 | 20 |
+| 3 | 7 | 6 | 4 | 2 / 0 / 2 | 17 |
+
+Single-app vs cross-app: **26 single / 31 cross** (all 16 hard tasks are cross-app).
+
+Every public task is drawn from the 530 with the same text, so the public set is a **structural preview**, not a
+curated subset: bucket, app, and difficulty distributions intentionally track the parent corpus. The 4 public
+multi-turn tasks are exactly the 4 whose KB profiles ship in `multiturn_kb_public.json`
+(`hard__swiggy__005`, `hard__telegram-calendar__016`, `hard__music-obsidian__077`, `hard__gmail-calendar__003`);
+the other 9 multi-turn profiles live in `multiturn_kb_530.json` for the full corpus. Public seed manifests,
+per-day vars, and fabricated-data records are generated for the public sample separately (see `docs/fabricated-test-data.md`).
+
 ## Scope
 
 - **Platform**: one real, non-rooted Android phone — no emulator, no rooted image, no synthetic environment.
@@ -430,38 +466,14 @@ representativeness win available **if** a ToS-clean path is found (see
 
 ## Canonical task families
 
-- easy
-- medium
-- hard-deterministic
-- open-ended
+The benchmark has exactly **two runnable task sets** — the **530-task corpus** (`tasks_530.md`) and the
+**public 57-task sample** (`public.md`). Both share the same difficulty taxonomy:
 
-The canonical runnable task list lives in [benchmarks/dailyBench-600/tasks_530.md](../benchmarks/dailyBench-600/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC), laid out as a 28-day schedule. The public preview is `benchmarks/dailyBench-600/public.md` (57-task true sample — see the public-sample section below). `tasks_530.md` is the source of truth: edit it and regenerate `DailyBench_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`.
+- **easy** — 1 app, 1 step
+- **medium** — 1-2 apps, 3 steps
+- **hard** — 2-3 apps, 5 steps, split into **DETERMINISTIC** · **ASK USER SINGLE** · **ASK USER - MULTI**
 
-## Public sample (3-day preview) — composition & stats
-
-`benchmarks/dailyBench-600/public.md` (`DailyBench_public_v2.json`/`.jsonl`) is a **true sample** drawn from
-the 530 corpus — every task keeps its real 530 `task_id`, exact prompt text, and placeholder slots — rebuilt
-as a 3-day (Day 1-3) preview. It is **not** the eval set; it exists so the pipeline, seeds, and grading can be
-exercised on a small, self-contained slice before full-corpus runs.
-
-**Composition (as of 2026-08-19):**
-
-| metric | value |
-|---|---|
-| Tasks | **57** (Day 1: 20 · Day 2: 20 · Day 3: 17) |
-| Buckets | **21 easy / 20 medium / 16 hard** |
-| Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 6 DETERMINISTIC** |
-| Apps covered | **29** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
-| Placeholders used | 14 distinct keys (most-used: `[contact]`, 15 uses) |
-| App-distribution fidelity | **\|dev\| = 17** vs. the 530's proportional per-app target (Σ \|public_i − round(530_i·57/530)\|) |
-| Duplicate task_ids | 0 |
-
-Every public task is drawn from the 530 with the same text, so the public set is a **structural preview**, not a
-curated subset: bucket, app, and difficulty distributions intentionally track the parent corpus. The 4 public
-multi-turn tasks are exactly the 4 whose KB profiles ship in `multiturn_kb_public.json`
-(`hard__swiggy__005`, `hard__telegram-calendar__016`, `hard__music-obsidian__077`, `hard__gmail-calendar__003`);
-the other 9 multi-turn profiles live in `multiturn_kb_530.json` for the full corpus. Public seed manifests,
-per-day vars, and fabricated-data records are generated for the public sample separately (see `docs/fabricated-test-data.md`).
+The canonical runnable task list lives in [benchmarks/dailyBench-600/tasks_530.md](../benchmarks/dailyBench-600/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC), laid out as a 28-day schedule. `tasks_530.md` is the source of truth: edit it and regenerate `DailyBench_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`. The public preview (`public.md` → `DailyBench_public_v2.json`/`.jsonl`) is documented in its own **Public sample** section above.
 
 ## Days, seeds, and manifests
 
@@ -553,6 +565,6 @@ $$\text{QIS} = \frac{\sum_{i \in I,\, q_i > 0} \frac{s_i}{q_i}}{|I| + |T|} \qqua
 
 ## Evaluation philosophy
 
-- deterministic tasks should be scored by explicit success/failure evidence
-- open-ended tasks should be scored separately with rubric-based evaluation
+- deterministic tasks should be scored by explicit on-device success/failure evidence
+- ASK USER tasks gate success on interaction quality (asking the withheld fact) plus the verified outcome
 - benchmark maintenance must preserve comparability across runs and dates
