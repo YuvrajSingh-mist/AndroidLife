@@ -421,6 +421,9 @@ following entities were **seeded on the test device** (all recorded in
 |---|---|---|---|
 | Obsidian **`Shared Bill.md`** (Electricity bill 9,000 INR; roommates limited to the selected contacts: Yuvraj Airtel 120u, Yuvraj Singh Jio 80u, Maa 60u, Dad 40u) | `medium__calculator__005` | `/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md'` |
 | **`seed_large_video.mp4`** (120 MB zeros) | `medium__files__010` | `/sdcard/Download/seed_large_video.mp4` | `adb shell rm /sdcard/Download/seed_large_video.mp4` |
+| **`seed_lecture_video.mp4`** (520 MB zeros) | `medium__files__012` | `/sdcard/Download/seed_lecture_video.mp4` | `adb shell rm /sdcard/Download/seed_lecture_video.mp4` |
+| **`Recipe.md`** (World's Best Lasagna: Oven 375 F, Bake 50 min, Rest 10 min, Prep 20 min) | `medium__clock__001` | `/sdcard/Obsidian/Papers vault oneplus /Recipe.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Recipe.md'` |
+| **Myntra coupon email** (self-sent: To rajceo2031@gmail.com, Subject "Your 15 Coupon", Body "Use code FLIP15 expires 2026-08-20") | `hard__gmail-notes__045` | Gmail (primary account, app-private) | Delete in the Gmail UI (search "coupon" → open → trash); no adb delete for mail |
 | **`Daily Reflection`** note (title + 3 lines) | `medium__notes__005` | OnePlus Notes app (`com.oneplus.note`) | Delete in the Notes app (app-private, no adb) |
 | **`Q3 Review`** presentation (title slide + 2 slides) | `easy__google-slides__002`, `medium__google-slides__002` | Google Slides | Delete in the Slides app (Google account file) |
 
@@ -440,6 +443,27 @@ following entities were **seeded on the test device** (all recorded in
 - **Google Meet IS installed:** the package is `com.google.android.apps.tachyon` (renamed
   after the Duo/Meet merge), so the 5 Meet tasks are solvable. The app-audit's `meetings`
   package check is stale and should be updated to also match `tachyon`.
+- **All ⚠️ borderline items resolved via seeding (2026-08-18):** every solvability
+  borderline from the public-sample pass is now on-device solvable — the 520 MB
+  video (`medium__files__012`), the `Recipe.md` note (`medium__clock__001`), and
+  the Myntra coupon email (`hard__gmail-notes__045`). `medium__files__010`
+  (120 MB) was seeded earlier; `medium__google-sheets__001` needed nothing (the
+  `Views` header already existed); `hard__drive-obsidian-telegram__049` was
+  already solvable (`budget.xlsx` in Drive modified 2026-07-18 + `Budget
+  Deadline.md` in Obsidian with "Last reviewed: 2026-07-10").
+- **The coupon email is the one item that was seeded via the Gmail GUI** (a
+  self-sent email — Gmail mail is app-private so there is no adb path). If it
+  ever needs re-creating, the manual step is: open Gmail → Compose → To
+  `rajceo2031@gmail.com` → Subject `Your 15 Coupon` → Body
+  `Use code FLIP15 expires 2026-08-20` → Send.
+- **Why the email is required:** in the public sample `hard__gmail-notes__045`
+  is `ahi=DETERMINISTIC` (prompt: "I've got a coupon somewhere that's expiring
+  soon. Can you find it and save it before it's gone?") — there is no simulated
+  user to ask, so the coupon email must genuinely exist in Gmail for the agent to
+  find `FLIP15`. (In the full-530 corpus the same task is also authored as a
+  multi-turn KB task, where `multiturn_kb_530.json` holds `FLIP15` + expiry as
+  the simulated user's answer — but that profile is not used by the public
+  deterministic build.)
 
 ---
 
