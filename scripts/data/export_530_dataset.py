@@ -40,6 +40,7 @@ from DailyBench.task_dataset import (  # noqa: E402
     extract_placeholders,
     resolve_apps,
     save_dataset_files,
+    split_hard_label,
     to_prompt_template,
 )
 
@@ -51,7 +52,7 @@ HALLUCINATIONS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "hallucination_co
 
 DAY_RE = re.compile(r"^### Day (\d+)$")
 SECTION_RE = re.compile(r"^\*\*\[(.+?)\]\*\*$")
-HARD_HEADER_RE = re.compile(r"^\*\*(\d+)\. \[(.+?)\] — (DETERMINISTIC|ASK USER)\*\*$")
+HARD_HEADER_RE = re.compile(r"^\*\*(\d+)\. \[(.+?)\] — (DETERMINISTIC|ASK USER SINGLE|ASK USER - MULTI|ASK USER)\*\*$")
 EASYMED_RE = re.compile(r"^- (Easy|Medium) \((\d+)pt\)(?: \*\*\[(.+?)\]\*\*)?: (.+)$")
 HARD_BODY_RE = re.compile(r"^- (.+)$")
 NOTE_RE = re.compile(r"\s*\((deliberately .*)\)$")
@@ -83,7 +84,7 @@ def parse(md_text: str) -> list[dict]:
         app_counts[key] = n
         return n
 
-    def add_task(bucket, day, app_name, apps, prompt_text, *, ahi, note, task_id,
+    def add_task(bucket, day, app_name, apps, prompt_text, *, ahi, interaction, note, task_id,
                  within_app, cross_app_label, ordinal):
         tasks.append(
             {
@@ -101,6 +102,7 @@ def parse(md_text: str) -> list[dict]:
                 "num_apps": len(apps),
                 "cross_app_required": len(apps) > 1,
                 "ahi": ahi,
+                "interaction": interaction,
                 "note": note,
                 "ask_user_fact": None,
                 "is_ask_user": ahi == "ASK USER",
@@ -151,6 +153,7 @@ def parse(md_text: str) -> list[dict]:
                 raise ValueError(f"Expected hard-task body after header, got: {line!r}")
             index, app_tag, kind = pending_hard
             pending_hard = None
+            ahi, interaction = split_hard_label(kind)
             body, tid_comment = strip_comment(m.group(1))
             note = None
             nm = NOTE_RE.search(body)
@@ -165,7 +168,7 @@ def parse(md_text: str) -> list[dict]:
             task_id = tid_comment if tid_comment else f"hard__{app_key}__{index:03d}"
             add_task(
                 "hard", current_day, app_name, apps, prompt_text,
-                ahi=kind, note=note, task_id=task_id, within_app=index,
+                ahi=ahi, interaction=interaction, note=note, task_id=task_id, within_app=index,
                 cross_app_label=cross_app_label,
                 ordinal=next_ordinal("hard", app_key),
             )
@@ -199,7 +202,7 @@ def parse(md_text: str) -> list[dict]:
         apps = resolve_apps(app_name, prompt_text)
         add_task(
             bucket, current_day, app_name, apps, prompt_text,
-            ahi=None, note=None, task_id=task_id, within_app=within_app,
+            ahi=None, interaction=None, note=None, task_id=task_id, within_app=within_app,
             cross_app_label=cross_app_label, ordinal=ordinal,
         )
 
@@ -278,12 +281,14 @@ def verify(tasks: list[dict]) -> int:
     hard = [t for t in tasks if t["bucket"] == "hard"]
     ask_user = [t for t in hard if t["is_ask_user"]]
     det = [t for t in hard if not t["is_ask_user"]]
-    if len(ask_user) != 36 or len(det) != 36:
-        print(f"FAIL hard split: ASK USER={len(ask_user)}, DET={len(det)} != 36/36")
+    single = [t for t in hard if t.get("interaction") == "single"]
+    multi = [t for t in hard if t.get("interaction") == "multi"]
+    if len(det) != 23 or len(single) != 36 or len(multi) != 13:
+        print(f"FAIL hard split: DET={len(det)}, ASK USER SINGLE={len(single)}, ASK USER - MULTI={len(multi)} != 23/36/13")
         ok = False
-    missing_fact = [t["task_id"] for t in ask_user if not t.get("ask_user_fact")]
+    missing_fact = [t["task_id"] for t in single if not t.get("ask_user_fact")]
     if missing_fact:
-        print(f"FAIL ASK USER tasks missing facts: {missing_fact}")
+        print(f"FAIL ASK USER (single) tasks missing facts: {missing_fact}")
         ok = False
 
     days = sorted({t["day"] for t in tasks if t.get("day") is not None})

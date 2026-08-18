@@ -175,17 +175,42 @@ def test_parse_tasks_markdown_handles_the_3day_sample_format() -> None:
     assert deterministic["day"] is None
     assert deterministic["apps"] == ["Google Maps", "Telegram"]
     assert deterministic["ahi"] == "DETERMINISTIC"
+    assert deterministic["interaction"] is None
     assert deterministic["is_ask_user"] is False
     assert deterministic["note"] is None
     assert deterministic["prompt_text"] == "Check Maps for the nearest pharmacy and text [contact] the winner via Telegram"
 
     ask_user = next(t for t in dataset["tasks"] if t["task_id"] == "hard__gmail-contacts__002")
     assert ask_user["ahi"] == "ASK USER"
+    assert ask_user["interaction"] == "single"
     assert ask_user["is_ask_user"] is True
     assert ask_user["apps"] == ["Gmail", "Contacts"]
     assert ask_user["prompt_text"] == "Could you just forward that report over?"
     assert ask_user["note"] == "deliberately no file identified as 'the report' and no manager contact saved - agent must ask which report and who the manager actually is"
 
+def test_parse_hard_interaction_labels() -> None:
+    """'ASK USER SINGLE' / 'ASK USER - MULTI' / 'DETERMINISTIC' headers map to ahi+interaction."""
+    markdown = """---
+
+### Day 1
+
+**1. [Gmail] — ASK USER SINGLE**
+- What's the subject of the report? (deliberately unknown) <!--hard__gmail__001-->
+
+**2. [Swiggy] — ASK USER - MULTI**
+- Order my usual. <!--hard__swiggy__002-->
+
+**3. [Clock] — DETERMINISTIC**
+- Set a timer. <!--hard__clock__003-->
+""".strip()
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/tasks_530.md")
+    by_id = {t["task_id"]: t for t in dataset["tasks"]}
+    single = by_id["hard__gmail__001"]
+    multi = by_id["hard__swiggy__002"]
+    det = by_id["hard__clock__003"]
+    assert (single["ahi"], single["interaction"], single["is_ask_user"]) == ("ASK USER", "single", True)
+    assert (multi["ahi"], multi["interaction"], multi["is_ask_user"]) == ("ASK USER", "multi", True)
+    assert (det["ahi"], det["interaction"], det["is_ask_user"]) == ("DETERMINISTIC", None, False)
 
 def test_resolve_apps_maps_a_browser_tagged_category_header_to_chrome() -> None:
     """A non-app category header tagged '(browser)' (e.g. 'Shopping & Delivery (browser)')

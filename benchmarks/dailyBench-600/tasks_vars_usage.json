@@ -937,7 +937,7 @@
     },
     "spreadsheet name": {
       "configured_in_local_env": true,
-      "task_count": 11,
+      "task_count": 12,
       "days": [
         4,
         6,
@@ -953,6 +953,7 @@
         "easy__google-sheets__002",
         "medium__google-sheets__002",
         "easy__google-sheets__003",
+        "hard__google-sheets-amazon-shopping__074",
         "medium__google-sheets__003",
         "medium__google-sheets__006",
         "easy__google-sheets__004",

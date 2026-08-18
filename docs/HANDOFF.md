@@ -98,8 +98,9 @@ Full writeups in `docs/future-directions.md` §4-6. Summary:
    for SPORTS_VIDEO_DATA) but NO `sheets` app_slug. Device HAS Sheets installed
    (`com.google.android.apps.docs.editors.sheets`). Add `sheets` app_slug + task set
    + seed workbook.
-2. **Google Meet**: add `meet` app + tasks. Meet is NOT installed on the device
-   (needs install/provisioning). Keep to UI-reachable states (no real call).
+2. **Google Meet**: `meet` app + tasks done. Meet IS installed (as
+   `com.google.android.apps.tachyon`, the Duo→Meet rebrand — app audit passes 31/31).
+   Keep to UI-reachable states (no real call).
 3. **Real-world booking/checkout tasks**: flight booking, movie ticket booking, and
    shopping end-to-end (product pick → payment page). All stop AT the payment page,
    no real purchase. Template = existing public Notes→Amazon cart→payments task.

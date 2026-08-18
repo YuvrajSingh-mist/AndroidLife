@@ -4,10 +4,11 @@
 530-task corpus (same task_ids, exact prompt text, placeholder slots). **57 tasks total.**
 
 **Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
-it needs (deterministic, ADB-verified end state) or is missing one load-bearing fact the agent
-must actively ask for (agent-user interaction, resolved by an LLM playing the user, holding only
-the omitted fact, answering just what's asked). Multi-turn (KB) tasks are DETERMINISTIC with a
-knowledge-base profile in `multiturn_kb_public.json`.
+it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for a fact
+(**ASK USER SINGLE** — one deliberately omitted fact, answered just-what's-asked) or to run a
+multi-turn dialogue (**ASK USER - MULTI** — a knowledge-base profile in `multiturn_kb_public.json`
+holds what the simulated user knows, with rolling memory; graded on acting on the correct target,
+turn count as an efficiency signal).
 
 Easy: 1 app, Medium: 1-2 apps; Hard battery: 2-3 apps, genuine reasoning, natural first-person
 requests, **distributed across the days and mixed so ask-user, deterministic and multi-turn tasks
@@ -17,7 +18,7 @@ aren't grouped or predictable by position.**
 
 ### Day 1
 
-**2. [Drive+Notes+Telegram] — ASK USER**
+**2. [Drive+Notes+Telegram] — ASK USER SINGLE**
 - I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way <!--hard__drive-notes-telegram__010-->
 
 - Medium (3pt) **[Google Maps + Notes]**: I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving, transit, and walking, all three modes, not just driving. Then pick whichever is fastest. Hmm, and I almost forgot, save the ETA and distance for that fastest option as a note in Notes with a sensible title. Thanks! <!--medium__google-maps__002-->
@@ -33,7 +34,7 @@ aren't grouped or predictable by position.**
 **6. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
 
-**5. [Telegram+Calendar] — DETERMINISTIC**
+**5. [Telegram+Calendar] — ASK USER - MULTI**
 - I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text. <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
@@ -61,11 +62,11 @@ aren't grouped or predictable by position.**
 **[Google Drive]**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
-**4. [Swiggy+Telegram] — DETERMINISTIC**
+**4. [Swiggy+Telegram] — ASK USER - MULTI**
 - Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Murgh Mughlai with Kushka Rice from Downtown Delight — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
-- I've got all my video stats in the SPORTS_VIDEO_DATA spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
+- I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
 
 **1. [Contacts+Gmail] — DETERMINISTIC**
 - I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later <!--hard__contacts-gmail__026-->
@@ -76,10 +77,10 @@ aren't grouped or predictable by position.**
 
 ### Day 2
 
-**2. [Chrome+Telegram+Notes] — ASK USER**
+**2. [Chrome+Telegram+Notes] — ASK USER SINGLE**
 - I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
 
-**6. [Google Photos+Gmail+Obsidian] — ASK USER**
+**6. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
 - I'd like to send [contact] a photo from the event. Find the event photo in Google Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way <!--hard__photos-gmail-obsidian__012-->
 
 - Medium (3pt) **[Chrome + Messages]**: Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's bene looking for cheap earbuds recently. <!--medium__chrome__003-->
@@ -104,16 +105,16 @@ aren't grouped or predictable by position.**
 **[Prime Video]**
 - Medium (3pt): I want to pick up where I left off. Open Prime Video, find what's in my "Continue Watching", and give me a quick summary of the most recent one. <!--medium__prime-video__003-->
 
-**3. [Gmail+Calendar] — DETERMINISTIC**
+**3. [Gmail+Calendar] — ASK USER - MULTI**
 - I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip — I think it's IndiGo to Delhi — and note the flight number, date, and departure time? Then open Calendar and create a reminder 3 hours before departure so I get a heads-up. Reply with only the flight number and the reminder time, no other text. <!--hard__gmail-calendar__003-->
 
-**5. [Music+Obsidian] — DETERMINISTIC**
+**5. [Music+Obsidian] — ASK USER - MULTI**
 - I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you open Obsidian, find my 'Bedtime' note, and read what time I usually go to bed? Then open YouTube Music, search for a lo-fi beats track by Chillhop, download the highly-liked video of it, start it playing, and set a sleep timer so it stops at my bedtime. Reply with only the track name and the sleep timer time, no other text. <!--hard__music-obsidian__077-->
 
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
 
-**4. [Google Search+Telegram+Clock] — ASK USER**
+**4. [Google Search+Telegram+Clock] — ASK USER SINGLE**
 - I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm going with on Telegram suggesting we go now; otherwise message the reopening time and set an alarm for it <!--hard__google-search-telegram-clock__018-->
 
 **[Swiggy]**
@@ -136,7 +137,7 @@ aren't grouped or predictable by position.**
 
 - Medium (3pt) **[Google Photos + Phone]**: Could you filter the library to only videos over 1 minute long, delete the longest if it's unneeded, and count what's left in Google Photos? Also, call [contact] to confirm the plan for tonight. <!--medium__google-photos__008-->
 
-**4. [Google Search+Obsidian+Telegram] — ASK USER**
+**4. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
 - I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note title]' Obsidian note, note today's value, compare it to the last recorded value in that Obsidian note, message the person I follow this stock with on Telegram only if it has crossed the threshold since then, and update the Obsidian note with today's value <!--hard__google-search-obsidian-telegram__057-->
 
 - Medium (3pt) **[Google Photos + Calendar]**: I want to see my photo habits this year. Can you summarize how many photos I took each month this year? Note down the busiest month for me, and set a calendar reminder to review that month's album in Google Photos sometime tomorrow noon?. Reply with only the number of photos, no other text. <!--medium__google-photos-calendar__001-->
@@ -149,7 +150,7 @@ aren't grouped or predictable by position.**
 
 - Medium (3pt) **[Google Search + Telegram]**: Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow. Reply with only the fastest option, no other text. <!--medium__google-search__008-->
 
-**1. [Chrome+YouTube+Notes] — ASK USER**
+**1. [Chrome+YouTube+Notes] — ASK USER SINGLE**
 - I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note <!--hard__chrome-youtube-notes__088-->
 
 - Medium (3pt) **[Contacts + Phone]**: Could you merge duplicate contacts sharing the same phone number, confirm only one remains, and check its info is complete in Contacts? Also, call [contact] to confirm their address. <!--medium__contacts__012-->

@@ -38,7 +38,7 @@ TRAILING_INLINE_APP_RE = re.compile(r",\s+on\s+([A-Z][A-Za-z0-9]*(?:\s+[A-Z][A-Z
 # -- "3-Day Sample" dialect (public.md) --------------------------------------------------------
 APP_HEADER_RE = re.compile(r"^\*\*\[(.+?)\]\*\*$")
 NEW_TIER_RE = re.compile(r"^-\s+(Easy|Medium)\s*\((\d+)pt\)(?:\s+\*\*\[(.+?)\]\*\*)?:\s*(.*)$")
-HARD_HEADER_RE = re.compile(r"^\*\*(\d+)\.\s+\[(.+?)\]\s+—\s+(DETERMINISTIC|ASK USER)\*\*$")
+HARD_HEADER_RE = re.compile(r"^\*\*(\d+)\.\s+\[(.+?)\]\s+—\s+(DETERMINISTIC|ASK USER SINGLE|ASK USER - MULTI|ASK USER)\*\*$")
 HARD_BODY_RE = re.compile(r"^-\s+(.*)$")
 HARD_NOTE_RE = re.compile(r"^(.*?)\s*\((deliberately.*)\)\s*$")
 
@@ -171,6 +171,19 @@ def extract_placeholders(task_text: str) -> list[str]:
     return values
 
 
+def split_hard_label(label: str) -> tuple[str, str | None]:
+    """Normalize a hard header kind into (ahi, interaction).
+
+    "DETERMINISTIC" -> ("DETERMINISTIC", None); "ASK USER" / "ASK USER SINGLE" ->
+    ("ASK USER", "single"); "ASK USER - MULTI" -> ("ASK USER", "multi").
+    """
+    if label == "DETERMINISTIC":
+        return "DETERMINISTIC", None
+    if label == "ASK USER - MULTI":
+        return "ASK USER", "multi"
+    return "ASK USER", "single"
+
+
 def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, Any]:
     """Parse the task markdown into a structured dataset dictionary (see module docstring)."""
     tasks: list[dict[str, Any]] = []
@@ -190,6 +203,7 @@ def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, A
         day: int | None,
         *,
         ahi: str | None = None,
+        interaction: str | None = None,
         note: str | None = None,
     ) -> None:
         placeholders = extract_placeholders(task_body)
@@ -211,6 +225,7 @@ def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, A
                 "num_apps": len(apps),
                 "cross_app_required": len(apps) > 1,
                 "ahi": ahi,
+                "interaction": interaction,
                 "note": note,
                 "ask_user_fact": None,
                 "is_ask_user": ahi == "ASK USER",
@@ -254,7 +269,8 @@ def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, A
                 cross_app_label = app_label if "+" in app_label else None
                 # A hard task sitting inside a `### Day N` block belongs to that day; one under a
                 # standalone `## Hard (...)` section has current_day None (the `##` header resets it).
-                append_task("hard", index, task_body, app_label, cross_app_label, current_day, ahi=ahi_tag, note=note)
+                ahi, interaction = split_hard_label(ahi_tag)
+                append_task("hard", index, task_body, app_label, cross_app_label, current_day, ahi=ahi, interaction=interaction, note=note)
                 pending_hard_header = None
                 continue
             pending_hard_header = None

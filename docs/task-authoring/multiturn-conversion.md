@@ -6,6 +6,12 @@
 > **knowledge-base profile** (JSON) the simulated user holds. The agent's job:
 > ask the right clarifying questions, converge on the correct target, get it done.
 
+> **2026-08-19 — Taxonomy relabel.** Hard headers now read **ASK USER SINGLE** (one withheld fact) /
+> **ASK USER - MULTI** (KB oracle) / **DETERMINISTIC**. The 13 multi-turn tasks are labeled
+> **ASK USER - MULTI** (`ahi="ASK USER"`, `interaction="multi"`) rather than "DETERMINISTIC"; the
+> 36 single-turn ask tasks are **ASK USER SINGLE** (`interaction="single"`). Runtime is unchanged
+> (KB membership routes multi-turn before the ASK USER branch).
+>
 > **2026-08-19 — The remaining 9 KB prompts also expanded to 5-step (still multi-turn).**
 > `hard__google-search-notes__019`, `hard__settings-obsidian__044`, `hard__makemytrip__003`,
 > `hard__bookmyshow__003`, `hard__prime-video__005`, `hard__swiggy__007`, `hard__gmail-notes__045`,

@@ -125,8 +125,8 @@ device; define the read-back verification (cells → text dump) for grading.
 
 ## 5) Add Google Meet tasks — DONE (2026-08-12)
 
-**Today:** no `meet` app_slug, and Google Meet is **not installed** on the current
-device (no `com.google.android.apps.meetings` package — confirmed via `pm list`).
+**Today:** the `meet` app_slug is active, and Google Meet **IS installed** on the current
+device as `com.google.android.apps.tachyon` (the Duo→Meet rebrand — confirmed via `pm list`).
 The existing "meeting" tasks (e.g. hard__calendar-telegram-obsidian__002) only
 *reference* a meet link text; they never open Meet.
 

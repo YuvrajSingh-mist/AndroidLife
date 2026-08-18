@@ -35,14 +35,14 @@ that fabricates a plausible-sounding answer.
 | Distinct apps | **32** (733 app-touches; 530 tasks count once per app they touch) |
 | Easy (1pt, 1 app) | **216** |
 | Medium (3pt, 1-2 apps) | **242** |
-| Hard (5pt, 2-3 apps) | **72** — split **36 ASK USER / 36 DETERMINISTIC** |
+| Hard (5pt, 2-3 apps) | **72** — **36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC** |
 | Max achievable points | **1302** (easy 216 + medium 726 + hard 360) |
 | Single-app tasks | **352 (66.4%)** |
 | Cross-app tasks | **178 (33.6%)** — 153 two-app + 25 three-app |
-| Hallucination controls | **61** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
-| ASK USER fact sidecars | 36 (`ask_user_facts_730.json`) |
-| Placeholders used | 220 uses across **78 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
-| Public preview | 50 curated tasks (`public.md`) |
+| Hallucination controls | **60** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
+| ASK USER fact sidecars | 36 single-turn (`ask_user_facts_730.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
+| Placeholders used | 238 uses across **87 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
+| Public preview | **57-task true sample** (`public.md`) — see the public-sample section below |
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 
@@ -50,8 +50,8 @@ that fabricates a plausible-sounding answer.
 |---|---|---|---|
 | Easy (1pt) | 216 | 0 | 0% — easy is single-app by design |
 | Medium (3pt) | 128 | 114 | **47%** |
-| Hard (5pt) | 8 | 64 | **89%** (DET 36/36 = 100%, ASK USER 28/36 = 78%) |
-| **Total** | **352** | **178** | **33.6%** |
+| Hard (5pt) | 11 | 61 | **85%** (DET 23/23 = 100%, ASK USER SINGLE 28/36 = 78%, ASK USER - MULTI 10/13 = 77%) |
+| **Total** | **355** | **175** | **33.0%** |
 
 > 📌 **Corpus pinned at 530 (2026-08-12).** The Google Workspace task sets
 > (Docs/Sheets/Slides/Meet) were authored as **replacements** for repetitive
@@ -165,12 +165,11 @@ Measured at registered OpenRouter pricing: flash `$0.03`/1M prompt · `$0.13`/1M
 `run_metrics.json` and aggregated in each day's metrics JSON.
 
 **Hardware under test:** OnePlus CPH2423 · serial `RS7XKZDI8HTOJNYL` · Android 15 · non-rooted.
-App audit: **32/32 required apps installed** (2026-08-12: 6 real apps added —
-Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping) — except **Google Meet is NOT installed**
-(`com.google.android.apps.meetings` MISS; the required-check falls back to the Drive package
-`com.google.android.apps.docs`). The Meet task set (days 7/14/19/26) is authored + seeded as
-`needs_ui` but **cannot run until the real Meet app is installed** — see the app-coverage note
-below.
+App audit: **all required apps installed** (2026-08-12: 6 real apps added —
+Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping). **Google Meet IS installed** —
+the app ships on this device as `com.google.android.apps.tachyon` (Google Duo, which Google rebranded
+to "Meet"); it appears in the launcher as **Meet** and opens into its HomeActivity. The Meet task set
+(days 7/14/19/26) is therefore runnable.
 
 ## Scope
 
@@ -178,7 +177,7 @@ below.
 - **Control mode**: accessibility-tree/state-driven UI automation, no vision by default (screenshots are opt-in) — the agent reads the same UI hierarchy a screen reader would, not pixels.
 - **Model serving**: any OpenAI-compatible endpoint external to the device (a local model host, or a hosted provider such as OpenRouter) — the model never runs on the phone being benchmarked, so its own inference cost and heat never contaminate the device-cost measurement.
 - **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 31 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
-- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps, split evenly between deterministic end-states and tasks that deliberately withhold one fact the agent must ask for instead of guessing).
+- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — one deliberately withheld fact the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
 - **Measurement axes**:
   - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
   - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)
@@ -328,10 +327,8 @@ a usage-simulator — it intentionally skews to apps that support verifiable,
 deterministic end states (documents, notes, settings, timers, contacts), which is
 why Productivity/Documents are over-represented relative to real time-share and
 social/gaming are absent. **Google Meet** (added day 4+) addresses part of the
-Communication gap, but the **Meet app is not yet installed on the device**
-(`com.google.android.apps.meetings` MISS — see the at-a-glance device note), so
-those tasks are authored + seeded but not runnable until provisioning installs
-it. The 2026-08-12 diversification pass closed the food/OTT/travel/tickets/news/
+Communication gap — the Meet app IS installed (as `com.google.android.apps.tachyon`, the Duo→Meet
+rebrand), so the Meet task set is runnable. The 2026-08-12 diversification pass closed the food/OTT/travel/tickets/news/
 shopping gaps with real native apps (Swiggy, Prime Video, MakeMyTrip,
 BookMyShow, MSN News, Amazon Shopping). PDF handling remains in Files/Drive/Gmail
 as **open + read** tasks (Adobe Scan was briefly added for scan but removed on
@@ -438,7 +435,33 @@ representativeness win available **if** a ToS-clean path is found (see
 - hard-deterministic
 - open-ended
 
-The canonical runnable task list lives in [benchmarks/dailyBench-600/tasks_530.md](../benchmarks/dailyBench-600/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER / 36 DETERMINISTIC), laid out as a 28-day schedule. The public preview is `benchmarks/dailyBench-600/public.md` (50 curated tasks). `tasks_530.md` is the source of truth: edit it and regenerate `DailyBench_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`.
+The canonical runnable task list lives in [benchmarks/dailyBench-600/tasks_530.md](../benchmarks/dailyBench-600/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC), laid out as a 28-day schedule. The public preview is `benchmarks/dailyBench-600/public.md` (57-task true sample — see the public-sample section below). `tasks_530.md` is the source of truth: edit it and regenerate `DailyBench_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`.
+
+## Public sample (3-day preview) — composition & stats
+
+`benchmarks/dailyBench-600/public.md` (`DailyBench_public_v2.json`/`.jsonl`) is a **true sample** drawn from
+the 530 corpus — every task keeps its real 530 `task_id`, exact prompt text, and placeholder slots — rebuilt
+as a 3-day (Day 1-3) preview. It is **not** the eval set; it exists so the pipeline, seeds, and grading can be
+exercised on a small, self-contained slice before full-corpus runs.
+
+**Composition (as of 2026-08-19):**
+
+| metric | value |
+|---|---|
+| Tasks | **57** (Day 1: 20 · Day 2: 20 · Day 3: 17) |
+| Buckets | **21 easy / 20 medium / 16 hard** |
+| Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 6 DETERMINISTIC** |
+| Apps covered | **29** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
+| Placeholders used | 14 distinct keys (most-used: `[contact]`, 15 uses) |
+| App-distribution fidelity | **\|dev\| = 17** vs. the 530's proportional per-app target (Σ \|public_i − round(530_i·57/530)\|) |
+| Duplicate task_ids | 0 |
+
+Every public task is drawn from the 530 with the same text, so the public set is a **structural preview**, not a
+curated subset: bucket, app, and difficulty distributions intentionally track the parent corpus. The 4 public
+multi-turn tasks are exactly the 4 whose KB profiles ship in `multiturn_kb_public.json`
+(`hard__swiggy__005`, `hard__telegram-calendar__016`, `hard__music-obsidian__077`, `hard__gmail-calendar__003`);
+the other 9 multi-turn profiles live in `multiturn_kb_530.json` for the full corpus. Public seed manifests,
+per-day vars, and fabricated-data records are generated for the public sample separately (see `docs/fabricated-test-data.md`).
 
 ## Days, seeds, and manifests
 
@@ -482,6 +505,27 @@ Optional artifacts:
 - `llm_prompt_tokens_sum`
 - `llm_completion_tokens_sum`
 - `llm_total_tokens_sum`
+
+## Derived benchmark metrics (the "why")
+
+The five raw fields above are the per-run **inputs**; the actual benchmark metrics are **derived** from them
+plus the run's verified on-device end-state evidence, and are implemented in `src/DailyBench/benchmark_metrics.py`
+and specified in `docs/evaluation-policy.md` + `docs/leaderboard-format.md`. They were previously documented
+only in those files — that is why this spec did not list them. The full set:
+
+| metric | definition | source |
+|---|---|---|
+| Success rate (SR) | verified on-device end-state reached / tasks run (overall and per bucket) | `benchmark_metrics.success_rate` |
+| Avg steps | mean agent action-steps per task (efficiency) | `benchmark_metrics.avg_steps` |
+| Avg user queries | mean turns to the simulated user (interaction efficiency) | `benchmark_metrics.avg_user_queries` |
+| Interaction quality (QIS) | does the agent ask for the withheld fact instead of guessing — the ASK USER gate | `benchmark_metrics.user_interaction_quality[_factmatch]` |
+| Hallucination rate | self-reported success vs. verified end-state on known-absent targets | `hallucination_controls.json` + per-run audit |
+| Cost per task / day | prompt+completion tokens × registered OpenRouter pricing → USD | `run_metrics.json` / `llm_metrics` |
+| Battery / thermal | per-app mAh + peak CPU/GPU/skin/battery °C per run | `run_metrics.json` |
+
+Why these exist: the benchmark gates success on the **on-device end state** (not the model's self-report), uses
+interaction quality as the MobileWorld-style SR gate for ASK USER tasks, and measures both device cost
+(battery/thermal) and model cost (tokens/USD) so a leaderboard can compare agents on correctness *and* efficiency.
 
 ## Action-budget policy
 
