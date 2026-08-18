@@ -190,66 +190,48 @@ def main() -> int:
         day_tasks = per_day[day]
         hard = [t for t in day_tasks if t["bucket"] == "hard"]
         nonhard = [t for t in day_tasks if t["bucket"] != "hard"]
-        # group non-hard by app
-        from collections import OrderedDict
 
-        by_app: "OrderedDict[str, list]" = OrderedDict()
-        for t in sorted(nonhard, key=lambda r: (r["app"], r["task_id"])):
-            by_app.setdefault(t["app"], []).append(t)
+        def _first_app(t: dict) -> str:
+            return (t.get("apps") or [t.get("app") or "?"])[0]
 
-        # Hard tasks are INTERLEAVED among the app groups (no "Hard tasks" heading):
-        # they're placed at evenly-spread positions so they never clump and can't be
-        # predicted by position, matching the 530 corpus layout.
-        hard_blocks: list[str] = []
+        # Every task becomes its own block: single-app tasks carry their own
+        # **[App]** section header, cross-app tasks keep their inline label, hard
+        # tasks are a numbered header + body. Then blocks are SCATTERED within the
+        # day (seeded greedy: avoid adjacent same-app) so nothing is grouped or
+        # predictable by position — matching the 530 corpus layout.
+        blocks: "list[dict]" = []
+        for t in nonhard:
+            label = "Easy (1pt)" if t["bucket"] == "easy" else "Medium (3pt)"
+            if t.get("is_cross_app"):
+                tag = f" **[{' + '.join(t.get('apps') or [])}]**"
+                lines = [f"- {label}{tag}: {t['prompt_text']} <!--{t['task_id']}-->"]
+            else:
+                app = t.get("app") or _first_app(t)
+                lines = [f"**[{app}]**", f"- {label}: {t['prompt_text']} <!--{t['task_id']}-->"]
+            blocks.append({"kind": "emed", "app": _first_app(t), "lines": lines, "tid": t["task_id"]})
         for i, t in enumerate(hard, start=1):
             ahi = t.get("ahi") or "DETERMINISTIC"
-            hard_blocks.append(f"**{i}. [{t['app']}] — {ahi}**\n- {t['prompt_text']} <!--{t['task_id']}-->")
+            lines = [f"**{i}. [{t['app']}] — {ahi}**", f"- {t['prompt_text']} <!--{t['task_id']}-->"]
+            blocks.append({"kind": "hard", "app": _first_app(t), "lines": lines, "tid": t["task_id"]})
 
-        app_items = list(by_app.items())
-        n_app, n_hard = len(app_items), len(hard_blocks)
-        seq: "list[tuple[str, object]]" = []
-        if n_hard:
-            # spread positions: before which app block (1-indexed) each hard goes
-            positions = [max(1, min(n_app, round((i + 1) * (n_app + 1) / (n_hard + 1)))) for i in range(n_hard)]
-            used: set[int] = set()
-            cleaned: list[int] = []
-            for p in positions:
-                q = p
-                while q in used and q <= n_app:
-                    q += 1
-                q = min(q, n_app)
-                used.add(q)
-                cleaned.append(q)
-            hi = 0
-            for ai in range(1, n_app + 1):
-                while hi < n_hard and cleaned[hi] == ai:
-                    seq.append(("hard", hard_blocks[hi]))
-                    hi += 1
-                seq.append(("app", app_items[ai - 1]))
-            while hi < n_hard:
-                seq.append(("hard", hard_blocks[hi]))
-                hi += 1
-        else:
-            seq = [("app", it) for it in app_items]
+        rng.shuffle(blocks)
+        ordered: "list[dict]" = []
+        last_app: str | None = None
+        while blocks:
+            cands = [b for b in blocks if b["app"] != last_app] or blocks
+            cands.sort(key=lambda b: -sum(1 for x in blocks if x["app"] == b["app"]))
+            chosen = cands[0]
+            ordered.append(chosen)
+            blocks.remove(chosen)
+            last_app = chosen["app"]
 
-        for kind, item in seq:
-            if kind == "app":
-                app, app_tasks = item  # type: ignore[misc]
-                md_lines.append(f"**[{app}]**")
-                for t in app_tasks:
-                    label = "Easy (1pt)" if t["bucket"] == "easy" else "Medium (3pt)"
-                    tag = f" **[{' + '.join(t.get('apps') or [])}]**" if t.get("is_cross_app") else ""
-                    md_lines.append(f"- {label}{tag}: {t['prompt_text']} <!--{t['task_id']}-->")
-                    ordered_task_ids.append(t["task_id"])
-                md_lines.append("")
-            else:
-                block = item  # type: ignore[misc]
-                md_lines.append(block)
-                ordered_task_ids.append(block.split("<!--")[1].split("-->")[0])
-                md_lines.append("")
+        for b in ordered:
+            md_lines.extend(b["lines"])
+            md_lines.append("")
+            ordered_task_ids.append(b["tid"])
         md_lines.append("")
 
-    # keep the dataset task order identical to the md layout (interleaved hard tasks)
+    # keep the dataset task order identical to the md layout (scattered order)
     if len(ordered_task_ids) == len(public_tasks):
         by_id = {t["task_id"]: t for t in public_tasks}
         public_tasks = [by_id[tid] for tid in ordered_task_ids]

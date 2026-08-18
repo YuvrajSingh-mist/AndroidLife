@@ -3,8 +3,8 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 52,
-  "placeholder_key_count_in_dataset": 86,
+  "var_key_count_in_local_env": 54,
+  "placeholder_key_count_in_dataset": 89,
   "vars": {
     "X": {
       "configured_in_local_env": true,
@@ -375,6 +375,16 @@
       ],
       "tasks": [
         "medium__calculator__001"
+      ]
+    },
+    "file size threshold": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        14
+      ],
+      "tasks": [
+        "medium__google-drive__007"
       ]
     },
     "financing note title": {
@@ -913,6 +923,16 @@
         "medium__calculator__011"
       ]
     },
+    "size threshold": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__files__010"
+      ]
+    },
     "song": {
       "configured_in_local_env": false,
       "task_count": 2,
@@ -1111,6 +1131,16 @@
       ],
       "tasks": [
         "easy__google-maps__002"
+      ]
+    },
+    "video size threshold": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        25
+      ],
+      "tasks": [
+        "medium__files__012"
       ]
     },
     "wifi": {
@@ -1447,6 +1477,16 @@
       ],
       "tasks": [
         "medium__calculator__011"
+      ]
+    },
+    "size threshold": {
+      "configured_in_local_env": false,
+      "task_count": 1,
+      "days": [
+        18
+      ],
+      "tasks": [
+        "medium__files__010"
       ]
     },
     "song": {

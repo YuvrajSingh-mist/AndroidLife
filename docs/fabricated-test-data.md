@@ -581,6 +581,33 @@ following entities were **seeded on the test device** (all recorded in
   **no longer groups hard tasks** under "Hard tasks — Day N:" — they are now
   **interleaved** among the easy/medium tasks (evenly spread, matching the 530
   layout; `build_public_sample.py` updated so future builds do the same).
+- **Same-app tasks scattered + size placeholders + solvability fixes
+  (2026-08-18):**
+  - **Scatter:** tasks are no longer grouped under `**[App]**` section headers —
+  every task is its own block (single-app tasks carry their own `**[App]**`
+  header; cross-app/hard keep inline labels) and blocks are scattered within each
+  day so same-app tasks are only occasionally adjacent. Applied to
+  `public.md` + `tasks_530.md` (JSON/JSONL regenerated; stats verified identical:
+  57 / 530 tasks, buckets, days, and all 78 hallucination/multi-turn markers
+  preserved; `build_public_sample.py` updated to emit the scattered layout).
+  - **Size thresholds → placeholders:** device-dependent file-size cutoffs are now
+  configurable: `medium__files__010` → `[size threshold]` (100MB),
+  `medium__files__012` → `[video size threshold]` (500MB),
+  `medium__google-drive__007` → `[file size threshold]` (50MB). Keys added to
+  `config/user.yaml` + `user_config.example` + `public_vars*.env` +
+  `tasks_vars*.env`; `tasks_vars_usage.json` regenerated.
+  - **`medium__google-sheets__003` rewrite (solvability):** the mobile Google
+  Sheets app has **no freeze-rows feature** (verified on-device — nothing in the
+  toolbar or ⋯ menu), so "freeze the header row" was unsolvable. Rewritten to a
+  composite task: read the view counts in `[spreadsheet name]` (SPORTS_VIDEO_DATA,
+  real Views column), report the most-viewed video, and bold the header row.
+  Verified on-device that reading cell values works and the spreadsheet was left
+  unchanged after testing.
+  - **`easy__telegram__010` rewrite (solvability):** Telegram has **no read-receipts
+  control** (verified on-device — Privacy & Security has no such option, and there
+  is certainly no per-contact toggle), so "turn off read receipts for [contact]"
+  was unsolvable. Rewritten to the solvable per-contact action **mute notifications
+  for [contact]**.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'
