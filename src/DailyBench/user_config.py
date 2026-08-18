@@ -88,6 +88,20 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "article url": ("URL for the Chrome summarize-article task (`[article url]`).", "https://en.wikipedia.org/wiki/Open-source_software"),
     "currency pair": ("Exchange-rate pair for the Google Search task (`[currency pair]`).", "USD to INR"),
     "digits": ("Digit prefix for the Phone call-history filter task (`[digits]`).", "98765"),
+    # public DET named targets (hard deterministic tasks) - device/persona values the
+    # public sample parametrizes so prompts carry placeholders, not hardcoded names.
+    "notifying channel": ("YouTube channel that notifies at night for the Settings DND task "
+                          "(`[notifying channel]`).", "Tech Burner"),
+    "related product": ("Product the user wants surfaced from the Sheets best-performer task "
+                        "(`[related product]`).", "smartphone gimbal"),
+    "cinema": ("Cinema for the BookMyShow group-movie task (`[cinema]`).", "INOX Bhubaneswar"),
+    "ticket price": ("Per-ticket price for the BookMyShow group-movie task (`[ticket price]`).", "₹240"),
+    "weekly meeting": ("Recurring weekly meeting the Clock/Meet-Files tasks reference "
+                        "(`[weekly meeting]`; matches the seeded Calendar event).", "Weekly Sync"),
+    "gym event": ("Gym clash event for the Clock task (`[gym event]`; matches the seeded "
+                   "Calendar event).", "Gym"),
+    "agenda file": ("Agenda file the Meet-Files task opens in Files (`[agenda file]`; matches "
+                     "the seeded file).", "Weekly Agenda"),
     # device layout (overrides for the seed scripts' auto-detection; omit to
     # auto-detect from the connected phone - see scripts/seeding/device_paths.py)
     "vault path": ("Obsidian vault dir on the device (auto-detected if omitted). "

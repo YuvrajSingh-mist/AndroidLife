@@ -305,6 +305,25 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Public DET placeholders + user-as-tool always available.**
+  - **Placeholders:** the hard DET tasks in the public sample now carry placeholders instead of
+    hardcoded device names: `[notifying channel]` (`hard__youtube-settings__052` = Tech Burner),
+    `[related product]` (`hard__google-sheets-amazon-shopping__074` = smartphone gimbal),
+    `[cinema]` + `[ticket price]` (`hard__bookmyshow__005` = INOX Bhubaneswar / ₹240),
+    `[weekly meeting]` (`hard__google-meet-files__070` + `hard__clock-calendar__023` = Weekly Sync),
+    `[gym event]` (`hard__clock-calendar__023` = Gym), `[agenda file]` (`hard__google-meet-files__070`
+    = Weekly Agenda). All 7 added to `SCHEMA` (`user_config.py`), `user_config.example`,
+    `user.yaml`, `tasks_vars.local.env`, `public_vars.local.env`; values match on-device/seeded
+    state (Tech Burner subscription, the seeded Weekly Sync/Gym events, the Weekly Agenda file).
+    `verify_config.py` PASS; every public placeholder resolves.
+  - **User-as-tool always available:** `cli.py` now registers the `ask_user` tool for **every** task
+    (previously only when a task had an ASK USER fact or KB profile). The simulated user still reveals
+    only what that task's context/KB provides — on DET/hallucination tasks that is nothing ("I don't
+    have that information") — so ASK USER grading is unchanged while genuinely ambiguous moments on
+    any task can be clarified.
+  - Regenerated 530 (530 tasks, 0 dupes, 49 AU/23 DET) + public (57) + `tasks_vars_usage.json`
+    (98 keys); full suite PASS.
+
 - **2026-08-19 — Device seeding for public DET solvability (variance-safe).**
   Seeded the two solvable-but-gapped public DET tasks on the phone (serial `RS7XKZDI8HTOJNYL`):
   - `hard__clock-calendar__023`: Calendar (cal_id=16 `yuvraj.mist@gmail.com`) now has **"Weekly Sync"**

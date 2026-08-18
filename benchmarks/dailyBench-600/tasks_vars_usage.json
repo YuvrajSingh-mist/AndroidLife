@@ -3,8 +3,8 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 52,
-  "placeholder_key_count_in_dataset": 87,
+  "var_key_count_in_local_env": 59,
+  "placeholder_key_count_in_dataset": 94,
   "vars": {
     "X": {
       "configured_in_local_env": true,
@@ -31,6 +31,16 @@
       ],
       "tasks": [
         "medium__google-search__012"
+      ]
+    },
+    "agenda file": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        14
+      ],
+      "tasks": [
+        "hard__google-meet-files__070"
       ]
     },
     "airline_1": {
@@ -138,6 +148,16 @@
       "tasks": [
         "easy__youtube__001",
         "medium__youtube__001"
+      ]
+    },
+    "cinema": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__bookmyshow__005"
       ]
     },
     "city": {
@@ -433,6 +453,16 @@
         "hard__calculator-telegram-notes__020"
       ]
     },
+    "gym event": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        6
+      ],
+      "tasks": [
+        "hard__clock-calendar__023"
+      ]
+    },
     "keyword": {
       "configured_in_local_env": true,
       "task_count": 1,
@@ -529,6 +559,16 @@
         "easy__notes__001",
         "easy__notes__005",
         "medium__notes__005"
+      ]
+    },
+    "notifying channel": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        11
+      ],
+      "tasks": [
+        "hard__youtube-settings__052"
       ]
     },
     "number": {
@@ -764,6 +804,16 @@
       ],
       "tasks": [
         "medium__calculator-notes__001"
+      ]
+    },
+    "related product": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        20
+      ],
+      "tasks": [
+        "hard__google-sheets-amazon-shopping__074"
       ]
     },
     "rent dues note title": {
@@ -1016,6 +1066,16 @@
         "easy__calculator__006"
       ]
     },
+    "ticket price": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        21
+      ],
+      "tasks": [
+        "hard__bookmyshow__005"
+      ]
+    },
     "time": {
       "configured_in_local_env": false,
       "task_count": 1,
@@ -1122,6 +1182,18 @@
       ],
       "tasks": [
         "easy__google-maps__002"
+      ]
+    },
+    "weekly meeting": {
+      "configured_in_local_env": true,
+      "task_count": 2,
+      "days": [
+        6,
+        14
+      ],
+      "tasks": [
+        "hard__clock-calendar__023",
+        "hard__google-meet-files__070"
       ]
     },
     "wifi": {

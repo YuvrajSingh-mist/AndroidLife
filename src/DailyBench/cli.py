@@ -172,13 +172,13 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
             ),
         },
     )
-    # The ask_user tool is registered ONLY for ASK USER tasks (--ask-user-context non-empty).
-    # Its simulated user holds only that task's hidden fact; on every other task it would have
-    # nothing to reveal, so exposing it there only tempts the agent to "ask" instead of either
-    # finding the data on-device or honestly reporting it absent (the correct outcome for a
-    # hallucination control). The model decides on its own when to call ask_user from the tool's
-    # own description (which instructs it to search the device first and ask only when the fact is
-    # genuinely absent) — the system prompt does not announce that a task is an ASK USER task.
+      # The ask_user (user-as-tool) is ALWAYS registered (operator decision 2026-08-19).
+      # The simulated user reveals only what this task's context/KB provides; on DET and
+      # hallucination-control tasks that is nothing ("I don't have that information"), so the
+      # agent still must find data on-device or honestly report it absent. The model decides on
+      # its own when to call ask_user from the tool's own description (search the device first,
+      # ask only when a fact is genuinely missing) — the system prompt does not announce that a
+      # task is an ASK USER task.
     custom_tools = dict(CUSTOM_TOOLS)
     # Multi-turn KB mode takes precedence: if --ask-user-kb points to a JSON profile,
     # the simulated user becomes an honest oracle over it with rolling memory.
@@ -192,23 +192,25 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         if args.task_id and isinstance(kb, dict):
             entry = kb.get(args.task_id)
             kb = entry.get("profile", entry) if isinstance(entry, dict) else None
-    if args.ask_user_context or kb is not None:
-        # Truncate the ask_user log at run start so a merge-drill rerun into an existing
-        # run root doesn't carry stale ask_user entries from a previous run (the tool appends
-        # per call; run_metrics counts lines in this file, so stale lines would corrupt the
-        # latest run's ask_user_call_count).
-        (run_dir / "ask_user_metrics.jsonl").write_text("")
-        custom_tools.update(
-            build_ask_user_tool(
-                args.ask_user_context,
-                kb=kb,
-                model=args.ask_user_model,
-                log_path=run_dir / "ask_user_metrics.jsonl",
-                temperature=args.temperature,
-                top_p=args.top_p,
-                seed=args.seed,
-            )
+    # The user-as-tool is ALWAYS available (operator decision 2026-08-19): the agent may ask
+    # the simulated user at any time, on any task. The simulated user only ever reveals what this
+    # task's context/KB provides (empty context on DET/hallucination tasks -> "I don't have that
+    # information"), so ASK USER grading is unchanged while genuinely ambiguous moments on any
+    # task can be clarified. Truncate the ask_user log at run start so a merge-drill rerun into an
+    # existing run root doesn't carry stale entries (the tool appends per call; run_metrics counts
+    # lines, so stale lines would corrupt the latest run's ask_user_call_count).
+    (run_dir / "ask_user_metrics.jsonl").write_text("")
+    custom_tools.update(
+        build_ask_user_tool(
+            args.ask_user_context,
+            kb=kb,
+            model=args.ask_user_model,
+            log_path=run_dir / "ask_user_metrics.jsonl",
+            temperature=args.temperature,
+            top_p=args.top_p,
+            seed=args.seed,
         )
+    )
     # 0 means "no wall-clock cap". The FastAgent loop's MobileAgentInitEvent requires an int
     # timeout (None fails pydantic validation: "Input should be a valid integer"), so we pass
     # a 100-year deadline instead of None — effectively no wall-clock limit. The step budget

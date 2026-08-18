@@ -203,6 +203,17 @@ email-id: hafari4025@aghism.com
 # `[size threshold]` — device-dependent file-size cutoff for the Files size task.
 size threshold: 100MB
 
+# `[notifying channel]` / `[related product]` / `[cinema]` / `[ticket price]` /
+# `[weekly meeting]` / `[gym event]` / `[agenda file]` — device/persona named targets
+# used by the hard DETERMINISTIC tasks in the public sample (match on-device/seeded state).
+notifying channel: Tech Burner
+related product: smartphone gimbal
+cinema: INOX Bhubaneswar
+ticket price: ₹240
+weekly meeting: Weekly Sync
+gym event: Gym
+agenda file: Weekly Agenda
+
 # ---- device layout (OPTIONAL overrides) ----------------------------------
 # The seed scripts auto-detect these from the connected phone, so you normally
 # DON'T need them. Set them only to force a value for a non-standard device:

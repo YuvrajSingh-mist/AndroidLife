@@ -178,10 +178,12 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text.",
-      "prompt_template": "Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find [notifying channel], and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text.",
+      "prompt_template": "Notifications from {{ notifying channel }} keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find {{ notifying channel }}, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text.",
+      "placeholders": [
+        "notifying channel"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "YouTube+Settings",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -529,12 +531,13 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text.",
-      "prompt_template": "I've got all my video stats in the {{ spreadsheet name }} spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text.",
+      "prompt_text": "I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text.",
+      "prompt_template": "I've got all my video stats in the {{ spreadsheet name }} spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '{{ related product }}', and open the top result to check its price. Reply with only the video name and the product name, no other text.",
       "placeholders": [
-        "spreadsheet name"
+        "spreadsheet name",
+        "related product"
       ],
-      "placeholder_count": 1,
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Sheets+Amazon Shopping",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -776,12 +779,14 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at INOX Bhubaneswar this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price (₹240)? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
-      "prompt_template": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at INOX Bhubaneswar this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price (₹240)? Then message {{ contact }} on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
+      "prompt_text": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
+      "prompt_template": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at {{ cinema }} this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ({{ ticket price }})? Then message {{ contact }} on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
       "placeholders": [
+        "cinema",
+        "ticket price",
         "contact"
       ],
-      "placeholder_count": 1,
+      "placeholder_count": 3,
       "is_cross_app": true,
       "cross_app_label": "BookMyShow+Telegram",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1575,10 +1580,13 @@
       "is_ask_user": false,
       "task_number_within_app": 2,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a Weekly Sync on Monday and Gym on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text.",
-      "prompt_template": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a Weekly Sync on Monday and Gym on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text.",
+      "prompt_template": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a {{ weekly meeting }} on Monday and {{ gym event }} on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text.",
+      "placeholders": [
+        "weekly meeting",
+        "gym event"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Clock+Calendar",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1632,10 +1640,13 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday Weekly Sync at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called 'Weekly Agenda', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
-      "prompt_template": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday Weekly Sync at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called 'Weekly Agenda', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
+      "prompt_template": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday {{ weekly meeting }} at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '{{ agenda file }}', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
+      "placeholders": [
+        "weekly meeting",
+        "agenda file"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Meet+Files",
       "source_path": "benchmarks/dailyBench-600/public.md"

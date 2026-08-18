@@ -333,7 +333,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): I need a quick total for a column and don't want to do the math. Could you open '[spreadsheet name]' and sum up the [sheet column] column in Google Sheets? Reply with only the total, no other text, then add it as a new row at the bottom and adjust any other columns' values that need fixing because of that change. <!--medium__google-sheets__001-->
 
 **23. [Clock+Calendar] — DETERMINISTIC**
-- I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a Weekly Sync on Monday and Gym on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
+- I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
 
 **[Swiggy]**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? <!--easy__swiggy__001-->
@@ -634,7 +634,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - I've shortlisted a flight for my next trip and want the full fare before I pay. Can you open MakeMyTrip, find the shortlisted flight for my next trip, and note the flight number, departure time, and fare? Then go to its payment page, read out the final total including any fees, and confirm — but don't pay. Reply with only the flight number and the final total, no other text. <!--hard__makemytrip__003-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
-- Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
+- Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find [notifying channel], and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
 
 - Medium (3pt) **[Contacts+Gmail]**: Could you filter contacts to only ones added this month in Contacts? List them for me in the format of "Name" | "Phone number" strictly, then star the most recent and check whether any are missing a phone number. Also, email [email-id] the list of contacts missing a number. <!--medium__contacts__008-->
 
@@ -814,7 +814,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm looking for something fun happening nearby. Can you search for a nearby holiday or public event on Google Search? <!--easy__google-search__007-->
 
 **70. [Google Meet+Files] — DETERMINISTIC**
-- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday Weekly Sync at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called 'Weekly Agenda', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
+- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Chrome]**
 - Easy (1pt): I keep running into a word I don't know. Can you look up a word's definition in Chrome? <!--easy__chrome__008-->
@@ -1141,7 +1141,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you open '[spreadsheet name]' in Google Sheets and find the highest value in the [sheet column] column? Reply with only that value, no other text, then highlight it and note which row it's in. <!--medium__google-sheets__006-->
 
 **74. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
-- I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for 'smartphone gimbal', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
+- I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
 
 - Medium (3pt) **[Google Photos+Telegram]**: Could you find the 5 most recent photos of [subject], add them to a new album, and share the album name with [contact] on Telegram in Google Photos? <!--medium__google-photos-telegram__001-->
 
@@ -1180,7 +1180,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 ### Day 21
 
 **5. [BookMyShow+Telegram] — DETERMINISTIC**
-- We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at INOX Bhubaneswar this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price (₹240)? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
+- We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
 
 **[Chrome]**
 - Easy (1pt): Something broke and I need to know if it's still covered. Can you search for a specific product's warranty information in Chrome? <!--easy__shopping-delivery-browser__011-->

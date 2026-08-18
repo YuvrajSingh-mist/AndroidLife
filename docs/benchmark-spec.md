@@ -527,6 +527,25 @@ Why these exist: the benchmark gates success on the **on-device end state** (not
 interaction quality as the MobileWorld-style SR gate for ASK USER tasks, and measures both device cost
 (battery/thermal) and model cost (tokens/USD) so a leaderboard can compare agents on correctness *and* efficiency.
 
+**Formulae (exactly as implemented in `src/DailyBench/benchmark_metrics.py`):**
+
+Let $N$ = tasks run, $s_i \in \{0,1\}$ = classification-aware success of task $i$ (only
+`true_success` counts; hallucinated self-reports and honest control failures are 0), $n_i$ =
+agent action-steps, $q_i$ = `ask_user` calls, $I$ = interaction (ASK USER) tasks, $T$ =
+non-interaction tasks that still invoked `ask_user`, $c_i$ = correct-answer calls, $M$ =
+interaction tasks that never asked.
+
+$$\text{SR} = \frac{1}{N}\sum_{i=1}^{N} s_i$$
+
+$$\text{AvgSteps} = \frac{1}{N}\sum_{i=1}^{N} n_i \qquad \text{AvgUserQueries} = \frac{1}{|I|}\sum_{i \in I} q_i$$
+
+$$\text{QIS} = \frac{\sum_{i \in I,\, q_i > 0} \frac{s_i}{q_i}}{|I| + |T|} \qquad \text{UIQ (factmatch)} = \frac{\sum c_i}{\sum_{i \in I} q_i + |M| + |T|}$$
+
+- **Hallucination rate** = self-reported successes that failed on-device verification, over tasks
+  with a known-absent target (`hallucination_controls.json`).
+- **Cost** = (prompt_tokens + completion_tokens) × registered OpenRouter price → USD, per task/day.
+- **Battery/thermal** = per-app mAh + peak CPU/GPU/skin/battery °C (from `run_metrics.json`).
+
 ## Action-budget policy
 
 - all benchmark tasks use the same default `50`-step action budget
