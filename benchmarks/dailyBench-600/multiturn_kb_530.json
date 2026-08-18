@@ -1,11 +1,44 @@
 {
   "hard__swiggy__005": {
-    "correct_target": "swiggy::reorder-downtown-murgh-mughlai",
+    "correct_target": "swiggy::reorder-jugaad-chole-papdi",
     "profile": {
       "orders": [
-        {"service": "Swiggy", "restaurant": "Downtown Delight", "item": "Murgh Mughlai + Kushka Rice", "total": "₹449", "status": "delivered", "recent": true, "favourite": true},
-        {"service": "Swiggy", "restaurant": "KFC", "item": "Classic Zinger Box", "total": "₹399", "status": "delivered", "recent": false, "favourite": true},
-        {"service": "Swiggy", "restaurant": "Jugaad Jn", "item": "Chole Chawal + Papdi Chat", "total": "₹149", "status": "delivered", "recent": false, "favourite": true}
+        {
+          "service": "Swiggy",
+          "restaurant": "Jugaad Jn",
+          "item": "Chole Chawal + Papdi Chat",
+          "total": "₹258",
+          "status": "delivered",
+          "recent": true,
+          "favourite": true
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "KFC",
+          "item": "Classic Zinger Box",
+          "total": "₹399",
+          "status": "delivered",
+          "recent": false,
+          "favourite": true
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "Pizza Hut",
+          "item": "Choco Volcano",
+          "total": "₹119",
+          "status": "delivered",
+          "recent": false,
+          "favourite": false
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "EatRight",
+          "item": "Hot Garlic Noodles With Chilli Paneer",
+          "total": "₹209",
+          "status": "delivered",
+          "recent": false,
+          "favourite": false
+        }
       ],
       "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)"
     }
@@ -14,10 +47,31 @@
     "correct_target": "swiggy::downtown-delight-usual",
     "profile": {
       "orders": [
-        {"service": "Swiggy", "restaurant": "Downtown Delight", "usual_items": ["Murgh Mughlai", "Kushka Rice"], "last_total": "₹449", "recent": true, "favourite": true},
-        {"service": "Swiggy", "restaurant": "KFC", "usual_items": ["Classic Zinger Box"], "last_total": "₹399", "recent": false, "favourite": true}
+        {
+          "service": "Swiggy",
+          "restaurant": "Downtown Delight",
+          "usual_items": [
+            "Murgh Mughlai",
+            "Kushka Rice"
+          ],
+          "last_total": "₹449",
+          "recent": true,
+          "favourite": true
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "KFC",
+          "usual_items": [
+            "Classic Zinger Box"
+          ],
+          "last_total": "₹399",
+          "recent": false,
+          "favourite": true
+        }
       ],
-      "preferences": {"usual_restaurant": "Downtown Delight"}
+      "preferences": {
+        "usual_restaurant": "Downtown Delight"
+      }
     }
   },
   "hard__makemytrip__003": {
@@ -25,23 +79,64 @@
     "profile": {
       "trips": {
         "bbi_del": [
-          {"airline": "IndiGo", "flight": "6E 6821", "date": "2026-08-24 (Mon)", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
-          {"airline": "Air India", "flight": "AI 723", "date": "2026-08-24 (Mon)", "depart": "BBI 16:40", "arrive": "DEL 19:05", "fare": "₹5,390"}
+          {
+            "airline": "IndiGo",
+            "flight": "6E 6821",
+            "date": "2026-08-24 (Mon)",
+            "depart": "BBI 07:10",
+            "arrive": "DEL 09:20",
+            "fare": "₹4,850"
+          },
+          {
+            "airline": "Air India",
+            "flight": "AI 723",
+            "date": "2026-08-24 (Mon)",
+            "depart": "BBI 16:40",
+            "arrive": "DEL 19:05",
+            "fare": "₹5,390"
+          }
         ],
         "bbi_bom": [
-          {"airline": "IndiGo", "flight": "6E 501", "date": "2026-08-25 (Tue)", "depart": "BBI 09:00", "arrive": "BOM 11:15", "fare": "₹5,100"}
+          {
+            "airline": "IndiGo",
+            "flight": "6E 501",
+            "date": "2026-08-25 (Tue)",
+            "depart": "BBI 09:00",
+            "arrive": "BOM 11:15",
+            "fare": "₹5,100"
+          }
         ]
       },
-      "preferences": {"next_trip": "BBI to DEL next week"}
+      "preferences": {
+        "next_trip": "BBI to DEL next week"
+      }
     }
   },
   "hard__prime-video__005": {
     "correct_target": "prime-video::reacher",
     "profile": {
       "watchlist": [
-        {"title": "Reacher", "platform": "Prime Video", "leaving": "2026-08-31", "available": true, "downloadable": true},
-        {"title": "The Boys", "platform": "Prime Video", "leaving": null, "available": true, "downloadable": true},
-        {"title": "Dark", "platform": "Netflix", "leaving": null, "available": true, "downloadable": true}
+        {
+          "title": "Reacher",
+          "platform": "Prime Video",
+          "leaving": "2026-08-31",
+          "available": true,
+          "downloadable": true
+        },
+        {
+          "title": "The Boys",
+          "platform": "Prime Video",
+          "leaving": null,
+          "available": true,
+          "downloadable": true
+        },
+        {
+          "title": "Dark",
+          "platform": "Netflix",
+          "leaving": null,
+          "available": true,
+          "downloadable": true
+        }
       ]
     }
   },
@@ -49,47 +144,121 @@
     "correct_target": "bookmyshow::maa-action-movie",
     "profile": {
       "contacts": {
-        "Maa": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
-        "Dad": {"likes": ["dramas"], "birthday": "2026-09-02"}
+        "Maa": {
+          "likes": [
+            "action movies",
+            "sci-fi"
+          ],
+          "birthday": "2026-08-20"
+        },
+        "Dad": {
+          "likes": [
+            "dramas"
+          ],
+          "birthday": "2026-09-02"
+        }
       },
-      "preferences": {"surprise_party_for": "Maa", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
+      "preferences": {
+        "surprise_party_for": "Maa",
+        "selected_contacts": [
+          "Maa",
+          "Dad",
+          "Yuvraj Singh Jio",
+          "Yuvraj Airtel"
+        ]
+      }
     }
   },
   "hard__amazon-shopping__006": {
     "correct_target": "amazon::noise-earbuds-cart",
     "profile": {
       "cart": [
-        {"item": "Noise wireless earbuds", "price": "₹1,299", "prime_saved": "₹200"},
-        {"item": "boAt Airdopes 131", "price": "₹1,499", "prime_saved": "₹250"}
+        {
+          "item": "Noise wireless earbuds",
+          "price": "₹1,299",
+          "prime_saved": "₹200"
+        },
+        {
+          "item": "boAt Airdopes 131",
+          "price": "₹1,499",
+          "prime_saved": "₹250"
+        }
       ],
-      "preferences": {"intending_to_buy": "Noise wireless earbuds"}
+      "preferences": {
+        "intending_to_buy": "Noise wireless earbuds"
+      }
     }
   },
   "hard__msn-news__007": {
     "correct_target": "msn-news::cricket-today",
     "profile": {
-      "topics": {"cricket": true, "economy": false, "technology": true},
-      "contacts": {"primary_share": "Yuvraj Airtel", "telegram_handle": "@YuvrajSingh9886"},
-      "preferences": {"followed_topic": "cricket"}
+      "topics": {
+        "cricket": true,
+        "economy": false,
+        "technology": true
+      },
+      "contacts": {
+        "primary_share": "Yuvraj Airtel",
+        "telegram_handle": "@YuvrajSingh9886"
+      },
+      "preferences": {
+        "followed_topic": "cricket"
+      }
     }
   },
   "hard__music-obsidian__077": {
     "correct_target": "youtube-music::sleep-timer-1030pm",
     "profile": {
-      "music": {"favorite_genre": "lo-fi beats", "sleep_artist": "Chillhop"},
-      "notes": {"Bedtime": {"time": "10:30 PM", "source": "real on-device note"}},
-      "preferences": {"sleep_timer": "10:30 PM"}
+      "music": {
+        "favorite_genre": "lo-fi beats",
+        "sleep_artist": "Chillhop"
+      },
+      "notes": {
+        "Bedtime": {
+          "time": "10:30 PM",
+          "source": "real on-device note"
+        }
+      },
+      "preferences": {
+        "sleep_timer": "10:30 PM"
+      }
     }
   },
   "hard__telegram-calendar__016": {
     "correct_target": "telegram::forever-21-date",
     "profile": {
       "chats": [
-        {"name": "Forever 21", "type": "group", "members": 2, "recent_date_mentioned": "2026-08-20", "topic": "shopping deals"},
-        {"name": "Sumeet Crompton Fan", "type": "pm", "recent_date_mentioned": null, "topic": "general"},
-        {"name": "New Flat", "type": "pm", "recent_date_mentioned": "2026-08-18", "topic": "flat matters"}
+        {
+          "name": "Forever 21",
+          "type": "group",
+          "members": 2,
+          "recent_date_mentioned": "2026-08-20",
+          "topic": "plans / get-together"
+        },
+        {
+          "name": "Sumeet Crompton Fan",
+          "type": "pm",
+          "recent_date_mentioned": null,
+          "topic": "general"
+        },
+        {
+          "name": "New Flat",
+          "type": "pm",
+          "recent_date_mentioned": "2026-08-18",
+          "topic": "flat matters"
+        }
       ],
-      "preferences": {"reminder_chat": "Forever 21", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"], "group_note": "real Telegram group 'Forever 21' (2 members) confirmed on device"}
+      "preferences": {
+        "reminder_chat": "Forever 21",
+        "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886",
+        "selected_contacts": [
+          "Maa",
+          "Dad",
+          "Yuvraj Singh Jio",
+          "Yuvraj Airtel"
+        ],
+        "group_note": "real Telegram group 'Forever 21' (2 members) confirmed on device"
+      }
     }
   },
   "hard__gmail-notes__045": {
@@ -100,36 +269,76 @@
           "email": "rajceo2031@gmail.com",
           "primary": true,
           "emails": [
-            {"from": "Flipkart", "subject": "Your 15% coupon", "code": "FLIP15", "expires": "2026-08-20"},
-            {"from": "Amazon", "subject": "Deal of the day", "code": null, "expires": null}
+            {
+              "from": "Flipkart",
+              "subject": "Your 15% coupon",
+              "code": "FLIP15",
+              "expires": "2026-08-20"
+            },
+            {
+              "from": "Amazon",
+              "subject": "Deal of the day",
+              "code": null,
+              "expires": null
+            }
           ]
         },
         {
           "email": "yuvraj@college.edu",
           "primary": false,
           "emails": [
-            {"from": "Student Offers", "subject": "Exam-prep coupon", "code": "PREP10", "expires": "2026-08-25"}
+            {
+              "from": "Student Offers",
+              "subject": "Exam-prep coupon",
+              "code": "PREP10",
+              "expires": "2026-08-25"
+            }
           ]
         }
       ],
-      "preferences": {"code_to_use": "FLIP15"}
+      "preferences": {
+        "code_to_use": "FLIP15"
+      }
     }
   },
   "hard__gmail-calendar__003": {
     "correct_target": "gmail-calendar::bbi-del-reminder",
     "profile": {
       "flights": [
-        {"airline": "IndiGo", "flight": "6E 6821", "route": "BBI→DEL", "date": "2026-08-24", "depart": "07:10", "confirmation_email": true},
-        {"airline": "IndiGo", "flight": "6E 501", "route": "BBI→BOM", "date": "2026-09-02", "depart": "09:00", "confirmation_email": false}
+        {
+          "airline": "IndiGo",
+          "flight": "6E 6821",
+          "route": "BBI→DEL",
+          "date": "2026-08-24",
+          "depart": "07:10",
+          "confirmation_email": true
+        },
+        {
+          "airline": "IndiGo",
+          "flight": "6E 501",
+          "route": "BBI→BOM",
+          "date": "2026-09-02",
+          "depart": "09:00",
+          "confirmation_email": false
+        }
       ],
-      "preferences": {"reminder_hours_before": 3, "next_trip": "BBI→DEL"}
+      "preferences": {
+        "reminder_hours_before": 3,
+        "next_trip": "BBI→DEL"
+      }
     }
   },
   "hard__settings-obsidian__044": {
     "correct_target": "settings-obsidian::screen-time-goal",
     "profile": {
-      "notes": {"Screen Time Goal": {"daily_limit_hours": 2}},
-      "preferences": {"check": "today's screen time"}
+      "notes": {
+        "Screen Time Goal": {
+          "daily_limit_hours": 2
+        }
+      },
+      "preferences": {
+        "check": "today's screen time"
+      }
     }
   },
   "hard__google-search-notes__019": {
@@ -137,11 +346,19 @@
     "profile": {
       "notes": {
         "Products I'm Considering": [
-          {"name": "Noise wireless earbuds", "price": "₹1,299"},
-          {"name": "boAt Airdopes 131", "price": "₹1,499"}
+          {
+            "name": "Noise wireless earbuds",
+            "price": "₹1,299"
+          },
+          {
+            "name": "boAt Airdopes 131",
+            "price": "₹1,499"
+          }
         ]
       },
-      "preferences": {"compare": "headphones"}
+      "preferences": {
+        "compare": "headphones"
+      }
     }
   }
 }

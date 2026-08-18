@@ -6589,8 +6589,8 @@
       "is_ask_user": true,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Murgh Mughlai with Kushka Rice from Downtown Delight — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
-      "prompt_template": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Murgh Mughlai with Kushka Rice from Downtown Delight — add the same items to the cart, and take me to the payment page without placing the order. Then message {{ contact }} on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
+      "prompt_text": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
+      "prompt_template": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message {{ contact }} on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
       "placeholders": [
         "contact"
       ],

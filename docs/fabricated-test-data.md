@@ -305,6 +305,23 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Public KB reconciled to live phone data.**
+  Verified all 4 `multiturn_kb_public.json` profiles against the live device (RS7XKZDI8HTOJNYL):
+  - ✅ `hard__music-obsidian__077`: Bedtime.md = "10:30 PM" (exact match).
+  - ✅ `hard__telegram-calendar__016`: account (Yuvraj Airtel +91 9354672378 @YuvrajSingh9886) + the
+    "Forever 21" group (2 members) confirmed on-device. Forever 21's topic corrected to match the live
+    chat ("plans / get-together", not "shopping deals"). **NOTE:** the live chat's visible date
+    separators are Aug 1/3 — the agent must find a date in the chat, and Telegram is app-private
+    (cannot be seeded via ADB), so ensure a dated message exists in the chat before running.
+  - ⚠️→✅ `hard__swiggy__005`: the KB's "Downtown Delight Murgh Mughlai ₹449" reorder target did **not**
+    match the live Reorder list (Jugaad Jn Chole ₹149 + Papdi ₹109, KFC, Pizza Hut, EatRight; no
+    Downtown Delight). Updated the KB (`correct_target` → `swiggy::reorder-jugaad-chole-papdi`, orders
+    = the live list) and the task-prompt hedge to Jugaad Jn, in both KB files + `public.md`/`tasks_530.md`.
+  - ⚠️ `hard__gmail-calendar__003`: an IndiGo / "AirTickets Indigo" email exists in the inbox ✓, but the
+    exact flight (6E 6821 BBI→DEL 07:10) lives in Gmail's webview body and cannot be read via
+    uiautomator — re-verify at run time.
+  Regenerated 530 + public; full suite PASS.
+
 - **2026-08-19 — Public DET placeholders + user-as-tool always available.**
   - **Placeholders:** the hard DET tasks in the public sample now carry placeholders instead of
     hardcoded device names: `[notifying channel]` (`hard__youtube-settings__052` = Tech Burner),

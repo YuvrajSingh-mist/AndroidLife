@@ -1,13 +1,13 @@
 {
   "hard__swiggy__005": {
-    "correct_target": "swiggy::reorder-downtown-murgh-mughlai",
+    "correct_target": "swiggy::reorder-jugaad-chole-papdi",
     "profile": {
       "orders": [
         {
           "service": "Swiggy",
-          "restaurant": "Downtown Delight",
-          "item": "Murgh Mughlai + Kushka Rice",
-          "total": "₹449",
+          "restaurant": "Jugaad Jn",
+          "item": "Chole Chawal + Papdi Chat",
+          "total": "₹258",
           "status": "delivered",
           "recent": true,
           "favourite": true
@@ -23,12 +23,21 @@
         },
         {
           "service": "Swiggy",
-          "restaurant": "Jugaad Jn",
-          "item": "Chole Chawal + Papdi Chat",
-          "total": "₹149",
+          "restaurant": "Pizza Hut",
+          "item": "Choco Volcano",
+          "total": "₹119",
           "status": "delivered",
           "recent": false,
-          "favourite": true
+          "favourite": false
+        },
+        {
+          "service": "Swiggy",
+          "restaurant": "EatRight",
+          "item": "Hot Garlic Noodles With Chilli Paneer",
+          "total": "₹209",
+          "status": "delivered",
+          "recent": false,
+          "favourite": false
         }
       ],
       "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)"
@@ -43,7 +52,7 @@
           "type": "group",
           "members": 2,
           "recent_date_mentioned": "2026-08-20",
-          "topic": "shopping deals"
+          "topic": "plans / get-together"
         },
         {
           "name": "Sumeet Crompton Fan",

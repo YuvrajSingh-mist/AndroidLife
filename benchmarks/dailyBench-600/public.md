@@ -32,10 +32,10 @@ aren't grouped or predictable by position.**
 - Medium (3pt): Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text. <!--medium__google-drive__007-->
 
 **6. [YouTube+Settings] — DETERMINISTIC**
-- Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find [notifying channel], and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
+- Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
 
 **5. [Telegram+Calendar] — ASK USER - MULTI**
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text. <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder. Get back to me with the event name and the date. <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
@@ -63,7 +63,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
 **4. [Swiggy+Telegram] — ASK USER - MULTI**
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Murgh Mughlai with Kushka Rice from Downtown Delight — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
