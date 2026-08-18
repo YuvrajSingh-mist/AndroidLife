@@ -420,12 +420,12 @@ following entities were **seeded on the test device** (all recorded in
 | Seeded entity | Task(s) | Where | How to remove |
 |---|---|---|---|
 | Obsidian **`Shared Bill.md`** (Electricity bill 9,000 INR; roommates limited to the selected contacts: Yuvraj Airtel 120u, Yuvraj Singh Jio 80u, Maa 60u, Dad 40u) | `medium__calculator__005` | `/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md'` |
-| **`seed_large_video.mp4`** (120 MB zeros) | `medium__files__010` | `/sdcard/Download/seed_large_video.mp4` | `adb shell rm /sdcard/Download/seed_large_video.mp4` |
-| **`seed_lecture_video.mp4`** (520 MB zeros) | `medium__files__012` | `/sdcard/Download/seed_lecture_video.mp4` | `adb shell rm /sdcard/Download/seed_lecture_video.mp4` |
+| **`Concert Highlights.mp4`** (120 MB zeros) | `medium__files__010` | `/sdcard/Download/Concert Highlights.mp4` | `adb shell rm '/sdcard/Download/Concert Highlights.mp4'` |
+| **`Physics Lecture - Module 4.mp4`** (520 MB zeros) | `medium__files__012` | `/sdcard/Download/Physics Lecture - Module 4.mp4` | `adb shell rm '/sdcard/Download/Physics Lecture - Module 4.mp4'` |
 | **`Recipe.md`** (World's Best Lasagna: Oven 375 F, Bake 50 min, Rest 10 min, Prep 20 min) | `medium__clock__001` | `/sdcard/Obsidian/Papers vault oneplus /Recipe.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Recipe.md'` |
-| **Myntra coupon email** (realistic promo: Subject "Last chance: 15% OFF with code FLIP15", body "YOUR COUPON CODE: FLIP15 / 15% OFF on your next order / How to use 1-2-3 / Hurry! This coupon expires on 20 August 2026 / T&C". Sent from the "Rani Singh" account to rajceo2031@gmail.com) | `hard__gmail-notes__045` | Gmail (primary inbox, app-private) | Delete in the Gmail UI (search "coupon" → open → trash); no adb delete for mail |
+| **Coupon email** (realistic promo, NO brand impersonation: Subject "Last chance: 15% OFF with code FLIP15", body "YOUR COUPON CODE: FLIP15 / 15% OFF on your next order / How to use 1-2-3 / Hurry! This coupon expires on 20 August 2026 / T&C / The Deals Team". Sent **from** `rajceo2031@gmail.com` **to** `ranirajesh786@gmail.com` so it sits in the primary account's Sent (findable via "coupon" search) + the other account's Inbox) | `hard__gmail-notes__045` | Gmail (app-private) | Delete in the Gmail UI (search "coupon" → open → trash); no adb delete for mail |
 | **`Daily Reflection`** note (title + 3 lines) | `medium__notes__005` | OnePlus Notes app (`com.oneplus.note`) | Delete in the Notes app (app-private, no adb) |
-| **2 overlapping events tomorrow afternoon** (`Team_Conflict_A` 08-19 14:00-15:00 + `Team_Conflict_B` 08-19 14:30-15:30 IST) | `easy__calendar__002` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3747,3748)"` (or Calendar app UI if provider delete is a no-op on the synced calendar) |
+| **2 overlapping events tomorrow afternoon** (`Team Sync` 08-19 14:00-15:00 + `Mentor 1 on 1` 08-19 14:30-15:30 IST) | `easy__calendar__002` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3747,3748)"` (or Calendar app UI if provider delete is a no-op on the synced calendar) |
 | **3 "Work" events this week** (`Work sync` 08-18 10-11h, `Work review` 08-19 16-17:30h, `Work planning` 08-20 09:30-11h = 4h) | `medium__calendar__013` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3749,3750,3751)"` (or Calendar app UI) |
 | **`Q3 Review`** presentation (title slide + 2 slides) | `easy__google-slides__002`, `medium__google-slides__002` | Google Slides | Delete in the Slides app (Google account file) |
 
@@ -457,25 +457,40 @@ following entities were **seeded on the test device** (all recorded in
   - `medium__files__012`: the 520 MB video wasn't showing in the Files-by-Google
     GUI until a **MediaStore re-scan** (`am broadcast
     android.intent.action.MEDIA_SCANNER_SCAN_FILE` + `content call
-    media_scanner scan_file`). It now lists as `seed_lecture_video.mp4` **545 MB**
+    media_scanner scan_file`). It now lists as `Physics Lecture - Module 4.mp4` **545 MB**
     in Files → Downloads / Videos (the unique >500MB video).
   - `easy__calendar__002`: the earlier conflict events were **stale** (seeded for
-    a prior "tomorrow"). Re-seeded `Team_Conflict_A/B` for **08-19 afternoon**
+    a prior "tomorrow"). Re-seeded `Team Sync` / `Mentor 1 on 1` for **08-19 afternoon**
     (verified rendering in the Calendar app).
   - `medium__calendar__013`: no "work"-tagged events existed this week. Seeded
     three `Work`-titled events this week (4h total; "tagged work" = "Work" in
     the title).
   - `hard__clock-calendar__023`: same-week events already present
-    (`Next_Week_30m/1h/90m` on 08-17 + the 08-18 22:30 meeting), so the alarm
+    (`Standup` / `Weekly Planning` / `Python Workshop` on 08-17 + the 08-18 22:30 meeting), so the alarm
     clash cross-reference has something to find. No new seed needed.
   - All 6 ASK USER tasks: facts present in `ask_user_facts.json` and on-device
-    prerequisites verified (`budget.xlsx` in Drive, `invoice_seed.pdf` in Files,
+    prerequisites verified (`budget.xlsx` in Drive, `Invoice INV-2026-071.pdf` in Files,
     `Budget Deadline.md`/`Contact Updates.md`/`Exam Scores.md`/`Bedtime.md` in
     Obsidian, real Swiggy order history with Downtown Delight as the most recent
     order, real Telegram `Forever 21` group, the 6E 6821 flight confirmation
     email in Gmail).
   - The public 57-task sample contains **0 of the 60 hallucination-control
     tasks**, so there is no risk of an HC task being accidentally seeded.
+- **Hard-task ordering de-biased (2026-08-18):** the public sample's per-day hard
+  tasks were previously grouped by type (all ASK USER then all DETERMINISTIC),
+  which is a giveaway bias. They are now **randomly interleaved within each day**
+  (deterministic shuffle, `random.seed(3)`, max 2 consecutive same-type) in
+  `public.md` + `DailyBench_public_v2.json/.jsonl` — same tasks, same ids, new
+  order, matching how the 530 corpus is ordered.
+- **Fabricated data made natural (2026-08-18):** demo-obvious names were renamed
+  to look like real user data — `seed_large_video.mp4` →
+  `Concert Highlights.mp4`, `seed_lecture_video.mp4` →
+  `Physics Lecture - Module 4.mp4`, `invoice_seed.pdf` →
+  `Invoice INV-2026-071.pdf` (all MediaStore re-scanned), and the seed-fixture
+  calendar titles (`Team_Conflict_A/B`, `Next_Week_30m/1h/90m`) → real meeting
+  names (`Team Sync` / `Mentor 1 on 1` / `Standup` / `Weekly Planning` /
+  `Python Workshop`). Obsidian notes, the coupon email, and the SPORTS_VIDEO_DATA
+  spreadsheet already used natural names.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'
@@ -488,22 +503,20 @@ following entities were **seeded on the test device** (all recorded in
   phone_v2')"` and likewise for Yuvraj Singh Jio → +919354672378.
 - **The coupon email is the one item that was seeded via the Gmail GUI** (a
   composed email — Gmail mail is app-private so there is no adb path). It was
-  **rewritten 2026-08-18 15:14** to look like a real promotional coupon (the
-  earlier bare self-note "Your 15 Coupon / Use code FLIP15 expires 2026-08-20"
-  was deleted, per operator request to model it on real coupon emails — e.g.
-  the real MTG Books promos returned by a Gmail "coupon" search). If it ever
-  needs re-creating, the manual step is: open Gmail → Compose → To
-  `rajceo2031@gmail.com` → Subject `Last chance: 15% OFF with code FLIP15` →
-  Body: `Hi Yuvraj,` / blank / `Great news! You have unlocked an exclusive 15%
-  OFF coupon, just for you.` / `YOUR COUPON CODE: FLIP15` / `15% OFF on your
-  next order - no minimum order value` / `How to use: 1. Add items to your
-  cart. 2. Enter FLIP15 at checkout. 3. Enjoy your discount!` / `Hurry! This
-  coupon expires on 20 August 2026.` / `Terms and conditions apply. Valid on
-  select styles. Not valid on electronics, jewellery, or gift cards. One use
-  per customer.` / `You are receiving this because you are subscribed to Myntra
-  promotions.` / `Warm regards, The Myntra Team` → Send. (It was sent from the
-  "Rani Singh" account so it arrives in the primary inbox `rajceo2031@gmail.com`
-  from a real sender rather than "me".)
+  **rewritten 2026-08-18 15:40** per the operator: the earlier versions
+  ("Your 15 Coupon" bare note, then a Myntra-branded promo from the "Rani Singh"
+  account) were **deleted**, because impersonating a real brand (Myntra) in a
+  fabricated email is not acceptable. The current coupon is a realistic promo
+  with **no brand name** — Subject `Last chance: 15% OFF with code FLIP15`, body
+  `Hi Yuvraj,` / `YOUR COUPON CODE: FLIP15` / `15% OFF on your next order - no
+  minimum order value` / `How to use: 1-2-3` / `Hurry! This coupon expires on 20
+  August 2026.` / `T&C` / `You are receiving this because you are subscribed to
+  our daily deal alerts.` / `Warm regards, The Deals Team`. It is sent **from
+  `rajceo2031@gmail.com` to `ranirajesh786@gmail.com`** (findable via the
+  "coupon" search in the primary account's Sent + in the other account's Inbox).
+  If it ever needs re-creating, the manual step is: open Gmail (as
+  `rajceo2031@gmail.com`) → Compose → To `ranirajesh786@gmail.com` → the subject
+  and body above → Send.
 - **Why the email is required:** in the public sample `hard__gmail-notes__045`
   is `ahi=DETERMINISTIC` (prompt: "I've got a coupon somewhere that's expiring
   soon. Can you find it and save it before it's gone?") — there is no simulated

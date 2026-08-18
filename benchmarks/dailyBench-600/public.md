@@ -60,25 +60,18 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[YouTube + Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video. <!--medium__youtube__005-->
 
 Hard tasks — Day 1:
-
-**1. [Contacts+Obsidian] — DETERMINISTIC**
-- I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: "Contact" | "Old phone no." | "New phone no.". <!--hard__contacts-obsidian__029-->
-
-**2. [Drive+Notes+Telegram] — ASK USER**
+**1. [Drive+Notes+Telegram] — ASK USER**
 - I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way <!--hard__drive-notes-telegram__010-->
-
-**3. [Files+Notes] — ASK USER**
-- I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text <!--hard__files-notes__011-->
-
-**4. [Music+Obsidian] — DETERMINISTIC**
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music? <!--hard__music-obsidian__077-->
-
-**5. [Swiggy] — DETERMINISTIC**
+**2. [Swiggy] — DETERMINISTIC**
 - Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order. <!--hard__swiggy__005-->
-
+**3. [Music+Obsidian] — DETERMINISTIC**
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music? <!--hard__music-obsidian__077-->
+**4. [Files+Notes] — ASK USER**
+- I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text <!--hard__files-notes__011-->
+**5. [Contacts+Obsidian] — DETERMINISTIC**
+- I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: "Contact" | "Old phone no." | "New phone no.". <!--hard__contacts-obsidian__029-->
 **6. [Telegram+Calendar] — DETERMINISTIC**
 - Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one? <!--hard__telegram-calendar__016-->
-
 
 ### Day 2
 
@@ -123,25 +116,18 @@ Hard tasks — Day 1:
 - Medium (3pt): Could you filter the Shorts feed for a specific topic, like the 3 best ones, and count how many you liked in YouTube? <!--medium__youtube__006-->
 
 Hard tasks — Day 2:
-
-**1. [Chrome+Telegram+Notes] — ASK USER**
-- I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
-
-**2. [Chrome+YouTube+Notes] — ASK USER**
+**1. [Chrome+YouTube+Notes] — ASK USER**
 - I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note <!--hard__chrome-youtube-notes__088-->
-
-**3. [Clock+Calendar] — DETERMINISTIC**
+**2. [Clock+Calendar] — DETERMINISTIC**
 - I need an alarm that repeats, but make sure it doesn't clash with anything I've got going on. <!--hard__clock-calendar__023-->
-
-**4. [Gmail+Calendar] — DETERMINISTIC**
+**3. [Gmail+Calendar] — DETERMINISTIC**
 - I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure? <!--hard__gmail-calendar__003-->
-
-**5. [Gmail+Notes] — DETERMINISTIC**
-- I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
-
-**6. [Google Search+Clock] — DETERMINISTIC**
+**4. [Chrome+Telegram+Notes] — ASK USER**
+- I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
+**5. [Google Search+Clock] — DETERMINISTIC**
 - I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
-
+**6. [Gmail+Notes] — DETERMINISTIC**
+- I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
 
 ### Day 3
 
@@ -175,15 +161,12 @@ Hard tasks — Day 2:
 - Easy (1pt): I'm on a call and need to mute myself for a second. Can you mute the microphone during an active call in Phone? <!--easy__phone__008-->
 
 Hard tasks — Day 3:
-
-**1. [Drive+Obsidian+Telegram] — ASK USER**
-- I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way <!--hard__drive-obsidian-telegram__049-->
-
+**1. [Music] — ASK USER**
+- I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given <!--hard__music__072-->
 **2. [Google Meet+Files] — DETERMINISTIC**
 - Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready? <!--hard__google-meet-files__070-->
-
-**3. [Google Search+Notes] — DETERMINISTIC**
+**3. [Drive+Obsidian+Telegram] — ASK USER**
+- I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way <!--hard__drive-obsidian-telegram__049-->
+**4. [Google Search+Notes] — DETERMINISTIC**
 - I'm stuck between two products. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
 
-**4. [Music] — ASK USER**
-- I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given <!--hard__music__072-->

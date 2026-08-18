@@ -404,36 +404,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__contacts-obsidian__029",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 1,
-      "app": "Contacts+Obsidian",
-      "app_slug": "contacts-obsidian",
-      "apps": [
-        "Contacts",
-        "Obsidian"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": "DETERMINISTIC",
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: \"Contact\" | \"Old phone no.\" | \"New phone no.\".",
-      "prompt_template": "I got new phone numbers for my dad and myself. My '{{ contact updates title }}' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: \"Contact\" | \"Old phone no.\" | \"New phone no.\".",
-      "placeholders": [
-        "contact updates title"
-      ],
-      "placeholder_count": 1,
-      "is_cross_app": true,
-      "cross_app_label": "Contacts+Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "hard__drive-notes-telegram__010",
       "bucket": "hard",
       "difficulty": "hard",
@@ -463,31 +433,30 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__files-notes__011",
+      "task_id": "hard__swiggy__005",
       "bucket": "hard",
       "difficulty": "hard",
       "points": 5,
       "day": 1,
-      "app": "Files+Notes",
-      "app_slug": "files-notes",
+      "app": "Swiggy",
+      "app_slug": "swiggy",
       "apps": [
-        "Files",
-        "Notes"
+        "Swiggy"
       ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": "ASK USER",
+      "num_apps": 1,
+      "cross_app_required": false,
+      "ahi": "DETERMINISTIC",
       "note": null,
-      "ask_user_fact": "Add a 3% late fee.",
-      "is_ask_user": true,
-      "task_number_within_app": 3,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 5,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text",
-      "prompt_template": "I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text",
+      "prompt_text": "Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.",
+      "prompt_template": "Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.",
       "placeholders": [],
       "placeholder_count": 0,
-      "is_cross_app": true,
-      "cross_app_label": "Files+Notes",
+      "is_cross_app": false,
+      "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -519,30 +488,61 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__swiggy__005",
+      "task_id": "hard__files-notes__011",
       "bucket": "hard",
       "difficulty": "hard",
       "points": 5,
       "day": 1,
-      "app": "Swiggy",
-      "app_slug": "swiggy",
+      "app": "Files+Notes",
+      "app_slug": "files-notes",
       "apps": [
-        "Swiggy"
+        "Files",
+        "Notes"
       ],
-      "num_apps": 1,
-      "cross_app_required": false,
+      "num_apps": 2,
+      "cross_app_required": true,
+      "ahi": "ASK USER",
+      "note": null,
+      "ask_user_fact": "Add a 3% late fee.",
+      "is_ask_user": true,
+      "task_number_within_app": 3,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text",
+      "prompt_template": "I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Files+Notes",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "hard__contacts-obsidian__029",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "points": 5,
+      "day": 1,
+      "app": "Contacts+Obsidian",
+      "app_slug": "contacts-obsidian",
+      "apps": [
+        "Contacts",
+        "Obsidian"
+      ],
+      "num_apps": 2,
+      "cross_app_required": true,
       "ahi": "DETERMINISTIC",
       "note": null,
       "ask_user_fact": null,
       "is_ask_user": false,
-      "task_number_within_app": 5,
+      "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.",
-      "prompt_template": "Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": false,
-      "cross_app_label": null,
+      "prompt_text": "I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: \"Contact\" | \"Old phone no.\" | \"New phone no.\".",
+      "prompt_template": "I got new phone numbers for my dad and myself. My '{{ contact updates title }}' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: \"Contact\" | \"Old phone no.\" | \"New phone no.\".",
+      "placeholders": [
+        "contact updates title"
+      ],
+      "placeholder_count": 1,
+      "is_cross_app": true,
+      "cross_app_label": "Contacts+Obsidian",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -972,39 +972,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__chrome-telegram-notes__008",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 2,
-      "app": "Chrome+Telegram+Notes",
-      "app_slug": "chrome-telegram-notes",
-      "apps": [
-        "Chrome",
-        "Telegram",
-        "Notes"
-      ],
-      "num_apps": 3,
-      "cross_app_required": true,
-      "ahi": "ASK USER",
-      "note": null,
-      "ask_user_fact": "The item is wireless earbuds.",
-      "is_ask_user": true,
-      "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing",
-      "prompt_template": "I'm shopping for something specific and want the best price. Compare prices across two sites: {{ shopping_website_1 }} and {{ shopping_website_2 }}, check the difference, and message {{ contact }} on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing",
-      "placeholders": [
-        "shopping_website_1",
-        "shopping_website_2",
-        "contact"
-      ],
-      "placeholder_count": 3,
-      "is_cross_app": true,
-      "cross_app_label": "Chrome+Telegram+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "hard__chrome-youtube-notes__088",
       "bucket": "hard",
       "difficulty": "hard",
@@ -1090,31 +1057,36 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__gmail-notes__045",
+      "task_id": "hard__chrome-telegram-notes__008",
       "bucket": "hard",
       "difficulty": "hard",
       "points": 5,
       "day": 2,
-      "app": "Gmail+Notes",
-      "app_slug": "gmail-notes",
+      "app": "Chrome+Telegram+Notes",
+      "app_slug": "chrome-telegram-notes",
       "apps": [
-        "Gmail",
+        "Chrome",
+        "Telegram",
         "Notes"
       ],
-      "num_apps": 2,
+      "num_apps": 3,
       "cross_app_required": true,
-      "ahi": "DETERMINISTIC",
+      "ahi": "ASK USER",
       "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 5,
+      "ask_user_fact": "The item is wireless earbuds.",
+      "is_ask_user": true,
+      "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?",
-      "prompt_template": "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing",
+      "prompt_template": "I'm shopping for something specific and want the best price. Compare prices across two sites: {{ shopping_website_1 }} and {{ shopping_website_2 }}, check the difference, and message {{ contact }} on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing",
+      "placeholders": [
+        "shopping_website_1",
+        "shopping_website_2",
+        "contact"
+      ],
+      "placeholder_count": 3,
       "is_cross_app": true,
-      "cross_app_label": "Gmail+Notes",
+      "cross_app_label": "Chrome+Telegram+Notes",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1143,6 +1115,34 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Clock",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "hard__gmail-notes__045",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "points": 5,
+      "day": 2,
+      "app": "Gmail+Notes",
+      "app_slug": "gmail-notes",
+      "apps": [
+        "Gmail",
+        "Notes"
+      ],
+      "num_apps": 2,
+      "cross_app_required": true,
+      "ahi": "DETERMINISTIC",
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 5,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?",
+      "prompt_template": "I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone?",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Gmail+Notes",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1506,32 +1506,30 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__drive-obsidian-telegram__049",
+      "task_id": "hard__music__072",
       "bucket": "hard",
       "difficulty": "hard",
       "points": 5,
       "day": 3,
-      "app": "Drive+Obsidian+Telegram",
-      "app_slug": "drive-obsidian-telegram",
+      "app": "Music",
+      "app_slug": "music",
       "apps": [
-        "Google Drive",
-        "Obsidian",
-        "Telegram"
+        "Music"
       ],
-      "num_apps": 3,
-      "cross_app_required": true,
+      "num_apps": 1,
+      "cross_app_required": false,
       "ahi": "ASK USER",
       "note": null,
-      "ask_user_fact": "Message Yuvraj Airtel.",
+      "ask_user_fact": "The workout playlist should be about 30 minutes of high-energy tracks.",
       "is_ask_user": true,
-      "task_number_within_app": 1,
+      "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way",
-      "prompt_template": "I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way",
+      "prompt_text": "I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given",
+      "prompt_template": "I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given",
       "placeholders": [],
       "placeholder_count": 0,
-      "is_cross_app": true,
-      "cross_app_label": "Drive+Obsidian+Telegram",
+      "is_cross_app": false,
+      "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1563,6 +1561,35 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
+      "task_id": "hard__drive-obsidian-telegram__049",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "points": 5,
+      "day": 3,
+      "app": "Drive+Obsidian+Telegram",
+      "app_slug": "drive-obsidian-telegram",
+      "apps": [
+        "Google Drive",
+        "Obsidian",
+        "Telegram"
+      ],
+      "num_apps": 3,
+      "cross_app_required": true,
+      "ahi": "ASK USER",
+      "note": null,
+      "ask_user_fact": "Message Yuvraj Airtel.",
+      "is_ask_user": true,
+      "task_number_within_app": 1,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way",
+      "prompt_template": "I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Drive+Obsidian+Telegram",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
       "task_id": "hard__google-search-notes__019",
       "bucket": "hard",
       "difficulty": "hard",
@@ -1588,33 +1615,6 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "hard__music__072",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 3,
-      "app": "Music",
-      "app_slug": "music",
-      "apps": [
-        "Music"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": "ASK USER",
-      "note": null,
-      "ask_user_fact": "The workout playlist should be about 30 minutes of high-energy tracks.",
-      "is_ask_user": true,
-      "task_number_within_app": 4,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given",
-      "prompt_template": "I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": false,
-      "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
     }
   ]

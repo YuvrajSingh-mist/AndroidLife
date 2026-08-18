@@ -44,6 +44,7 @@ def send_line(text: str):
 
 SUBJECT = "Last chance: 15% OFF with code FLIP15"
 
+# No brand impersonation: neutral "Deals Team" sender, generic promo footer.
 BODY = [
     "Hi Yuvraj,",
     "",
@@ -62,10 +63,10 @@ BODY = [
     "Terms and conditions apply. Valid on select styles. Not valid on",
     "electronics, jewellery, or gift cards. One use per customer.",
     "",
-    "You are receiving this because you are subscribed to Myntra promotions.",
+    "You are receiving this because you are subscribed to our daily deal alerts.",
     "",
     "Warm regards,",
-    "The Myntra Team",
+    "The Deals Team",
 ]
 
 if __name__ == "__main__":
