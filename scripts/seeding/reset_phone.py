@@ -52,12 +52,25 @@ PROFILES: dict[str, dict] = {
             "/sdcard/Download/SPORTS_VIDEO_DATA.xlsx",
             "/sdcard/Download/budget.xlsx",
             "/sdcard/Download/quote.xlsx",
+            "/sdcard/Download/Weekly Agenda.txt",  # hard__google-meet-files__070
         ],
         # seed calendar events that MUST be present on the Google-synced calendar
         "seed_calendar_titles": [
             "shareholder AlphaCorp Q2 Review",
             "shareholder BetaTech Strategy",
             "shareholder GammaFund Governance",
+            # hard__clock-calendar__023 clash + hard__google-meet-files__070 agenda meeting
+            "Weekly Sync",
+            "Gym",
+        ],
+        # Date-relative calendar seeds re-created at EVERY reset (next weekday
+        # occurrence, cal_id=16, device-local time) so the clock-calendar clash
+        # shift (07:00 -> 07:30) and the meet-files "Weekly Sync 10 AM" meeting
+        # are always present for the 3x variance runs.
+        "seed_calendar_events": [
+            {"title": "Weekly Sync", "weekday": "monday", "start": "07:00", "end": "08:00"},
+            {"title": "Weekly Sync", "weekday": "monday", "start": "10:00", "end": "11:00"},
+            {"title": "Gym", "weekday": "tuesday", "start": "06:30", "end": "07:30"},
         ],
         # the contact that runs mangle (easy-contacts-001) - restored to this name
         "contact_email": "akashveyron33@gmail.com",
@@ -79,6 +92,16 @@ PROFILES: dict[str, dict] = {
                 "The shared budget spreadsheet must be finalised by 2026-08-10.\n\n"
                 "Last reviewed: 2026-07-10.\n"
             ),
+            # hard__google-meet-files__070: the agenda doc the agent must open (kept
+            # at baseline so a run can't mutate it between variance checks).
+            "/sdcard/Download/Weekly Agenda.txt": (
+                "Weekly Agenda\n\n"
+                "1. Opening / standup (5 min)\n"
+                "2. Review last week action items (10 min)\n"
+                "3. Project status updates (15 min)\n"
+                "4. New business / decisions (10 min)\n"
+                "5. Action items + owners (5 min)\n"
+            ),
         },
         # run-created Obsidian paste artifacts: Obsidian stores pasted images in the
         # vault root as "Pasted image YYYYMMDDHHMMSS.jpg" (no attachment folder is
@@ -90,6 +113,7 @@ PROFILES: dict[str, dict] = {
         "seed_file_contents": {
             "/sdcard/Obsidian/Papers vault oneplus /Food Favourites.md": "## Veggie Bowl",
             "/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md": "Last reviewed: 2026-07-10.",
+            "/sdcard/Download/Weekly Agenda.txt": "Opening / standup",
         },
         # App-private / cloud run artifacts the reset CANNOT auto-delete (non-rooted)
         # - see .agents/skills/reset-phone/SKILL.md step 2 for the full list.
@@ -399,6 +423,56 @@ def remove_calendar_by_ids(serial: str, ids: list[int], apply: bool) -> None:
         print(f"  [dry] soft-delete calendar events by id: {ids}")
 
 
+def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None:
+    """(Re)create date-relative calendar seeds so clash/agenda meetings exist at
+    every reset (variance-safe for the 3x public runs).
+
+    Removes any existing events with the same titles (idempotent), then inserts
+    each event on its next weekday occurrence at the device's local time on
+    calendar _id=16 (the Google-synced primary). Used by hard__clock-calendar__023
+    (Weekly Sync Mon 07:00 + Gym Tue 06:30 -> clash shift to 07:30) and
+    hard__google-meet-files__070 (Weekly Sync Mon 10:00 agenda meeting).
+    """
+    if not events:
+        return
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    tz_name = sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata"
+    try:
+        tz = ZoneInfo(tz_name)
+    except Exception:
+        tz = ZoneInfo("Asia/Kolkata")
+    weekday_index = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+                     "friday": 4, "saturday": 5, "sunday": 6}
+    titles = [e["title"] for e in events]
+    remove_calendar_events(serial, titles, apply)
+    if not apply:
+        print(f"  [dry] ensure date-relative calendar seeds: {titles}")
+        return
+    today = datetime.date.today()
+    for ev in events:
+        target = weekday_index[ev["weekday"]]
+        days_ahead = (target - today.weekday()) % 7
+        if days_ahead == 0:
+            days_ahead = 7  # next week's occurrence, never today
+        d = today + datetime.timedelta(days=days_ahead)
+
+        def epoch(hhmm: str) -> int:
+            h, m = map(int, hhmm.split(":"))
+            return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=tz).timestamp() * 1000)
+
+        dtstart, dtend = epoch(ev["start"]), epoch(ev["end"])
+        cmd = (
+            f"content insert --uri {CAL_URI} --bind title:s:{quote(ev['title'])} "
+            f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
+            f"--bind calendar_id:i:16 --bind allDay:i:0 "
+            f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0"
+        )
+        sh(serial, cmd, check=True)
+        print(f"  [ok]  seeded calendar event '{ev['title']}' {d} {ev['start']}-{ev['end']} ({tz_name})")
+
+
 def verify(serial: str, prof: dict) -> bool:
     ok = True
     print("== baseline verify ==")
@@ -475,6 +549,7 @@ def main() -> int:
         unblock_numbers(args.serial, prof.get("blocked_numbers_to_remove", []), args.apply)
         remove_calendar_events(args.serial, prof.get("calendar_titles_to_remove", []), args.apply)
         remove_calendar_by_ids(args.serial, prof.get("calendar_ids_to_remove", []), args.apply)
+        ensure_calendar_events(args.serial, prof.get("seed_calendar_events", []), args.apply)
         restore_contact(args.serial, prof, args.apply)
         remove_paths(args.serial, prof.get("downloads_to_remove", []), args.apply)
         remove_paths(args.serial, prof.get("device_paths_to_remove", []), args.apply)

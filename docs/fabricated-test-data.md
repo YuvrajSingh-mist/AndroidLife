@@ -305,6 +305,21 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Device seeding for public DET solvability (variance-safe).**
+  Seeded the two solvable-but-gapped public DET tasks on the phone (serial `RS7XKZDI8HTOJNYL`):
+  - `hard__clock-calendar__023`: Calendar (cal_id=16 `yuvraj.mist@gmail.com`) now has **"Weekly Sync"**
+    (next Mon 07:00-08:00) + **"Gym"** (next Tue 06:30-07:30) so the 07:00 → 07:30 clash-shift is reachable.
+  - `hard__google-meet-files__070`: Calendar has **"Weekly Sync"** (next Mon 10:00-11:00) + Files has
+    **`/sdcard/Download/Weekly Agenda.txt`** (the agenda doc the agent must open).
+  - `reset_phone.py` public_v2 profile gained `seed_calendar_events` (date-relative events re-created at
+    every reset on the next weekday occurrence, device-local time) + a new `ensure_calendar_events()`
+    helper (idempotent: soft-deletes existing matching titles, then re-inserts), and the Weekly Agenda
+    file was added to `seed_files` / `restore_file_contents` / `seed_file_contents`. This keeps the 3×
+    variance runs starting from an identical baseline. Verified: `reset_phone --verify-only` → RESULT
+    PASS; a full `--apply` cleanly re-seeds (delete 3 + insert 3, no duplicates). Caveat: the two
+    "Weekly Sync" events (07:00 + 10:00) both land on the same Monday; the tasks disambiguate by the
+    time given in their prompts (clock-calendar checks 7 AM, meet-files is told "10 AM").
+
 - **2026-08-19 — Hard-task taxonomy relabeled (ASK USER SINGLE / ASK USER - MULTI) + Google Meet claim corrected + public DET placeholder pass.**
   - **Taxonomy:** hard headers in `tasks_530.md` + `public.md` now read **ASK USER SINGLE** / **ASK USER - MULTI** / **DETERMINISTIC**. The 13 multi-turn KB tasks were previously labeled "DETERMINISTIC" even though they are user-interaction tasks; they are now **ASK USER - MULTI** (data `ahi="ASK USER"`, a new `interaction` field = `"single"`/`"multi"`/`None`, `is_ask_user=True`). The 36 single-turn tasks became **ASK USER SINGLE**; 23 plain DET unchanged. Exporters (`task_dataset.py`, `export_530_dataset.py`) parse the new labels via `split_hard_label()`; `export_530_dataset.verify()` now asserts 23/36/13 and only single-turn ASK USER need facts (multi-turn use KB profiles). Runtime is unaffected — `task_batch.py` checks KB membership before the ASK USER branch, so multi-turn tasks still route to the KB oracle. Added `interaction` to the JSON + a parser test.
   - **Google Meet IS installed:** the spec, HANDOFF, and future-directions wrongly claimed Meet was absent (they only checked `com.google.android.apps.meetings`). Meet ships as **`com.google.android.apps.tachyon`** (the Duo→Meet rebrand); it is in the launcher as **Meet**, opens into `HomeActivity`, and `scripts/tools/app_audit.py` reports **31/31 required apps** with `[OK] Google Meet`. All three docs corrected. Caveat: Meet's home is call-centric ("Your latest activity will appear here") and does not surface a scheduled-meetings list, so `hard__google-meet-files__070`'s meeting-discovery step may need to read Calendar instead — flagged below.
