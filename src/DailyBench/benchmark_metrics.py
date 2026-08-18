@@ -20,10 +20,12 @@ Formulas (Section 4.2):
     Ave. Queries  = (1/|I_interact|) * sum_{i in I_interact}(c_i)
 
 User Interaction Quality (UIQ) is the **success-free fact-match** formula
-(``user_interaction_quality_factmatch``): it grades each ``ask_user`` answer
-against the task's ground-truth fact (did the agent ask the *right* question),
-regardless of whether the whole task succeeded, and penalizes interaction tasks
-that never asked plus GUI-only tasks that asked unnecessarily.
+(``user_interaction_quality_factmatch``): each interaction task contributes its
+own ``c_i / q_i`` correctness ratio (fraction of its ``ask_user`` answers that
+were the right question; 0 if it never asked), averaged over interaction tasks
+plus GUI-only tasks that asked unnecessarily — so every interaction task is
+weighted equally regardless of how many times it asked, and whole-task success
+is deliberately ignored.
 """
 
 from __future__ import annotations
@@ -84,27 +86,27 @@ def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
     deliberately ignored: asking the right question counts even when the overall
     task failed for unrelated reasons (e.g. an alarm UI bug).
 
-        UIQ = #correct-answer calls / (
-                  #ask_user calls + #interaction tasks that never asked
-                  + #GUI-only tasks that needlessly invoked ask_user)
+    Each interaction task contributes its **own** correctness ratio ``c_i / q_i``
+    (the fraction of its ask_user calls that were the right question; 0 when it
+    never asked), so every ASK USER task is weighted equally regardless of how
+    many times it asked. The average is taken over interaction tasks plus
+    GUI-only tasks that needlessly invoked ask_user.
 
-    Each never-asked interaction task adds one missed-expected-question to the
-    denominator, so skipping the ask is still penalized.
+        UIQ = sum_{i in I} (c_i / q_i) / (|I| + |T|)    # c_i/q_i := 0 if q_i = 0
+
+    A never-asked interaction task contributes 0 to the numerator yet stays in
+    the denominator, so skipping the ask is still penalized.
     """
     interaction = [record for record in records if record["is_interaction"]]
-    total_calls = 0
-    correct = 0
-    never_asked = 0
+    numerator = 0.0
     for record in interaction:
         calls = record.get("ask_user_calls") or 0
-        total_calls += calls
-        correct += record.get("ask_user_correct") or 0
-        if calls == 0:
-            never_asked += 1
+        if calls > 0:
+            numerator += (record.get("ask_user_correct") or 0) / calls
     triggered = sum(
         1
         for record in records
         if not record["is_interaction"] and (record.get("ask_user_calls") or 0) > 0
     )
-    denominator = total_calls + never_asked + triggered
-    return (correct / denominator) if denominator else 0.0
+    denominator = len(interaction) + triggered
+    return (numerator / denominator) if denominator else 0.0

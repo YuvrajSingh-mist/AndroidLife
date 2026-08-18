@@ -60,15 +60,25 @@ def test_factmatch_uiq_penalizes_never_asked() -> None:
 
 
 def test_factmatch_uiq_counts_each_right_answer_and_penalizes_gui_triggered() -> None:
-    # interaction asks twice, both right: 2 correct answers
-    # denominator = 2 calls + 1 GUI-only triggered = 3
+    # interaction asks twice, both right: per-task ratio = 2/2 = 1
+    # denominator = 1 interaction + 1 GUI-only triggered = 2
     records = [
         _rec(False, ask_user_calls=2, ask_user_correct=2, is_interaction=True),
         _rec(True, ask_user_calls=1, ask_user_correct=0, is_interaction=False),
     ]
-    assert user_interaction_quality_factmatch(records) == pytest.approx(2 / 3)
+    assert user_interaction_quality_factmatch(records) == pytest.approx(1 / 2)
 
 
 def test_factmatch_uiq_wrong_answers_and_empty() -> None:
     assert user_interaction_quality_factmatch([_rec(True, ask_user_calls=1, ask_user_correct=0, is_interaction=True)]) == pytest.approx(0.0)
     assert user_interaction_quality_factmatch([]) == 0.0
+
+
+def test_factmatch_uiq_weights_each_task_equally_not_by_call_volume() -> None:
+    # Per-task ratios: task A = 1/1 = 1.0, task B = 1/9 ≈ 0.111
+    # UIQ = (1.0 + 1/9) / 2 ≈ 0.556 — the chatty task does NOT dominate.
+    records = [
+        _rec(False, ask_user_calls=1, ask_user_correct=1, is_interaction=True),
+        _rec(False, ask_user_calls=9, ask_user_correct=1, is_interaction=True),
+    ]
+    assert user_interaction_quality_factmatch(records) == pytest.approx((1.0 + 1 / 9) / 2)

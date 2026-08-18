@@ -551,7 +551,7 @@ $$\text{SR} = \frac{1}{N}\sum_{i=1}^{N} s_i$$
 
 $$\text{AvgSteps} = \frac{1}{N}\sum_{i=1}^{N} n_i \qquad \text{AvgUserQueries} = \frac{1}{|I|}\sum_{i \in I} q_i$$
 
-$$\text{UIQ (fact-match)} = \frac{\sum_{i} c_i}{\sum_{i \in I} q_i + |M| + |T|}$$
+$$\text{UIQ (fact-match)} = \frac{\sum_{i \in I} \frac{c_i}{q_i}}{|I| + |T|}, \qquad \tfrac{c_i}{q_i} := 0 \ \text{if} \ q_i = 0$$
 
 - **Hallucination rate** = self-reported successes that failed on-device verification, over tasks
   with a known-absent target (`hallucination_controls.json`).

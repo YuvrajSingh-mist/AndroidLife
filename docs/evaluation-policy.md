@@ -35,9 +35,12 @@ correctly counted as a FAIL under the SR gate. This is the intended behavior.
 ## User Interaction Quality (UIQ) — success-free fact-match
 
 UIQ uses the **success-free fact-match formula** (`user_interaction_quality_factmatch`
-in `DailyBench/benchmark_metrics.py`): it grades the quality of each `ask_user`
-answer by whether the LLM-user's answer matched the task's ground-truth fact,
-regardless of whether the task succeeded. UIQ is independent of the SR gate.
+in `DailyBench/benchmark_metrics.py`): each ASK USER task contributes its own
+correctness ratio `c_i / q_i` (the fraction of its `ask_user` answers that
+matched the task's ground-truth fact; 0 if it never asked), averaged over
+interaction tasks plus GUI-only tasks that needlessly asked — so every
+interaction task is weighted equally regardless of how many times it asked.
+Task success is deliberately ignored. UIQ is independent of the SR gate.
 
 Example (Day 1, 2026-08-09): UIQ fact-match = 0.000 because the only real
 `ask_user` call (wireless-earbuds price compare) returned an answer that did not
