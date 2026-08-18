@@ -190,6 +190,18 @@ currency pair: USD to INR
 # Digit prefix for the Phone call-history filter task (`[digits]`).
 digits: 98765
 
+# ---- public-sample unambiguity (2026-08-18) ------------------------------
+# Resolve the placeholders that make every non-ASK public task unambiguous:
+# `[store]` — a real retailer with a physical-store locator on its website.
+store: Decathlon
+# `[restaurant]` — a real restaurant on the food-delivery site (see below).
+restaurant: Downtown Delight
+# `[product 1]` / `[product 2]` — two real, reviewable products.
+product 1: Sony WH-1000XM5
+product 2: Bose QuietComfort Ultra
+# `[transit line]` — a real bus route for the "next departure" alarm task.
+transit line: Route 205
+
 # ---- device layout (OPTIONAL overrides) ----------------------------------
 # The seed scripts auto-detect these from the connected phone, so you normally
 # DON'T need them. Set them only to force a value for a non-standard device:

@@ -491,6 +491,19 @@ following entities were **seeded on the test device** (all recorded in
   names (`Team Sync` / `Mentor 1 on 1` / `Standup` / `Weekly Planning` /
   `Python Workshop`). Obsidian notes, the coupon email, and the SPORTS_VIDEO_DATA
   spreadsheet already used natural names.
+- **Non-ASK-USER unambiguity pass (2026-08-18):** every deterministic (DET/KB)
+  public task now resolves every entity it references. Fixed 6 prompts that
+  named an entity without a placeholder (in `public.md` +
+  `DailyBench_public_v2.json/.jsonl`), adding config values so they resolve:
+  `easy__shopping-delivery-browser__012` → `[store]` (Decathlon),
+  `medium__shopping-delivery-browser__010` → `[food delivery site]`+`[restaurant]`
+  (Swiggy / Downtown Delight), `medium__youtube__006` → `[topic]`,
+  `easy__telegram__010` → `[contact]` (Yuvraj Airtel),
+  `hard__google-search-clock__056` → `[transit line]` (Route 205),
+  `hard__google-search-notes__019` → `[product 1]`+`[product 2]`
+  (Sony WH-1000XM5 / Bose QuietComfort Ultra). The same ambiguity exists in the
+  530 corpus but the 530 is intentionally left untouched (only the public sample
+  was rectified).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

@@ -21,7 +21,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've got a packed day tomorrow and want to make sure nothing overlaps. Could you check my Calendar for any scheduling conflicts tomorrow afternoon? <!--easy__calendar__002-->
 
 **[Chrome]**
-- Easy (1pt): I'd rather shop in person if there's one close by. Can you check if a store has a physical location nearby via its website in Chrome? <!--easy__shopping-delivery-browser__012-->
+- Easy (1pt): I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome? <!--easy__shopping-delivery-browser__012-->
 
 **[Clock]**
 - Easy (1pt): I'm about to time something and need to start right away. Can you start the stopwatch in Clock? <!--easy__clock__010-->
@@ -107,13 +107,13 @@ Hard tasks — Day 1:
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist? <!--easy__prime-video__002-->
 
 **[Telegram]**
-- Easy (1pt): I don't want them to know I've seen the message yet. Can you turn off read receipts for a specific chat in Telegram? <!--easy__telegram__010-->
+- Easy (1pt): I don't want them to know I've seen the message yet. Can you turn off read receipts for [contact] in Telegram? <!--easy__telegram__010-->
 
 **[Weather]**
 - Easy (1pt): I'm about to head out and don't want to get caught in the rain. Can you check today's weather in the Weather app and tell me if it looks good for my commute? <!--easy__weather__003-->
 
 **[YouTube]**
-- Medium (3pt): Could you filter the Shorts feed for a specific topic, like the 3 best ones, and count how many you liked in YouTube? <!--medium__youtube__006-->
+- Medium (3pt): Could you filter the Shorts feed for [topic], like the 3 best ones, and count how many you liked in YouTube? <!--medium__youtube__006-->
 
 Hard tasks — Day 2:
 **1. [Chrome+YouTube+Notes] — ASK USER**
@@ -125,7 +125,7 @@ Hard tasks — Day 2:
 **4. [Chrome+Telegram+Notes] — ASK USER**
 - I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
 **5. [Google Search+Clock] — DETERMINISTIC**
-- I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
+- I'm about to miss my bus. Look up [transit line]'s next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
 **6. [Gmail+Notes] — DETERMINISTIC**
 - I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
 
@@ -139,7 +139,7 @@ Hard tasks — Day 2:
 
 **[Chrome]**
 - Easy (1pt): I don't want anyone seeing what I just looked up. Can you clear my browsing history from the last hour in Chrome? <!--easy__chrome__012-->
-- Medium (3pt): Could you rank the menu items on a delivery site by rating for a specific restaurant, pick the top one, and check its price in Chrome? <!--medium__shopping-delivery-browser__010-->
+- Medium (3pt): Could you rank the menu items on [food delivery site] by rating for [restaurant], pick the top one, and check its price in Chrome? <!--medium__shopping-delivery-browser__010-->
 
 **[Clock]**
 - Easy (1pt): I'm cooking and need a timer so I don't overcook these. Can you set a timer for boiling eggs in Clock? <!--easy__clock__007-->
@@ -168,5 +168,5 @@ Hard tasks — Day 3:
 **3. [Drive+Obsidian+Telegram] — ASK USER**
 - I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way <!--hard__drive-obsidian-telegram__049-->
 **4. [Google Search+Notes] — DETERMINISTIC**
-- I'm stuck between two products. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
+- I'm stuck between [product 1] and [product 2]. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
 

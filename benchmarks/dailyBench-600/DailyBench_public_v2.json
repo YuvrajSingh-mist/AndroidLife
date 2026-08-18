@@ -55,10 +55,12 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'd rather shop in person if there's one close by. Can you check if a store has a physical location nearby via its website in Chrome?",
-      "prompt_template": "I'd rather shop in person if there's one close by. Can you check if a store has a physical location nearby via its website in Chrome?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome?",
+      "prompt_template": "I'd rather shop in person if there's one close by. Can you check if [store] has a physical location nearby via its website in Chrome?",
+      "placeholders": [
+        "store"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -909,10 +911,12 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I don't want them to know I've seen the message yet. Can you turn off read receipts for a specific chat in Telegram?",
-      "prompt_template": "I don't want them to know I've seen the message yet. Can you turn off read receipts for a specific chat in Telegram?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I don't want them to know I've seen the message yet. Can you turn off read receipts for [contact] in Telegram?",
+      "prompt_template": "I don't want them to know I've seen the message yet. Can you turn off read receipts for [contact] in Telegram?",
+      "placeholders": [
+        "contact"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -963,10 +967,12 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you filter the Shorts feed for a specific topic, like the 3 best ones, and count how many you liked in YouTube?",
-      "prompt_template": "Could you filter the Shorts feed for a specific topic, like the 3 best ones, and count how many you liked in YouTube?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you filter the Shorts feed for [topic], like the 3 best ones, and count how many you liked in YouTube?",
+      "prompt_template": "Could you filter the Shorts feed for [topic], like the 3 best ones, and count how many you liked in YouTube?",
+      "placeholders": [
+        "topic"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1109,10 +1115,12 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time",
-      "prompt_template": "I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm about to miss my bus. Look up [transit line]'s next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time",
+      "prompt_template": "I'm about to miss my bus. Look up [transit line]'s next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time",
+      "placeholders": [
+        "transit line"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Clock",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1247,10 +1255,13 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you rank the menu items on a delivery site by rating for a specific restaurant, pick the top one, and check its price in Chrome?",
-      "prompt_template": "Could you rank the menu items on a delivery site by rating for a specific restaurant, pick the top one, and check its price in Chrome?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you rank the menu items on [food delivery site] by rating for [restaurant], pick the top one, and check its price in Chrome?",
+      "prompt_template": "Could you rank the menu items on [food delivery site] by rating for [restaurant], pick the top one, and check its price in Chrome?",
+      "placeholders": [
+        "food delivery site",
+        "restaurant"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1609,10 +1620,13 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'm stuck between two products. Can you look up reviews and tell me which one's better for me?",
-      "prompt_template": "I'm stuck between two products. Can you look up reviews and tell me which one's better for me?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm stuck between [product 1] and [product 2]. Can you look up reviews and tell me which one's better for me?",
+      "prompt_template": "I'm stuck between [product 1] and [product 2]. Can you look up reviews and tell me which one's better for me?",
+      "placeholders": [
+        "product 1",
+        "product 2"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Notes",
       "source_path": "benchmarks/dailyBench-600/public.md"
