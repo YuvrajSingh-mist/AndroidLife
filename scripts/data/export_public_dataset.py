@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -10,6 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from DailyBench.task_dataset import ask_user_facts_path, merge_ask_user_facts, parse_tasks_markdown, save_dataset_files
+
+# The public sample is now a TRUE slice of the 530 corpus, so every task line carries
+# its real 530 task_id in an HTML comment (<!--hard__swiggy__005-->). Honor those ids:
+# extract them in file order, strip the comments for parsing, then re-apply.
+TASK_ID_COMMENT = re.compile(r"<!--([a-z0-9]+__[a-z0-9\-]+__\d+)-->")
+STRIP_COMMENTS = re.compile(r"<!--.*?-->")
 
 
 def main() -> int:
@@ -21,7 +28,16 @@ def main() -> int:
     """
     source_path = "benchmarks/dailyBench-600/public.md"
     source = ROOT / source_path
-    dataset = parse_tasks_markdown(source.read_text(encoding="utf-8"), source_path=source_path)
+    raw = source.read_text(encoding="utf-8")
+    real_ids = TASK_ID_COMMENT.findall(raw)  # in file order, one per task line
+    clean = STRIP_COMMENTS.sub("", raw)
+    dataset = parse_tasks_markdown(clean, source_path=source_path)
+    if real_ids and len(real_ids) == len(dataset["tasks"]):
+        for task, tid in zip(dataset["tasks"], real_ids):
+            task["task_id"] = tid
+            task["app_slug"] = tid.split("__")[1]
+    elif real_ids:
+        print(f"warning: {len(real_ids)} id comments but {len(dataset['tasks'])} parsed tasks - ignoring comments", file=sys.stderr)
     # Stays on the PUBLIC facts file (ask_user_facts.json, via ask_user_facts_path) - never the
     # 730 benchmark's ask_user_facts_730.json, since the preview is fine to publish with answers.
     merge_ask_user_facts(dataset, ROOT / ask_user_facts_path("public.md"))
@@ -44,3 +60,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

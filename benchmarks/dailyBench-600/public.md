@@ -1,162 +1,189 @@
 # DrainBench — Public Sample (3-Day Preview)
 
-### Not the eval set. A structural preview only. **50 tasks total.**
+### Not the eval set. A structural preview only — a TRUE sample drawn from the
+530-task corpus (same task_ids, exact prompt text, placeholder slots). **57 tasks total.**
 
-**Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything it needs (deterministic, ADB-verified end state) or is missing one load-bearing fact the agent must actively ask for (agent-user interaction, resolved by an LLM playing the user, holding only the omitted fact, answering just what's asked).
+**Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
+it needs (deterministic, ADB-verified end state) or is missing one load-bearing fact the agent
+must actively ask for (agent-user interaction, resolved by an LLM playing the user, holding only
+the omitted fact, answering just what's asked). Multi-turn (KB) tasks are DETERMINISTIC with a
+knowledge-base profile in `multiturn_kb_public.json`.
 
-Easy: 1 app, Medium: 1-2 apps randomly; exactly 1/3 steps respectively, varied phrasing. Hard battery: 2-3 apps, genuine reasoning, written as natural first-person requests rather than terse instructions, **distributed across the days and mixed so ask-user and deterministic tasks aren't grouped or predictable by position.**
-
+Easy: 1 app, Medium: 1-2 apps; Hard battery: 2-3 apps, genuine reasoning, natural first-person
+requests, **distributed across the days and mixed so ask-user, deterministic and multi-turn tasks
+aren't grouped or predictable by position.**
 
 ---
 
-## 3-Day Sample Schedule (50 tasks)
-
-
 ### Day 1
 
-
-**[Gmail]**
-- Easy (1pt): Star the most recent email from [sender] in my gmail inbox
-- Medium (3pt): In Gmail, search my inbox for any recent shared documents that I have received in the past 3 days, star them, and move them to a label called: "Recent Documents Received: Must Check".
-
-**[Google Maps]**
-- Easy (1pt): On Google Maps, check the estimated arrival time if leaving right now for [place] from my current place.
+**[Calendar]**
+- Easy (1pt): I've got a packed day tomorrow and want to make sure nothing overlaps. Could you check my Calendar for any scheduling conflicts tomorrow afternoon? <!--easy__calendar__002-->
 
 **[Chrome]**
-- Easy (1pt): In Chrome, check whether the Sony WF-1000XM5 wireless earbuds are back in stock this week on Amazon
-- Medium (3pt): In Chrome, open two tabs for two different airlines' baggage policies, compare them, and note the stricter one
+- Easy (1pt): I'd rather shop in person if there's one close by. Can you check if a store has a physical location nearby via its website in Chrome? <!--easy__shopping-delivery-browser__012-->
 
-**[Google Drive]**
-- Easy (1pt): Go to Google Drive and check which folder was modified most recently
-- Easy (1pt): I'm worried I'm running low on Drive space. Can you check how much storage I've used in Google Drive right now?
-- Medium (3pt): Find all files shared by [contact] this month, check which of those is an excel/spreadsheet file that was edited most recently, and download them locally to Documents folder through my gdrive.
+**[Clock]**
+- Easy (1pt): I'm about to time something and need to start right away. Can you start the stopwatch in Clock? <!--easy__clock__010-->
+
+**[Files+Obsidian]**
+- Medium (3pt) **[Files + Obsidian]**: My storage keeps shrinking and I need to find the big offenders. Filter files larger than 100MB across the whole device, note the largest one, star it, and log its size in an Obsidian note in Files? <!--medium__files__010-->
+
+**[Gallery+Obsidian]**
+- Medium (3pt) **[Gallery + Obsidian]**: Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones, and note the space freed in Obsidian in Gallery? <!--medium__gallery__007-->
+
+**[Gmail]**
+- Easy (1pt): Can you forward the most recent email in my Gmail to [contact] pls? <!--easy__gmail__001-->
 
 **[Google Photos]**
-- Easy (1pt): Save the latest 3 invoices screenshots in photos to a new album named "Invoices"
-- Medium (3pt): Find the top 5 best-matched photos taken in 'food' category from the year 2021-23,  and download the ones with highest resolution locally with the appropriate filenames to a folder called "Food Photos≠Memories 2021-23" in Downloads
+- Easy (1pt): I'm trying to remember when I last captured something. Can you open Google Photos and tell me the date of my most recent photo? <!--easy__google-photos__004-->
 
-**[YouTube]**
-- Easy (1pt): Open YouTube and check if the most recent video on the 'Matt Wolfe' channel is about the latest news in the world of AI and technology. 
-- Medium (3pt) **[YouTube+Telegram]**: Find the most viewed finance-related video saved in the Watch Later section, note its details with a shareable link into a SMS message to Maa if it's over 40 minutes from youtube app.
+**[Google Sheets]**
+- Medium (3pt): Could you open '[spreadsheet name]', freeze the header row, and confirm it stays visible when scrolling in Google Sheets? <!--medium__google-sheets__003-->
 
-**[Telegram]**
-- Easy (1pt): On Telegram, mute notifications for the most recent group chat
-- Medium (3pt): I'm trying to dig up links people sent me recently. Can you find all the messages that contain a link in the past month, list them for me in the format of "Contact" | "Link" strictly, and open the most recent one for me, in Telegram?
+**[Music]**
+- Easy (1pt): That song's stuck in my head and I need to hear it. Can you search for '[song]' in Music and play it? <!--easy__music__009-->
+
+**[Music+Gmail]**
+- Medium (3pt) **[Music + Gmail]**: Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email [contact] how much storage that freed up. <!--medium__music__004-->
+
+**[Notes]**
+- Medium (3pt): Could you open my '[note title]' note in Notes, read it, and rewrite it into a cleaner version with clear sections, keeping all the original points? <!--medium__notes__005-->
+
+**[Settings]**
+- Medium (3pt): Could you compare today's battery usage to yesterday's, note the difference, and check which app used the most today in Settings? <!--medium__settings__005-->
+
+**[Swiggy]**
+- Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and tell me the delivery status of my most recent order? <!--easy__swiggy__003-->
+
+**[YouTube+Gmail]**
+- Medium (3pt) **[YouTube + Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video. <!--medium__youtube__005-->
 
 Hard tasks — Day 1:
 
-**1. [Chrome+Notes] — DETERMINISTIC**
-- I'm trying to book a flight and don't want to overpay — search Chrome for two competing prices on the same route from Indigo and Air India, check the fees in each, work out which is actually cheaper. Save that airline's name, url of the selected cheaper package and final price in a note with title: "Flight Booking" in the Notes app. The trip is from here to Mumbai, departing on 2026-08-15 and returning on 2026-08-20. Add in the timings of the package you choose to that note too and pin it.
+**1. [Contacts+Obsidian] — DETERMINISTIC**
+- I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: "Contact" | "Old phone no." | "New phone no.". <!--hard__contacts-obsidian__029-->
 
-**3. [Calendar+Clock] — ASK USER**
-- I keep forgetting my dentist appointment is coming up — get it onto the Calendar, check whether anything else is already booked that morning, if so move it by two hours if something clashes. Set an alarm for that morning with snooze every 10 minutes, and add a backup alarm an hour later just in case (deliberately no appointment date and time exists anywhere on the test device). 
+**2. [Drive+Notes+Telegram] — ASK USER**
+- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way <!--hard__drive-notes-telegram__010-->
 
-**6. [Google Maps+Telegram] — DETERMINISTIC**
+**3. [Files+Notes] — ASK USER**
+- I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text <!--hard__files-notes__011-->
 
-- I've got a headache coming on and need something from a pharmacy right now — check Maps for the nearest one that's actually open, compare it against the second-closest option, note which one's genuinely faster to reach, text [contact] the winning pharmacy's name and hours through Telegram, and check the return route to my current location from there while you're at it.
+**4. [Music+Obsidian] — DETERMINISTIC**
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music? <!--hard__music-obsidian__077-->
 
-**9. [Contacts+Telegram+Google Maps] — ASK USER**
-- I'm so late for dinner tonight — pull up Yuvraj Airtel's number in Contacts, text him the address through Messages, check Maps for the current drive time, send that ETA as a follow-up text. Also, check the group thread in case anyone already gave them a heads up (deliberately no dinner address exists on the test device and no prior group thread exists, so the agent must ask the user for both to complete the task)
+**5. [Swiggy] — DETERMINISTIC**
+- Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order. <!--hard__swiggy__005-->
 
-**12. [Contacts+Gmail] — DETERMINISTIC**
-- I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later
+**6. [Telegram+Calendar] — DETERMINISTIC**
+- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one? <!--hard__telegram-calendar__016-->
 
-**13. [Swiggy] — DETERMINISTIC**
-- Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.
 
 ### Day 2
 
-**[Google Search]**
-- Easy (1pt): Fetch the top 3 search results for "best coffee shops near me".
-- Medium (3pt) **[Google Search+Telegram]**: Google the operating hours for two competing stores for hardware/electronics around my location, note which opens earlier, and message [contact] on Telegram the better option with a shareable link to its website and its phone number.
+**[Calculator+Obsidian+Notes]**
+- Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. <!--medium__calculator__001-->
 
-**[Calculator]**
-- Easy (1pt): Compute the total cost of 3 items priced individually at $15.99, $23.50, and $9.75, with calculator
-- Medium (3pt) **[Calculator+Obsidian]**: Using the Calculator, open the Excel sheet/spreadsheet named 'PURCHASE_ORDER' from Downloads, add up the values in its 'Amount' column across all n rows to get the total purchase, work out how much a 5% sales tax adds to that total, compare it against a flat $10 fee, and save which option is cheaper in an Obsidian note titled "Sales Tax vs Flat Fee"
-
-**[Clock]**
-- Easy (1pt): Open Clock and check how many alarms are currently active
-- Medium (3pt): Set an alarm for 7:30 AM tomorrow, check if it conflicts with any existing alarms, and if so, adjust it to 7:45 AM with snooze every 10 minutes for 3 times. Make sure it is at full volume and vibrate mode.
+**[Calculator+Telegram]**
+- Medium (3pt) **[Calculator + Telegram]**: Could you open the '[shared bill note title]' note in Obsidian, compute each roommate's share of the shared bill with different usage levels, message each their share, and log the total bill in a note in Calculator? <!--medium__calculator__005-->
 
 **[Calendar]**
-- Easy (1pt): Check Calendar for whether any event, and if so, how many are scheduled during lunchtime today
-- Medium (3pt): In the Google Calendar app, find all of my shareholder meetings this week (they have  the word "shareholder" prepended to the title), reschedule those after lunchtime to 9-12 in the morning, sorted by priority with a reminder of 15 minutes prior to each and get me a summary of meetings agendas from their descriptions.
+- Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? <!--medium__calendar__013-->
 
-**[Contacts]**
-- Easy (1pt): In Contacts, change [contact]'s name to include their middle initial: [middle initial]
-- Medium (3pt) **[Calendar+Contacts]**: From my contacts, find all people starting in the letter 'H' with birthdays this month, check which one will take place this week, and add a reminder in Calendar for it with the title: "Wish [contact] a happy birthday!"
+**[Chrome]**
+- Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
 
-**[Notes]**
-- Easy (1pt): In Notes, rename the most recently edited note to an appropriate name for its content, pinning it.
-- Medium (3pt): On Notes, find all notes containing a checklist, order them by descending order of date and add the first checklists' unchecked items to my shopping cart on Amazon, and get it to the payments page.
+**[Google Maps+Gmail]**
+- Medium (3pt) **[Google Maps + Gmail]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, email [contact] the address of the nearest station. <!--medium__google-maps__003-->
 
-**[Files]**
-- Easy (1pt): Search Files for the spreadsheet named "SPORTS_VIDEO_DATA", open it in the google sheets app, find the video with the most views in it, and report back its name along with its view count and duration.
-- Medium (3pt) **[Files+Google Drive]**: Sort the downloaded files by size and upload the 5 heaviest ones to google drive in a folder name "Too heavy files from Downloads" and remove it from the local storage thereafter to free up some space
+**[Google Sheets]**
+- Medium (3pt): I need a quick total for a column and don't want to do the math. Could you open '[spreadsheet name]' and sum up the [sheet column] column in Google Sheets? Reply with only the total, no other text, then add it as a new row at the bottom and adjust any other columns' values that need fixing because of that change. <!--medium__google-sheets__001-->
+
+**[Google Slides]**
+- Easy (1pt): I need to check the ending of the deck. Can you open '[presentation name]' in Google Slides and go to the last slide? <!--easy__google-slides__002-->
+- Medium (3pt): Could you open '[presentation name]', reorder the slides so the title slide is first, and confirm the new order in Google Slides? <!--medium__google-slides__002-->
+
+**[Messages]**
+- Easy (1pt): I've been busy and haven't checked my chats. Can you check my unread messages in Messages? <!--easy__messages__013-->
+
+**[Phone]**
+- Easy (1pt): I want to see who I need to call back from today. Can you check my missed calls from today only in Phone? <!--easy__phone__015-->
+
+**[Prime Video]**
+- Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist? <!--easy__prime-video__002-->
+
+**[Telegram]**
+- Easy (1pt): I don't want them to know I've seen the message yet. Can you turn off read receipts for a specific chat in Telegram? <!--easy__telegram__010-->
+
+**[Weather]**
+- Easy (1pt): I'm about to head out and don't want to get caught in the rain. Can you check today's weather in the Weather app and tell me if it looks good for my commute? <!--easy__weather__003-->
+
+**[YouTube]**
+- Medium (3pt): Could you filter the Shorts feed for a specific topic, like the 3 best ones, and count how many you liked in YouTube? <!--medium__youtube__006-->
 
 Hard tasks — Day 2:
 
-**2. [Messages+Contacts] — ASK USER**
-- My cousin's wedding is next month and I've been put in charge of coordinating everyone — pull the family members who should be in the loop out of Contacts, start a new group chat in Messages called "Wedding Plans" so we can all coordinate, post the first planning meeting time in it, and pin the chat so it doesn't get buried (deliberately no family-member names are identifiable on the test device and no meeting time exists anywhere on it, so the agent must ask the user for both which contacts to include and the meeting time to complete the task)
+**1. [Chrome+Telegram+Notes] — ASK USER**
+- I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
 
-**4. [Messages+Notes] — DETERMINISTIC**
-- I think my card payments are due — open Messages, find the 5 most recent bank or UPI transaction alert, note the exact amount and the date of the charge to a note called: "Card Payment Due" in the Notes app. Check today's date against it, set a reminder in Calendar with an appropriate title and in it, a line to double-check the charge if it's from today, and pin the same note so I remember to reconcile it
+**2. [Chrome+YouTube+Notes] — ASK USER**
+- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note <!--hard__chrome-youtube-notes__088-->
 
-**7. [Files+Notes+Telegram] — DETERMINISTIC**
-- The budget file's supposed to get updated every week and I'm worried it's slipping — check when 'budget.xlsx' in Downloads was last modified, note the date, and if it hasn't been touched this week, message [contact] through Telegram that it's overdue; save the last-modified date in a note titled "Budget Tracker" in the Notes app either way so we can track the pattern
+**3. [Clock+Calendar] — DETERMINISTIC**
+- I need an alarm that repeats, but make sure it doesn't clash with anything I've got going on. <!--hard__clock-calendar__023-->
 
-**8. [Obsidian+Calendar+Clock] — ASK USER**
+**4. [Gmail+Calendar] — DETERMINISTIC**
+- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure? <!--hard__gmail-calendar__003-->
 
-- It's Maa's birthday soon and I always forget until it's too late — check Maa's saved birthday in Contacts, get a Calendar reminder set a week ahead with title: "Maa's Birthday". Add an alarm that morning too, and check the calendar for any other birthdays coming up this month while you're in there, creating reminders before the actual dates, noting it in Obsidian with title: "Birthday Reminders" (deliberately no birthday date and time exists anywhere on the test device)
+**5. [Gmail+Notes] — DETERMINISTIC**
+- I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
 
-**14. [Telegram+Calendar] — DETERMINISTIC**
-- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?
+**6. [Google Search+Clock] — DETERMINISTIC**
+- I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
 
-**16. [Gmail+Calendar] — DETERMINISTIC**
-- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure?
 
 ### Day 3
 
+**[Calculator]**
+- Easy (1pt): We're splitting the bill and I want to know my share. Can you split a bill of [bill amount] evenly between 4 people in Calculator? <!--easy__calculator__007-->
 
 **[Camera]**
-- Medium (3pt): Using Camera, record a 15-second video with front facing camera with highest resolution possible, saving it with the name: "Camera Video" to a "Pretty Memories" folder, while also sending it to [email-id] via gmail in the end
+- Easy (1pt): I'm about to shoot a lot and don't want to run out of space. Can you check how much storage is left for photos/videos in Camera? <!--easy__camera__006-->
 
-**[Gallery]**
-- Easy (1pt): In Gallery, delete the most recent screenshot
-- Medium (3pt): On Gallery, find all videos under 10 seconds, keep only the clearest one, and delete the rest
+**[Chrome]**
+- Easy (1pt): I don't want anyone seeing what I just looked up. Can you clear my browsing history from the last hour in Chrome? <!--easy__chrome__012-->
+- Medium (3pt): Could you rank the menu items on a delivery site by rating for a specific restaurant, pick the top one, and check its price in Chrome? <!--medium__shopping-delivery-browser__010-->
 
-**[Music]**
-- Easy (1pt): Play the latest song by [artist] on music app
-- Medium (3pt): Create a playlist named "Chill Vibes" in my favourite app: YouTube Music , add the 5 popular lofi+jazz to it, and set it to shuffle play.
+**[Clock]**
+- Easy (1pt): I'm cooking and need a timer so I don't overcook these. Can you set a timer for boiling eggs in Clock? <!--easy__clock__007-->
+- Medium (3pt): I'm cooking the [recipe] and it has several timed steps back-to-back. Read the recipe and set up a labeled timer in the Clock for each timed step (label each timer with its step name) so they are ready to start as each step begins; confirm each timer was created and labelled. <!--medium__clock__001-->
 
-**[Messages]**
-- Easy (1pt): Count number of unread messages in the past 2 weeks from banks.
-- Medium (3pt): In Messages, look through the transaction alerts from the past month, sum up the total of all the purchase amounts mentioned in them (spending messages from stores and online services like PayPal, Kindle, OpenRouter and UPI payments), and send a summary to Dad via SMS with the total amount and a note: "Total spent on purchases this month is: ${total_amount}. Can I get you anything else?".
+**[Files]**
+- Medium (3pt): Could you filter files by type to isolate video files over 500MB, delete the largest, and note the size freed in Files? <!--medium__files__012-->
 
+**[Google Meet]**
+- Easy (1pt): I'm about to join a meeting by code and want to be ready. Can you open the 'Join with a code' screen in Google Meet and tell me what's on it? <!--easy__google-meet__003-->
+- Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
+- Medium (3pt): Could you open the meeting link [meeting link] and land on the 'Ready to join?' screen without actually joining in Google Meet? <!--medium__google-meet__003-->
+- Medium (3pt): Could you open Google Meet, check the participant list of my next scheduled meeting, and tell me who's expected to join? <!--medium__google-meet__005-->
+
+**[Music+Telegram]**
+- Medium (3pt) **[Music + Telegram]**: Could you summarize what a new album is about based on its track titles, decide whether to add it, and message [contact] on Telegram my verdict in Music? <!--medium__music-telegram__002-->
 
 **[Phone]**
-- Easy (1pt): Get me all the phone numbers ending with "89" from my recent call logs
-- Medium (3pt): Save the first , unsaved number from my call logs today with the name: "Courier Service" to contacts and if there are any spam/fraud calls in the last 2 weeks, block them from calling me again
-
-**[Settings]**
-- Easy (1pt): Set the phone's screen timeout to if unused for over 1 minute
-- Medium (3pt): Get the data on the app's usage for the past two weeks in terms of time spent on each app sorted in descending order, and set an app time limit to alert of about 30 minutes if any app is used for more than 2 hours in a day continuously for past two weeks 
-
-**[Shopping & Delivery (browser)]**
-- Easy (1pt): Check the estimated restock date for the "ANC enabled wireless earbuds by Samsung" on Amazon
-- Medium (3pt): Search for "Nike Air Jordans 1 Low" and compare prices for the same product with UK shoe size 10 on Amazon and Nike's official store site, note which one is cheaper than $1000 and add it to my cart on the cheaper site while also sharing the image's link
-
+- Easy (1pt): I'm on a call and need to mute myself for a second. Can you mute the microphone during an active call in Phone? <!--easy__phone__008-->
 
 Hard tasks — Day 3:
 
-**5. [Photos+Telegram] — ASK USER**
-- Everyone's been asking about the trip — pull the vacation photos together in Photos, pick out the best recent ones in terms of resolution, create a new group called: "Trip 2026" and share them these photos on Telegram, pin the message so it doesn't get buried, and star a couple of your favorites for yourself too (deliberately no single obvious group or album exists on the test device)
+**1. [Drive+Obsidian+Telegram] — ASK USER**
+- I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way <!--hard__drive-obsidian-telegram__049-->
 
-**10. [Calendar+Gmail+Obsidian] — ASK USER**
-- Sending an important client their quote is due today  — draft the number into mail in Gmail, send it over, and also save a copy of the quote in Obsidian for my records, flagging it and set a reminder to follow up next week. The number is the sum of the 'Cost' column in the quote. (deliberately no client email id exists on the test device and the quote file's location isn't obvious, so the agent must ask the user for the client email and where the quote file is saved — then open it and total the Cost column itself for the amount)
+**2. [Google Meet+Files] — DETERMINISTIC**
+- Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready? <!--hard__google-meet-files__070-->
 
-**11. [Photos+Settings] — DETERMINISTIC**
-- I want a proper lock screen made from my own photos for once — find 3 sharp photos in Photos, each of a different subject (a sunset, a beach, and a portrait), double-check each one is genuinely sharp at its best resolution, then make a single collage of all three and set that collage as the lock screen wallpaper through Settings, and star the three original photos in Photos so I remember which ones I used
+**3. [Google Search+Notes] — DETERMINISTIC**
+- I'm stuck between two products. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
 
-**15. [Music+Obsidian] — DETERMINISTIC**
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music?
+**4. [Music] — ASK USER**
+- I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given <!--hard__music__072-->
