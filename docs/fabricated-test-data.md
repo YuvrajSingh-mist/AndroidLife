@@ -512,6 +512,15 @@ following entities were **seeded on the test device** (all recorded in
   documents all keys for reproducibility. Verified: all 57 tasks resolve from
   the vars file alone (mirrors `task_batch.py`'s `unresolved placeholders`
   check).
+- **530-style output formats added (2026-08-18):** per the operator, every
+  public task that "notes something or tells the user the output" now ends with a
+  deterministic output format matching the 530 convention — `Reply with only X,
+  no other text.` (e.g. `easy__google-photos__004` → "…Reply with only the date,
+  no other text", `medium__calculator__001` → "…Reply with only the final grade,
+  no other text"). 16 tasks were updated (17 total with the format, incl. the
+  pre-existing `medium__google-sheets__001`) in `public.md` +
+  `DailyBench_public_v2.json/.jsonl`. This is a deliberate small deviation from
+  the raw 530 prompt text for those tasks (noted in the `public.md` header).
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'
