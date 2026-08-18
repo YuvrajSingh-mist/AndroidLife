@@ -270,21 +270,21 @@ Agent must ask: *which music type? what's your bedtime?* → lo-fi → 10:30 PM 
 
 ### 10. `hard__telegram-calendar__016` — date mentioned in group chat (day 9)
 **Prompt (vague):** "Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?"
-Agent must ask: *which chat?* → Maa's chat (date 2026-08-20) → set reminder.
+Agent must ask: *which chat?* → the real group 'Forever 21' (date 2026-08-20) → set reminder.
 ```json
 {
-  "correct_target": "telegram::maa-date",
+  "correct_target": "telegram::forever-21-date",
   "profile": {
     "chats": [
-      {"name":"Maa","recent_date_mentioned":"2026-08-20","topic":"family plans"},
-      {"name":"Yuvraj Singh Jio","recent_date_mentioned":null,"topic":"general"},
-      {"name":"Yuvraj Airtel","recent_date_mentioned":"2026-08-18","topic":"notes to self"}
+      {"name":"Forever 21","type":"group","members":2,"recent_date_mentioned":"2026-08-20","topic":"shopping deals"},
+      {"name":"Sumeet Crompton Fan","type":"pm","recent_date_mentioned":null,"topic":"general"},
+      {"name":"New Flat","type":"pm","recent_date_mentioned":"2026-08-18","topic":"flat matters"}
     ],
-    "preferences": {"reminder_chat":"Maa","account":"Yuvraj Airtel +91 9354672378 @YuvrajSingh9886","selected_contacts":["Maa","Dad","Yuvraj Singh Jio","Yuvraj Airtel"]}
+    "preferences": {"reminder_chat":"Forever 21","account":"Yuvraj Airtel +91 9354672378 @YuvrajSingh9886","selected_contacts":["Maa","Dad","Yuvraj Singh Jio","Yuvraj Airtel"],"group_note":"real Telegram group 'Forever 21' (2 members) confirmed on device"}
   }
 }
 ```
-🔴 Live: verify which chat actually mentions a date at run time. (Contacts/messages limited to selected contacts only per policy.)
+🔴 Live: verify which chat actually mentions a date at run time. (Groups OK to reference; individual contacts/messages limited to selected contacts per policy.)
 
 ### 11. `hard__youtube-settings__052` — channel notifications muted at night (day 11)
 **Prompt (vague):** "Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day?"

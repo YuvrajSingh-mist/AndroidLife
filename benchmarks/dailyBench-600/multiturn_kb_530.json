@@ -92,14 +92,14 @@
     }
   },
   "hard__telegram-calendar__016": {
-    "correct_target": "telegram::maa-date",
+    "correct_target": "telegram::forever-21-date",
     "profile": {
       "chats": [
-        {"name": "Maa", "recent_date_mentioned": "2026-08-20", "topic": "family plans"},
-        {"name": "Yuvraj Singh Jio", "recent_date_mentioned": null, "topic": "general"},
-        {"name": "Yuvraj Airtel", "recent_date_mentioned": "2026-08-18", "topic": "notes to self"}
+        {"name": "Forever 21", "type": "group", "members": 2, "recent_date_mentioned": "2026-08-20", "topic": "shopping deals"},
+        {"name": "Sumeet Crompton Fan", "type": "pm", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "New Flat", "type": "pm", "recent_date_mentioned": "2026-08-18", "topic": "flat matters"}
       ],
-      "preferences": {"reminder_chat": "Maa", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
+      "preferences": {"reminder_chat": "Forever 21", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"], "group_note": "real Telegram group 'Forever 21' (2 members) confirmed on device"}
     }
   },
   "hard__youtube-settings__052": {

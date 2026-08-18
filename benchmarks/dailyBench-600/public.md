@@ -64,15 +64,6 @@ Hard tasks — Day 1:
 **13. [Swiggy] — DETERMINISTIC**
 - Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.
 
-**14. [Telegram+Calendar] — DETERMINISTIC**
-- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?
-
-**15. [Music+Obsidian] — DETERMINISTIC**
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music?
-
-**16. [Gmail+Calendar] — DETERMINISTIC**
-- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure?
-
 ### Day 2
 
 **[Google Search]**
@@ -118,6 +109,12 @@ Hard tasks — Day 2:
 
 - It's Maa's birthday soon and I always forget until it's too late — check Maa's saved birthday in Contacts, get a Calendar reminder set a week ahead with title: "Maa's Birthday". Add an alarm that morning too, and check the calendar for any other birthdays coming up this month while you're in there, creating reminders before the actual dates, noting it in Obsidian with title: "Birthday Reminders" (deliberately no birthday date and time exists anywhere on the test device)
 
+**14. [Telegram+Calendar] — DETERMINISTIC**
+- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?
+
+**16. [Gmail+Calendar] — DETERMINISTIC**
+- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure?
+
 ### Day 3
 
 
@@ -160,3 +157,6 @@ Hard tasks — Day 3:
 
 **11. [Photos+Settings] — DETERMINISTIC**
 - I want a proper lock screen made from my own photos for once — find 3 sharp photos in Photos, each of a different subject (a sunset, a beach, and a portrait), double-check each one is genuinely sharp at its best resolution, then make a single collage of all three and set that collage as the lock screen wallpaper through Settings, and star the three original photos in Photos so I remember which ones I used
+
+**15. [Music+Obsidian] — DETERMINISTIC**
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music?
