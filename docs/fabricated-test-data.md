@@ -408,5 +408,40 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ---
 
+## 12. Public sample seeding (2026-08-18) — rebuilt `public.md` as a true 530 sample
+
+The public 3-day preview was rebuilt (via `scripts/data/build_public_sample.py`) so
+every task is drawn **exactly** from the 530-task corpus (same `task_id`, same prompt
+text, same placeholder slots) and is fully on-device solvable. To make that true, the
+following entities were **seeded on the test device** (all recorded in
+`.fabricated_test_data.json` and the per-task manifests in
+`assets/seeds/manifests/day_15/` and `day_18/`):
+
+| Seeded entity | Task(s) | Where | How to remove |
+|---|---|---|---|
+| Obsidian **`Shared Bill.md`** (Electricity bill 9,000 INR; roommates limited to the selected contacts: Yuvraj Airtel 120u, Yuvraj Singh Jio 80u, Maa 60u, Dad 40u) | `medium__calculator__005` | `/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Shared Bill.md'` |
+| **`seed_large_video.mp4`** (120 MB zeros) | `medium__files__010` | `/sdcard/Download/seed_large_video.mp4` | `adb shell rm /sdcard/Download/seed_large_video.mp4` |
+| **`Daily Reflection`** note (title + 3 lines) | `medium__notes__005` | OnePlus Notes app (`com.oneplus.note`) | Delete in the Notes app (app-private, no adb) |
+| **`Q3 Review`** presentation (title slide + 2 slides) | `easy__google-slides__002`, `medium__google-slides__002` | Google Slides | Delete in the Slides app (Google account file) |
+
+**Disclosure notes:**
+- **Contacts policy respected:** the `Shared Bill` roommate list was narrowed to the
+  selected contacts (Maa, Dad, Yuvraj Singh Jio, Yuvraj Airtel) — the 530 seed template
+  used a non-selected contact (`Akash Kumar`), replaced here so no task ever messages
+  outside the policy for the public release.
+- **Config/manifest reconciliation:** `medium__notes__005`'s 530 manifest resolved
+  `[note title]` to `Trip Packing Checklist` (a real user note), but `config/user.yaml`
+  resolves it to `Daily Reflection`. A fresh fabricated `Daily Reflection` note was
+  seeded so the rewrite task modifies only fabricated data, never the real user note.
+- **SPORTS_VIDEO_DATA.xlsx not modified:** the file already had a `Views` header
+  (`Video Name | Views | Duration (s)`), so `medium__google-sheets__001` was already
+  solvable. An earlier report claiming it lacked headers was a buggy-parse false alarm;
+  the original file was verified and left untouched.
+- **Google Meet IS installed:** the package is `com.google.android.apps.tachyon` (renamed
+  after the Duo/Meet merge), so the 5 Meet tasks are solvable. The app-audit's `meetings`
+  package check is stale and should be updated to also match `tachyon`.
+
+---
+
 *This document is a truthful record of what was fabricated and why, so that any
 reviewer can reproduce or audit the test environment.*

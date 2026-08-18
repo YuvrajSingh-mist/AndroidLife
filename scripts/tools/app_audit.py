@@ -76,6 +76,7 @@ BENCHMARK_APPS: dict[str, list[str]] = {
         "com.google.android.apps.docs",
     ],
     "Google Meet": [
+        "com.google.android.apps.tachyon",  # Meet's package since the Duo/Meet merge (2022)
         "com.google.android.apps.meetings",
         "com.google.android.apps.docs",
     ],
@@ -141,13 +142,11 @@ BENCHMARK_APPS: dict[str, list[str]] = {
     "Amazon Shopping": ["in.amazon.mShop.android.shopping"],
 }
 
-# Apps referenced by the docs/future directions that are NOT expected on a fresh
-# device (need install/provision before those tasks can run). Google Meet is the
-# only one still absent from the current device; Sheets/Slides are first-class in
-# BENCHMARK_APPS above.
-OPTIONAL_APPS: dict[str, str] = {
-    "Google Meet": "com.google.android.apps.meetings",
-}
+# Apps referenced by docs/future directions that are NOT expected on a fresh
+# device (need install/provision before those tasks can run). Google Meet is now
+# detected first-class via com.google.android.apps.tachyon (the renamed Duo/Meet
+# package), so it is no longer in the optional/missing list here.
+OPTIONAL_APPS: dict[str, str] = {}
 
 
 def adb_devices() -> list[str]:
