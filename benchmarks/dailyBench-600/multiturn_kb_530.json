@@ -46,13 +46,13 @@
     }
   },
   "hard__bookmyshow__003": {
-    "correct_target": "bookmyshow::priyanshu-samal-action-movie",
+    "correct_target": "bookmyshow::maa-action-movie",
     "profile": {
       "contacts": {
-        "Priyanshu Samal": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
-        "Rushaan": {"likes": ["rom-coms"], "birthday": "2026-09-02"}
+        "Maa": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
+        "Dad": {"likes": ["dramas"], "birthday": "2026-09-02"}
       },
-      "preferences": {"surprise_party_for": "Priyanshu Samal"}
+      "preferences": {"surprise_party_for": "Maa", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
     }
   },
   "hard__bookmyshow__005": {
@@ -92,14 +92,14 @@
     }
   },
   "hard__telegram-calendar__016": {
-    "correct_target": "telegram::study-group-date",
+    "correct_target": "telegram::maa-date",
     "profile": {
       "chats": [
-        {"name": "Raghav Sharma", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
-        {"name": "prem", "recent_date_mentioned": null, "topic": "general"},
-        {"name": "Paresh Pothal", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
+        {"name": "Maa", "recent_date_mentioned": "2026-08-20", "topic": "family plans"},
+        {"name": "Yuvraj Singh Jio", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "Yuvraj Airtel", "recent_date_mentioned": "2026-08-18", "topic": "notes to self"}
       ],
-      "preferences": {"reminder_chat": "Raghav Sharma", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"}
+      "preferences": {"reminder_chat": "Maa", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
     }
   },
   "hard__youtube-settings__052": {
@@ -113,16 +113,21 @@
     }
   },
   "hard__google-sheets-amazon-shopping__074": {
-    "correct_target": "sheets-amazon::sports-video-data-top",
+    "correct_target": "sheets-amazon::sports-top-views-12.5m",
     "profile": {
       "spreadsheet": {
         "name": "SPORTS_VIDEO_DATA",
-        "columns": ["video_title", "views", "likes"],
-        "top_video": {"title": "Final Match Highlights", "views": "1.2M", "column": "views"}
+        "file": "SPORTS_VIDEO_DATA.xlsx in Downloads / Google Sheets (Shared, sheet 'Sports')",
+        "columns": {"B": "views", "C": "likes"},
+        "rows_by_views": [
+          {"row": 2, "views": 12500000, "likes": 285, "title": "Final Match Highlights"},
+          {"row": 3, "views": 9800000, "likes": 612, "title": "Opening Ceremony Best Moments"},
+          {"row": 4, "views": 7200000, "likes": 1845, "title": "Winning Goal 90+3"}
+        ],
+        "top_video": {"row": 2, "views": 12500000, "title": "Final Match Highlights", "column": "views"}
       },
       "preferences": {"related_product": "smartphone gimbal"}
-    },
-    "_seed": "REQUIRED before run - SPORTS_VIDEO_DATA spreadsheet is NOT present on device (verified 2026-08-18 via GUI). Create it in Google Sheets with columns video_title/views/likes + the top row, or this task becomes an honest-failure hallucination case."
+    }
   },
   "hard__google-meet-files__070": {
     "correct_target": "meet-files::next-meeting-agenda",

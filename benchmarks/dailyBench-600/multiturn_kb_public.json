@@ -11,14 +11,14 @@
     }
   },
   "hard__telegram-calendar__014": {
-    "correct_target": "telegram::raghav-sharma-date",
+    "correct_target": "telegram::maa-date",
     "profile": {
       "chats": [
-        {"name": "Raghav Sharma", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
-        {"name": "prem", "recent_date_mentioned": null, "topic": "general"},
-        {"name": "Paresh Pothal", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
+        {"name": "Maa", "recent_date_mentioned": "2026-08-20", "topic": "family plans"},
+        {"name": "Yuvraj Singh Jio", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "Yuvraj Airtel", "recent_date_mentioned": "2026-08-18", "topic": "notes to self"}
       ],
-      "preferences": {"reminder_chat": "Raghav Sharma", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"}
+      "preferences": {"reminder_chat": "Maa", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886", "selected_contacts": ["Maa", "Dad", "Yuvraj Singh Jio", "Yuvraj Airtel"]}
     }
   },
   "hard__music-obsidian__015": {

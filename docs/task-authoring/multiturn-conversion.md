@@ -115,7 +115,7 @@ the rule and the agent resolves it from on-device state + one hidden fact.
 > quality of its own questions against the KB oracle.
 
 ### 1. `hard__swiggy__005` — reorder my last order (day 12)
-**Prompt (vague):** "Ugh, I'm craving what I ordered last Friday — can you get me that again?"
+**Prompt (vague):** "Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order."
 Agent must ask: *which service? which order?* → converge on the Swiggy order.
 ```json
 {
@@ -189,20 +189,20 @@ Agent must ask: *which show? which platform?* → Reacher on Prime Video (leavin
 
 ### 5. `hard__bookmyshow__003` — surprise-party movie booking (day 12)
 **Prompt (vague):** "My friends are planning a surprise for one of our close friends. Can you book tickets to a movie he'd actually like? Pull his info from my contacts — don't buy, just get me to booking."
-Agent must ask: *which friend? what does he like?* → Priyanshu (likes action) → an action movie → booking page.
+Agent must ask: *which friend? what does he like?* → Maa (likes action) → an action movie → booking page.
 ```json
 {
-  "correct_target": "bookmyshow::priyanshu-action-movie",
+  "correct_target": "bookmyshow::maa-action-movie",
   "profile": {
     "contacts": {
-      "Priyanshu Kumar": {"likes":["action movies","sci-fi"],"birthday":"2026-08-20"},
-      "Anannya Mishra": {"likes":["rom-coms"],"birthday":"2026-09-02"}
+      "Maa": {"likes":["action movies","sci-fi"],"birthday":"2026-08-20"},
+      "Dad": {"likes":["dramas"],"birthday":"2026-09-02"}
     },
-    "preferences": {"surprise_party_for":"Priyanshu Kumar"}
+    "preferences": {"surprise_party_for":"Maa","selected_contacts":["Maa","Dad","Yuvraj Singh Jio","Yuvraj Airtel"]}
   }
 }
 ```
-🔴 Re-verify friend's interests in the contact card + which movies are showing.
+🔴 Re-verify Maa's interests in the contact card + which movies are showing. (Contacts/messages limited to selected contacts only per policy.)
 
 ### 6. `hard__bookmyshow__005` — movie night for a group (day 21)
 **Prompt (vague):** "We're doing a movie night this weekend. Could you check showtimes and seat prices and save the best one?"
@@ -270,21 +270,21 @@ Agent must ask: *which music type? what's your bedtime?* → lo-fi → 10:30 PM 
 
 ### 10. `hard__telegram-calendar__016` — date mentioned in group chat (day 9)
 **Prompt (vague):** "Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?"
-Agent must ask: *which group?* → the study group.
+Agent must ask: *which chat?* → Maa's chat (date 2026-08-20) → set reminder.
 ```json
 {
-  "correct_target": "telegram::study-group-date",
+  "correct_target": "telegram::maa-date",
   "profile": {
     "chats": [
-      {"name":"Study Group","recent_date_mentioned":"2026-08-20","topic":"exam prep"},
-      {"name":"Family","recent_date_mentioned":null,"topic":"general"},
-      {"name":"Hostel","recent_date_mentioned":"2026-08-18","topic":"weekend plan"}
+      {"name":"Maa","recent_date_mentioned":"2026-08-20","topic":"family plans"},
+      {"name":"Yuvraj Singh Jio","recent_date_mentioned":null,"topic":"general"},
+      {"name":"Yuvraj Airtel","recent_date_mentioned":"2026-08-18","topic":"notes to self"}
     ],
-    "preferences": {"reminder_chat":"Study Group"}
+    "preferences": {"reminder_chat":"Maa","account":"Yuvraj Airtel +91 9354672378 @YuvrajSingh9886","selected_contacts":["Maa","Dad","Yuvraj Singh Jio","Yuvraj Airtel"]}
   }
 }
 ```
-🔴 Live: verify which chat actually mentions a date at run time.
+🔴 Live: verify which chat actually mentions a date at run time. (Contacts/messages limited to selected contacts only per policy.)
 
 ### 11. `hard__youtube-settings__052` — channel notifications muted at night (day 11)
 **Prompt (vague):** "Notifications from one of my channels keep coming at night and it's annoying. Can you fix that so they only show up during the day?"
@@ -305,21 +305,27 @@ Agent must ask: *which channel?* → the one that posts most (Tech Burner).
 
 ### 12. `hard__google-sheets-amazon-shopping__074` — top video + related buy (day 20)
 **Prompt (vague):** "I've got all my video stats in a sheet. Can you find my best performer and show me something related to grab?"
-Agent must ask: *which spreadsheet? which column?* → SPORTS_VIDEO_DATA → [views] → the top video.
+Agent must ask: *which spreadsheet? which column?* → SPORTS_VIDEO_DATA → [views] (col B) → the top row.
 ```json
 {
-  "correct_target": "sheets-amazon::sports-video-data-top",
+  "correct_target": "sheets-amazon::sports-top-views-12.5m",
   "profile": {
     "spreadsheet": {
       "name":"SPORTS_VIDEO_DATA",
-      "columns":["video_title","views","likes"],
-      "top_video":{"title":"Final Match Highlights","views":"1.2M","column":"views"}
+      "file":"SPORTS_VIDEO_DATA.xlsx in Downloads / Google Sheets (sheet 'Sports')",
+      "columns":{"B":"views","C":"likes"},
+      "rows_by_views":[
+        {"row":2,"views":12500000,"likes":285,"title":"Final Match Highlights"},
+        {"row":3,"views":9800000,"likes":612,"title":"Opening Ceremony Best Moments"},
+        {"row":4,"views":7200000,"likes":1845,"title":"Winning Goal 90+3"}
+      ],
+      "top_video":{"row":2,"views":12500000,"title":"Final Match Highlights","column":"views"}
     },
     "preferences": {"related_product":"smartphone gimbal"}
   }
 }
 ```
-🔴 Re-verify the actual spreadsheet name + top row on device (user.yaml: SPORTS_VIDEO_DATA).
+🔴 Sheet EXISTS on device (verified 2026-08-18: SPORTS_VIDEO_DATA.xlsx, col A titles empty, B=views up to 12.5M). Title for the top row comes from the user's KB, so the agent must ask.
 
 ### 13. `hard__google-meet-files__070` — meeting agenda ready (day 14)
 **Prompt (vague):** "Got a meeting coming up and the agenda needs prepping. Can you pull up the next one and get the doc ready?"

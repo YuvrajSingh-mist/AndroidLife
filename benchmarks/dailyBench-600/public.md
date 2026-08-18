@@ -62,7 +62,7 @@ Hard tasks — Day 1:
 - I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later
 
 **13. [Swiggy] — DETERMINISTIC**
-- Ugh, I'm craving what I ordered last Friday — can you get me that again?
+- Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order.
 
 **14. [Telegram+Calendar] — DETERMINISTIC**
 - Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?

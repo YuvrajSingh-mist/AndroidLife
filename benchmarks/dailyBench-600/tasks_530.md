@@ -595,7 +595,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **6. [Swiggy] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Ugh, I'm craving what I ordered last Friday — can you get me that again? <!--hard__swiggy__005-->
+- Ugh, I'm craving what I ordered last Friday — can you get me that again? Just take me to the payment page, don't place the order. <!--hard__swiggy__005-->
 
 **[Prime Video]**
 - Easy (1pt): I'm about to fly and won't have signal. Open Prime Video and check whether [show] is available to download for offline viewing. <!--easy__prime-video__006-->
