@@ -423,8 +423,10 @@ following entities were **seeded on the test device** (all recorded in
 | **`seed_large_video.mp4`** (120 MB zeros) | `medium__files__010` | `/sdcard/Download/seed_large_video.mp4` | `adb shell rm /sdcard/Download/seed_large_video.mp4` |
 | **`seed_lecture_video.mp4`** (520 MB zeros) | `medium__files__012` | `/sdcard/Download/seed_lecture_video.mp4` | `adb shell rm /sdcard/Download/seed_lecture_video.mp4` |
 | **`Recipe.md`** (World's Best Lasagna: Oven 375 F, Bake 50 min, Rest 10 min, Prep 20 min) | `medium__clock__001` | `/sdcard/Obsidian/Papers vault oneplus /Recipe.md` | `adb shell rm '/sdcard/Obsidian/Papers vault oneplus /Recipe.md'` |
-| **Myntra coupon email** (self-sent: To rajceo2031@gmail.com, Subject "Your 15 Coupon", Body "Use code FLIP15 expires 2026-08-20") | `hard__gmail-notes__045` | Gmail (primary account, app-private) | Delete in the Gmail UI (search "coupon" → open → trash); no adb delete for mail |
+| **Myntra coupon email** (realistic promo: Subject "Last chance: 15% OFF with code FLIP15", body "YOUR COUPON CODE: FLIP15 / 15% OFF on your next order / How to use 1-2-3 / Hurry! This coupon expires on 20 August 2026 / T&C". Sent from the "Rani Singh" account to rajceo2031@gmail.com) | `hard__gmail-notes__045` | Gmail (primary inbox, app-private) | Delete in the Gmail UI (search "coupon" → open → trash); no adb delete for mail |
 | **`Daily Reflection`** note (title + 3 lines) | `medium__notes__005` | OnePlus Notes app (`com.oneplus.note`) | Delete in the Notes app (app-private, no adb) |
+| **2 overlapping events tomorrow afternoon** (`Team_Conflict_A` 08-19 14:00-15:00 + `Team_Conflict_B` 08-19 14:30-15:30 IST) | `easy__calendar__002` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3747,3748)"` (or Calendar app UI if provider delete is a no-op on the synced calendar) |
+| **3 "Work" events this week** (`Work sync` 08-18 10-11h, `Work review` 08-19 16-17:30h, `Work planning` 08-20 09:30-11h = 4h) | `medium__calendar__013` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3749,3750,3751)"` (or Calendar app UI) |
 | **`Q3 Review`** presentation (title slide + 2 slides) | `easy__google-slides__002`, `medium__google-slides__002` | Google Slides | Delete in the Slides app (Google account file) |
 
 **Disclosure notes:**
@@ -451,11 +453,57 @@ following entities were **seeded on the test device** (all recorded in
   `Views` header already existed); `hard__drive-obsidian-telegram__049` was
   already solvable (`budget.xlsx` in Drive modified 2026-07-18 + `Budget
   Deadline.md` in Obsidian with "Last reviewed: 2026-07-10").
+- **Thorough re-audit (2026-08-18) found + fixed 3 more gaps, all now solvable:**
+  - `medium__files__012`: the 520 MB video wasn't showing in the Files-by-Google
+    GUI until a **MediaStore re-scan** (`am broadcast
+    android.intent.action.MEDIA_SCANNER_SCAN_FILE` + `content call
+    media_scanner scan_file`). It now lists as `seed_lecture_video.mp4` **545 MB**
+    in Files → Downloads / Videos (the unique >500MB video).
+  - `easy__calendar__002`: the earlier conflict events were **stale** (seeded for
+    a prior "tomorrow"). Re-seeded `Team_Conflict_A/B` for **08-19 afternoon**
+    (verified rendering in the Calendar app).
+  - `medium__calendar__013`: no "work"-tagged events existed this week. Seeded
+    three `Work`-titled events this week (4h total; "tagged work" = "Work" in
+    the title).
+  - `hard__clock-calendar__023`: same-week events already present
+    (`Next_Week_30m/1h/90m` on 08-17 + the 08-18 22:30 meeting), so the alarm
+    clash cross-reference has something to find. No new seed needed.
+  - All 6 ASK USER tasks: facts present in `ask_user_facts.json` and on-device
+    prerequisites verified (`budget.xlsx` in Drive, `invoice_seed.pdf` in Files,
+    `Budget Deadline.md`/`Contact Updates.md`/`Exam Scores.md`/`Bedtime.md` in
+    Obsidian, real Swiggy order history with Downtown Delight as the most recent
+    order, real Telegram `Forever 21` group, the 6E 6821 flight confirmation
+    email in Gmail).
+  - The public 57-task sample contains **0 of the 60 hallucination-control
+    tasks**, so there is no risk of an HC task being accidentally seeded.
+- **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
+  new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
+  (+91 00030 30302), and the task updates those two real selected contacts'
+  numbers in Contacts. Running it **overwrites the real numbers** (Dad
+  +919560156082, Yuvraj Singh Jio +919354672378). The task is solvable, but after
+  any run **restore** them:
+  `adb shell content update --uri content://com.android.contacts/data --bind
+  data1:s:+919560156082 --where "raw_contact_id=(SELECT raw_contact_id FROM
+  view_data WHERE display_name='Dad' AND mimetype='vnd.android.cursor.item/
+  phone_v2')"` and likewise for Yuvraj Singh Jio → +919354672378.
 - **The coupon email is the one item that was seeded via the Gmail GUI** (a
-  self-sent email — Gmail mail is app-private so there is no adb path). If it
-  ever needs re-creating, the manual step is: open Gmail → Compose → To
-  `rajceo2031@gmail.com` → Subject `Your 15 Coupon` → Body
-  `Use code FLIP15 expires 2026-08-20` → Send.
+  composed email — Gmail mail is app-private so there is no adb path). It was
+  **rewritten 2026-08-18 15:14** to look like a real promotional coupon (the
+  earlier bare self-note "Your 15 Coupon / Use code FLIP15 expires 2026-08-20"
+  was deleted, per operator request to model it on real coupon emails — e.g.
+  the real MTG Books promos returned by a Gmail "coupon" search). If it ever
+  needs re-creating, the manual step is: open Gmail → Compose → To
+  `rajceo2031@gmail.com` → Subject `Last chance: 15% OFF with code FLIP15` →
+  Body: `Hi Yuvraj,` / blank / `Great news! You have unlocked an exclusive 15%
+  OFF coupon, just for you.` / `YOUR COUPON CODE: FLIP15` / `15% OFF on your
+  next order - no minimum order value` / `How to use: 1. Add items to your
+  cart. 2. Enter FLIP15 at checkout. 3. Enjoy your discount!` / `Hurry! This
+  coupon expires on 20 August 2026.` / `Terms and conditions apply. Valid on
+  select styles. Not valid on electronics, jewellery, or gift cards. One use
+  per customer.` / `You are receiving this because you are subscribed to Myntra
+  promotions.` / `Warm regards, The Myntra Team` → Send. (It was sent from the
+  "Rani Singh" account so it arrives in the primary inbox `rajceo2031@gmail.com`
+  from a real sender rather than "me".)
 - **Why the email is required:** in the public sample `hard__gmail-notes__045`
   is `ahi=DETERMINISTIC` (prompt: "I've got a coupon somewhere that's expiring
   soon. Can you find it and save it before it's gone?") — there is no simulated
