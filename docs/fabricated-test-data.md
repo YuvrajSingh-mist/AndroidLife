@@ -305,6 +305,33 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Remaining 9 multi-turn KB hard DET prompts expanded to 5-step (530 only).**
+  The 9 terse KB-oracle hard tasks that were still one-liners in `tasks_530.md` got the same
+  5-step treatment while staying multi-turn (each keeps ONE ask-point the oracle resolves):
+  - `hard__google-search-notes__019` — read 'Products I'm Considering' note → review both on
+    Google Search → compare → save winner + pros as a note.
+  - `hard__settings-obsidian__044` — read 'Screen Time Goal' note → Settings Digital Wellbeing
+    today vs 2h limit → note over/under.
+  - `hard__makemytrip__003` — find shortlisted next-trip flight → note fare/departure → payment
+    page total (no pay).
+  - `hard__bookmyshow__003` — Contacts fav genres → BookMyShow matching movie → booking page
+    (no buy). Header now **[BookMyShow+Contacts]**.
+  - `hard__prime-video__005` — find soonest-leaving show → check downloadable → save offline.
+  - `hard__swiggy__007` — usual Downtown Delight order → cart → payment page (no order) →
+    message [contact] total. Header now **[Swiggy+Telegram]**.
+  - `hard__gmail-notes__045` — find expiring coupon email → note code+expiry → save to Notes.
+  - `hard__amazon-shopping__006` — find intended cart item → price + Prime savings → payment
+    total (no order).
+  - `hard__msn-news__007` — biggest story in followed topic → summarize → message [contact].
+    Header now **[MSN News+Telegram]**.
+  KB profiles unchanged (facts matched); the tasks stay multi-turn (markers + `multiturn_kb_530.json`
+  untouched, still 13). Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes) +
+  `tasks_vars_usage.json`; aligned the day-3 seed manifest end_state for
+  `hard__google-search-notes__019`. `verify_config.py` PASS; full suite PASS. **Note:** 3 of the 9
+  remain single-app by multi-turn design (`makemytrip__003`, `prime-video__005`,
+  `amazon-shopping__006`) — the disambiguation is the difficulty; can be widened to 2-3 apps on
+  request.
+
 - **2026-08-18 — Hard DETERMINISTIC tasks expanded to explicit 5-step tasks (uniqueness/difficulty pass).**
   The terse one-line hard DET prompts in the public sample (and their 530 counterparts) read as vague even
   though the spec requires hard = 2-3 apps / 5 steps (`benchmark-spec.md`). Rewrote all 9 in

@@ -179,7 +179,7 @@
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 69,
+      "task_count": 71,
       "days": [
         1,
         2,
@@ -242,6 +242,7 @@
         "medium__google-maps__005",
         "medium__messages__008",
         "medium__telegram__005",
+        "hard__swiggy__007",
         "medium__chrome__008",
         "medium__music__010",
         "easy__calendar__009",
@@ -267,6 +268,7 @@
         "medium__calendar__011",
         "medium__files-telegram__001",
         "medium__google-drive__011",
+        "hard__msn-news__007",
         "medium__amazon-shopping__005",
         "medium__amazon-shopping__007",
         "medium__calculator__012",

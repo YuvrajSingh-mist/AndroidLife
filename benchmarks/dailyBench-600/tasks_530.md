@@ -191,7 +191,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **19. [Google Search+Notes] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm stuck between two products. Can you look up reviews and tell me which one's better for me? <!--hard__google-search-notes__019-->
+- I'm stuck between two products and want reviews before I commit. Can you open Notes, find my 'Products I'm Considering' note, and read out the two shortlisted products? Then search Google for reviews of each, compare them side by side, and tell me which one is better for me. Save the winner and its key pros as a new note. Reply with only the product name you picked, no other text. <!--hard__google-search-notes__019-->
 
 **[Settings]**
 - Medium (3pt): In Settings, set up a scheduled dark mode from sunset to sunrise, confirm it saved, and check tonight's schedule <!--medium__settings__001-->
@@ -589,7 +589,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **44. [Settings+Obsidian] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've been glued to my phone lately. Can you check today's usage and see if I'm over my goal? <!--hard__settings-obsidian__044-->
+- I've been glued to my phone lately and want to know if I'm over my goal. Can you open Obsidian, find my 'Screen Time Goal' note, and read what my daily limit is? Then open Settings, check today's screen time in Digital Wellbeing, compare it against the limit, and note whether I'm over or under and by how much. Reply with only whether I'm over the goal and by how much, no other text. <!--hard__settings-obsidian__044-->
 
 - Medium (3pt) **[Music+Telegram]**: Could you find songs I added to a playlist but never played and remove them in Music? Also, message [contact] on Telegram the playlist link. <!--medium__music__006-->
 
@@ -631,7 +631,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **4. [MakeMyTrip] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've shortlisted a flight for my trip but wanna see the full fare before I pay. Can you open it and show me the breakdown on the payment page? <!--hard__makemytrip__003-->
+- I've shortlisted a flight for my next trip and want the full fare before I pay. Can you open MakeMyTrip, find the shortlisted flight for my next trip, and note the flight number, departure time, and fare? Then go to its payment page, read out the final total including any fees, and confirm — but don't pay. Reply with only the flight number and the final total, no other text. <!--hard__makemytrip__003-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from Tech Burner keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find Tech Burner, and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
@@ -671,9 +671,9 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Easy (1pt): I want to see how much I've been on the phone today. Can you tell me how many calls I've made today in Phone? <!--easy__phone__005-->
 
-**4. [BookMyShow] — DETERMINISTIC**
+**4. [BookMyShow+Contacts] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- My friends are planning a surprise for one of our close friends. Can you book tickets to a movie he'd actually like? Pull his info from my contacts — don't buy, just get me to booking. <!--hard__bookmyshow__003-->
+- My friends are planning a surprise for one of our close friends and I need to pick the movie. Can you open Contacts, check the friend's favourite genres, then open BookMyShow, find a movie in that genre showing near me, and note the showtime and per-ticket price? Take me to the booking page without buying. Reply with only the movie name and the showtime, no other text. <!--hard__bookmyshow__003-->
 
 **[Swiggy]**
 - Medium (3pt): I'm ordering from a new place. Open Swiggy, find [restaurant]'s menu, rank the top 3 dishes by rating, and tell me the price of the best one. <!--medium__swiggy__006-->
@@ -686,7 +686,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Prime Video] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- One of my daily shows is apparently leaving soon. Can you check if it's still up and save it so I don't lose it? <!--hard__prime-video__005-->
+- One of my daily shows is apparently leaving soon and I don't want to lose it. Can you open Prime Video, find the show that's leaving soonest in my Watchlist, and check if it's still available and downloadable? Then save/download it so I can watch it offline, and confirm it's saved. Reply with only the show name and its leaving date, no other text. <!--hard__prime-video__005-->
 
 - Medium (3pt) **[Contacts+Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
 
@@ -941,9 +941,9 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Settings]**
 - Medium (3pt): Could you compare my screen time this week to last week, note the change, and check which day had the most screen time in Settings? <!--medium__settings__009-->
 
-**7. [Swiggy] — DETERMINISTIC**
+**7. [Swiggy+Telegram] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Order my usual from my go-to place - my favourite food. Don't place it, just show me the payment page. <!--hard__swiggy__007-->
+- Order my usual from my go-to place — my favourite food. Open Swiggy, find my usual order (I think it's the Murgh Mughlai with Kushka Rice from Downtown Delight), add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm. Reply with only the item name and total, no other text. <!--hard__swiggy__007-->
 
 ### Day 17
 
@@ -976,7 +976,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **45. [Gmail+Notes] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've got a coupon somewhere that's expiring soon. Can you find it and save it before it's gone? <!--hard__gmail-notes__045-->
+- I've got a coupon somewhere that's expiring soon and I want to save it before it's gone. Can you open Gmail, find the expiring coupon email, and note the discount code and its expiry date? Then open Notes, save the code and expiry in a note so I don't lose it. Reply with only the code and the expiry date, no other text. <!--hard__gmail-notes__045-->
 
 - Medium (3pt) **[Google Search+Telegram]**: Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow. <!--medium__google-search__008-->
 
@@ -1200,7 +1200,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Amazon Shopping] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Almost bought something but wanna double-check the total before I commit. Add it and show me the final price on the payment page — don't finish the order. <!--hard__amazon-shopping__006-->
+- Almost bought something but wanna double-check the total before I commit. Can you open Amazon Shopping, find the item I was about to buy in my cart, and check its price and any Prime savings? Then go to the payment page and read out the final total — but don't finish the order. Reply with only the item name and the final total, no other text. <!--hard__amazon-shopping__006-->
 
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
@@ -1460,9 +1460,9 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Meet]**
 - Easy (1pt): I need to know if I'm free tomorrow or booked up. Can you open Google Meet and check whether I have any meeting scheduled for tomorrow? <!--easy__google-meet__005-->
 
-**8. [MSN News] — DETERMINISTIC**
+**8. [MSN News+Telegram] — DETERMINISTIC**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I am following the topic closely. Find today's biggest story on it, summarize it, and send it to my friend the summary. <!--hard__msn-news__007-->
+- I'm following a topic closely and want today's big story. Can you open MSN News, find today's biggest story on the topic I'm following, read and summarize it, then message [contact] on Telegram with the summary? Reply with only the headline, no other text. <!--hard__msn-news__007-->
 
 **[Messages]**
 - Easy (1pt): A message deserves a quick reaction but not a full reply. Can you send an emoji reaction to a specific message in Messages? <!--easy__messages__014-->

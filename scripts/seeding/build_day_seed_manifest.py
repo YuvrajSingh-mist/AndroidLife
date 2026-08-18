@@ -491,7 +491,7 @@ DAY3_TASKS: dict[str, dict] = {
     "hard__google-search-notes__019": {
         "vars": {"product 1": "{product 1}", "product 2": "{product 2}", "shopping_website_1": "{shopping_website_1}", "shopping_website_2": "{shopping_website_2}"},
         "seed": [{"type": "web", "location": "Google Search (real)", "value": "Live review overviews of '{product 1}' vs '{product 2}' (10+ reviews each), prices compared across '{shopping_website_1}' and '{shopping_website_2}'.", "status": "web"}],
-        "end_state": "A Notes note records only the name of the more favorably reviewed product.",
+        "end_state": "A Notes note records the more favorably reviewed product and its key pros; agent replies with only the product name.",
     },
     "easy__clock__001": {
         "vars": {"city": "{city}"},

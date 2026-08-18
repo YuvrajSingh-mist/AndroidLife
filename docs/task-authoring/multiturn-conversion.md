@@ -6,6 +6,15 @@
 > **knowledge-base profile** (JSON) the simulated user holds. The agent's job:
 > ask the right clarifying questions, converge on the correct target, get it done.
 
+> **2026-08-19 — The remaining 9 KB prompts also expanded to 5-step (still multi-turn).**
+> `hard__google-search-notes__019`, `hard__settings-obsidian__044`, `hard__makemytrip__003`,
+> `hard__bookmyshow__003`, `hard__prime-video__005`, `hard__swiggy__007`, `hard__gmail-notes__045`,
+> `hard__amazon-shopping__006`, `hard__msn-news__007` were one-line prompts too. Each is now an
+> explicit 5-step task that still keeps its single ask-point (the fact the agent must ask the oracle
+> for). They stay in `multiturn_kb_530.json`; the live multi-turn set is still 13. Headers updated to
+> reflect added apps: `[BookMyShow+Contacts]`, `[Swiggy+Telegram]`, `[MSN News+Telegram]`.
+> `makemytrip__003`, `prime-video__005`, `amazon-shopping__006` remain single-app by design.
+>
 > **2026-08-18 UPDATE — 5 of the 18 reverted to plain DETERMINISTIC.**
 > The hard-task uniqueness pass expanded the terse DET prompts into explicit
 > 5-step tasks. For the tasks that run **without** a KB oracle in the public sample
