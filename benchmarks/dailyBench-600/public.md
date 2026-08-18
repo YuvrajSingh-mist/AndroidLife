@@ -35,7 +35,7 @@ aren't grouped or predictable by position.**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
 
 **5. [Telegram+Calendar] — ASK USER - MULTI**
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder? <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you make sure it's on my calendar with a reminder? <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
@@ -63,7 +63,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
 **4. [Swiggy+Telegram] — ASK USER - MULTI**
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Also, message that guy on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I last ate — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->

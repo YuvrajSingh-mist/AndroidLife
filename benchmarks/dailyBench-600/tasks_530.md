@@ -352,7 +352,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **3. [Gmail+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 **[Camera]**
 - Easy (1pt): I need a quick scan of this paper without a scanner. Could you take a photo of a printed page or receipt in Camera and save it as a scanned file? <!--easy__camera__004-->
@@ -508,7 +508,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **16. [Telegram+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder? <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you make sure it's on my calendar with a reminder? <!--hard__telegram-calendar__016-->
 
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 
