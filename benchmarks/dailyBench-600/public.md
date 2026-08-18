@@ -35,7 +35,7 @@ aren't grouped or predictable by position.**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
 
 **5. [Telegram+Calendar] — ASK USER - MULTI**
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder. Get back to me with the event name and the date. <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder? <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
@@ -63,7 +63,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
 **4. [Swiggy+Telegram] — ASK USER - MULTI**
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? I can't remember exactly which one it was. Open Swiggy, go to my order history and find last Friday's order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Also, message that guy on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
@@ -106,10 +106,10 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I want to pick up where I left off. Open Prime Video, find what's in my "Continue Watching", and give me a quick summary of the most recent one. <!--medium__prime-video__003-->
 
 **3. [Gmail+Calendar] — ASK USER - MULTI**
-- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip — I think it's IndiGo to Delhi — and note the flight number, date, and departure time? Then open Calendar and create a reminder 3 hours before departure so I get a heads-up. Reply with only the flight number and the reminder time, no other text. <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 **5. [Music+Obsidian] — ASK USER - MULTI**
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you open Obsidian, find my 'Bedtime' note, and read what time I usually go to bed? Then open YouTube Music, search for a lo-fi beats track by Chillhop, download the highly-liked video of it, start it playing, and set a sleep timer so it stops at my bedtime. Reply with only the track name and the sleep timer time, no other text. <!--hard__music-obsidian__077-->
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
 
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->

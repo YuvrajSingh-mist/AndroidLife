@@ -184,14 +184,14 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **77. [Music+Obsidian] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you open Obsidian, find my 'Bedtime' note, and read what time I usually go to bed? Then open YouTube Music, search for a lo-fi beats track by Chillhop, download the highly-liked video of it, start it playing, and set a sleep timer so it stops at my bedtime. Reply with only the track name and the sleep timer time, no other text. <!--hard__music-obsidian__077-->
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
 
 **[Chrome]**
 - Medium (3pt): In Chrome, compare total cost, item plus shipping, of [product] across [shopping_website_1] and [shopping_website_2], note the cheaper option, and check the delivery time for that option, outputting the same. <!--medium__shopping-delivery-browser__001-->
 
 **19. [Google Search+Notes] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm stuck between two products and want reviews before I commit. Can you open Notes, find my 'Products I'm Considering' note, and read out the two shortlisted products? Then search Google for reviews of each, compare them side by side, and tell me which one is better for me. Save the winner and its key pros as a new note. Reply with only the product name you picked, no other text. <!--hard__google-search-notes__019-->
+- I'm stuck between two products and want reviews before I commit. Can you check my shortlist and tell me which one to go with? <!--hard__google-search-notes__019-->
 
 **[Settings]**
 - Medium (3pt): In Settings, set up a scheduled dark mode from sunset to sunrise, confirm it saved, and check tonight's schedule <!--medium__settings__001-->
@@ -352,7 +352,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **3. [Gmail+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip — I think it's IndiGo to Delhi — and note the flight number, date, and departure time? Then open Calendar and create a reminder 3 hours before departure so I get a heads-up. Reply with only the flight number and the reminder time, no other text. <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Can you open Gmail, find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 **[Camera]**
 - Easy (1pt): I need a quick scan of this paper without a scanner. Could you take a photo of a printed page or receipt in Camera and save it as a scanned file? <!--easy__camera__004-->
@@ -508,7 +508,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **16. [Telegram+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text. <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder? <!--hard__telegram-calendar__016-->
 
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 
@@ -589,7 +589,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **44. [Settings+Obsidian] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've been glued to my phone lately and want to know if I'm over my goal. Can you open Obsidian, find my 'Screen Time Goal' note, and read what my daily limit is? Then open Settings, check today's screen time in Digital Wellbeing, compare it against the limit, and note whether I'm over or under and by how much. Reply with only whether I'm over the goal and by how much, no other text. <!--hard__settings-obsidian__044-->
+- I've been glued to my phone lately and want to know if I'm over my goal. Can you check my screen-time goal and tell me how I'm doing? <!--hard__settings-obsidian__044-->
 
 - Medium (3pt) **[Music+Telegram]**: Could you find songs I added to a playlist but never played and remove them in Music? Also, message [contact] on Telegram the playlist link. <!--medium__music__006-->
 
@@ -631,7 +631,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **4. [MakeMyTrip] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've shortlisted a flight for my next trip and want the full fare before I pay. Can you open MakeMyTrip, find the shortlisted flight for my next trip, and note the flight number, departure time, and fare? Then go to its payment page, read out the final total including any fees, and confirm — but don't pay. Reply with only the flight number and the final total, no other text. <!--hard__makemytrip__003-->
+- I've shortlisted a flight for my next trip and want the full fare before I pay. Can you check the shortlisted flight on MakeMyTrip and tell me the total? <!--hard__makemytrip__003-->
 
 **52. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find [notifying channel], and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
@@ -673,7 +673,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **4. [BookMyShow+Contacts] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- My friends are planning a surprise for one of our close friends and I need to pick the movie. Can you open Contacts, check the friend's favourite genres, then open BookMyShow, find a movie in that genre showing near me, and note the showtime and per-ticket price? Take me to the booking page without buying. Reply with only the movie name and the showtime, no other text. <!--hard__bookmyshow__003-->
+- My friends are planning a surprise for one of our close friends and I need to pick the movie. Can you help me pick a movie they'll love and take me to the booking page without buying? <!--hard__bookmyshow__003-->
 
 **[Swiggy]**
 - Medium (3pt): I'm ordering from a new place. Open Swiggy, find [restaurant]'s menu, rank the top 3 dishes by rating, and tell me the price of the best one. <!--medium__swiggy__006-->
@@ -686,7 +686,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Prime Video] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- One of my daily shows is apparently leaving soon and I don't want to lose it. Can you open Prime Video, find the show that's leaving soonest in my Watchlist, and check if it's still available and downloadable? Then save/download it so I can watch it offline, and confirm it's saved. Reply with only the show name and its leaving date, no other text. <!--hard__prime-video__005-->
+- One of my daily shows is apparently leaving soon and I don't want to lose it. Can you check what's leaving soonest in my Watchlist and save it for me? <!--hard__prime-video__005-->
 
 - Medium (3pt) **[Contacts+Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
 
@@ -695,7 +695,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **6. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? I can't remember exactly which one it was. Open Swiggy, go to my order history and find last Friday's order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Also, message that guy on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->
@@ -943,7 +943,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Order my usual from my go-to place — my favourite food. I can't remember what my usual is. Open Swiggy, find my usual order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm. Reply with only the item name and total, no other text. <!--hard__swiggy__007-->
+- Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm? <!--hard__swiggy__007-->
 
 ### Day 17
 
@@ -976,7 +976,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **45. [Gmail+Notes] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've got a coupon somewhere that's expiring soon and I want to save it before it's gone. Can you open Gmail, find the expiring coupon email, and note the discount code and its expiry date? Then open Notes, save the code and expiry in a note so I don't lose it. Reply with only the code and the expiry date, no other text. <!--hard__gmail-notes__045-->
+- I've got a coupon somewhere that's expiring soon and I want to save it before it's gone. Can you find it and save the code for me? <!--hard__gmail-notes__045-->
 
 - Medium (3pt) **[Google Search+Telegram]**: Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow. <!--medium__google-search__008-->
 
@@ -1200,7 +1200,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Amazon Shopping] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Almost bought something but wanna double-check the total before I commit. Can you open Amazon Shopping, find the item I was about to buy in my cart, and check its price and any Prime savings? Then go to the payment page and read out the final total — but don't finish the order. Reply with only the item name and the final total, no other text. <!--hard__amazon-shopping__006-->
+- Almost bought something but wanna double-check the total before I commit. Can you check the item I was about to buy and tell me the final total? <!--hard__amazon-shopping__006-->
 
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
@@ -1462,7 +1462,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **8. [MSN News+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I'm following a topic closely and want today's big story. Can you open MSN News, find today's biggest story on the topic I'm following, read and summarize it, then message [contact] on Telegram with the summary? Reply with only the headline, no other text. <!--hard__msn-news__007-->
+- I'm following a topic closely and want today's big story. Can you find today's biggest story on the topic I'm following and send it to [contact] on Telegram? <!--hard__msn-news__007-->
 
 **[Messages]**
 - Easy (1pt): A message deserves a quick reaction but not a full reply. Can you send an emoji reaction to a specific message in Messages? <!--easy__messages__014-->

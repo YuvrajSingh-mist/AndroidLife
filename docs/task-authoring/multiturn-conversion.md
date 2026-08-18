@@ -6,6 +6,14 @@
 > **knowledge-base profile** (JSON) the simulated user holds. The agent's job:
 > ask the right clarifying questions, converge on the correct target, get it done.
 
+> **2026-08-19 — Multi-turn prompts made terse & natural (all 13).**
+> Per user: multi-turn means the agent must GET the facts by asking, so the verbose 5-step wording
+> and the "Reply with only X, no other text." output boilerplate were stripped from all 13 multi-turn
+> prompts (public + 530). Each is now a short first-person utterance withholds exactly the ONE fact
+> the KB oracle answers (`gmail-calendar__003` dropped its "IndiGo to Delhi" hint, `music-obsidian__077`
+> dropped genre/artist/time, `swiggy__005/007` dropped item+restaurant and use "that guy" for the
+> Telegram recipient). Correct_targets + KB profiles unchanged.
+
 > **2026-08-19 — Reorder tasks no longer name the order (swiggy__005/007).**
 > `hard__swiggy__005` + `hard__swiggy__007` previously stated the exact item + restaurant in the
 > prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with

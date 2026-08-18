@@ -305,6 +305,20 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Multi-turn prompts made terse & natural (all 13, public + 530).**
+  Per user: the point of ASK USER - MULTI is that the **agent must get the facts by asking**, so the
+  verbose 5-step prompts + "Reply with only X, no other text." boilerplate were removed from **all 13**
+  multi-turn tasks (`public.md` + `tasks_530.md`). Each is now a short first-person utterance that
+  withholds the ONE fact the oracle holds (KB profiles unchanged — they answer when asked):
+  `telegram-calendar__016` (which chat/event/date), `swiggy__005` (which order — "that guy" on
+  Telegram, `[contact]` placeholder dropped), `gmail-calendar__003` (which flight — no more "IndiGo to
+  Delhi" hint), `music-obsidian__077` (bedtime/track), plus `google-search-notes__019`,
+  `settings-obsidian__044`, `makemytrip__003`, `bookmyshow__003`, `prime-video__005`,
+  `gmail-notes__045`, `amazon-shopping__006`, `msn-news__007`, `swiggy__007`. Public vs 530 verified
+  in sync for the 4 shared tasks. Regenerated 530 + public; `verify_config.py` PASS; full suite PASS.
+  **Note:** swiggy__005/007's Telegram recipient is now "that guy" (no `[contact]`/KB contact), so the
+  message-recipient step is not pinned to a specific contact — the graded `correct_target` is the reorder.
+
 - **2026-08-19 — Multi-turn prompts no longer spoon-feed the answer (swiggy__005 / swiggy__007).**
   The two "reorder my food" ASK USER - MULTI tasks were handing the agent the exact item + restaurant
   in the prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
