@@ -1,4 +1,42 @@
 {
-  "_comment": "Knowledge-base profiles for multi-turn (KB-oracle) tasks in the PUBLIC 3-day preview set. Currently empty: none of the 18 converted multi-turn tasks live in the public preview (all are in the 530 set - see multiturn_kb_530.json). Populate here when the public set gains multi-turn tasks. Format per task_id: { 'correct_target': '<app>::<target>', 'profile': { ... } }.",
-  "tasks": {}
+  "hard__swiggy__013": {
+    "correct_target": "swiggy::reorder-downtown-murgh-mughlai",
+    "profile": {
+      "orders": [
+        {"service": "Swiggy", "restaurant": "Downtown Delight", "item": "Murgh Mughlai + Kushka Rice", "total": "₹449", "status": "delivered", "recent": true, "favourite": true},
+        {"service": "Swiggy", "restaurant": "KFC", "item": "Classic Zinger Box", "total": "₹399", "status": "delivered", "recent": false, "favourite": true},
+        {"service": "Swiggy", "restaurant": "Jugaad Jn", "item": "Chole Chawal + Papdi Chat", "total": "₹149", "status": "delivered", "recent": false, "favourite": true}
+      ],
+      "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)"
+    }
+  },
+  "hard__telegram-calendar__014": {
+    "correct_target": "telegram::raghav-sharma-date",
+    "profile": {
+      "chats": [
+        {"name": "Raghav Sharma", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
+        {"name": "prem", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "Paresh Pothal", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
+      ],
+      "preferences": {"reminder_chat": "Raghav Sharma", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"}
+    }
+  },
+  "hard__music-obsidian__015": {
+    "correct_target": "youtube-music::sleep-timer-1030pm",
+    "profile": {
+      "music": {"favorite_genre": "lo-fi beats", "sleep_artist": "Chillhop"},
+      "notes": {"Bedtime": {"time": "10:30 PM", "source": "real on-device note"}},
+      "preferences": {"sleep_timer": "10:30 PM"}
+    }
+  },
+  "hard__gmail-calendar__016": {
+    "correct_target": "gmail-calendar::bbi-del-reminder",
+    "profile": {
+      "flights": [
+        {"airline": "IndiGo", "flight": "6E 6821", "route": "BBI→DEL", "date": "2026-08-24", "depart": "07:10", "confirmation_email": true},
+        {"airline": "IndiGo", "flight": "6E 501", "route": "BBI→BOM", "date": "2026-09-02", "depart": "09:00", "confirmation_email": false}
+      ],
+      "preferences": {"reminder_hours_before": 3, "next_trip": "BBI→DEL"}
+    }
+  }
 }

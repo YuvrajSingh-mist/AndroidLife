@@ -61,6 +61,18 @@ Hard tasks — Day 1:
 **12. [Contacts+Gmail] — DETERMINISTIC**
 - I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later
 
+**13. [Swiggy] — DETERMINISTIC**
+- Ugh, I'm craving what I ordered last Friday — can you get me that again?
+
+**14. [Telegram+Calendar] — DETERMINISTIC**
+- Pretty sure someone dropped a date in one of the group chats. Can you check and set a reminder if there's one?
+
+**15. [Music+Obsidian] — DETERMINISTIC**
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up with my kind of music?
+
+**16. [Gmail+Calendar] — DETERMINISTIC**
+- I'm flying out soon and don't wanna miss it. Can you make sure I get a heads-up before departure?
+
 ### Day 2
 
 **[Google Search]**

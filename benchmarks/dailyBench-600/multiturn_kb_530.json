@@ -1,22 +1,23 @@
 {
   "hard__swiggy__005": {
-    "correct_target": "swiggy::order_4821",
+    "correct_target": "swiggy::reorder-downtown-murgh-mughlai",
     "profile": {
       "orders": [
-        {"service": "Swiggy", "order_id": "4821", "date": "2026-08-14 (Fri)", "item": "Chicken Biryani + Gulab Jamun", "restaurant": "Biryani Blues", "status": "delivered", "recent": true},
-        {"service": "Amazon", "order_id": "9032", "date": "2026-08-11", "item": "Noise earbuds", "status": "shipped", "recent": false},
-        {"service": "Swiggy", "order_id": "4790", "date": "2026-08-12", "item": "Paneer Roll", "restaurant": "Rolls King", "status": "delivered", "recent": false}
-      ]
+        {"service": "Swiggy", "restaurant": "Downtown Delight", "item": "Murgh Mughlai + Kushka Rice", "total": "₹449", "status": "delivered", "recent": true, "favourite": true},
+        {"service": "Swiggy", "restaurant": "KFC", "item": "Classic Zinger Box", "total": "₹399", "status": "delivered", "recent": false, "favourite": true},
+        {"service": "Swiggy", "restaurant": "Jugaad Jn", "item": "Chole Chawal + Papdi Chat", "total": "₹149", "status": "delivered", "recent": false, "favourite": true}
+      ],
+      "account": "Yuvraj Singh +91 9354672378 (Swiggy One expired)"
     }
   },
   "hard__swiggy__007": {
-    "correct_target": "swiggy::biryani-blues-usual",
+    "correct_target": "swiggy::downtown-delight-usual",
     "profile": {
       "orders": [
-        {"service": "Swiggy", "restaurant": "Biryani Blues", "usual_items": ["Chicken Biryani", "Gulab Jamun", "Coke"], "last_total": "₹412", "recent": true},
-        {"service": "Swiggy", "restaurant": "Rolls King", "usual_items": ["Paneer Roll", "Cold Coffee"], "last_total": "₹230", "recent": false}
+        {"service": "Swiggy", "restaurant": "Downtown Delight", "usual_items": ["Murgh Mughlai", "Kushka Rice"], "last_total": "₹449", "recent": true, "favourite": true},
+        {"service": "Swiggy", "restaurant": "KFC", "usual_items": ["Classic Zinger Box"], "last_total": "₹399", "recent": false, "favourite": true}
       ],
-      "preferences": {"usual_restaurant": "Biryani Blues"}
+      "preferences": {"usual_restaurant": "Downtown Delight"}
     }
   },
   "hard__makemytrip__003": {
@@ -24,7 +25,7 @@
     "profile": {
       "trips": {
         "bbi_del": [
-          {"airline": "IndiGo", "flight": "6E 2031", "date": "2026-08-24 (Mon)", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
+          {"airline": "IndiGo", "flight": "6E 6821", "date": "2026-08-24 (Mon)", "depart": "BBI 07:10", "arrive": "DEL 09:20", "fare": "₹4,850"},
           {"airline": "Air India", "flight": "AI 723", "date": "2026-08-24 (Mon)", "depart": "BBI 16:40", "arrive": "DEL 19:05", "fare": "₹5,390"}
         ],
         "bbi_bom": [
@@ -45,13 +46,13 @@
     }
   },
   "hard__bookmyshow__003": {
-    "correct_target": "bookmyshow::priyanshu-action-movie",
+    "correct_target": "bookmyshow::priyanshu-samal-action-movie",
     "profile": {
       "contacts": {
-        "Priyanshu Kumar": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
-        "Anannya Mishra": {"likes": ["rom-coms"], "birthday": "2026-09-02"}
+        "Priyanshu Samal": {"likes": ["action movies", "sci-fi"], "birthday": "2026-08-20"},
+        "Rushaan": {"likes": ["rom-coms"], "birthday": "2026-09-02"}
       },
-      "preferences": {"surprise_party_for": "Priyanshu Kumar"}
+      "preferences": {"surprise_party_for": "Priyanshu Samal"}
     }
   },
   "hard__bookmyshow__005": {
@@ -78,7 +79,7 @@
     "correct_target": "msn-news::cricket-today",
     "profile": {
       "topics": {"cricket": true, "economy": false, "technology": true},
-      "contacts": {"primary_share": "Yuvraj Airtel", "telegram_handle": "@yuvraj_airtel"},
+      "contacts": {"primary_share": "Yuvraj Airtel", "telegram_handle": "@YuvrajSingh9886"},
       "preferences": {"followed_topic": "cricket"}
     }
   },
@@ -94,11 +95,11 @@
     "correct_target": "telegram::study-group-date",
     "profile": {
       "chats": [
-        {"name": "Study Group", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
-        {"name": "Family", "recent_date_mentioned": null, "topic": "general"},
-        {"name": "Hostel", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
+        {"name": "Raghav Sharma", "recent_date_mentioned": "2026-08-20", "topic": "exam prep"},
+        {"name": "prem", "recent_date_mentioned": null, "topic": "general"},
+        {"name": "Paresh Pothal", "recent_date_mentioned": "2026-08-18", "topic": "weekend plan"}
       ],
-      "preferences": {"reminder_chat": "Study Group"}
+      "preferences": {"reminder_chat": "Raghav Sharma", "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"}
     }
   },
   "hard__youtube-settings__052": {
@@ -120,16 +121,17 @@
         "top_video": {"title": "Final Match Highlights", "views": "1.2M", "column": "views"}
       },
       "preferences": {"related_product": "smartphone gimbal"}
-    }
+    },
+    "_seed": "REQUIRED before run - SPORTS_VIDEO_DATA spreadsheet is NOT present on device (verified 2026-08-18 via GUI). Create it in Google Sheets with columns video_title/views/likes + the top row, or this task becomes an honest-failure hallucination case."
   },
   "hard__google-meet-files__070": {
     "correct_target": "meet-files::next-meeting-agenda",
     "profile": {
       "meetings": [
-        {"title": "Team Standup", "time": "2026-08-18 10:00", "agenda_doc": "Standup Agenda", "attendees": 5},
-        {"title": "Project Review", "time": "2026-08-18 14:00", "agenda_doc": "Review Agenda", "attendees": 8}
+        {"title": "Weekly Sync", "time": "2026-08-24 (Mon) 10:00", "agenda_doc": "Weekly Agenda", "attendees": 5},
+        {"title": "Project Review", "time": "2026-08-24 (Mon) 14:00", "agenda_doc": "Review Agenda", "attendees": 8}
       ],
-      "preferences": {"next_meeting": "Team Standup"}
+      "preferences": {"next_meeting": "Weekly Sync", "calendar_note": "device has a recurring Monday event"}
     }
   },
   "hard__gmail-notes__045": {
@@ -137,7 +139,7 @@
     "profile": {
       "accounts": [
         {
-          "email": "yuvraj.singh@gmail.com",
+          "email": "rajceo2031@gmail.com",
           "primary": true,
           "emails": [
             {"from": "Flipkart", "subject": "Your 15% coupon", "code": "FLIP15", "expires": "2026-08-20"},
@@ -159,7 +161,7 @@
     "correct_target": "gmail-calendar::bbi-del-reminder",
     "profile": {
       "flights": [
-        {"airline": "IndiGo", "flight": "6E 2031", "route": "BBI→DEL", "date": "2026-08-24", "depart": "07:10", "confirmation_email": true},
+        {"airline": "IndiGo", "flight": "6E 6821", "route": "BBI→DEL", "date": "2026-08-24", "depart": "07:10", "confirmation_email": true},
         {"airline": "IndiGo", "flight": "6E 501", "route": "BBI→BOM", "date": "2026-09-02", "depart": "09:00", "confirmation_email": false}
       ],
       "preferences": {"reminder_hours_before": 3, "next_trip": "BBI→DEL"}
@@ -177,8 +179,8 @@
     "profile": {
       "alarm": {"requested_time": "07:00", "days": ["Mon", "Tue", "Wed", "Thu", "Fri"]},
       "calendar": [
-        {"event": "Team Sync", "date": "2026-08-17", "start": "07:00", "end": "08:00"},
-        {"event": "Gym", "date": "2026-08-18", "start": "06:30", "end": "07:30"}
+        {"event": "Weekly Sync", "date": "2026-08-24", "start": "07:00", "end": "08:00"},
+        {"event": "Gym", "date": "2026-08-25", "start": "06:30", "end": "07:30"}
       ],
       "preferences": {"shift_if_clash_min": 30}
     }

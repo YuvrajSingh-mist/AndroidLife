@@ -35,8 +35,18 @@
 
 | File | Used by | Contents |
 |---|---|---|
-| `benchmarks/dailyBench-600/multiturn_kb_public.json` | public.md (3-day public preview) tasks | KB profiles for public-set multi-turn tasks |
-| `benchmarks/dailyBench-600/multiturn_kb_530.json` | tasks_530.md (full 530) tasks | KB profiles for 530-set multi-turn tasks |
+| `benchmarks/dailyBench-600/multiturn_kb_public.json` | public.md (3-day public preview) tasks | KB profiles for public-set multi-turn tasks — **4 tasks** (2026-08-18): `hard__swiggy__013`, `hard__telegram-calendar__014`, `hard__music-obsidian__015`, `hard__gmail-calendar__016` |
+| `benchmarks/dailyBench-600/multiturn_kb_530.json` | tasks_530.md (full 530) tasks | KB profiles for 530-set multi-turn tasks — all 18 |
+
+> **Real-data grounding (2026-08-18):** profiles now use real on-device state pulled
+> via GUI — Swiggy favourites (Downtown Delight Murgh Mughlai ₹449, KFC Classic
+> Zinger Box ₹399, Jugaad Jn), Telegram account (Yuvraj Airtel +91 9354672378
+> @YuvrajSingh9886) + real chats (Raghav Sharma, prem, Paresh Pothal), real flight
+> IndiGo 6E 6821 BBI→DEL, identity Yuvraj Singh / rajceo2031@gmail.com, Bedtime
+> note 10:30 PM. ⚠️ `SPORTS_VIDEO_DATA` spreadsheet is **NOT on device** — the
+> sheets task (`hard__google-sheets-amazon-shopping__074`) carries a `_seed`
+> flag: it must be created in Google Sheets before running or it becomes an
+> honest-failure hallucination case.
 
 Format (per task_id):
 ```json
