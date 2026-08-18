@@ -83,6 +83,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
+    parser.add_argument("--ask-user-kb", default="", metavar="PATH",
+                        help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/dailyBench-600/multiturn_kb_530.json.")
     return parser
 
 
@@ -155,6 +157,7 @@ def build_run_command(
     ask_user_facts: dict[str, str] | None = None,
     cfg: dict[str, str] | None = None,
     task_vars: dict[str, str] | None = None,
+    ask_user_kb: dict | None = None,
 ) -> tuple[list[str], str]:
     """Build one `dailybench_runner.py` invocation. Returns (command, label)."""
     repo_root = Path(__file__).resolve().parents[2]
@@ -197,7 +200,13 @@ def build_run_command(
     command.extend(["--save-trajectory", args.save_trajectory])
     if args.no_app_reset:
         command.append("--no-app-reset")
-    if task.get("ahi") == "ASK USER":
+    if ask_user_kb and task.get("task_id") in ask_user_kb:
+        # Multi-turn KB mode (these are DETERMINISTIC tasks carrying a KB profile):
+        # the simulated user is an honest oracle over the profile with rolling
+        # memory, so the agent must ask to disambiguate. Takes precedence over the
+        # single-fact --ask-user-context mode.
+        command.extend(["--ask-user-kb", args.ask_user_kb])
+    elif task.get("ahi") == "ASK USER":
         fact = task.get("ask_user_fact") or (ask_user_facts or {}).get(task["task_id"])
         if fact is None:
             print(f"Warning: {task['task_id']} is an ASK USER task but has no ask_user_fact on its dataset row and no entry in {ask_user_facts_path(args.source)} - its ask_user tool will have nothing to reveal.")
@@ -285,6 +294,7 @@ def main() -> int:
             args.run_root = str(batch_dir)
             write_initial_device_sample(args.serial, batch_dir)
     ask_user_facts = load_ask_user_facts(ask_user_facts_path(args.source))
+    ask_user_kb = load_ask_user_facts(args.ask_user_kb) if args.ask_user_kb else None
     unresolved_failures: list[str] = []
     retry_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id)
     invocation = 0
@@ -332,7 +342,7 @@ def main() -> int:
         prompt = task.get("prompt_text") or task.get("prompt_template") or ""
         task_vars = {ph: variables[ph] for ph in (task.get("placeholders") or []) if ph in variables}
         for repeat_index in range(1, args.repeats + 1):
-            command, label = build_run_command(args, task, prompt, args.llm_proxy_port_base + invocation, repeat_index, args.repeats, ask_user_facts, cfg, task_vars)
+            command, label = build_run_command(args, task, prompt, args.llm_proxy_port_base + invocation, repeat_index, args.repeats, ask_user_facts, cfg, task_vars, ask_user_kb)
             run_once(command, label, task["task_id"])
 
     if resuming and args.resume_from is not None:

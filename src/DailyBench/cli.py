@@ -186,6 +186,12 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     if args.ask_user_kb:
         import json as _json
         kb = _json.loads(open(args.ask_user_kb).read())
+        # Multi-turn KB mode: hand the simulated user ONLY this task's profile
+        # (the file may hold many tasks' data), so the oracle knows just what it
+        # needs for this run - never the grader's correct_target.
+        if args.task_id and isinstance(kb, dict):
+            entry = kb.get(args.task_id)
+            kb = entry.get("profile", entry) if isinstance(entry, dict) else None
     if args.ask_user_context or kb is not None:
         # Truncate the ask_user log at run start so a merge-drill rerun into an existing
         # run root doesn't carry stale ask_user entries from a previous run (the tool appends

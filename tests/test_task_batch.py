@@ -319,6 +319,27 @@ def test_build_run_command_warns_and_passes_empty_context_when_fact_missing(caps
     assert "no entry in" in capsys.readouterr().out
 
 
+def test_build_run_command_forwards_ask_user_kb_for_kb_tasks_only() -> None:
+    """A DETERMINISTIC task whose task_id is in the --ask-user-kb file runs in multi-turn KB
+    mode (--ask-user-kb <path>, no --ask-user-context); tasks not in the KB never get the flag."""
+    parser = task_batch.build_parser()
+    args = parser.parse_args(
+        ["--serial", "device-1", "--llm-upstream-base", "http://mini2:8081/v1", "--model", "m",
+         "--ask-user-kb", "benchmarks/dailyBench-600/multiturn_kb_530.json"]
+    )
+    kb_task = {"bucket": "hard", "app_slug": "swiggy", "task_number_within_app": 5, "task_id": "hard__swiggy__005", "ahi": "DETERMINISTIC", "placeholders": []}
+    plain_task = {"bucket": "hard", "app_slug": "maps-notes", "task_number_within_app": 5, "task_id": "hard__google-maps-notes__005", "ahi": "DETERMINISTIC", "placeholders": []}
+    kb = {"hard__swiggy__005": {"correct_target": "swiggy::order_4821", "profile": {"orders": []}}}
+
+    kb_command, _ = task_batch.build_run_command(args, kb_task, "Get it", 8090, ask_user_kb=kb)
+    plain_command, _ = task_batch.build_run_command(args, plain_task, "Find it", 8090, ask_user_kb=kb)
+
+    assert "--ask-user-kb" in kb_command
+    assert kb_command[kb_command.index("--ask-user-kb") + 1] == "benchmarks/dailyBench-600/multiturn_kb_530.json"
+    assert "--ask-user-context" not in kb_command
+    assert "--ask-user-kb" not in plain_command
+
+
 def test_is_transient_failure_true_only_for_early_dropped_request_errors(tmp_path) -> None:
     """A short-lived run whose reason matches a known transient LLM-infra error is flagged for retry;
     a real multi-step failure, or a success, is not."""
