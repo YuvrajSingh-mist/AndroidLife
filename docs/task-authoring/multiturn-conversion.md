@@ -6,6 +6,15 @@
 > **knowledge-base profile** (JSON) the simulated user holds. The agent's job:
 > ask the right clarifying questions, converge on the correct target, get it done.
 
+> **2026-08-19 — Reorder tasks no longer name the order (swiggy__005/007).**
+> `hard__swiggy__005` + `hard__swiggy__007` previously stated the exact item + restaurant in the
+> prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
+> Kushka Rice from Downtown Delight"), which handed the agent the withheld fact and removed the
+> multi-turn ask. Both reworded (in `tasks_530.md` + `public.md`) to keep the natural craving line
+> and the full 5-step task (apps, cart, payment page, message [contact] total) while withholding the
+> item/restaurant so the agent must ask the oracle which order — consistent with the "genuinely
+> ambiguous, ONE withheld fact" rule below.
+
 > **2026-08-19 — Taxonomy relabel.** Hard headers now read **ASK USER SINGLE** (one withheld fact) /
 > **ASK USER - MULTI** (KB oracle) / **DETERMINISTIC**. The 13 multi-turn tasks are labeled
 > **ASK USER - MULTI** (`ahi="ASK USER"`, `interaction="multi"`) rather than "DETERMINISTIC"; the

@@ -695,7 +695,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **6. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ordered last Friday — can you get me that again? I can't remember exactly which one it was. Open Swiggy, go to my order history and find last Friday's order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text. <!--hard__swiggy__005-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->
@@ -943,7 +943,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **7. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Order my usual from my go-to place — my favourite food. Open Swiggy, find my usual order (I think it's the Murgh Mughlai with Kushka Rice from Downtown Delight), add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm. Reply with only the item name and total, no other text. <!--hard__swiggy__007-->
+- Order my usual from my go-to place — my favourite food. I can't remember what my usual is. Open Swiggy, find my usual order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm. Reply with only the item name and total, no other text. <!--hard__swiggy__007-->
 
 ### Day 17
 

@@ -209,8 +209,8 @@
       "is_ask_user": true,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text.",
-      "prompt_template": "I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Then open Calendar and create an event for that date with a sensible title and a reminder. Reply with only the event name and the date, no other text.",
+      "prompt_text": "I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder. Get back to me with the event name and the date.",
+      "prompt_template": "I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you open Telegram, look through my recent chats for one where a date was mentioned, and tell me what the event is and what date? Can you add that to the Calendar too as an event for that date with a sensible title and a reminder. Get back to me with the event name and the date.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -500,8 +500,8 @@
       "is_ask_user": true,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
-      "prompt_template": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? Open Swiggy, go to my order history and find last Friday's order — I think it was the Chole Chawal with Papdi Chat from Jugaad Jn — add the same items to the cart, and take me to the payment page without placing the order. Then message {{ contact }} on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
+      "prompt_text": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? I can't remember exactly which one it was. Open Swiggy, go to my order history and find last Friday's order, add the same items to the cart, and take me to the payment page without placing the order. Then message [contact] on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
+      "prompt_template": "Ugh, I'm craving the food I ordered last Friday — can you get me that again? I can't remember exactly which one it was. Open Swiggy, go to my order history and find last Friday's order, add the same items to the cart, and take me to the payment page without placing the order. Then message {{ contact }} on Telegram the order total so I can confirm before paying. Reply with only the item name and total, no other text.",
       "placeholders": [
         "contact"
       ],

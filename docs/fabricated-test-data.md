@@ -305,6 +305,17 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Multi-turn prompts no longer spoon-feed the answer (swiggy__005 / swiggy__007).**
+  The two "reorder my food" ASK USER - MULTI tasks were handing the agent the exact item + restaurant
+  in the prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
+  Kushka Rice from Downtown Delight"), which defeats the multi-turn design — per `task-authoring/multiturn-conversion.md`
+  these prompts must be **genuinely ambiguous** with the **ONE withheld fact the agent must ask the
+  oracle for** (the KB profiles in `multiturn_kb_public.json` / `multiturn_kb_530.json` hold the answer:
+  Jugaad Jn Chole Chawal + Papdi Chat ₹258 / Downtown Delight Murgh Mughlai). Reworded both
+  (`public.md` + `tasks_530.md`) to keep the natural craving line + the full 5-step task (apps, cart,
+  payment page, message [contact] total) while removing the item/restaurant, so the agent must ask
+  which order the user means. Regenerated 530 + public JSON; `verify_config.py` PASS; full suite PASS.
+
 - **2026-08-19 — Public KB reconciled to live phone data.**
   Verified all 4 `multiturn_kb_public.json` profiles against the live device (RS7XKZDI8HTOJNYL):
   - ✅ `hard__music-obsidian__077`: Bedtime.md = "10:30 PM" (exact match).
