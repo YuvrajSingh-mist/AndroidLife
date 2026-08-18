@@ -783,7 +783,7 @@ The 72 hard tasks are **not** a separate battery run on their own: each one sits
 
 **[Google Photos]**
 - Easy (1pt): In Google Photos, search the photos for photos from [place]
-- Medium (3pt): In Google Photos, find the 10 photos taking up the most storage, review them, and delete the 3 least useful ones
+- Medium (3pt): In Google Photos and Obsidian, open my 'Food Favourites' note in Obsidian (headings: Pancakes, Pizza, Veggie Bowl), find the matching favourite photo in Google Photos Favourites for each heading by looking at each photo's description, and copy each one into the note under the matching heading
 
 **[Phone]**
 - Easy (1pt): In Phone, mute the microphone during an active call

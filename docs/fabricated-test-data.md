@@ -538,6 +538,22 @@ following entities were **seeded on the test device** (all recorded in
   read **Google Photos** (31 covered apps; Gallery removed from `app_audit`'s
   required set — the device still has it installed, it's just no longer used by
   tasks).
+- **`medium__gallery__007` redesign → Food Favourites collage (2026-08-18):**
+  per the operator, the task no longer deletes photos to free space. It now asks
+  the agent to open **Google Photos Favourites**, read each favourite photo's
+  **description/caption**, and copy the matching photo **one by one** under the
+  matching heading (Pancakes / Pizza / Veggie Bowl) in the Obsidian note
+  `Food Favourites.md` (in `Papers vault oneplus /`). Updated in
+  `DailyBench_530_v1.json/.jsonl`, `tasks_530.md`, `tasks.md`,
+  `DailyBench_public_v2.json/.jsonl`, `public.md`, and the
+  `day_14/medium__gallery__007` seed manifest. **Seeded/real data:** the note has
+  the 3 empty headings; the 3 food photos (`pancakes.jpg`, `pizza.jpg`,
+  `veggie bowl.jpg` in `DCIM/Camera`) are favourited in Google Photos and each
+  carries a caption ("Golden fluffy pancakes stacked on a plate", "Freshly baked
+  pizza with melted cheese", "Healthy veggie bowl with fresh vegetables") set via
+  the Photos GUI — note EXIF ImageDescription alone is **not** displayed by
+  Google Photos for local (unbacked-up) photos, so captions must be set in-app.
+  Expected end state: each photo embedded under its matching heading.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

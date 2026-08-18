@@ -32,7 +32,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Files + Obsidian]**: My storage keeps shrinking and I need to find the big offenders. Filter files larger than 100MB across the whole device, note the largest one, star it, and log its size in an Obsidian note in Files? List it for me in the format of "Filename" | "Size" strictly. <!--medium__files__010-->
 
 **[Google Photos+Obsidian]**
-- Medium (3pt) **[Google Photos + Obsidian]**: I am trying to make a collage of various photos of food but I can't seem to find the right ones. Could you find the 10 photos taking up the most storage, review them, delete the 3 least useful ones for this purpose, and note the space freed in Obsidian in Google Photos? Reply with only the space freed, no other text. <!--medium__gallery__007-->
+- Medium (3pt) **[Google Photos + Obsidian]**: I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you open Google Photos Favourites, find the appropriate photo for each heading by looking at each photo's description, and copy each one into the note under the matching heading, one by one? Reply with only the number of photos added, no other text. <!--medium__gallery__007-->
 
 **[Gmail]**
 - Easy (1pt): Can you forward the most recent email in my Gmail to [contact] pls? <!--easy__gmail__001-->
@@ -44,10 +44,10 @@ aren't grouped or predictable by position.**
 - Medium (3pt): Could you open '[spreadsheet name]', freeze the header row, and confirm it stays visible when scrolling in Google Sheets? <!--medium__google-sheets__003-->
 
 **[Music]**
-- Easy (1pt): That song's stuck in my head and I need to hear it. Can you search for '[song]' in Music and play it? <!--easy__music__009-->
+- Easy (1pt): That song's stuck in my head and I need to hear it. Can you search for '[song]' in YT Music and play it? <!--easy__music__009-->
 
 **[Music+Gmail]**
-- Medium (3pt) **[Music + Gmail]**: Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email [contact] how much storage that freed up. <!--medium__music__004-->
+- Medium (3pt) **[Music + Gmail]**: Could you find songs I downloaded for offline listening that I haven't played in months and remove them in Music? Also, email [contact] to prepare for the upcoming meeting thus we are meeting tomorrow morning to discuss the prep. <!--medium__music__004-->
 
 **[Notes]**
 - Medium (3pt): Could you open my '[note title]' note in Notes, read it, and rewrite it into a cleaner version with clear sections, keeping all the original points? <!--medium__notes__005-->
@@ -59,7 +59,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and tell me the delivery status of my most recent order? Reply with only the delivery status, no other text. <!--easy__swiggy__003-->
 
 **[YouTube+Gmail]**
-- Medium (3pt) **[YouTube + Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video. <!--medium__youtube__005-->
+- Medium (3pt) **[YouTube + Gmail]**: Could you compare the view counts across three videos on the same topic and save the most popular one in YouTube? Also, email [contact] the link to the most popular video with a fit description of the same, titling it appropriately. <!--medium__youtube__005-->
 
 Hard tasks — Day 1:
 **1. [Drive+Notes+Telegram] — ASK USER**
@@ -81,7 +81,7 @@ Hard tasks — Day 1:
 - Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. Reply with only the final grade, no other text. <!--medium__calculator__001-->
 
 **[Calculator+Telegram]**
-- Medium (3pt) **[Calculator + Telegram]**: Could you open the '[shared bill note title]' note in Obsidian, compute each roommate's share of the shared bill with different usage levels, message each their share, and log the total bill in a note in Calculator? List each share for me in the format of "Name" | "Share" strictly, and reply with only the total bill, no other text. <!--medium__calculator__005-->
+- Medium (3pt) **[Calculator + Telegram]**: Could you open the '[shared bill note title]' note in Obsidian, compute each roommate's share of the shared bill with different usage levels, message each their share, and log the total bill in a note in Calculator? List each share for me in the format of "Name" | "Share" strictly, and reply with only the total bill framed in an appropriate message, no other text. <!--medium__calculator__005-->
 
 **[Calendar]**
 - Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? Reply with only the total hours, no other text. <!--medium__calendar__013-->
@@ -90,7 +90,7 @@ Hard tasks — Day 1:
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
 
 **[Google Maps+Gmail]**
-- Medium (3pt) **[Google Maps + Gmail]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, email [contact] the address of the nearest station. <!--medium__google-maps__003-->
+- Medium (3pt) **[Google Maps + Gmail]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] the address of the nearest station. <!--medium__google-maps__003-->
 
 **[Google Sheets]**
 - Medium (3pt): I need a quick total for a column and don't want to do the math. Could you open '[spreadsheet name]' and sum up the [sheet column] column in Google Sheets? Reply with only the total, no other text, then add it as a new row at the bottom and adjust any other columns' values that need fixing because of that change. <!--medium__google-sheets__001-->
