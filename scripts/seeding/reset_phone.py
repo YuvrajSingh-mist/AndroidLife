@@ -17,6 +17,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import base64
+import os
 import re
 import subprocess
 import sys
@@ -62,9 +64,37 @@ PROFILES: dict[str, dict] = {
         "contact_display": "Akash Kumar",
         "contact_given": "Akash",
         "contact_last": "Kumar",
+        # Seed files whose CONTENT runs MUTATE (not just create). These are restored
+        # to their exact baseline content on reset so every variance-check run starts
+        # identical (medium__gallery__007 pastes photos into Food Favourites.md;
+        # hard__drive-*-telegram__049/010 log dates into Budget Deadline.md).
+        "restore_file_contents": {
+            "/sdcard/Obsidian/Papers vault oneplus /Food Favourites.md": (
+                "# Food Favourites\n\n"
+                "Quick reference of my favourite food photos pulled from Google Photos.\n\n"
+                "## Pancakes\n\n## Pizza\n\n## Veggie Bowl\n"
+            ),
+            "/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md": (
+                "# Budget Deadline\n\n"
+                "The shared budget spreadsheet must be finalised by 2026-08-10.\n\n"
+                "Last reviewed: 2026-07-10.\n"
+            ),
+        },
+        # run-created Obsidian paste artifacts: Obsidian stores pasted images in the
+        # vault root as "Pasted image YYYYMMDDHHMMSS.jpg" (no attachment folder is
+        # configured in .obsidian/app.json). The gallery task's paste creates these.
+        "obsidian_pasted_images": [
+            "/sdcard/Obsidian/Papers vault oneplus /Pasted image*",
+        ],
+        # seed file CONTENT checks for the verify gate (baseline must still hold)
+        "seed_file_contents": {
+            "/sdcard/Obsidian/Papers vault oneplus /Food Favourites.md": "## Veggie Bowl",
+            "/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md": "Last reviewed: 2026-07-10.",
+        },
         # App-private / cloud run artifacts the reset CANNOT auto-delete (non-rooted)
         # - see .agents/skills/reset-phone/SKILL.md step 2 for the full list.
         "manual_ui_cleanup": [
+            "Google Photos: the 3 food-photo captions + Favourites for medium__gallery__007 live in the app-private Photos DB - the task only reads them, so they persist across runs; if ever lost, re-add captions + favourites in the Photos UI before a run",
             "Gmail: unstar starred emails + remove the label the agent created; delete the sent-with-attachment email",
             "Notes: delete run notes (Card Payment Due, Budget Tracker, Birthday Reminders, IndiGo flight note)",
             "Obsidian: delete run notes (e.g. Birthday Reminders)",
@@ -326,6 +356,37 @@ def remove_glob(serial: str, patterns: list[str], apply: bool) -> None:
             print(f"  [dry] rm -f {pattern}")
 
 
+def remove_by_find(serial: str, patterns: list[str], apply: bool) -> None:
+    """Remove files matching a glob inside a (possibly space-containing) dir via `find -delete`.
+
+    Unlike remove_glob, both the dir AND the glob are single-quoted, so spaces in the
+    path (e.g. 'Papers vault oneplus /Pasted image*') are safe while `*` still expands.
+    """
+    for pattern in patterns:
+        dirname, basename = os.path.split(pattern)
+        cmd = f"find {quote(dirname)} -maxdepth 1 -name {quote(basename)} -delete"
+        if apply:
+            sh(serial, cmd, check=True)
+            print(f"  [ok]  {cmd}")
+        else:
+            print(f"  [dry] {cmd}")
+
+
+def restore_file_contents(serial: str, entries: dict[str, str], apply: bool) -> None:
+    """Overwrite seed files that runs mutate back to their exact baseline content.
+
+    Content is base64-encoded on the host and decoded on-device (`base64 -d`) so no
+    shell metacharacter in the note text can break the command.
+    """
+    for path, content in entries.items():
+        b64 = base64.b64encode(content.encode("utf-8")).decode("ascii")
+        if apply:
+            sh(serial, f"echo {b64} | base64 -d > {quote(path)}", check=True)
+            print(f"  [ok]  restored file content: {path}")
+        else:
+            print(f"  [dry] restore file content: {path}")
+
+
 def remove_calendar_by_ids(serial: str, ids: list[int], apply: bool) -> None:
     """Soft-delete calendar events by their _id (covers empty-title run artifacts)."""
     if not ids:
@@ -362,6 +423,11 @@ def verify(serial: str, prof: dict) -> bool:
         has = sh(serial, f"ls {quote(path)}").strip() != ""
         ok &= has
         print(f"  {'PASS' if has else 'FAIL'} seed file {path}")
+    for path, needle in prof.get("seed_file_contents", {}).items():
+        content = sh(serial, f"cat {quote(path)}")
+        good = needle in content
+        ok &= good
+        print(f"  {'PASS' if good else 'FAIL'} seed file content {path} contains {needle!r}")
     contact_display = prof.get("contact_display")
     if contact_display:
         ca = sh(serial, f"content query --uri {CONTACTS_URI} --projection _id:display_name")
@@ -414,6 +480,8 @@ def main() -> int:
         remove_paths(args.serial, prof.get("device_paths_to_remove", []), args.apply)
         remove_glob(args.serial, prof.get("device_paths_glob", []), args.apply)
         remove_paths(args.serial, prof.get("obsidian_vault_remove", []), args.apply)
+        remove_by_find(args.serial, prof.get("obsidian_pasted_images", []), args.apply)
+        restore_file_contents(args.serial, prof.get("restore_file_contents", {}), args.apply)
         manual = prof.get("manual_ui_cleanup") or []
         if manual:
             print("== CANNOT auto-reset (app-private; do by hand in the UI) ==")

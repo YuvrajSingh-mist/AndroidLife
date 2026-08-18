@@ -554,6 +554,11 @@ following entities were **seeded on the test device** (all recorded in
   the Photos GUI — note EXIF ImageDescription alone is **not** displayed by
   Google Photos for local (unbacked-up) photos, so captions must be set in-app.
   Expected end state: each photo embedded under its matching heading.
+  **Reset:** `scripts/seeding/reset_phone.py --profile public_v2` now restores
+  `Food Favourites.md` to its empty-headings baseline and deletes vault-root
+  `Pasted image *.jpg` artifacts between runs (so 3× variance-check runs start
+  identical); the photo captions/Favourites live in the app-private Photos DB
+  and are read-only for this task, so they persist across runs.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

@@ -35,7 +35,11 @@ The script:
 - Unblocks numbers the agent blocked (keeps pre-existing blocks).
 - Deletes agent-created calendar events (marker/title/creation-window matched) and restores the mangled `Akash Kumar` contact.
 - Removes run-created files from Downloads/DCIM.
-- Verifies baseline seeds still present (shareholder events on the Google calendar, `PURCHASE_ORDER.xlsx`, `SPORTS_VIDEO_DATA.xlsx`, `budget.xlsx`, `quote.xlsx`, contacts).
+- Removes Obsidian `Pasted image *.jpg` artifacts (the gallery task pastes photos into the vault root).
+- **Restores mutated seed-note contents to their exact baseline** (`Food Favourites.md` → empty Pancakes/Pizza/Veggie Bowl headings; `Budget Deadline.md` → "Last reviewed: 2026-07-10."). This is what makes 3× variance-check runs start identical.
+- Verifies baseline seeds still present (shareholder events on the Google calendar, `PURCHASE_ORDER.xlsx`, `SPORTS_VIDEO_DATA.xlsx`, `budget.xlsx`, `quote.xlsx`, contacts, plus the `Food Favourites.md` / `Budget Deadline.md` note contents).
+
+> Note: `medium__gallery__007`'s photo captions + Favourites live in the app-private Photos DB — the task only *reads* them, so they survive runs untouched; the reset can't restore them via ADB. If they're ever lost, re-add them in the Photos UI before a run (see `manual_ui_cleanup` printed by the script).
 
 ## Step 2 — Manual UI-only cleanups (no ADB access — app-private DB / cloud)
 
