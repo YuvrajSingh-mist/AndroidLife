@@ -608,6 +608,20 @@ following entities were **seeded on the test device** (all recorded in
   is certainly no per-contact toggle), so "turn off read receipts for [contact]"
   was unsolvable. Rewritten to the solvable per-contact action **mute notifications
   for [contact]**.
+- **Public sample rebalanced to mirror the 530 app distribution + camera fix
+  (2026-08-18):** per the operator, `public.md` must be a **stats replica** of the
+  530 corpus. `build_public_sample.py` now selects tasks by a seeded greedy that
+  minimizes deviation from the 530's proportional per-app counts (target =
+  round(530_count × 57/530)), pins the showcase `medium__gallery__007`, carries
+  over the existing public prompt text (output formats + operator wording) for
+  surviving task_ids, and adds the missing `[product]`/`[price threshold]` vars so
+  Amazon Shopping is selectable. Result: **Google Meet 5 → 2** (spread across
+  days, was all Day-3), and **MSN News / Amazon Shopping / Google Docs /
+  BookMyShow are now present** (were absent); total |deviation| from the
+  proportional target = 16; 57 tasks / 21-20-16 / 20-20-17 unchanged, no dupes,
+  all placeholders resolvable. `easy__camera__006` was **rewritten from a
+  storage-check (not a real Camera action) to a genuine Camera task** — "open
+  Camera and switch to video mode" — in both `tasks_530.md` and `public.md`.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
   new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
   (+91 00030 30302), and the task updates those two real selected contacts'

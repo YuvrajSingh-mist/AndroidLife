@@ -756,7 +756,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Splitting a bill with the group. Open the '[group bill note title]' note in Obsidian, compute the split on the Calculator, check each person's share, and if any share exceeds $50, message those people individually on Telegram; otherwise send one group message. Log the total in a note <!--hard__calculator-telegram-notes__020-->
 
 **[Camera]**
-- Easy (1pt): I'm about to shoot a lot and don't want to run out of space. Can you check how much storage is left for photos/videos in Camera? <!--easy__camera__006-->
+- Easy (1pt): I'm about to record something and want to be ready. Can you open Camera and switch to video mode? <!--easy__camera__006-->
 
 **[Chrome]**
 - Medium (3pt): Could you filter a wishlist/cart preview to only items currently on sale, note the total savings, and check which item has the biggest discount in Chrome? <!--medium__shopping-delivery-browser__006-->

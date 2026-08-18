@@ -113,20 +113,87 @@ def main() -> int:
     if len(det_pool) < (TARGETS["hard"] - HARD_ASK_USER - len(MULTITURN)):
         raise SystemExit("not enough DET hard candidates")
 
-    rng.shuffle(easy_pool)
-    rng.shuffle(med_pool)
-    rng.shuffle(au_pool)
-    rng.shuffle(det_pool)
+    # ---- app-distribution targets: the public must mirror the 530's per-app
+    # proportion (scaled to 57) so it's a genuine stats replica (Google Meet ~1,
+    # MSN News / Amazon Shopping / Google Docs / BookMyShow present, etc.). ----
+    def app_tally(ts) -> "Counter[str]":
+        c: "Counter[str]" = Counter()
+        for t in ts:
+            for a in t.get("apps") or [t.get("app") or "?"]:
+                c[a] += 1
+        return c
 
-    selected: dict[str, dict] = {tid: by_id[tid] for tid in MULTITURN}  # multi-turn first
-    for t in easy_pool[: TARGETS["easy"]]:
+    c530 = app_tally(tasks)
+    ratio = sum(TARGETS.values()) / len(tasks)  # 57 / 530
+    TARGET_APP = {a: max(0, round(n * ratio)) for a, n in c530.items()}
+
+    def deviation(cur: "Counter[str]") -> int:
+        keys = set(TARGET_APP) | set(cur)
+        return sum(abs(TARGET_APP.get(a, 0) - cur.get(a, 0)) for a in keys)
+
+    # Showcase tasks the operator explicitly built/seeded — pin them so they
+    # always survive selection (they fill their apps' target slots anyway).
+    SHOWCASE = ["medium__gallery__007"]
+
+    selected: dict[str, dict] = {tid: by_id[tid] for tid in MULTITURN}
+    for tid in SHOWCASE:
+        if tid in by_id:
+            selected[tid] = by_id[tid]
+
+    # Carry over the current public's prompt text (output formats + operator
+    # wording) for task_ids that survive, so a rebuild doesn't strip them.
+    old_text: "dict[str, str]" = {}
+    if OUT_JSON.exists():
+        old_pub = json.loads(OUT_JSON.read_text())["tasks"]
+        old_text = {t["task_id"]: t["prompt_text"] for t in old_pub}
+
+    cur = app_tally([selected[tid] for tid in selected])
+    hard_au_done = sum(1 for t in selected.values() if t.get("ahi") == "ASK USER")
+    hard_det_done = sum(1 for t in selected.values() if t.get("ahi") == "DETERMINISTIC" and t["task_id"] not in MULTITURN)
+    pools: "dict[str, list[dict]]" = {"easy": easy_pool, "medium": med_pool}
+
+    def quota_left(bucket: str) -> int:
+        return TARGETS[bucket] - sum(1 for t in selected.values() if t["bucket"] == bucket)
+
+    def choose() -> "tuple[str, dict]":
+        cands: "list[tuple[str, dict]]" = []
+        for bucket in ("easy", "medium"):
+            if quota_left(bucket) > 0:
+                cands.extend((bucket, t) for t in pools[bucket] if t["task_id"] not in selected)
+        if hard_au_done < HARD_ASK_USER:
+            cands.extend(("hard", t) for t in au_pool if t["task_id"] not in selected)
+        if hard_det_done < (TARGETS["hard"] - HARD_ASK_USER - len(MULTITURN)):
+            cands.extend(("hard", t) for t in det_pool if t["task_id"] not in selected)
+        rng.shuffle(cands)
+        best: "tuple[str, dict] | None" = None
+        best_d = None
+        for bucket, t in cands:
+            newcur = Counter(cur)
+            for a in t.get("apps") or [t.get("app") or "?"]:
+                newcur[a] += 1
+            d = deviation(newcur)
+            # Prefer keeping tasks already in the public sample (preserves the
+            # curated wording + output formats) when it doesn't hurt the app
+            # distribution by much. The 1.0 bonus only tips near-ties.
+            if t["task_id"] in old_text:
+                d -= 1.0
+            if best_d is None or d < best_d:
+                best_d = d
+                best = (bucket, t)
+        if best is None:
+            raise SystemExit("ran out of candidates before quotas were met")
+        return best
+
+    while len(selected) < sum(TARGETS.values()):
+        bucket, t = choose()
         selected[t["task_id"]] = t
-    for t in med_pool[: TARGETS["medium"]]:
-        selected[t["task_id"]] = t
-    for t in au_pool[:HARD_ASK_USER]:
-        selected[t["task_id"]] = t
-    for t in det_pool[: (TARGETS["hard"] - HARD_ASK_USER - len(MULTITURN))]:
-        selected[t["task_id"]] = t
+        for a in t.get("apps") or [t.get("app") or "?"]:
+            cur[a] += 1
+        if bucket == "hard":
+            if t.get("ahi") == "ASK USER":
+                hard_au_done += 1
+            elif t.get("ahi") == "DETERMINISTIC" and t["task_id"] not in MULTITURN:
+                hard_det_done += 1
 
     if len(selected) != sum(TARGETS.values()):
         raise SystemExit(f"selection size {len(selected)} != {sum(TARGETS.values())}")
@@ -142,11 +209,13 @@ def main() -> int:
                 day_of[bucket_tasks[idx]["task_id"]] = day
                 idx += 1
 
-    # Public rows: real ids, day remapped, prompt exact.
+    # Public rows: real ids, day remapped, prompt exact (carried over when present).
     public_tasks: list[dict] = []
     for t in selected.values():
         row = dict(t)
         row["day"] = day_of[t["task_id"]]
+        if t["task_id"] in old_text:
+            row["prompt_text"] = old_text[t["task_id"]]
         public_tasks.append(row)
     public_tasks.sort(key=lambda r: (r["day"], r["bucket"] != "hard", r["app_slug"], r["task_id"]))
 
