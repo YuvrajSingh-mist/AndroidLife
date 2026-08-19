@@ -51,7 +51,7 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | `easy__swiggy__001` | Swiggy | ✅ | recent order exists (delivery status) |
 | `medium__clock__009` | Clock+Calendar | ✅ | recurring alarm vs calendar events |
 | `easy__google-meet__004` | Meet | 🛠 | needs a meeting today — seed a Calendar/Meet event today |
-| `medium__google-photos__012` | Photos+Messages | ✅ | create album 'Weekend' + add 3 most recent photos + message album name — doable via GUI, resettable (delete album) |
+| `medium__google-photos__012` | Photos+Messages | ✅ | create album '[album name]' (Hostel Life) + add 3 most recent photos + message album name — doable via GUI, resettable (delete album) |
 | `easy__youtube__011` | YouTube | 👤 | comments on "current video" — needs a video open/history |
 | `hard__chrome-telegram-notes__008` | Chrome+Telegram+Notes | ✅ | price compare amazon.in/flipkart.com — real |
 | `medium__files__009` | Files | 🛠 | ≥10 screenshots in folders — fabricate |

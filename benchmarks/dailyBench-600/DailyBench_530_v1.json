@@ -15072,12 +15072,13 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text.",
-      "prompt_template": "Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message {{ contact }} the album name so they can find it? Reply with only the album name, no other text.",
+      "prompt_text": "Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text.",
+      "prompt_template": "Could you open Google Photos, put my 3 most recent photos into a new album called '{{ album name }}', and message {{ contact }} the album name so they can find it? Reply with only the album name, no other text.",
       "placeholders": [
+        "album name",
         "contact"
       ],
-      "placeholder_count": 1,
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Photos+Messages",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"

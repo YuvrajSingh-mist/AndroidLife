@@ -305,6 +305,13 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — google-photos__012 album name placeholder-ized.**
+  - `medium__google-photos__012` now asks for a new album called `[album name]` instead of the hardcoded
+    'Weekend'; the placeholder resolves to **'Hostel Life'** (added `album name=Hostel Life` to
+    `public_vars.local.env` and `album name: Hostel Life` to `config/user.yaml`, plus a matching entry in
+    the `SCHEMA` in `src/DailyBench/user_config.py`).
+  - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
+    PASS (0 failures).
 - **2026-08-19 — gallery__012 reverted (no synthetic seed) + google-photos__012 reworded (doable).**
   - `easy__gallery__012`: the vision rewrite's synthetic red-circle seed (`most_recent_photo.png`) was
     deleted per user (it had no natural subject). Reverted to a **plain, deterministic, resettable** task:

@@ -125,7 +125,7 @@ aren't grouped or predictable by position.**
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
 
-- Medium (3pt) **[Google Photos + Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
+- Medium (3pt) **[Google Photos + Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
 
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->

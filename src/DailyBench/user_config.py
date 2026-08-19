@@ -77,8 +77,10 @@ SCHEMA: dict[str, tuple[str, str]] = {
     # media
     "food_category": ("Photo category for the Photos 'best 3 by resolution' task "
                        "(`[food_category]`).", "pizza"),
-    "search word": ("Word to search Messages for (`[search word]`).", "ticket"),
-    # music / clock / sleep
+      "search word": ("Word to search Messages for (`[search word]`).", "ticket"),
+      "album name": ("Name of the Google Photos album the Photos album task creates "
+                     "(`[album name]`).", "Hostel Life"),
+      # music / clock / sleep
     "bedtime": ("Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must "
                  "not run past (seed value).", "10:30 PM"),
     "recipe": ("Recipe (name + URL) for the Clock multi-timer task; must have explicit "

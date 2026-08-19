@@ -1559,7 +1559,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Sheets]**
 - Medium (3pt): Could you open '[spreadsheet name]', add a new row with the current date, and confirm it saved at the bottom in Google Sheets? <!--medium__google-sheets__004-->
 
-- Medium (3pt) **[Google Photos+Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
+- Medium (3pt) **[Google Photos+Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
 
 **[Messages]**
 - Medium (3pt): Could you rank contacts by how recently they messaged, reply to the least recent, and note the reply time in Messages? <!--medium__messages__013-->
