@@ -108,9 +108,6 @@ aren't grouped or predictable by position.**
 **3. [Gmail+Calendar] — ASK USER - MULTI**
 - I'm flying out soon and don't wanna miss it. Find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
-**5. [Music+Obsidian] — ASK USER - MULTI**
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
-
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
 
@@ -131,6 +128,9 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
 
 - Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month, delete any duplicates, and count what's left in Chrome? Also, message [contact] the count. <!--medium__chrome__011-->
+
+**5. [Music+Obsidian] — ASK USER - MULTI**
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
 
 
 ### Day 3
@@ -160,8 +160,6 @@ aren't grouped or predictable by position.**
 **[Google Docs]**
 - Easy (1pt): I've got a document I need a fresh copy of to edit — could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document? <!--easy__google-docs__004-->
 
-- Medium (3pt) **[Music + Telegram]**: Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music? <!--medium__music-telegram__001-->
-
 **[MSN News]**
 - Easy (1pt): I want to know what's big in [topic] right now. Can you open MSN News and read me the headline of the top story in the '[topic]' section? Reply with only the top story, no other text. <!--easy__msn-news__002-->
 
@@ -179,3 +177,5 @@ aren't grouped or predictable by position.**
 
 **[Google Photos]**
 - Easy (1pt): That screenshot was a mistake and I want it gone. Can you delete my most recent screenshot in Google Photos? <!--easy__google-photos__015-->
+
+- Medium (3pt) **[Music + Telegram]**: Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music? <!--medium__music-telegram__001-->

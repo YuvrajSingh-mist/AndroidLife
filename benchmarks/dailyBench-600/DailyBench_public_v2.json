@@ -933,35 +933,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "hard__music-obsidian__077",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 2,
-      "app": "Music+Obsidian",
-      "app_slug": "music-obsidian",
-      "apps": [
-        "Music",
-        "Obsidian"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": "ASK USER",
-      "interaction": "multi",
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": true,
-      "task_number_within_app": 5,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
-      "prompt_template": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": true,
-      "cross_app_label": "Music+Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "easy__google-maps__004",
       "bucket": "easy",
       "difficulty": "easy",
@@ -1193,6 +1164,35 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Chrome + Messages",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "hard__music-obsidian__077",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "points": 5,
+      "day": 2,
+      "app": "Music+Obsidian",
+      "app_slug": "music-obsidian",
+      "apps": [
+        "Music",
+        "Obsidian"
+      ],
+      "num_apps": 2,
+      "cross_app_required": true,
+      "ahi": "ASK USER",
+      "interaction": "multi",
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": true,
+      "task_number_within_app": 5,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
+      "prompt_template": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Music+Obsidian",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1498,37 +1498,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "medium__music-telegram__001",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 3,
-      "app": "Music + Telegram",
-      "app_slug": "music-telegram",
-      "apps": [
-        "Music",
-        "Telegram"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music?",
-      "prompt_template": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with {{ contact }} on Telegram in Music?",
-      "placeholders": [
-        "contact"
-      ],
-      "placeholder_count": 1,
-      "is_cross_app": true,
-      "cross_app_label": "Music + Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "easy__msn-news__002",
       "bucket": "easy",
       "difficulty": "easy",
@@ -1704,6 +1673,37 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "medium__music-telegram__001",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "points": 3,
+      "day": 3,
+      "app": "Music + Telegram",
+      "app_slug": "music-telegram",
+      "apps": [
+        "Music",
+        "Telegram"
+      ],
+      "num_apps": 2,
+      "cross_app_required": true,
+      "ahi": null,
+      "interaction": null,
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 1,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music?",
+      "prompt_template": "Could you compare my listening stats between this week and last week, note the difference, and share the summary with {{ contact }} on Telegram in Music?",
+      "placeholders": [
+        "contact"
+      ],
+      "placeholder_count": 1,
+      "is_cross_app": true,
+      "cross_app_label": "Music + Telegram",
       "source_path": "benchmarks/dailyBench-600/public.md"
     }
   ]
