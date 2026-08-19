@@ -47,8 +47,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--steps", type=int, default=150)
-    parser.add_argument("--task-timeout", type=int, default=0, help="Wall-clock seconds before mobilerun's own MobileAgent(timeout=...) aborts the task. 0 = no wall-clock limit (default): the --steps step budget is the real bound.")
+    parser.add_argument("--steps", type=int, default=60)
+    parser.add_argument("--task-timeout", type=int, default=2400, help="Wall-clock seconds before mobilerun's own MobileAgent(timeout=...) aborts the task. 2400 (default) = 40-minute cap; 0 = no wall-clock limit (the --steps step budget is the real bound).")
     parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
     parser.add_argument("--reasoning", action="store_true", help="Use mobilerun's manager/executor planning workflow instead of the fast-agent loop.")
     parser.add_argument("--thinking", action="store_true", help="Leave the model's reasoning/thinking mode ON. OFF by default (the fast-agent loop needs immediate text content, and hidden reasoning burns tokens + breaks determinism): when off, the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) for whichever the model/host honors.")
@@ -213,9 +213,8 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     )
     # 0 means "no wall-clock cap". The FastAgent loop's MobileAgentInitEvent requires an int
     # timeout (None fails pydantic validation: "Input should be a valid integer"), so we pass
-    # a 100-year deadline instead of None — effectively no wall-clock limit. The step budget
-    # (--steps) is the real bound. Every bucket comes through as --task-timeout 0 from the
-    # batch runner.
+    # a 100-year deadline instead of None — effectively no wall-clock limit. The default is a
+    # 40-minute (2400s) cap; the batch runner passes --task-timeout 2400 for every bucket.
     NO_WALL_CLOCK_TIMEOUT_SECONDS = 60 * 60 * 24 * 365 * 100  # 100 years ≈ no cap
     timeout = NO_WALL_CLOCK_TIMEOUT_SECONDS if args.task_timeout == 0 else args.task_timeout
     agent = MobileAgent(

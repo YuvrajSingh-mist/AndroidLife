@@ -259,8 +259,8 @@ must be recorded alongside any results:
 ```
 
 Harness behavior that affects results and is part of the reproducible spec:
-- **Step budget only** — every wall-clock timeout is `None` (`--task-timeout 0` for every
-  bucket); `--steps 200` is the only cap.
+- **Step budget + wall-clock cap** — every bucket gets a 40-minute (2400s) wall-clock timeout
+  (`--task-timeout 2400`); `--steps 60` is the per-task step cap.
 - **`success=true` only when the deliverable is actually completed** — a "not found / couldn't
   do it" outcome now returns `false` for action tasks (genuine check/report tasks keep the
   zero-answer exception).

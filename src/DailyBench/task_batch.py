@@ -20,15 +20,14 @@ from .user_config import load_user_config, parse_flat_config, resolve_template, 
 
 load_dotenv()  # picks up .env from the repo root (or any parent dir) - see README's Setup section
 
-# No wall-clock timeouts at all (timeout=None for every bucket): the step budget (--steps,
-# default 150) is the real bound, and on a real phone the battery is the ultimate failsafe
-# anyway. Wall-clock caps proved counterproductive - legitimately long runs (medium-clock,
-# medium-photos, medium-search-telegram) exceeded 20 minutes and were killed mid-verification.
-# The batch passes --task-timeout 0 for every bucket, which dailybench_runner translates to
-# timeout=None (the runner's own 1000s default would otherwise cap all tasks - smoke-test finding).
-EASY_TASK_TIMEOUT_SECONDS = None
-MEDIUM_TASK_TIMEOUT_SECONDS = None
-HARD_TASK_TIMEOUT_SECONDS = None
+# Per-task budget: cap the step count (--steps, default 60) and give every bucket a 40-minute
+# wall-clock timeout (2400s) - aligned with the 50-60 step consensus in agentic-benchmark papers
+# and generous enough that legitimately long runs (medium-clock, medium-photos,
+# medium-search-telegram) are not killed mid-verification. The batch passes --task-timeout
+# 2400 for every bucket, which dailybench_runner translates to MobileAgent(timeout=2400).
+EASY_TASK_TIMEOUT_SECONDS = 2400
+MEDIUM_TASK_TIMEOUT_SECONDS = 2400
+HARD_TASK_TIMEOUT_SECONDS = 2400
 
 # A task that fails almost immediately with a dropped-request/empty-completion error is a
 # transient LLM-infra blip, not genuine task difficulty (section C3/A4) - only flag failures
@@ -70,7 +69,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--llm-proxy-port-base", type=int, default=8090)
     parser.add_argument("--model", default=os.environ.get("MODEL"))
     parser.add_argument("--temperature", type=float, default=0.0)
-    parser.add_argument("--steps", type=int, default=150, help="Step budget for each task run (150 default, matching cli.py's fixed fairness budget).")
+    parser.add_argument("--steps", type=int, default=60, help="Step budget for each task run (60 default - the 50-60 step consensus cap for agentic benchmarks).")
     parser.add_argument("--repeats", type=int, default=1, help="Run each selected task this many times (opt-in; runs are already deterministic at temperature=0).")
     parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
     parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
@@ -124,8 +123,9 @@ def run_label(task: dict[str, object], repeat_index: int = 1, repeats_total: int
 def task_timeout_seconds(task: dict[str, object]) -> int | None:
     """Return the task timeout for one task based on its bucket tier.
 
-    Every tier is None (no wall-clock cap) - the step budget (--steps, default 150)
-    is the real bound, and on a real phone the battery is the ultimate failsafe.
+    Every tier is 2400s (40 minutes) - a uniform wall-clock cap alongside the step
+    budget (--steps, default 60), per the 50-60 step consensus in agentic-benchmark
+    papers.
     """
     bucket = task["bucket"]
     if bucket == "easy":
