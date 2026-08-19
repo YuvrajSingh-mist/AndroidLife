@@ -1320,7 +1320,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find the nearest [type of place] with a rating above 4.5 and wheelchair access, save it as a favorite, and check its hours in Google Maps? <!--medium__google-maps__011-->
 
 **[Google Photos]**
-- Easy (1pt): I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Google Photos? <!--easy__gallery__012-->
+- Easy (1pt): I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words? <!--easy__gallery__012-->
 
 - Medium (3pt) **[Google Drive+Messages]**: Could you compare two versions of the same document and keep the latest in Google Drive? Also, message [contact] what changed between the versions. <!--medium__google-drive__010-->
 

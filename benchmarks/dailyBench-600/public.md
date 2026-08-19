@@ -24,7 +24,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Google Maps + Notes]**: I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving, transit, and walking, all three modes, not just driving. Then pick whichever is fastest. Hmm, and I almost forgot, save the ETA and distance for that fastest option as a note in Notes with a sensible title. Thanks! <!--medium__google-maps__002-->
 
 **[Google Photos]**
-- Easy (1pt): I want them to show up with a proper picture. Can you set a specific photo as a contact's photo in Google Photos? <!--easy__gallery__012-->
+- Easy (1pt): I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words? <!--easy__gallery__012-->
 
 - Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
 

@@ -305,6 +305,18 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — easy__gallery__012 rewritten to a vision + easily-resettable task.**
+  Old prompt ("set a specific photo as a contact's photo in Google Photos") was hard to reset (needs a
+  face-detected photo + mutates contact data). Rewritten to a **read-only vision task**: "Can you open
+  Google Photos, open my most recent photo, and tell me what it shows in a few words?" Seeded a
+  deterministic `most_recent_photo.png` (red circle on white) as the newest photo → expected answer is
+  stable; no on-device state changes → trivially resettable; unique query (verified 1 occurrence). It is
+  now solvable **only via vision** (a uiautomator text dump can't describe the image). Applied to
+  `public.md` + `tasks_530.md`; datasets regenerated.
+  **Vision-only camera/gallery set:** `easy__gallery__012` (describe most-recent photo) +
+  `medium__gallery__007` (match food photos to headings by content) are vision-dependent;
+  `medium__google-photos__012` (visual duplicates) is inherently visual. `verify_config.py` PASS; full
+  suite PASS.
 - **2026-08-19 — KB real-data pass: swiggy order corrections + music verified + thinner KBs enriched.**
   - **Swiggy (verified on device):** the "Hot Garlic Noodles With Chilli Paneer" order is from **Wow! China**
     (not EatRight); **Biriyani Box** is *Chicken Biriyani ₹205* (not Chetinad ₹279). Fixed in the

@@ -17,7 +17,7 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | task | apps | verdict | note |
 |---|---|---|---|
 | `medium__google-maps__002` | Maps+Notes | ✅ | `[place]`=Bhubaneswar Airport (real); Maps ETA + Notes write |
-| `easy__gallery__012` | Photos | 🛠 | needs a contact without a photo + a photo to assign; fabricate a contact+photo |
+| `easy__gallery__012` | Photos | ✅ | **vision task** — open most recent photo (seeded red-circle image) + describe it; read-only → trivially resettable |
 | `medium__contacts__009` | Contacts+Phone | ✅ | contacts present; `[contact]`=Yuvraj Airtel (real) |
 | `medium__google-drive__007` | Drive | ✅ | Drive has shared files |
 | `easy__shopping-delivery-browser__001` | Chrome | 👤 | `[food delivery site]`=Swiggy surcharge notice — live page content, verify at run |
@@ -117,9 +117,12 @@ Obsidian budget note (5 expense categories), and a contact-photo assignment.
 - ✅ **Duplicate photos likely satisfiable**: the 11 `feas_*.png` screenshots are near-identical frames, so
   Google Photos will present them as duplicates → `google-photos__012` (agent removes + reports freed
   storage).
-- 🛠 still to do (GUI/operator): contact-photo assignment (`gallery__012` — Photos "set as contact
-  photo" flow), event photo captioned "Yuvraj Airtel" (`photos-gmail-obsidian__012` — verify the
-  existing Photo Sent note against the photo library).
+- 🛠 still to do (GUI/operator): event photo captioned "Yuvraj Airtel" (`photos-gmail-obsidian__012` — verify
+  the existing Photo Sent note against the photo library).
+- ✅ **Vision-only camera/gallery tasks** (solve by SEEING the image, fail on a text dump):
+  `easy__gallery__012` (describe most-recent photo) and `medium__gallery__007` (match food photos to
+  Pancakes/Pizza/Veggie Bowl by content). `medium__google-photos__012` (visual duplicates) is inherently
+  visual too.
 - 👤 **cannot ADB-seed** → operator: Telegram dated message, Chrome history/bookmarks, BookMyShow shows,
   Amazon cart, Prime Watchlist/Continue Watching, YouTube comments/resume, **Music weekly stats
   (`music-telegram__001`)**.
