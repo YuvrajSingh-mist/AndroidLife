@@ -17,7 +17,7 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | task | apps | verdict | note |
 |---|---|---|---|
 | `medium__google-maps__002` | Maps+Notes | ✅ | `[place]`=Bhubaneswar Airport (real); Maps ETA + Notes write |
-| `easy__gallery__012` | Photos | ✅ | **vision task** — open most recent photo (seeded red-circle image) + describe it; read-only → trivially resettable |
+| `easy__gallery__012` | Photos | ✅ | count photos in Screenshots album (deterministic; no seed needed; easily resettable files) |
 | `medium__contacts__009` | Contacts+Phone | ✅ | contacts present; `[contact]`=Yuvraj Airtel (real) |
 | `medium__google-drive__007` | Drive | ✅ | Drive has shared files |
 | `easy__shopping-delivery-browser__001` | Chrome | 👤 | `[food delivery site]`=Swiggy surcharge notice — live page content, verify at run |
@@ -51,7 +51,7 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | `easy__swiggy__001` | Swiggy | ✅ | recent order exists (delivery status) |
 | `medium__clock__009` | Clock+Calendar | ✅ | recurring alarm vs calendar events |
 | `easy__google-meet__004` | Meet | 🛠 | needs a meeting today — seed a Calendar/Meet event today |
-| `medium__google-photos__012` | Photos+Messages | 🛠 | duplicate photos — fabricate |
+| `medium__google-photos__012` | Photos+Messages | ✅ | create album 'Weekend' + add 3 most recent photos + message album name — doable via GUI, resettable (delete album) |
 | `easy__youtube__011` | YouTube | 👤 | comments on "current video" — needs a video open/history |
 | `hard__chrome-telegram-notes__008` | Chrome+Telegram+Notes | ✅ | price compare amazon.in/flipkart.com — real |
 | `medium__files__009` | Files | 🛠 | ≥10 screenshots in folders — fabricate |
@@ -119,10 +119,9 @@ Obsidian budget note (5 expense categories), and a contact-photo assignment.
   storage).
 - 🛠 still to do (GUI/operator): event photo captioned "Yuvraj Airtel" (`photos-gmail-obsidian__012` — verify
   the existing Photo Sent note against the photo library).
-- ✅ **Vision-only camera/gallery tasks** (solve by SEEING the image, fail on a text dump):
-  `easy__gallery__012` (describe most-recent photo) and `medium__gallery__007` (match food photos to
-  Pancakes/Pizza/Veggie Bowl by content). `medium__google-photos__012` (visual duplicates) is inherently
-  visual too.
+- ✅ **Vision-only camera/gallery task:** `medium__gallery__007` (match food photos to Pancakes/Pizza/Veggie
+  Bowl by content). `easy__gallery__012` was reverted from a synthetic-seed vision task to a plain
+  Screenshots-album count (no seed needed).
 - 👤 **cannot ADB-seed** → operator: Telegram dated message, Chrome history/bookmarks, BookMyShow shows,
   Amazon cart, Prime Watchlist/Continue Watching, YouTube comments/resume, **Music weekly stats
   (`music-telegram__001`)**.

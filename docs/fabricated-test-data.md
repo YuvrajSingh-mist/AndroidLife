@@ -305,6 +305,15 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — gallery__012 reverted (no synthetic seed) + google-photos__012 reworded (doable).**
+  - `easy__gallery__012`: the vision rewrite's synthetic red-circle seed (`most_recent_photo.png`) was
+    deleted per user (it had no natural subject). Reverted to a **plain, deterministic, resettable** task:
+    count the photos in Google Photos' Screenshots album (the 11 `feas_*.png` screenshots are the answer).
+  - `medium__google-photos__012`: "find and remove duplicate photos" was not agent-doable (Google Photos
+    auto-hides exact duplicates). Reworded to a real GUI action: **create a new album 'Weekend' + add the
+    3 most recent photos + message [contact] the album name** — doable, resettable (delete the album).
+  - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
+  PASS.
 - **2026-08-19 — easy__gallery__012 rewritten to a vision + easily-resettable task.**
   Old prompt ("set a specific photo as a contact's photo in Google Photos") was hard to reset (needs a
   face-detected photo + mutates contact data). Rewritten to a **read-only vision task**: "Can you open

@@ -1320,7 +1320,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find the nearest [type of place] with a rating above 4.5 and wheelchair access, save it as a favorite, and check its hours in Google Maps? <!--medium__google-maps__011-->
 
 **[Google Photos]**
-- Easy (1pt): I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words? <!--easy__gallery__012-->
+- Easy (1pt): I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only the number, no other text. <!--easy__gallery__012-->
 
 - Medium (3pt) **[Google Drive+Messages]**: Could you compare two versions of the same document and keep the latest in Google Drive? Also, message [contact] what changed between the versions. <!--medium__google-drive__010-->
 
@@ -1559,7 +1559,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Sheets]**
 - Medium (3pt): Could you open '[spreadsheet name]', add a new row with the current date, and confirm it saved at the bottom in Google Sheets? <!--medium__google-sheets__004-->
 
-- Medium (3pt) **[Google Photos+Messages]**: Could you find and remove duplicate photos in Google Photos? Also, message [contact] how much storage was freed. <!--medium__google-photos__012-->
+- Medium (3pt) **[Google Photos+Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
 
 **[Messages]**
 - Medium (3pt): Could you rank contacts by how recently they messaged, reply to the least recent, and note the reply time in Messages? <!--medium__messages__013-->

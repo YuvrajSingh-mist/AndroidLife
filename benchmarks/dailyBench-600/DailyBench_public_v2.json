@@ -90,8 +90,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words?",
-      "prompt_template": "I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words?",
+      "prompt_text": "I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only the number, no other text.",
+      "prompt_template": "I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only the number, no other text.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -1125,8 +1125,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find and remove duplicate photos in Google Photos? Also, message [contact] how much storage was freed.",
-      "prompt_template": "Could you find and remove duplicate photos in Google Photos? Also, message {{ contact }} how much storage was freed.",
+      "prompt_text": "Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text.",
+      "prompt_template": "Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message {{ contact }} the album name so they can find it? Reply with only the album name, no other text.",
       "placeholders": [
         "contact"
       ],

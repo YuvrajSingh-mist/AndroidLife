@@ -24,7 +24,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Google Maps + Notes]**: I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving, transit, and walking, all three modes, not just driving. Then pick whichever is fastest. Hmm, and I almost forgot, save the ETA and distance for that fastest option as a note in Notes with a sensible title. Thanks! <!--medium__google-maps__002-->
 
 **[Google Photos]**
-- Easy (1pt): I just took a photo and want to make sure it came out right. Can you open Google Photos, open my most recent photo, and tell me what it shows in a few words? <!--easy__gallery__012-->
+- Easy (1pt): I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only the number, no other text. <!--easy__gallery__012-->
 
 - Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
 
@@ -125,7 +125,7 @@ aren't grouped or predictable by position.**
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
 
-- Medium (3pt) **[Google Photos + Messages]**: Could you find and remove duplicate photos in Google Photos? Also, message [contact] how much storage was freed. <!--medium__google-photos__012-->
+- Medium (3pt) **[Google Photos + Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called 'Weekend', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
 
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
