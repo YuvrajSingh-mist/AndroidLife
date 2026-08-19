@@ -1,4 +1,4 @@
-# Public Sample (57-task) — On-Device Feasibility Audit
+# Public Sample (61-task) — On-Device Feasibility Audit
 
 > Status: **2026-08-19**. Audited the OnePlus CPH2423 (RS7XKZDI8HTOJNYL) against every task in
 > `public.md`. All **31/31 required apps installed** (app_audit PASS). Verdict legend:
@@ -27,6 +27,8 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | `easy__calendar__002` | Calendar | ✅ | calendar has seeded events |
 | `medium__gallery__007` | Photos+Obsidian | ✅ | Food Favourites.md verified (Pancakes/Pizza/Veggie Bowl headings) |
 | `medium__files__013` | Files | 🛠 | duplicate files in Downloads — fabricate a few dupes |
+| `medium__files-pdf__001` | Files+PDF | ⚠️ | Invoice INV-2026-071.pdf → amount due **Rs. 1,240.00** (text layer verified). **PDF body NOT in a11y tree — vision-required** |
+| `medium__files-pdf__002` | Files+PDF | ⚠️ | Rent Receipt.pdf (new fabricated seed) → rent **Rs. 9,000.00**. **Vision-required** |
 | `medium__google-maps__003` | Maps+Telegram | ✅ | EV charging filter + `[contact]` message |
 | `hard__contacts-gmail__026` | Contacts+Gmail | ✅ | contacts present |
 | `easy__calculator__006` | Calculator | ✅ | trivial (temp convert) |
@@ -50,11 +52,13 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 | `easy__google-maps__004` | Maps | ✅ | trivial (save parking) |
 | `easy__swiggy__001` | Swiggy | ✅ | recent order exists (delivery status) |
 | `medium__clock__009` | Clock+Calendar | ✅ | recurring alarm vs calendar events |
+| `medium__clock__011` | Clock | ✅ | 25-min timer labeled 'Workout' (self-correcting prompt) — doable, resettable |
 | `easy__google-meet__004` | Meet | 🛠 | needs a meeting today — seed a Calendar/Meet event today |
 | `medium__google-photos__012` | Photos+Messages | ✅ | create album '[album name]' (Hostel Life) + add 3 most recent photos + message album name — doable via GUI, resettable (delete album) |
 | `easy__youtube__011` | YouTube | 👤 | comments on "current video" — needs a video open/history |
 | `hard__chrome-telegram-notes__008` | Chrome+Telegram+Notes | ✅ | price compare amazon.in/flipkart.com — real |
 | `medium__files__009` | Files | 🛠 | ≥10 screenshots in folders — fabricate |
+| `medium__files__015` | Files | ✅ | biggest file in Downloads — read-only, deterministic (self-correcting prompt) |
 | `easy__phone__005` | Phone | ✅ | call log (make a call or verify log) |
 | `medium__chrome__011` | Chrome+Messages | 👤 | bookmarks this month + dupes — hard to seed; manual |
 | `hard__gmail-calendar__003` | Gmail+Calendar | ✅ | flight emails real; KB fabricated next trip (oracle) |
@@ -88,7 +92,7 @@ Legend applies per task. `[placeholder]` values resolve from `public_vars.local.
 
 ## Summary
 
-- ✅ **runnable (~27)** — verified data present or trivially satisfiable.
+- ✅ **runnable (~29)** — verified data present or trivially satisfiable.
 - 🛠 **fabricate (~11)** — quick ADB/GUI wins: duplicate files, screenshots, a photo/video, a Google Doc,
   a Calendar/Meet event today, the budget Obsidian note, a contact-photo.
 - 👤 **manual (~13)** — cannot be ADB-seeded (app-private or live-server):

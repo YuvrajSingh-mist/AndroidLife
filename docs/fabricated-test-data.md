@@ -305,6 +305,12 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — 4 new public tasks (speech-correction style + vision-required PDF reading).**
+  - `medium__clock__011` (Clock, self-correcting): set a timer for 25 minutes labeled 'Workout' and start it. Resettable (delete timer).
+  - `medium__files__015` (Files, self-correcting): sort Downloads by size, report the biggest file's name+size (read-only).
+  - `medium__files-pdf__001` (Files+PDF): open 'Invoice INV-2026-071.pdf', read out the amount due (**Rs. 1,240.00**). **Vision-required**: Files' PDF viewer does not expose the document body to the a11y tree — text-only agents fail, vision (screenshot) agents win.
+  - `medium__files-pdf__002` (Files+PDF): open 'Rent Receipt.pdf', read the rent amount (**Rs. 9,000.00**). **New fabricated seed**: `Rent Receipt.pdf` (text-layer PDF: Rs. 9,000.00, due 2026-08-05, paid in full) pushed to `/sdcard/Download/` + media-scanned.
+  - Public sample **57 → 61 tasks**. New tasks are public-sample-specific (added to `public.md` only); the 530 corpus stays exactly 530 by design. Regenerated `DailyBench_public_v2.json/.jsonl`. No new placeholders (all literal).
 - **2026-08-19 — google-photos__012 album name placeholder-ized.**
   - `medium__google-photos__012` now asks for a new album called `[album name]` instead of the hardcoded
     'Weekend'; the placeholder resolves to **'Hostel Life'** (added `album name=Hostel Life` to

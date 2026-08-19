@@ -43,3 +43,6 @@ website/node_modules/
 
 # dev scratch scripts (underscore-prefixed)
 scripts/_*.py
+
+# public-sample benchmark run artifacts (generated; not committed)
+public/

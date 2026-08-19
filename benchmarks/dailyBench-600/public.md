@@ -1,7 +1,7 @@
 # DrainBench — Public Sample (3-Day Preview)
 
 ### Not the eval set. A structural preview only — a TRUE sample drawn from the
-530-task corpus (same task_ids, exact prompt text, placeholder slots). **57 tasks total.**
+530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **61 tasks total.**
 
 **Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
 it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for a fact
@@ -57,6 +57,10 @@ aren't grouped or predictable by position.**
 **[Files]**
 - Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
 
+- Medium (3pt) **[Files + PDF]**: I need to know exactly what I owe for that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files and read out the amount due from the invoice. Reply with only the amount, no other text. <!--medium__files-pdf__001-->
+
+- Medium (3pt) **[Files + PDF]**: I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files and tell me the rent amount on the receipt. Reply with only the amount, no other text. <!--medium__files-pdf__002-->
+
 - Medium (3pt) **[Google Maps + Telegram]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station. <!--medium__google-maps__003-->
 
 **[Google Drive]**
@@ -90,6 +94,8 @@ aren't grouped or predictable by position.**
 **[Files]**
 - Medium (3pt): Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files? <!--medium__files__009-->
 
+- Medium (3pt) **[Files]**: I'm trying to free up space. Can you check what's in my Downloads? Wait — actually sort them by size. Hmm, find the biggest file and tell me its name and size. Oh, and don't delete anything, I just want to know. <!--medium__files__015-->
+
 **1. [BookMyShow+Telegram] — DETERMINISTIC**
 - We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
 
@@ -118,6 +124,8 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? Reply with only the delivery status, no other text. <!--easy__swiggy__001-->
 
 - Medium (3pt) **[Clock + Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
+
+- Medium (3pt) **[Clock]**: Could you set a timer for 15 minutes? Wait, no — make it 25. Hmm, and label it 'Workout'. Oh, and start it once it's set. Thanks! <!--medium__clock__011-->
 
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->

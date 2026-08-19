@@ -2,10 +2,10 @@
   "dataset_name": "DailyBench-Public",
   "dataset_version": "v2",
   "source_path": "benchmarks/dailyBench-600/public.md",
-  "task_count": 57,
+  "task_count": 61,
   "bucket_counts": {
     "hard": 16,
-    "medium": 20,
+    "medium": 24,
     "easy": 21
   },
   "tasks": [
@@ -421,6 +421,62 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
+      "task_id": "medium__files-pdf__001",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "points": 3,
+      "day": 1,
+      "app": "Files + PDF",
+      "app_slug": "files-pdf",
+      "apps": [
+        "Files"
+      ],
+      "num_apps": 1,
+      "cross_app_required": false,
+      "ahi": null,
+      "interaction": null,
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 1,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "I need to know exactly what I owe for that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files and read out the amount due from the invoice. Reply with only the amount, no other text.",
+      "prompt_template": "I need to know exactly what I owe for that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files and read out the amount due from the invoice. Reply with only the amount, no other text.",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Files + PDF",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "medium__files-pdf__002",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "points": 3,
+      "day": 1,
+      "app": "Files + PDF",
+      "app_slug": "files-pdf",
+      "apps": [
+        "Files"
+      ],
+      "num_apps": 1,
+      "cross_app_required": false,
+      "ahi": null,
+      "interaction": null,
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 2,
+      "task_number_within_dataset_app": 2,
+      "prompt_text": "I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files and tell me the rent amount on the receipt. Reply with only the amount, no other text.",
+      "prompt_template": "I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files and tell me the rent amount on the receipt. Reply with only the amount, no other text.",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": true,
+      "cross_app_label": "Files + PDF",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
       "task_id": "medium__google-maps__003",
       "bucket": "medium",
       "difficulty": "medium",
@@ -757,6 +813,34 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
+      "task_id": "medium__files__015",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "points": 3,
+      "day": 2,
+      "app": "Files",
+      "app_slug": "files",
+      "apps": [
+        "Files"
+      ],
+      "num_apps": 1,
+      "cross_app_required": false,
+      "ahi": null,
+      "interaction": null,
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 3,
+      "task_number_within_dataset_app": 3,
+      "prompt_text": "I'm trying to free up space. Can you check what's in my Downloads? Wait — actually sort them by size. Hmm, find the biggest file and tell me its name and size. Oh, and don't delete anything, I just want to know.",
+      "prompt_template": "I'm trying to free up space. Can you check what's in my Downloads? Wait — actually sort them by size. Hmm, find the biggest file and tell me its name and size. Oh, and don't delete anything, I just want to know.",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": false,
+      "cross_app_label": null,
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
       "task_id": "hard__bookmyshow__005",
       "bucket": "hard",
       "difficulty": "hard",
@@ -1045,6 +1129,34 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Clock + Calendar",
+      "source_path": "benchmarks/dailyBench-600/public.md"
+    },
+    {
+      "task_id": "medium__clock__011",
+      "bucket": "medium",
+      "difficulty": "medium",
+      "points": 3,
+      "day": 2,
+      "app": "Clock",
+      "app_slug": "clock",
+      "apps": [
+        "Clock"
+      ],
+      "num_apps": 1,
+      "cross_app_required": false,
+      "ahi": null,
+      "interaction": null,
+      "note": null,
+      "ask_user_fact": null,
+      "is_ask_user": false,
+      "task_number_within_app": 1,
+      "task_number_within_dataset_app": 1,
+      "prompt_text": "Could you set a timer for 15 minutes? Wait, no — make it 25. Hmm, and label it 'Workout'. Oh, and start it once it's set. Thanks!",
+      "prompt_template": "Could you set a timer for 15 minutes? Wait, no — make it 25. Hmm, and label it 'Workout'. Oh, and start it once it's set. Thanks!",
+      "placeholders": [],
+      "placeholder_count": 0,
+      "is_cross_app": false,
+      "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
