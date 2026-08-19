@@ -440,10 +440,12 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I need to know if I still owe on that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text.",
-      "prompt_template": "I need to know if I still owe on that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need to know exactly what I owe for that hosting plan. Open the file '[invoice file]' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text.",
+      "prompt_template": "I need to know exactly what I owe for that hosting plan. Open the file '{{ invoice file }}' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text.",
+      "placeholders": [
+        "invoice file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Files + PDF",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -468,10 +470,12 @@
       "is_ask_user": false,
       "task_number_within_app": 2,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full.",
-      "prompt_template": "I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm sorting out my rent. Open the file '[rent receipt]' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text.",
+      "prompt_template": "I'm sorting out my rent. Open the file '{{ rent receipt }}' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text.",
+      "placeholders": [
+        "rent receipt"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Files + PDF",
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1151,10 +1155,13 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you set a timer for me? Make it 25 minutes, label it 'Workout', and start it once it's set. Thanks!",
-      "prompt_template": "Could you set a timer for me? Make it 25 minutes, label it 'Workout', and start it once it's set. Thanks!",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you set a timer for [timer minutes] minutes, label it '[timer label]', and start it once it's set? Thanks!",
+      "prompt_template": "Could you set a timer for {{ timer minutes }} minutes, label it '{{ timer label }}', and start it once it's set? Thanks!",
+      "placeholders": [
+        "timer minutes",
+        "timer label"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"

@@ -90,6 +90,12 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "article url": ("URL for the Chrome summarize-article task (`[article url]`).", "https://en.wikipedia.org/wiki/Open-source_software"),
     "currency pair": ("Exchange-rate pair for the Google Search task (`[currency pair]`).", "USD to INR"),
     "digits": ("Digit prefix for the Phone call-history filter task (`[digits]`).", "98765"),
+    "invoice file": ("Filename of the invoice PDF for the Files+PDF task (`[invoice file]`).",
+                     "Invoice INV-2026-071.pdf"),
+    "rent receipt": ("Filename of the rent-receipt PDF for the Files+PDF task (`[rent receipt]`).",
+                     "Rent Receipt.pdf"),
+    "timer minutes": ("Minutes for the Clock timer task (`[timer minutes]`).", "25"),
+    "timer label": ("Label for the Clock timer task (`[timer label]`).", "Workout"),
     # public DET named targets (hard deterministic tasks) - device/persona values the
     # public sample parametrizes so prompts carry placeholders, not hardcoded names.
     "notifying channel": ("YouTube channel that notifies at night for the Settings DND task "

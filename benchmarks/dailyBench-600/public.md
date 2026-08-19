@@ -57,9 +57,9 @@ aren't grouped or predictable by position.**
 **[Files]**
 - Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
 
-- Medium (3pt) **[Files + PDF]**: I need to know if I still owe on that hosting plan. Open the file 'Invoice INV-2026-071.pdf' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text. <!--medium__files-pdf__001-->
+- Medium (3pt) **[Files + PDF]**: I need to know exactly what I owe for that hosting plan. Open the file '[invoice file]' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text. <!--medium__files-pdf__001-->
 
-- Medium (3pt) **[Files + PDF]**: I'm sorting out my rent. Open the file 'Rent Receipt.pdf' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. <!--medium__files-pdf__002-->
+- Medium (3pt) **[Files + PDF]**: I'm sorting out my rent. Open the file '[rent receipt]' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text. <!--medium__files-pdf__002-->
 
 - Medium (3pt) **[Google Maps + Telegram]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station. <!--medium__google-maps__003-->
 
@@ -125,7 +125,7 @@ aren't grouped or predictable by position.**
 
 - Medium (3pt) **[Clock + Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
 
-- Medium (3pt) **[Clock]**: Could you set a timer for me? Make it 25 minutes, label it 'Workout', and start it once it's set. Thanks! <!--medium__clock__011-->
+- Medium (3pt) **[Clock]**: Could you set a timer for [timer minutes] minutes, label it '[timer label]', and start it once it's set? Thanks! <!--medium__clock__011-->
 
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
