@@ -305,6 +305,10 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-08-19 — Public PDFs regenerated as realistic, text-heavy documents.**
+  - `medium__files-pdf__001`'s `Invoice INV-2026-071.pdf` and `medium__files-pdf__002`'s `Rent Receipt.pdf` were **regenerated** from ~8-line stubs into full realistic documents (vendor invoice: letterhead, itemised line items, GST/CGST/SGST totals block, terms, payment instructions, footer; rent receipt: property-management letterhead, payment breakdown, payment details, notes, signature block, footer) so the answer value is buried in dense content instead of being the only text on the page. Key answer values preserved: **Rs. 1,240.00 / due 2026-07-25** (invoice) and **Rs. 9,000.00 / due 2026-08-05 / PAID IN FULL** (rent). Both remain **vision-required** discriminators (Files' PDF viewer does not expose the body to the a11y tree).
+  - New committed generator: `scripts/seeding/fabricate_public_pdfs.py` (pure-python PDF writer, no deps; writes `assets/seeds/public/` then pushes to `/sdcard/Download/` + media-scans). Re-run with `uv run python scripts/seeding/fabricate_public_pdfs.py [--serial <serial>] [--no-push]`.
+  - The invoice keeps the same invoice identity (INV-2026-071 / Rs. 1,240.00 / due 2026-07-25) as the corpus's Day-2 `hard__files-notes__011` seed for consistency.
 - **2026-08-19 — 4 new public tasks (natural voice + vision-required PDF reading).**
   - `medium__clock__011` (Clock, natural voice): set a timer for `[timer minutes]` (25) minutes labeled `[timer label]` ('Workout') and start it. Resettable (delete timer).
   - `medium__files__015` (Files, natural voice): sort Downloads by size, report the biggest file's name+size (read-only).
@@ -681,6 +685,8 @@ following entities were **seeded on the test device** (all recorded in
 | **2 overlapping events tomorrow afternoon** (`Team Sync` 08-19 14:00-15:00 + `Mentor 1 on 1` 08-19 14:30-15:30 IST) | `easy__calendar__002` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3747,3748)"` (or Calendar app UI if provider delete is a no-op on the synced calendar) |
 | **3 "Work" events this week** (`Work sync` 08-18 10-11h, `Work review` 08-19 16-17:30h, `Work planning` 08-20 09:30-11h = 4h) | `medium__calendar__013` | Calendar `yuvraj.mist@gmail.com` (cal_id=16) | `adb shell content delete --uri content://com.android.calendar/events --where "_id IN (3749,3750,3751)"` (or Calendar app UI) |
 | **`Q3 Review`** presentation (title slide + 2 slides) | `easy__google-slides__002`, `medium__google-slides__002` | Google Slides | Delete in the Slides app (Google account file) |
+| **`Invoice INV-2026-071.pdf`** (realistic text-heavy vendor invoice; Amount Due **Rs. 1,240.00**, due **2026-07-25**) | `medium__files-pdf__001` (+ ASK USER prerequisite) | `/sdcard/Download/Invoice INV-2026-071.pdf` | Regenerate + push via `uv run python scripts/seeding/fabricate_public_pdfs.py --serial <serial>` (or `adb shell rm` the file) |
+| **`Rent Receipt.pdf`** (realistic text-heavy rent receipt; **Rs. 9,000.00**, due **2026-08-05**, PAID IN FULL) | `medium__files-pdf__002` | `/sdcard/Download/Rent Receipt.pdf` | Regenerate + push via `uv run python scripts/seeding/fabricate_public_pdfs.py --serial <serial>` (or `adb shell rm` the file) |
 
 **Disclosure notes:**
 - **Contacts policy respected:** the `Shared Bill` roommate list was narrowed to the
