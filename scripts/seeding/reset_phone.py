@@ -84,12 +84,17 @@ PROFILES: dict[str, dict] = {
         "restore_file_contents": {
             "/sdcard/Obsidian/Papers vault oneplus /Food Favourites.md": (
                 "# Food Favourites\n\n"
-                "Quick reference of my favourite food photos pulled from Google Photos.\n\n"
+                "Quick reference of my favourite food photos pulled from Google Photos. Keep\n"
+                "these in sync with the album - one photo per dish, added from Google Photos\n"
+                "Favourites by matching the photo description to the heading.\n\n"
                 "## Pancakes\n\n## Pizza\n\n## Veggie Bowl\n"
             ),
             "/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md": (
                 "# Budget Deadline\n\n"
-                "The shared budget spreadsheet must be finalised by 2026-08-10.\n\n"
+                "## Shared budget spreadsheet - FY26 finalisation\n\n"
+                "The family shared budget spreadsheet (the one we all add our monthly spends\n"
+                "to) must be **finalised by 2026-08-10** so the numbers are locked before the\n"
+                "new financial-year planning round starts.\n\n"
                 "Last reviewed: 2026-07-10.\n"
             ),
             # hard__google-meet-files__070: the agenda doc the agent must open (kept
