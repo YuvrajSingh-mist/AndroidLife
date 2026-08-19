@@ -112,9 +112,14 @@ Obsidian budget note (5 expense categories), and a contact-photo assignment.
 - ✅ **11 screenshots** in `/sdcard/Pictures/Screenshots` → `files__009`, `google-photos__015`.
 - ✅ **Calendar "Team Standup"** event today 11:00–11:30 (cal_id 16) → `google-meet__004`.
 - ✅ **65s video** (`feas_video.mp4`) pushed to `/sdcard/DCIM/Camera` → `google-photos__008`.
-- 🛠 still to do (GUI/operator): Google Doc to rename (`google-docs__004`), contact-photo assignment
-  (`gallery__012`), event photo captioned "Yuvraj Airtel" (`photos-gmail-obsidian__012` — verify the
-  existing Photo Sent note), duplicate photos (`google-photos__012`).
+- ✅ **Google Docs recents already populated** (`Weekly Review.docx`, `Untitled document`, etc.) →
+  `google-docs__004` is runnable without fabrication (agent renames an existing doc).
+- ✅ **Duplicate photos likely satisfiable**: the 11 `feas_*.png` screenshots are near-identical frames, so
+  Google Photos will present them as duplicates → `google-photos__012` (agent removes + reports freed
+  storage).
+- 🛠 still to do (GUI/operator): contact-photo assignment (`gallery__012` — Photos "set as contact
+  photo" flow), event photo captioned "Yuvraj Airtel" (`photos-gmail-obsidian__012` — verify the
+  existing Photo Sent note against the photo library).
 - 👤 **cannot ADB-seed** → operator: Telegram dated message, Chrome history/bookmarks, BookMyShow shows,
   Amazon cart, Prime Watchlist/Continue Watching, YouTube comments/resume, **Music weekly stats
   (`music-telegram__001`)**.
