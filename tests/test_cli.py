@@ -25,10 +25,17 @@ from DailyBench import cli, processes
 DEVICE_SERIAL = first_adb_device()
 
 
-def test_check_phoenix_ready_false_when_server_down() -> None:
+def test_check_phoenix_ready_false_when_server_down(monkeypatch: pytest.MonkeyPatch) -> None:
     """The phoenix pre-run guard must report DOWN when no collector is listening (the
     day-4 2026-08-13 incident: no `phoenix serve` -> no trace DB, silent data loss)."""
-    # Use a port that is almost certainly closed (IETF TEST-NET, non-routable).
+    # Force BOTH probes (HTTP dashboard + OTLP/gRPC :4317 fallback) to fail so the test
+    # is deterministic even when a real `phoenix serve` happens to be running locally
+    # (otherwise the :4317 fallback sees the live collector and the guard reports UP).
+    def _raise_down(*_args: object, **_kwargs: object) -> object:
+        raise OSError("collector down (simulated)")
+
+    monkeypatch.setattr(cli, "urlopen", _raise_down)
+    monkeypatch.setattr(cli.socket, "create_connection", _raise_down)
     assert cli.check_phoenix_ready("http://127.0.0.1:59999") is False
 
 
