@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Recover per-task result JSONs for tasks whose run-folder files were overwritten.
 
-The public run `public/2026-08-20-003030` used a dataset where two task pairs
+The public run `assets/runs/public/2026-08-20-003030` used a dataset where two task pairs
 shared the same `task_number_within_app` (the bug fixed in scripts/data/
 export_public_dataset.py). Because the batch runner names each run folder from
 that field, the later task of each pair overwrote the earlier task's top-level
@@ -31,7 +31,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_ROOT = ROOT / "public" / "2026-08-20-003030"
+RUN_ROOT = ROOT / "assets" / "runs" / "public" / "2026-08-20-003030"
 DATASET = ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_public_v2.json"
 VARS_FILE = ROOT / "benchmarks" / "dailyBench-600" / "public_vars.local.env"
 
