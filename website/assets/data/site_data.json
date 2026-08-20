@@ -2,15 +2,15 @@
   "title": "DailyBench300",
   "summary": "28-day Android agent benchmark across 533 real-phone tasks, measuring success, cost, battery, and heat.",
   "stats": {
-    "task_count": 530,
+    "task_count": 531,
     "day_count": 28,
     "app_count": 31,
-    "cross_app_count": 168,
-    "max_points": 1302,
+    "cross_app_count": 169,
+    "max_points": 1307,
     "easy": 216,
     "medium": 242,
-    "hard": 72,
-    "hard_ask_user": 49,
+    "hard": 73,
+    "hard_ask_user": 50,
     "hard_deterministic": 23,
     "placeholder_count": 246
   },
@@ -81,6 +81,19 @@
       "cross_app": 9
     },
     {
+      "id": "telegram",
+      "slug": "telegram",
+      "name": "Telegram",
+      "description": "24 tasks in Telegram",
+      "count": 24,
+      "difficulty": {
+        "easy": 9,
+        "medium": 10,
+        "hard": 5
+      },
+      "cross_app": 12
+    },
+    {
       "id": "contacts",
       "slug": "contacts",
       "name": "Contacts",
@@ -131,19 +144,6 @@
         "hard": 1
       },
       "cross_app": 2
-    },
-    {
-      "id": "telegram",
-      "slug": "telegram",
-      "name": "Telegram",
-      "description": "23 tasks in Telegram",
-      "count": 23,
-      "difficulty": {
-        "easy": 9,
-        "medium": 10,
-        "hard": 4
-      },
-      "cross_app": 11
     },
     {
       "id": "clock",
@@ -502,11 +502,11 @@
     },
     {
       "day": 9,
-      "count": 21,
+      "count": 20,
       "easy": 9,
       "medium": 9,
-      "hard": 3,
-      "ask_user": 3,
+      "hard": 2,
+      "ask_user": 2,
       "deterministic": 0,
       "apps": 10
     },
@@ -532,13 +532,13 @@
     },
     {
       "day": 12,
-      "count": 19,
+      "count": 21,
       "easy": 8,
       "medium": 8,
-      "hard": 3,
-      "ask_user": 3,
+      "hard": 5,
+      "ask_user": 5,
       "deterministic": 0,
-      "apps": 10
+      "apps": 11
     },
     {
       "day": 13,
@@ -1591,7 +1591,7 @@
       "task_id": "hard__telegram-calendar__016",
       "difficulty": "hard",
       "category_name": "Telegram",
-      "prompt": "My friends and I have been planning a get-together in our Telegram group and went back and forth on the date before settling on one. Can you find which date we finally agreed on and put it on my calendar with a reminder?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -4500,24 +4500,6 @@
       "note": "deliberately no recipient or songs are named, so the agent must ask the user who to compare notes with and which two songs to include"
     },
     {
-      "task_id": "hard__telegram-calendar__016",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "day": 9,
-      "app": "Telegram",
-      "apps": [
-        "Telegram",
-        "Calendar"
-      ],
-      "is_ask_user": true,
-      "is_deterministic": false,
-      "cross_app": true,
-      "points": 5,
-      "placeholder_count": 0,
-      "prompt": "My friends and I have been planning a get-together in our Telegram group and went back and forth on the date before settling on one. Can you find which date we finally agreed on and put it on my calendar with a reminder?",
-      "note": ""
-    },
-    {
       "task_id": "medium__calculator__002",
       "bucket": "medium",
       "difficulty": "medium",
@@ -5487,6 +5469,41 @@
       "points": 5,
       "placeholder_count": 0,
       "prompt": "Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+      "note": ""
+    },
+    {
+      "task_id": "hard__telegram-calendar__016",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "day": 12,
+      "app": "Telegram",
+      "apps": [
+        "Telegram",
+        "Calendar"
+      ],
+      "is_ask_user": true,
+      "is_deterministic": false,
+      "cross_app": true,
+      "points": 5,
+      "placeholder_count": 0,
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it?",
+      "note": ""
+    },
+    {
+      "task_id": "hard__zomato__001",
+      "bucket": "hard",
+      "difficulty": "hard",
+      "day": 12,
+      "app": "Telegram",
+      "apps": [
+        "Telegram"
+      ],
+      "is_ask_user": true,
+      "is_deterministic": false,
+      "cross_app": true,
+      "points": 5,
+      "placeholder_count": 0,
+      "prompt": "I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying.",
       "note": ""
     },
     {
