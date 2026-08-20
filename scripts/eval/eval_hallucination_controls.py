@@ -16,8 +16,14 @@ Usage:
       --runs assets/runs/full-bench/2026-08-06-030706/day2 \\
       --hallucination-controls benchmarks/dailyBench-600/hallucination_controls.json \\
       --model gpt-5.4-mini \\
-      --out reports/metrics/hallucination-eval.json \\
-      --out-md reports/metrics/hallucination-eval.md
+      --sub full-bench \
+      --out reports/metrics/hallucination/hallucination-eval.json \
+      --out-md reports/metrics/hallucination/hallucination-eval.md
+
+`--sub full-bench|public` routes the default output into
+`reports/metrics/hallucination/<sub>/` (the current convention: fullbench evals in
+`full-bench/`, public-sample evals in `public/`). Override --out/--out-md to
+write elsewhere.
 
 Exit code 0 on success, 1 if no control runs were found or any judge call failed.
 """
@@ -100,9 +106,15 @@ def main() -> int:
     parser.add_argument("--runs", default=None, help="Run batch dir or glob of run folders (default: walks assets/runs/).")
     parser.add_argument("--hallucination-controls", default=str(DEFAULT_CONTROLS), help="task_id -> control meta sidecar.")
     parser.add_argument("--model", default=None, help=f"Judge model (default: env DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME, else {DEFAULT_JUDGE_MODEL}).")
-    parser.add_argument("--out", default="reports/metrics/hallucination-eval.json", help="JSON output path.")
-    parser.add_argument("--out-md", default="reports/metrics/hallucination-eval.md", help="Markdown output path.")
+    parser.add_argument("--sub", default="full-bench", choices=("full-bench", "public"),
+                        help="Which metrics/hallucination subfolder to write into (full-bench or public). Default: full-bench.")
+    parser.add_argument("--out", default=None, help="JSON output path (default: reports/metrics/hallucination/<sub>/hallucination-eval.json).")
+    parser.add_argument("--out-md", default=None, help="Markdown output path (default: reports/metrics/hallucination/<sub>/hallucination-eval.md).")
     args = parser.parse_args()
+
+    sub_dir = Path("reports/metrics/hallucination") / args.sub
+    out = Path(args.out) if args.out else sub_dir / "hallucination-eval.json"
+    out_md = Path(args.out_md) if args.out_md else sub_dir / "hallucination-eval.md"
 
     controls = _read_json(Path(args.hallucination_controls)) or {}
     if not controls:
@@ -145,12 +157,12 @@ def main() -> int:
             for item in items
         ],
     }
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(json.dumps(out_payload, indent=2) + "\n", encoding="utf-8")
-    Path(args.out_md).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out_md).write_text(_render_markdown(items), encoding="utf-8")
+    Path(out).parent.mkdir(parents=True, exist_ok=True)
+    Path(out).write_text(json.dumps(out_payload, indent=2) + "\n", encoding="utf-8")
+    Path(out_md).parent.mkdir(parents=True, exist_ok=True)
+    Path(out_md).write_text(_render_markdown(items), encoding="utf-8")
     print(_render_markdown(items))
-    print(f"Wrote {args.out} and {args.out_md}.")
+    print(f"Wrote {out} and {out_md}.")
     return 1 if had_error else 0
 
 

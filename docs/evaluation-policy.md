@@ -87,7 +87,8 @@ fabricates a plausible answer.
   controls and honest control failures never inflate Success Rate.
 - **Standalone audit**: `scripts/eval/eval_hallucination_controls.py` re-judges
   every control run folder with the same DeepEval metric and writes
-  `reports/metrics/hallucination-eval.{json,md}` — a reproducible per-control
+  `reports/metrics/hallucination/<full-bench|public>/hallucination-eval.{json,md}`
+  (choose the subfolder with `--sub`) — a reproducible per-control
   table of `success flag · score · honest · classification · judge reason`.
 
 ## Benchmark maintenance

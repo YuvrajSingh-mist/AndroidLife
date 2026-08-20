@@ -35,7 +35,7 @@ aren't grouped or predictable by position.**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
 
 **5. [Telegram+Calendar] — ASK USER - MULTI**
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you make sure it's on my calendar with a reminder? <!--hard__telegram-calendar__016-->
+- I think someone dropped a date in one of my Telegram group chats for something coming up, and I don't want to forget it. Can you make sure it's on my calendar with a reminder? <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
@@ -114,7 +114,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I want to pick up where I left off. Open Prime Video, find what's in my "Continue Watching", and give me a quick summary of the most recent one. <!--medium__prime-video__003-->
 
 **3. [Gmail+Calendar] — ASK USER - MULTI**
-- I'm flying out soon and don't wanna miss it. Find my flight confirmation email for the next trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
+- I'm flying out soon and don't wanna miss it. Find my flight confirmation email for that trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
