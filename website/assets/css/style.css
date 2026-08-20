@@ -450,8 +450,10 @@ footer .footnote { font-size: 0.78rem; margin-top: 0.35rem; }
 
 .public-example-list {
   display: grid;
-  gap: 1.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1.75rem;
   margin-top: 1rem;
+  align-items: start;
 }
 
 .public-example {
@@ -1518,6 +1520,9 @@ table.lb-table td.lb-params {
 
 @media (max-width: 900px) {
   .task-state-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .public-example-list { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .task-state-grid { grid-template-columns: 1fr; }

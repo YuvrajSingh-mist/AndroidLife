@@ -522,7 +522,7 @@ Optional artifacts:
 
 The five raw fields above are the per-run **inputs**; the actual benchmark metrics are **derived** from them
 plus the run's verified on-device end-state evidence, and are implemented in `src/DailyBench/benchmark_metrics.py`
-and specified in `docs/evaluation-policy.md` + `docs/leaderboard-format.md`. They were previously documented
+and specified in `docs/evaluation-policy.md`. They were previously documented
 only in those files — that is why this spec did not list them. The full set:
 
 | metric | definition | source |

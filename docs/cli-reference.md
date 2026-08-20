@@ -24,7 +24,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
 | `--thinking` | off | Leave the model's reasoning/thinking mode ON. Off by default: the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) so reasoning models return text content; non-reasoning models ignore them |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
-| `--tracing` | off | Enable Arize Phoenix tracing (see [advanced-features.md](advanced-features.md)) |
+| `--tracing` | off | Enable Arize Phoenix tracing (see [cli-reference.md](#tracing--phoenix)) |
 | `--phoenix-url` | *(none)* | Phoenix collector endpoint; sets the `phoenix_url` env var mobilerun reads |
 | `--phoenix-project` | *(none)* | Phoenix project name; sets the `phoenix_project_name` env var |
 | `--save-trajectory` | `none` | Local trajectory recording level: `none`, `step`, or `action` |
@@ -66,7 +66,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--screen-record` | off | Record `screen.mp4` for every task in the batch — **off by default** (see single-run flag for why); opt in when you need video evidence |
 | `--vision` | off | Enable vision (screenshots) for the agent; off by default for this harness |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
-| `--thinking` | off | Leave the model's reasoning/thinking mode ON (default off: reasoning-off switches sent via `extra_body`; see [advanced-features.md](advanced-features.md)) |
+| `--thinking` | off | Leave the model's reasoning/thinking mode ON (default off: reasoning-off switches sent via `extra_body`) |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
 | `--tracing` | off | Enable Arize Phoenix tracing (needs `phoenix serve` running first) |
 | `--phoenix-url` | *(none)* | Phoenix collector endpoint; sets the `phoenix_url` env var |
@@ -74,7 +74,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--save-trajectory` | `none` | Local trajectory recording level: `none`, `step`, or `action` |
 | `--no-app-reset` | off | Skip the post-run fairness reset for every task in the batch (see below) |
 | `--cooldown-seconds` | `10.0` | Fixed pause between tasks so the device doesn't run continuously into thermal/load territory; `0` disables it |
-| `--source` | `tasks.md` | Task source markdown the dataset was exported from; selects the ask_user_facts sidecar with fallback per-`task_id` facts for Hard/`ASK USER` tasks (`tasks.md` -> `ask_user_facts_730.json`, `public.md` -> `ask_user_facts.json` — see [Custom tools](advanced-features.md#custom-tools-srcdailybenchcustom_toolspy)); used only when a task's own dataset row has no `ask_user_fact`; a missing file means no facts configured (fine for DETERMINISTIC-only selections) |
+| `--source` | `tasks.md` | Task source markdown the dataset was exported from; selects the ask_user_facts sidecar with fallback per-`task_id` facts for Hard/`ASK USER` tasks (`tasks.md` -> `ask_user_facts_730.json`, `public.md` -> `ask_user_facts.json`); used only when a task's own dataset row has no `ask_user_fact`; a missing file means no facts configured (fine for DETERMINISTIC-only selections) |
 | `--ask-user-model` | `gpt-5.4-mini` | Forwarded to every task run's `ask_user` tool — **OpenAI-hosted models only** (see note above) |
 | `--ask-user-base-url` | *(OpenAI's default)* | Forwarded to every task run's `ask_user` tool |
 

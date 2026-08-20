@@ -234,7 +234,7 @@ def test_resolve_apps_maps_a_browser_tagged_category_header_to_chrome() -> None:
 def test_merge_ask_user_facts_fills_in_matching_task_ids_only(tmp_path) -> None:
     """merge_ask_user_facts sets `ask_user_fact` only for task_ids present in the facts file,
     leaving every other task's field at its default None - safe to publish since public.md is a
-    structural preview, not the real held-out eval (see docs/advanced-features.md)."""
+    structural preview, not the real held-out eval (see docs/evaluation-policy.md)."""
     markdown = """
 ### Day 1
 

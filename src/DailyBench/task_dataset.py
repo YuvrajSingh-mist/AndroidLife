@@ -382,8 +382,8 @@ def merge_ask_user_facts(dataset: dict[str, Any], facts_path: str | Path) -> Non
     """Fill in each Hard/ASK USER task's `ask_user_fact` field from a {task_id: fact} JSON file.
 
     Only meaningful for a dataset that's fine to publish with the answer included (a structural
-    preview, not a real held-out eval) - see docs/advanced-features.md's Custom tools section for
-    why the real private benchmark must never do this. A missing facts file is a no-op.
+    preview, not a real held-out eval) - see docs/evaluation-policy.md for why the real private
+    benchmark must never do this. A missing facts file is a no-op.
     """
     path = Path(facts_path)
     if not path.exists():

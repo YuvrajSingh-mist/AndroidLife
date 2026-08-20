@@ -186,7 +186,6 @@ def build_public_sample(out: Path) -> None:
     _copy(out, SEEDS_PUBLIC, "fabrication/seeds")
     _copy(out, REPO_ROOT / ".fabricated_test_data.json", "fabrication/fabricated_test_data.json")
     _copy(out, DOCS / "fabricated-test-data.md", "fabrication/fabricated-test-data.md")
-    _copy(out, DOCS / "public-task-feasibility.md", "fabrication/public-task-feasibility.md")
     (out / "README.md").write_text(README_SAMPLE, encoding="utf-8")
 
 

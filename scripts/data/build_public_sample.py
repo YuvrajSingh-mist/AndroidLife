@@ -11,7 +11,7 @@ The 4 multi-turn KB tasks are kept in the sample; their profiles live in
 multiturn_kb_public.json keyed by the REAL 530 ids (same as multiturn_kb_530.json).
 
 Placeholders are preserved as [slots] and resolved at run time from
-public_vars.local.env + config/user.yaml (see docs/task-authoring/occasional-apps.md).
+public_vars.local.env + config/user.yaml.
 
 Usage: uv run python scripts/data/build_public_sample.py [--seed N]
 """

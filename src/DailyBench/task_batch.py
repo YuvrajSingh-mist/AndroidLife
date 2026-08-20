@@ -37,7 +37,7 @@ TRANSIENT_FAILURE_MARKERS = ("Request timed out", "Empty response content")
 
 # Fallback {task_id: fact} mapping for Hard/ASK USER tasks whose dataset row has no
 # `ask_user_fact` of its own (only the public dataset publishes it inline - see
-# docs/advanced-features.md's Custom tools section). The facts file is never hardcoded
+# docs/evaluation-policy.md). The facts file is never hardcoded
 # here: --source picks the source markdown and ask_user_facts_path(source) derives the
 # right file (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json).
 DEFAULT_SOURCE = "tasks.md"

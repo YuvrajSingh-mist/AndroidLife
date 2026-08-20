@@ -127,7 +127,18 @@ function attachLightbox() {
 }
 
 // DailyBench tasks are text-prompt mobile tasks (no reference images), so an
-// example card shows the app, difficulty, tags, and the goal prompt.
+// example card shows the app, difficulty, tags, and the goal prompt. Public
+// example cards link to the per-task detail page (set=public) with the same
+// trajectory functionality as the 530 tasks.
+function detailPageHref(query) {
+  // Homepage lives at repo root (site data at ./assets/...); the tasks/task
+  // pages live under pages/ (site data at ../assets/...). Build the detail URL
+  // from the same base so links work from either location.
+  const siteData = document.body.dataset.siteData || "./assets/data/site_data.json";
+  const base = siteData.startsWith("../") ? "./task.html" : "./pages/task.html";
+  return `${base}?${query}`;
+}
+
 function publicExampleMarkup(example) {
   const tags = [
     example.is_ask_user ? `<span class="tag tag-ask">ASK USER</span>` : "",
@@ -137,14 +148,18 @@ function publicExampleMarkup(example) {
   ]
     .filter(Boolean)
     .join("");
+  const detailHref = detailPageHref(`set=public&task_id=${encodeURIComponent(example.task_id)}`);
   return `
-    <article class="public-example">
+    <article class="public-example" data-task-id="${escapeHtml(example.task_id)}">
       <div class="public-example-meta">
-        <span class="public-example-cat">${example.category_name} <span class="public-example-id">${example.task_id}</span></span>
+        <span class="public-example-cat">${escapeHtml(example.category_name)} <span class="public-example-id">${escapeHtml(example.task_id)}</span></span>
         <span class="public-example-diff">${capitalize(example.difficulty)}</span>
       </div>
       ${tags ? `<div class="public-example-tags">${tags}</div>` : ""}
       <pre class="public-example-prompt"><code>${escapeHtml(example.prompt)}</code></pre>
+      <div class="card-footer">
+        <a class="card-trajectory-link" href="${detailHref}" title="View task detail + trajectory replay">&#9654; View task</a>
+      </div>
     </article>
   `;
 }
@@ -306,11 +321,9 @@ loadData()
       renderCategoryTable(data.categories);
       renderBenchmarkSummary(data.categories);
       renderDayTable(data.days);
-      renderPublicExampleList(
-        "featured-examples-list",
-        (data.public_examples || []).filter((example) => example.difficulty === "hard")
-      );
-      renderPublicExampleList("public-examples-list", data.public_examples);
+      // Homepage: show the FULL public bench we have runs for, in a 2-col grid.
+      renderPublicExampleList("featured-examples-list", data.public_examples || []);
+      renderPublicExampleList("public-examples-list", data.public_examples || []);
       initTaskBrowser(data.tasks || []);
       attachLightbox();
     })

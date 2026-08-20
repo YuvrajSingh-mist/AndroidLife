@@ -12,7 +12,7 @@ public, JSON, and free (300/day quota), and its Android site is literally a
 Q&A of real people asking "how do I do X on my phone".
 
 Usage:
-  uv run python scripts/data/harvest_real_queries.py --out docs/real-user-queries.md
+  uv run python scripts/data/harvest_real_queries.py --out reports/real-user-queries.md
   uv run python scripts/data/harvest_real_queries.py --app Gmail,Sheets --limit 5   # specific apps
   uv run python scripts/data/harvest_real_queries.py --tag "google-photos"          # any StackExchange tag
 
@@ -135,8 +135,8 @@ def harvest(app: str, limit: int) -> list[dict]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Harvest real Android user queries for task authoring.")
-    ap.add_argument("--out", default=str(REPO_ROOT / "docs" / "real-user-queries.md"),
-                    help="Output markdown path (default docs/real-user-queries.md)")
+    ap.add_argument("--out", default=str(REPO_ROOT / "reports" / "real-user-queries.md"),
+                    help="Output markdown path (default reports/real-user-queries.md)")
     ap.add_argument("--app", default=None, help="Comma-separated apps (default: all 32)")
     ap.add_argument("--limit", type=int, default=5, help="Queries per app (default 5)")
     ap.add_argument("--include-generic", action="store_true", help="Also pull generic Android tags (notifications, battery, etc.)")

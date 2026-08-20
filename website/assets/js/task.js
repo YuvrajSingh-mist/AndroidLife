@@ -473,7 +473,13 @@ async function init() {
 
   try {
     const [site, idx] = await Promise.all([loadJson(SITE_DATA), loadJson(TRAJ_INDEX)]);
-    const task = (site.tasks || []).find((t) => t.task_id === taskId);
+    // set=public → resolve from the public bench sample (homepage examples);
+    // otherwise default to the 530 corpus (Tasks page). Public task_ids can
+    // also exist in the 530 corpus, so the set is explicit.
+    const isPublic = getParam("set") === "public";
+    const task = isPublic
+      ? (site.public_examples || []).find((t) => t.task_id === taskId)
+      : (site.tasks || []).find((t) => t.task_id === taskId);
 
     if (!task) {
       if (title) title.textContent = "Unknown task";
@@ -482,14 +488,15 @@ async function init() {
     }
 
     if (title) title.textContent = task.task_id;
-    if (subtitle) subtitle.textContent = `${capitalize(task.bucket || task.difficulty || "")} · ${task.app}${task.day ? ` · Day ${task.day}` : ""}`;
+    const appLabel = task.app || task.category_name || "Task";
+    if (subtitle) subtitle.textContent = `${capitalize(task.bucket || task.difficulty || "")} · ${appLabel}${task.day ? ` · Day ${task.day}` : ""}${isPublic ? " · public sample" : ""}`;
     if (descEl) descEl.textContent = "";
     if (promptEl) {
       promptEl.innerHTML = `<code>${escapeHtml(task.prompt)}</code>`;
     }
     document.title = `DailyBench300  -  ${task.task_id}`;
 
-    const traj = idx.tasks && idx.tasks[taskId];
+    const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
     renderTaskState(task, traj);
 
     // Per-task trajectory data (may 404 if has_trajectory is false).

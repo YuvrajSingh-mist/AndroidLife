@@ -24,7 +24,7 @@ def main() -> int:
 
     This is a structural preview, not the real held-out eval, so unlike the private benchmark it's
     fine to publish each ASK USER task's `ask_user_fact` right in the dataset (see
-    docs/advanced-features.md's Custom tools section).
+    docs/evaluation-policy.md).
     """
     source_path = "benchmarks/dailyBench-600/public.md"
     source = ROOT / source_path

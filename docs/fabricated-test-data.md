@@ -418,8 +418,8 @@ Harness behavior that affects results and is part of the reproducible spec:
 - **2026-08-19 — Multi-turn prompts no longer spoon-feed the answer (swiggy__005 / swiggy__007).**
   The two "reorder my food" ASK USER - MULTI tasks were handing the agent the exact item + restaurant
   in the prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
-  Kushka Rice from Downtown Delight"), which defeats the multi-turn design — per `task-authoring/multiturn-conversion.md`
-  these prompts must be **genuinely ambiguous** with the **ONE withheld fact the agent must ask the
+  Kushka Rice from Downtown Delight"), which defeats the multi-turn design — per our multi-turn
+  authoring notes, these prompts must be **genuinely ambiguous** with the **ONE withheld fact the agent must ask the
   oracle for** (the KB profiles in `multiturn_kb_public.json` / `multiturn_kb_530.json` hold the answer:
   Jugaad Jn Chole Chawal + Papdi Chat ₹258 / Downtown Delight Murgh Mughlai). Reworded both
   (`public.md` + `tasks_530.md`) to keep the natural craving line + the full 5-step task (apps, cart,

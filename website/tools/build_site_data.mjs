@@ -103,23 +103,44 @@ function main() {
     });
   }
 
-  // Public examples.
+  // Public examples — the full public bench we have runs for. Cross-reference
+  // the trajectory index (if already exported) so each example carries its
+  // run + trajectory availability, and only tasks with a recorded run are shown
+  // on the homepage (matching the "we have these" public set).
+  let trajIndex = null;
+  try {
+    trajIndex = readJson("website/assets/data/trajectories/index.json");
+  } catch {
+    trajIndex = null;
+  }
+  const publicRuns = (trajIndex && trajIndex.public) || {};
+  const hasPublicRun = (id) => Boolean(publicRuns[id]);
+
   const public_examples = publicTasks
+    .filter((t) => hasPublicRun(t.task_id))
     .slice()
     .sort((a, b) => {
       const order = { easy: 0, medium: 1, hard: 2 };
       return order[a.bucket] - order[b.bucket] || a.task_id.localeCompare(b.task_id);
     })
-    .map((t) => ({
-      task_id: t.task_id,
-      difficulty: t.bucket,
-      category_name: primaryApp(t),
-      prompt: t.prompt_text,
-      points: t.points || 1,
-      cross_app: Boolean(t.is_cross_app || t.cross_app_required),
-      is_ask_user: Boolean(t.is_ask_user),
-      placeholder_count: t.placeholder_count || 0,
-    }));
+    .map((t) => {
+      const run = publicRuns[t.task_id] || {};
+      return {
+        task_id: t.task_id,
+        difficulty: t.bucket,
+        category_name: primaryApp(t),
+        prompt: t.prompt_text,
+        points: t.points || 1,
+        cross_app: Boolean(t.is_cross_app || t.cross_app_required),
+        is_ask_user: Boolean(t.is_ask_user),
+        placeholder_count: t.placeholder_count || 0,
+        day: run.day || t.day || 0,
+        model: run.model || "",
+        success: run.success ?? null,
+        has_trajectory: Boolean(run.has_trajectory),
+        set: "public",
+      };
+    });
 
   // Every task in the full 530 set, with the fields the site filters/renders on.
   // The full task list IS the benchmark (a fixed 28-day schedule); the prompts are

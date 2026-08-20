@@ -225,7 +225,7 @@ def test_run_agent_builds_llm_with_deterministic_sampling_and_thinking_off(tmp_p
     """The real OpenAILike client run_agent() builds always gets temperature/top_p/seed plus the
     Qwen "thinking" chat-template switch turned off - confirmed against real Qwen3-family
     models to actually zero out reasoning tokens and make output reproducible
-    (see docs/advanced-features.md's OpenRouter section)."""
+    (see docs/cli-reference.md's model-host section)."""
     captured_llms: list = []
 
     class _CapturingFakeAgent:
