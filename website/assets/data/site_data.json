@@ -1591,7 +1591,7 @@
       "task_id": "hard__telegram-calendar__016",
       "difficulty": "hard",
       "category_name": "Telegram",
-      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -1606,7 +1606,7 @@
       "task_id": "hard__youtube-settings__052",
       "difficulty": "hard",
       "category_name": "YouTube",
-      "prompt": "Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text.",
+      "prompt": "Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you turned off for confirmation, no other text.",
       "points": 5,
       "cross_app": true,
       "is_ask_user": false,
@@ -5486,7 +5486,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 0,
-      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
       "note": ""
     },
     {

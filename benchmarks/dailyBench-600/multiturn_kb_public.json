@@ -193,7 +193,6 @@
           "Jugaad Jn",
           "Biryani Blues"
         ],
-        "usual_order": "Murgh Mughlai with Kushka Rice from Downtown Delight",
         "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
         "spice_preference": "medium",
         "typical_budget": "₹300-₹600 per order",
@@ -452,29 +451,28 @@
   "hard__telegram-calendar__016": {
     "correct_target": "telegram::forever-21-meetup-sat-7pm",
     "profile": {
-      "chats": [
-        {
-          "name": "Forever 21",
-          "type": "group",
-          "members": 2,
-          "topic": "get-together / meetup",
-          "date_discussion": {
-            "candidates": [
-              "2026-08-20 (Thu)",
-              "2026-08-22 (Sat)"
-            ],
-            "final_date": "2026-08-22 (Sat)",
-            "final_time": "7:00 PM",
-            "venue": "The Terrace, Patia",
-            "event_title": "Meetup",
-            "agreement_note": "group first suggested Thu Aug 20 ('Let's gather on 20th August then this time?') but someone was busy so they moved it to Sat Aug 22 at 7 PM at The Terrace ('Wait I think she is busy at that day so maybe 22nd of this month?' -> 'Umm ok 22nd seems cool let's set that date then!')."
-          }
-        }
-      ],
+      "group_chat": {
+        "name": "Forever 21",
+        "type": "group",
+        "members": 2,
+        "topic": "get-together / meetup",
+        "messages": [
+          "Let's gather on 20th August then this time?",
+          "Wait I think she is busy at that day so maybe 22nd of this month?",
+          "Umm ok 22nd seems cool let's set that date then!",
+          "It a meetup!"
+        ]
+      },
+      "my_memory": {
+        "date": "Saturday the 22nd - we first floated the 20th but moved it because someone was busy",
+        "time": "7 PM",
+        "venue": "The Terrace, Patia",
+        "reminder": "a day before at 8 PM"
+      },
       "preferences": {
-        "reminder_lead": "1 day before at 8 PM",
-        "reminder_chat": "Forever 21",
-        "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"
+        "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886",
+        "event_name": "Meetup",
+        "reminder_chat": "Forever 21"
       }
     }
   },
@@ -496,7 +494,6 @@
         }
       },
       "preferences": {
-        "sleep_timer": "10:30 PM",
         "wake_up_time": "6:30 AM",
         "sleep_goal_hours": 8,
         "wind_down_routine": "listens to lo-fi beats while falling asleep",

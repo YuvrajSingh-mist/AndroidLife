@@ -19,7 +19,7 @@ aren't grouped or predictable by position.**
 ### Day 1
 
 **1. [YouTube+Settings] — DETERMINISTIC**
-- Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
+- Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you turned off for confirmation, no other text. <!--hard__youtube-settings__052-->
 
 - Medium (3pt) **[Google Maps + Notes]**: I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving, transit, and walking, all three modes, not just driving. Then pick whichever is fastest. Hmm, and I almost forgot, save the ETA and distance for that fastest option as a note in Notes with a sensible title. Thanks! <!--medium__google-maps__002-->
 
@@ -32,7 +32,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text. <!--medium__google-drive__007-->
 
 **2. [Telegram+Calendar] — ASK USER - MULTI**
-- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
+- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it? <!--hard__telegram-calendar__016-->
 
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->

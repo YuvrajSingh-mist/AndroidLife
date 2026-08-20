@@ -192,10 +192,16 @@ make sure it's on my calendar with a reminder?"
 > with a single group chat — the old "which group?" hook was moot because there
 > is only one group.
 
-**KB profile (current, post-redesign):** `chats` → the **Forever 21** group (2
-members, topic "get-together / meetup") with `candidate_dates` **Aug 20 / Aug 22**
-and `final_date` **2026-08-22**; `preferences.reminder_lead` = "1 day before at
-8 PM", `reminder_chat` = Forever 21. Correct target = `telegram::forever-21-meetup-22nd`.
+**KB profile (current, post-redesign):** `group_chat` → the **Forever 21** group
+(2 members, topic "get-together / meetup") with the raw `messages` (20th floated,
+moved to 22nd) — the on-device thread — plus `my_memory` holding the settled
+**date (Sat 22nd)**, **time (7 PM)**, **venue (The Terrace, Patia)** and
+**reminder** ("a day before at 8 PM") as separate, natural facts, and
+`preferences` (`account`, `event_name` "Meetup", `reminder_chat`). There is **no
+`final_date`/`final_time`/`venue`/`event_title`/`agreement_note` answer-key blob**
+(removed 2026-08-21 so the KB doesn't hand over the whole plan in one field —
+the oracle answers each fact only when asked). Correct target =
+`telegram::forever-21-meetup-sat-7pm`.
 
 **Actual flow in the 2026-08-20 run (0 ask_user calls):**
 1. Opened Telegram, read a thread: *"Wait I think she is busy at that day so
