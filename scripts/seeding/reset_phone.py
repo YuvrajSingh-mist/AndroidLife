@@ -107,6 +107,26 @@ PROFILES: dict[str, dict] = {
                 "4. New business / decisions (10 min)\n"
                 "5. Action items + owners (5 min)\n"
             ),
+            # hard__google-search-obsidian-telegram__057: the agent updates this
+            # note with today's recorded value each run -> restore to the baseline
+            # (2026-08-13 value) so variance-check runs start identical.
+            "/sdcard/Obsidian/Papers vault oneplus /Stock Watch.md": (
+                "# Stock Watch\n\n"
+                "Watchlist for the stocks I follow. I only act when a ticker crosses its\n"
+                "threshold since the last recorded value.\n\n"
+                "- Stock: Reliance Industries\n"
+                "- Threshold: 1,400 INR\n"
+                "- Last recorded value: 1,320.50 INR\n"
+                "- Date: 2026-08-13\n\n"
+                "## Watchlist rules\n"
+                "- If the price crosses the threshold, message the group and update this note\n"
+                "  with today's value.\n"
+                "- Re-check on the day I'm tracking; don't chase intraday noise.\n"
+                "- NSE ticker: RELIANCE.\n\n"
+                "## Other tickers I follow\n"
+                "- TCS: threshold 4,000 (currently ~3,950).\n"
+                "- HDFC Bank: threshold 1,700 (currently ~1,680).\n"
+            ),
         },
         # run-created Obsidian paste artifacts: Obsidian stores pasted images in the
         # vault root as "Pasted image YYYYMMDDHHMMSS.jpg" (no attachment folder is
