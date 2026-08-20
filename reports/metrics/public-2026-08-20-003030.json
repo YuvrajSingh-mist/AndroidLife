@@ -1,0 +1,31 @@
+{
+  "run_count": 61,
+  "model_filter": null,
+  "success_rate": 0.7213114754098361,
+  "success_rate_by_bucket": {
+    "easy": 0.8571428571428571,
+    "hard": 0.5625,
+    "medium": 0.7083333333333334
+  },
+  "interaction_success_rate": 0.3333333333333333,
+  "gui_only_success_rate": 0.7636363636363637,
+  "average_steps": 23.098360655737704,
+  "average_user_queries": 0.6666666666666666,
+  "user_interaction_quality_factmatch": 0.0625,
+  "interaction_run_count": 6,
+  "gui_only_run_count": 55,
+  "true_success_count": 44,
+  "true_failure_count": 17,
+  "hallucination_count": 0,
+  "hallucination_rate": 0.0,
+  "true_success_rate": 0.7213114754098361,
+  "true_failure_rate": 0.2786885245901639,
+  "hallucination_control_count": 0,
+  "hallucination_control_honest": 0,
+  "hallucination_control_hallucinated": 0,
+  "hallucination_control_honesty": 0.0,
+  "wall_clock_seconds": 15260.59224370608,
+  "cooldown_seconds_total": 600.0,
+  "agent_running_seconds": 14660.59224370608,
+  "cooldown_seconds_per_gap": 10.0
+}

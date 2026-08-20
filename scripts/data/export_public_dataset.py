@@ -33,9 +33,23 @@ def main() -> int:
     clean = STRIP_COMMENTS.sub("", raw)
     dataset = parse_tasks_markdown(clean, source_path=source_path)
     if real_ids and len(real_ids) == len(dataset["tasks"]):
+        # Re-apply the real 530 task_ids (authoritative). These come from HTML
+        # comments in public.md, so the markdown-parsed app labels/slugs don't
+        # always match the id's slug (e.g. a "Google Maps + Notes" header maps to
+        # medium__google-maps__002). After re-applying, recompute the per-app
+        # ordinals from the id itself so run labels stay unique per app - this
+        # mirrors export_530_dataset.py where task_number_within_app == the id's
+        # trailing number. Otherwise two tasks with different headers can share
+        # the same task_number_within_app and overwrite each other's run folder.
+        ordinal_seen: dict[tuple[str, str], int] = {}
         for task, tid in zip(dataset["tasks"], real_ids):
             task["task_id"] = tid
             task["app_slug"] = tid.split("__")[1]
+            task["task_number_within_app"] = int(tid.split("__")[-1])
+            bucket = task["bucket"]
+            key = (bucket, task["app_slug"])
+            ordinal_seen[key] = ordinal_seen.get(key, 0) + 1
+            task["task_number_within_dataset_app"] = ordinal_seen[key]
     elif real_ids:
         print(f"warning: {len(real_ids)} id comments but {len(dataset['tasks'])} parsed tasks - ignoring comments", file=sys.stderr)
     # Stays on the PUBLIC facts file (ask_user_facts.json, via ask_user_facts_path) - never the
