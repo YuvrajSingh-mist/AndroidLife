@@ -60,10 +60,13 @@ const OUT_GIFS = "website/assets/trajectories";
 // for a fully-local build.
 const HF_BASE = (process.env.TRAJ_HF_BASE || "").replace(/\/+$/, "");
 // Wrap a site-root-relative path (assets/...) into an HF resolve URL when
-// HF_BASE is set, otherwise return it unchanged.
+// HF_BASE is set, otherwise return it unchanged. The HF repo stores media under
+// trajectories/... and data under data/trajectories/... (assets/ is dropped on
+// upload), so the prefix is stripped to keep URLs consistent.
 function assetUrl(rel) {
   if (!HF_BASE) return rel;
-  return `${HF_BASE}/${rel}`;
+  const stripped = rel.startsWith("assets/") ? rel.slice("assets/".length) : rel;
+  return `${HF_BASE}/${stripped}`;
 }
 
 // Task renames between the run and the current dataset: the run was filed under

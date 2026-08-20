@@ -48,17 +48,22 @@ def resolve_base(repo: str) -> str:
 
 
 def rewrite_index(index: dict, base: str) -> dict:
-    """Rewrite every gif/data path to an absolute HF resolve URL."""
+    """Rewrite every gif/data path to an absolute HF resolve URL.
+
+    Local paths are site-root-relative (e.g. assets/trajectories/...) but the
+    HF repo stores media under trajectories/... and data under
+    data/trajectories/... (the assets/ prefix is dropped on upload), so the
+    prefix is stripped here.
+    """
     out = json.loads(json.dumps(index))  # deep copy
     for section in ("tasks", "public"):
         for entry in out.get(section, {}).values():
             gif = entry.get("gif")
             data = entry.get("data")
-            # local paths are site-root-relative, e.g. assets/trajectories/...
             if gif and gif.startswith("assets/"):
-                entry["gif"] = f"{base}/{gif}"
+                entry["gif"] = f"{base}/{gif[len('assets/'):]}"
             if data and data.startswith("assets/"):
-                entry["data"] = f"{base}/{data}"
+                entry["data"] = f"{base}/{data[len('assets/'):]}"
     return out
 
 
@@ -66,7 +71,7 @@ def rewrite_screenshot_base(data: dict, base: str) -> dict:
     out = json.loads(json.dumps(data))
     sb = out.get("screenshot_base")
     if sb and sb.startswith("assets/"):
-        out["screenshot_base"] = f"{base}/{sb}"
+        out["screenshot_base"] = f"{base}/{sb[len('assets/'):]}"
     return out
 
 
@@ -74,6 +79,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--repo", default=DEFAULT_REPO, help="HF repo id (dataset).")
     ap.add_argument("--dry-run", action="store_true", help="Rewrite locally only, no upload.")
+    ap.add_argument("--skip-media", action="store_true",
+                    help="Skip the trajectories/ media upload (re-upload JSONs only).")
     args = ap.parse_args()
 
     if not INDEX.exists():
@@ -129,14 +136,17 @@ def main() -> int:
     print("uploaded index.json + data/trajectories/*")
 
     # 4) Upload media (gifs + screenshots) — the big LFS transfer.
-    print("uploading media (gifs + screenshots) to trajectories/ ...")
-    api.upload_folder(
-        folder_path=str(MEDIA_DIR),
-        path_in_repo="trajectories",
-        repo_id=args.repo,
-        repo_type="dataset",
-    )
-    print("uploaded trajectories/ media")
+    if not args.skip_media:
+        print("uploading media (gifs + screenshots) to trajectories/ ...")
+        api.upload_folder(
+            folder_path=str(MEDIA_DIR),
+            path_in_repo="trajectories",
+            repo_id=args.repo,
+            repo_type="dataset",
+        )
+        print("uploaded trajectories/ media")
+    else:
+        print("skipped trajectories/ media upload (--skip-media)")
 
     # 5) README for the repo.
     readme = (
