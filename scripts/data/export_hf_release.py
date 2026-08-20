@@ -12,7 +12,7 @@ public-sample package that carries personal/device-specific data):
    - fabrication disclosure (fabricated_test_data.json + fabricated-test-data.md)
 
 2. PUBLIC-SAMPLE  (PRIVATE visibility — contains personal/device data)
-   - DailyBench_public_v2.json/.jsonl (the 61-task public 3-day sample)
+   - DailyBench_public_v2.json/.jsonl (the 68-task public 3-day sample: 61 runnable + 7 hallucination-control)
    - public.md (source), multiturn_kb_public.json
    - vars: public_vars.local.env + config/user.yaml (personal values)
    - fabrication/seeds (the fabricated PDFs + enriched Obsidian notes)
@@ -79,9 +79,10 @@ DrainBench runs Android agent tasks against a **real phone** (via ADB/mobilerun)
 and a real LLM, and grades the agent on reaching a verifiable device end-state.
 This repo ships the **530-task corpus** plus everything needed to reproduce runs.
 
-> The 61-task **public 3-day sample** (and its personal/device-specific vars +
-> seeds) is kept in a separate private repo; this public repo carries only the
-> 530 corpus + its run-time variables + fabrication disclosure.
+> The 68-task **public 3-day sample** (61 runnable + 7 hallucination-control;
+> its personal/device-specific vars + seeds) is kept in a separate private repo;
+> this public repo carries only the 530 corpus + its run-time variables +
+> fabrication disclosure.
 
 ## Files
 
@@ -118,7 +119,7 @@ numbers, personal emails, or real identities appear; all personas are fictional.
 
 README_SAMPLE = """---
 license: mit
-pretty_name: DrainBench public sample (61 tasks, private companion)
+pretty_name: DrainBench public sample (68 tasks, private companion)
 task_categories:
   - text-generation
   - other
@@ -134,7 +135,7 @@ size_categories:
 
 # DrainBench public sample (PRIVATE companion repo)
 
-The **61-task public 3-day sample** for DrainBench-530, kept in a **private**
+The **68-task public 3-day sample** (61 runnable + 7 hallucination-control) for DrainBench-530, kept in a **private**
 repo because it carries personal/device-specific data (run-time vars, the
 personal user config, and the fabricated on-device seed documents).
 
@@ -142,7 +143,7 @@ personal user config, and the fabricated on-device seed documents).
 
 | File | Content |
 |---|---|
-| `data/DailyBench_public_v2.json` / `.jsonl` | The 61-task public sample (drawn from the 530 corpus + public-specific additions). |
+| `data/DailyBench_public_v2.json` / `.jsonl` | The 68-task public sample (61 runnable + 7 hallucination-control; drawn from the 530 corpus + public-specific additions). |
 | `data/public.md` | Human-readable source. |
 | `data/multiturn_kb_public.json` | Knowledge-base profiles for public multi-turn tasks. |
 | `vars/public_vars.local.env` | Public-sample placeholder values (personal). |

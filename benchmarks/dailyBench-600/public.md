@@ -1,7 +1,7 @@
 # DrainBench — Public Sample (3-Day Preview)
 
 ### Not the eval set. A structural preview only — a TRUE sample drawn from the
-530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **61 tasks total.**
+530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **68 tasks total** (61 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device — the correct outcome for those is an honest failure).
 
 **Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
 it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for a fact
@@ -51,11 +51,13 @@ aren't grouped or predictable by position.**
 
 **[Calendar]**
 - Easy (1pt): I've got a packed day tomorrow and want to make sure nothing overlaps. Could you check my Calendar for any scheduling conflicts tomorrow afternoon? <!--easy__calendar__002-->
+- Easy (1pt): That recurring meeting is no longer happening. Can you delete the calendar event 'Team Sync Weekly' in Calendar? <!--easy__calendar__008-->
 
 - Medium (3pt) **[Google Photos + Obsidian]**: I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you open Google Photos Favourites, find the appropriate photo for each heading by looking at each photo's description, and copy each one into the note under the matching heading, one by one? Reply with only the number of photos added, no other text. <!--medium__gallery__007-->
 
 **[Files]**
 - Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
+- Easy (1pt): That scans folder is taking up space I don't want to waste. Can you empty the 'Old Scans' folder in Files for me? <!--easy__files__002-->
 
 - Medium (3pt) **[Files + PDF]**: I need to know exactly what I owe for that hosting plan. Open the file '[invoice file]' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text. <!--medium__files-pdf__001-->
 
@@ -130,6 +132,12 @@ aren't grouped or predictable by position.**
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
 
+**[Telegram]**
+- Easy (1pt): That group is way too noisy for me now. Can you leave the group 'Old College Group' on Telegram for me? <!--easy__telegram__004-->
+
+**[Contacts]**
+- Easy (1pt): He's someone I call all the time. Can you star 'Rahul Mehta' as a favorite in Contacts? <!--easy__contacts__008-->
+
 - Medium (3pt) **[Google Photos + Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
 
 **[YouTube]**
@@ -168,6 +176,12 @@ aren't grouped or predictable by position.**
 **[Google Docs]**
 - Easy (1pt): I've got a document I need a fresh copy of to edit — could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document? <!--easy__google-docs__004-->
 
+**[Obsidian]**
+- Easy (1pt): I'm wondering how cluttered that folder got. Can you check how many notes are in the 'Old Projects' folder in Obsidian? <!--easy__obsidian__009-->
+
+**[Notes]**
+- Medium (3pt): Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note 'Old Draft' and delete it, and check whether the other notes are still relevant in Notes? <!--medium__notes__004-->
+
 **[MSN News]**
 - Easy (1pt): I want to know what's big in [topic] right now. Can you open MSN News and read me the headline of the top story in the '[topic]' section? Reply with only the top story, no other text. <!--easy__msn-news__002-->
 
@@ -179,6 +193,9 @@ aren't grouped or predictable by position.**
 
 **3. [Google Meet+Files] — DETERMINISTIC**
 - Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
+
+**5. [Files+Notes] — DETERMINISTIC**
+- Free up space safely. Compress several Files into an archive and note its size, then find the storage limit in my Notes to check the archive against. Delete the originals only if the archive is under the limit. If there's no limit note, say so instead of picking a number. Verify the originals' status <!--hard__files-notes__069-->
 
 **[Prime Video]**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only the number, no other text. <!--easy__prime-video__002-->

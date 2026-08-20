@@ -42,7 +42,7 @@ that fabricates a plausible-sounding answer.
 | Hallucination controls | **60** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
 | ASK USER fact sidecars | 36 single-turn (`ask_user_facts_730.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
 | Placeholders used | 238 uses across **87 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
-| Public preview | **57-task true sample** (`public.md`) — see the public-sample section below |
+| Public preview | **68-task sample** (61 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 
@@ -467,7 +467,7 @@ representativeness win available **if** a ToS-clean path is found (see
 ## Canonical task families
 
 The benchmark has exactly **two runnable task sets** — the **530-task corpus** (`tasks_530.md`) and the
-**public 57-task sample** (`public.md`). Both share the same difficulty taxonomy:
+**public 68-task sample** (`public.md`, 61 runnable + 7 hallucination-control). Both share the same difficulty taxonomy:
 
 - **easy** — 1 app, 1 step
 - **medium** — 1-2 apps, 3 steps

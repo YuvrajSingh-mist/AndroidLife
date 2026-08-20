@@ -737,8 +737,13 @@ following entities were **seeded on the test device** (all recorded in
     Obsidian, real Swiggy order history with Downtown Delight as the most recent
     order, real Telegram `Forever 21` group, the 6E 6821 flight confirmation
     email in Gmail).
-  - The public 57-task sample contains **0 of the 60 hallucination-control
-    tasks**, so there is no risk of an HC task being accidentally seeded.
+  - The public sample carries **7 of the 60 hallucination-control tasks** (all
+    apps already present in the public sample: `easy__calendar__008`,
+    `easy__files__002`, `easy__telegram__004`, `easy__contacts__008`,
+    `easy__obsidian__009`, `medium__notes__004`, `hard__files-notes__069`). Their
+    data stays genuinely absent on-device, so the correct outcome is an honest
+    failure; the seed-manifest HC guard emits them as absent-entity controls
+    ("MUST NOT create") so they can never be accidentally seeded.
 - **Hard-task ordering de-biased (2026-08-18):** the public sample's per-day hard
   tasks were previously grouped by type (all ASK USER then all DETERMINISTIC),
   which is a giveaway bias. They are now **randomly interleaved within each day**

@@ -1,4 +1,4 @@
-# Public Sample (61-task) — On-Device Feasibility Audit
+# Public Sample (68-task) — On-Device Feasibility Audit
 
 > Status: **2026-08-19**. Audited the OnePlus CPH2423 (RS7XKZDI8HTOJNYL) against every task in
 > `public.md`. All **31/31 required apps installed** (app_audit PASS). Verdict legend:
