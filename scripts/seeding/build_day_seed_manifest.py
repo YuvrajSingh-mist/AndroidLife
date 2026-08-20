@@ -1472,6 +1472,7 @@ APP_SEED_DEFAULTS: dict[str, dict[str, str]] = {
     "settings": {"type": "settings", "location": "Settings (real)", "status": "sanity"},
     "weather": {"type": "weather", "location": "OnePlus Weather (real)", "status": "sanity"},
     "swiggy": {"type": "web", "location": "Swiggy (real app, live order/restaurant data)", "status": "web"},
+    "zomato": {"type": "web", "location": "Zomato (real app, live order/restaurant data)", "status": "web"},
     "prime-video": {"type": "web", "location": "Prime Video (real app, live catalog)", "status": "web"},
     "makemytrip": {"type": "web", "location": "MakeMyTrip (real app, live flights)", "status": "web"},
     "bookmyshow": {"type": "web", "location": "BookMyShow (real app, live showtimes)", "status": "web"},

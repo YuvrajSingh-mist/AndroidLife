@@ -166,9 +166,14 @@ def parse(md_text: str) -> list[dict]:
             prompt_text = body.strip()
             apps = resolve_apps(app_name, prompt_text)
             task_id = tid_comment if tid_comment else f"hard__{app_key}__{index:03d}"
+            # within_app must be unique per (bucket, app_slug) because it feeds the run
+            # folder label. Prefer the id's own trailing number when the task carries an
+            # explicit id comment (deterministic, matches the easy/med branch); fall back
+            # to the section header number only for generated ids.
+            within_app = int(task_id.split("__")[-1]) if tid_comment else index
             add_task(
                 "hard", current_day, app_name, apps, prompt_text,
-                ahi=ahi, interaction=interaction, note=note, task_id=task_id, within_app=index,
+                ahi=ahi, interaction=interaction, note=note, task_id=task_id, within_app=within_app,
                 cross_app_label=cross_app_label,
                 ordinal=next_ordinal("hard", app_key),
             )

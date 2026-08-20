@@ -46,12 +46,13 @@ load_dotenv(ROOT / ".env")
 from DailyBench.benchmark_metrics import (
     avg_steps,
     avg_user_queries,
+    kb_interaction_quality,
     success_rate,
     user_interaction_quality_factmatch,
 )
 from DailyBench.hallucination_judge import judge_control_honesty
 from DailyBench.task_batch import load_ask_user_facts
-from DailyBench.task_dataset import ask_user_facts_path
+from DailyBench.task_dataset import ask_user_facts_path, multiturn_kb_path
 
 # Hallucination-control sidecar: {task_id: {data_absent, type, absence, expected}}.
 # Tasks tagged here have data that is GENUINELY ABSENT on device, so the correct outcome is an
@@ -197,6 +198,28 @@ def _count_correct_ask_user(run_dir: Path, fact: str | None) -> int:
     return correct
 
 
+def _count_kb_audit_correct(run_dir: Path) -> int:
+    """# KB (multi-turn) ask_user queries a human marked correct in the manual audit.
+
+    Reads ``<run>/kb_audit.json`` (optional sidecar written during a manual KBIQ
+    audit): either ``{"queries": [{"correct": bool, ...}, ...]}`` or the raw
+    ``{"correct": int}``. Absent / unparsed -> 0 (run not audited yet).
+    """
+    audit_path = run_dir / "kb_audit.json"
+    if not audit_path.exists():
+        return 0
+    try:
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return 0
+    queries = audit.get("queries")
+    if isinstance(queries, list):
+        return sum(1 for q in queries if isinstance(q, dict) and q.get("correct"))
+    if isinstance(audit.get("correct"), int):
+        return int(audit["correct"])
+    return 0
+
+
 def parse_task_id_from_label(label: str) -> str | None:
     """Reconstruct a dataset task_id from a run --label like `day1--easy-gmail-001`.
 
@@ -256,7 +279,7 @@ def discover_run_folders(runs_arg: str | None) -> list[Path]:
 
 def load_run_record(
     run_dir: Path, interaction_ids: set[str], facts: dict[str, str] | None = None,
-    controls: dict[str, Any] | None = None,
+    controls: dict[str, Any] | None = None, kb_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     """Load one run folder into a benchmark_metrics record dict.
 
@@ -282,6 +305,14 @@ def load_run_record(
     is_interaction = bool(task_id in interaction_ids) if task_id else False
     ask_user_calls = int(ask_user_calls or 0)
     success = bool(output.get("success"))
+    # KB / multi-turn (ASK USER - MULTI) task: its ask_user queries are graded for
+    # KBIQ (KB Interaction Quality). kb_queries = total ask_user calls on the task;
+    # kb_queries_correct is read from an optional per-run manual audit file
+    # (kb_audit.json -> {"queries": [{"correct": bool, ...}, ...]}) that the human
+    # fills in after the run. Until audited it stays 0 (KBIQ reads 0 = not-audited).
+    is_kb = bool(kb_ids and task_id in kb_ids) if task_id else False
+    kb_queries = ask_user_calls if is_kb else 0
+    kb_queries_correct = _count_kb_audit_correct(run_dir) if is_kb else 0
     # MobileWorld SR gate (restored 2026-08-08): an ASK USER (interaction) task only
     # counts as a success if the agent actually asked the user for the missing fact.
     # An agent that guesses instead gets 0 - mirrors MobileWorld's q_i = s_i / c_i
@@ -322,6 +353,9 @@ def load_run_record(
         "ask_user_calls": ask_user_calls,
         "ask_user_correct": ask_user_correct,
         "is_interaction": is_interaction,
+        "is_kb": is_kb,
+        "kb_queries": kb_queries,
+        "kb_queries_correct": kb_queries_correct,
         # Per-run wall-clock seconds spent by the agent (excludes the inter-task
         # cooldown, which the batch runner applies between tasks, not inside them).
         "elapsed_seconds": float(run_metrics.get("elapsed_seconds") or meta.get("elapsed_seconds") or 0.0),
@@ -360,6 +394,9 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
     controls = [r for r in records if r.get("is_hallucination_control")]
     control_honest = [r for r in controls if r.get("classification") == "true_failure"]
     control_hallucinated = [r for r in controls if r.get("classification") == "hallucination"]
+    kb_tasks = [r for r in records if r.get("is_kb")]
+    kb_query_total = sum(r.get("kb_queries") or 0 for r in kb_tasks)
+    kb_query_correct = sum(r.get("kb_queries_correct") or 0 for r in kb_tasks)
 
     return {
         "run_count": len(records),
@@ -371,6 +408,12 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
         "average_steps": avg_steps(records),
         "average_user_queries": avg_user_queries(records),
         "user_interaction_quality_factmatch": user_interaction_quality_factmatch(records),
+        # KBIQ (KB Interaction Quality): fraction of KB/multi-turn ask_user queries
+        # answered right per the KB profile (manually audited post-run via kb_audit.json).
+        "kb_interaction_quality": kb_interaction_quality(records),
+        "kb_query_total": kb_query_total,
+        "kb_query_correct": kb_query_correct,
+        "kb_task_count": len(kb_tasks),
         "interaction_run_count": len(interaction),
         "gui_only_run_count": len(gui_only),
         # 3-way outcome split (success / true failure / hallucination) - hallucination
@@ -411,6 +454,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         # quality of each ask_user call by whether the LLM user's answer matched the
         # ground-truth fact, regardless of whether the overall task succeeded.
         f"| User Interaction Quality (UIQ, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
+        f"| KB Interaction Quality (KBIQ, manual audit) | {report['kb_interaction_quality']:.3f} ({report['kb_query_correct']}/{report['kb_query_total']} KB queries right, {report['kb_task_count']} KB tasks) |",
         "",
         "### Outcome split (true success / true failure / hallucination)",
         "",
@@ -446,6 +490,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--runs", default=None, help=f"Run batch dir or glob of run folders (default: {DEFAULT_RUNS}).")
     parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the runs came from; selects the ask_user_facts sidecar marking interaction tasks (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json). Default: {DEFAULT_SOURCE}.")
     parser.add_argument("--ask-user-facts", default=None, help="task_id -> fact mapping marking interaction tasks (default: derived from --source via ask_user_facts_path, e.g. tasks.md -> benchmarks/dailyBench-600/ask_user_facts_730.json).")
+    parser.add_argument("--multiturn-kb", default=None, help="task_id -> {correct_target, profile} mapping of ASK USER - MULTI (KB/oracle) tasks; marks which runs are KB/multi-turn for the KBIQ metric (default: derived from --source via multiturn_kb_path, e.g. tasks.md -> benchmarks/dailyBench-600/multiturn_kb_530.json).")
     parser.add_argument("--hallucination-controls", default=DEFAULT_CONTROLS, help=f"task_id -> hallucination-control meta sidecar (default: {DEFAULT_CONTROLS}); controls whose data is verified absent. A control that self-reports success counts as a hallucination, an honest failure as a true failure.")
     parser.add_argument("--hallucination-judge-model", default=None, help="Judge model for the DeepEval hallucination-control check (default: DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME env, else gpt-5.4-mini).")
     parser.add_argument("--hallucination-judge-temperature", type=float, default=0.0, help="Temperature for the DeepEval hallucination judge (default 0.0).")
@@ -473,7 +518,9 @@ def main() -> int:
     facts = load_ask_user_facts(facts_path)
     interaction_ids = set(facts)
     controls = load_ask_user_facts(args.hallucination_controls)
-    records = [load_run_record(run_dir, interaction_ids, facts, controls) for run_dir in run_dirs]
+    kb_path = args.multiturn_kb or multiturn_kb_path(args.source)
+    kb_ids = set(load_ask_user_facts(kb_path))
+    records = [load_run_record(run_dir, interaction_ids, facts, controls, kb_ids) for run_dir in run_dirs]
     report = build_report(records, model=args.model, cooldown_seconds=args.cooldown_seconds)
     Path(args.out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     markdown = render_markdown(report)

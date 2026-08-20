@@ -110,3 +110,24 @@ def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
     )
     denominator = len(interaction) + triggered
     return (numerator / denominator) if denominator else 0.0
+
+
+def kb_interaction_quality(records: Iterable[Record]) -> float:
+    """KB Interaction Quality (KBIQ): the fraction of KB/multi-turn ask_user
+    queries that returned the RIGHT answer according to the KB profile.
+
+    A run's ``ask_user_metrics.jsonl`` records every KB query (question + oracle
+    answer). Whether each answer was *right* is a manual judgement (the KB oracle
+    is the source of truth, so "right" = the answer matches what the profile
+    actually holds), audited after the run — each record carries ``kb_queries``
+    (total KB queries asked) and ``kb_queries_correct`` (the audited count).
+
+        KBIQ = sum_i(kb_queries_correct_i) / sum_i(kb_queries_i)   over KB tasks
+
+    A task that never asked contributes 0 to the numerator but its queries are
+    already 0, so it drops out; until a run is audited ``kb_queries_correct`` is
+    0 and KBIQ reads 0 (not-audited).
+    """
+    total = sum(record.get("kb_queries") or 0 for record in records)
+    correct = sum(record.get("kb_queries_correct") or 0 for record in records)
+    return (correct / total) if total else 0.0

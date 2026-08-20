@@ -7,18 +7,22 @@ import pytest
 from DailyBench.benchmark_metrics import (
     avg_steps,
     avg_user_queries,
+    kb_interaction_quality,
     success_rate,
     user_interaction_quality_factmatch,
 )
 
 
-def _rec(success: bool, steps: int = 0, ask_user_calls: int = 0, is_interaction: bool = False, ask_user_correct: int = 0) -> dict:
+def _rec(success: bool, steps: int = 0, ask_user_calls: int = 0, is_interaction: bool = False, ask_user_correct: int = 0, is_kb: bool = False, kb_queries: int = 0, kb_queries_correct: int = 0) -> dict:
     return {
         "success": success,
         "steps": steps,
         "ask_user_calls": ask_user_calls,
         "ask_user_correct": ask_user_correct,
         "is_interaction": is_interaction,
+        "is_kb": is_kb,
+        "kb_queries": kb_queries,
+        "kb_queries_correct": kb_queries_correct,
     }
 
 
@@ -72,6 +76,23 @@ def test_factmatch_uiq_counts_each_right_answer_and_penalizes_gui_triggered() ->
 def test_factmatch_uiq_wrong_answers_and_empty() -> None:
     assert user_interaction_quality_factmatch([_rec(True, ask_user_calls=1, ask_user_correct=0, is_interaction=True)]) == pytest.approx(0.0)
     assert user_interaction_quality_factmatch([]) == 0.0
+
+
+def test_kbiq_pooled_correct_over_total_kb_queries() -> None:
+    # KB queries: 2 of 3 audited right across two KB tasks -> 2/3.
+    records = [
+        _rec(False, is_kb=True, kb_queries=2, kb_queries_correct=1),
+        _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),
+        _rec(True, is_kb=False, kb_queries=0, kb_queries_correct=0),  # non-KB ignored
+    ]
+    assert kb_interaction_quality(records) == pytest.approx(2 / 3)
+
+
+def test_kbiq_unaudited_and_empty() -> None:
+    # Not audited yet -> correct stays 0 -> KBIQ 0 (never inflates).
+    assert kb_interaction_quality([_rec(True, is_kb=True, kb_queries=2, kb_queries_correct=0)]) == pytest.approx(0.0)
+    assert kb_interaction_quality([]) == 0.0
+    assert kb_interaction_quality([_rec(True, is_kb=True, kb_queries=0, kb_queries_correct=0)]) == pytest.approx(0.0)
 
 
 def test_factmatch_uiq_weights_each_task_equally_not_by_call_volume() -> None:

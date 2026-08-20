@@ -53,8 +53,12 @@ or `--list` first to inspect. A full CLI + flag reference is in
 ### Inspect results
 
 ```bash
-# Aggregate a run into MobileWorld metrics (SR, avg steps, UIQ, cost…)
+# Aggregate a run into MobileWorld metrics (SR, avg steps, UIQ, KBIQ, cost…)
 uv run scripts/eval/dailybench_report.py --runs assets/runs/<timestamp>
+
+# Manual KBIQ audit of KB/multi-turn ask_user queries (writes <run>/kb_audit.json,
+# which the report's KBIQ row reads)
+uv run scripts/eval/audit_kb_queries.py --runs 'assets/runs/<timestamp>/*' --source public.md --interactive
 
 # Rebuild the site's trajectory assets (GIFs + step screenshots + condensed traces)
 node website/tools/export_trajectories.mjs
@@ -81,6 +85,7 @@ node website/tools/export_trajectories.mjs
 - [docs/cli-reference.md](docs/cli-reference.md) — flags, app-reset fairness, step-budget policy
 - [docs/benchmark-spec.md](docs/benchmark-spec.md) — task corpus design, apps, schedule
 - [docs/evaluation-policy.md](docs/evaluation-policy.md) — success/hallucination/partial rules, metrics
+- [docs/multiturn-public-flow.md](docs/multiturn-public-flow.md) — multi-turn KB dialogues, rolling memory, KBIQ
 - [docs/app-usage-grounding.md](docs/app-usage-grounding.md) — how tasks map to real app usage
 - [docs/fabricated-test-data.md](docs/fabricated-test-data.md) — seed data philosophy + controls
 - [docs/future-directions.md](docs/future-directions.md) — planned task areas

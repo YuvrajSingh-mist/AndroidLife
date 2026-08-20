@@ -362,6 +362,30 @@ _ASK_USER_FACTS_BY_SOURCE = {
     "public.md": "ask_user_facts.json",
 }
 
+# Multi-turn KB profiles are likewise keyed by source: tasks.md -> the 530-corpus KB,
+# public.md -> the public-sample KB. The KB marks the ASK USER - MULTI tasks that run in
+# KB/oracle mode (rolling memory), which is what the KBIQ (KB Interaction Quality) metric
+# measures.
+_MULTITURN_KB_BY_SOURCE = {
+    "tasks.md": "multiturn_kb_530.json",
+    "public.md": "multiturn_kb_public.json",
+}
+
+
+def multiturn_kb_path(source: str) -> str:
+    """Return the multi-turn KB file for a task source markdown path.
+
+    Derived from the source's filename (repo-root-relative), so callers pass
+    `--source tasks.md|public.md` and get the right file with no hardcoded path:
+
+      tasks.md  -> benchmarks/dailyBench-600/multiturn_kb_530.json   (530-corpus KB)
+      public.md -> benchmarks/dailyBench-600/multiturn_kb_public.json (public-sample KB)
+    """
+    kb_file = _MULTITURN_KB_BY_SOURCE.get(Path(source).name)
+    if kb_file is None:
+        raise ValueError(f"Unknown task source {source!r}: expected tasks.md or public.md")
+    return f"benchmarks/dailyBench-600/{kb_file}"
+
 
 def ask_user_facts_path(source: str) -> str:
     """Return the ask_user_facts file for a task source markdown path.

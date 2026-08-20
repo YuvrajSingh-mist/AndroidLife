@@ -34,9 +34,6 @@ aren't grouped or predictable by position.**
 **6. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from that channel? Also, set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted for confirmation, no other text. <!--hard__youtube-settings__052-->
 
-**5. [Telegram+Calendar] — ASK USER - MULTI**
-- My friends and I have been planning a get-together in our Telegram group and went back and forth on the date before settling on one. Can you find which date we finally agreed on and put it on my calendar with a reminder? <!--hard__telegram-calendar__016-->
-
 **[Chrome]**
 - Easy (1pt): I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice <!--easy__shopping-delivery-browser__001-->
 
@@ -68,8 +65,14 @@ aren't grouped or predictable by position.**
 **[Google Drive]**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
+**5. [Telegram+Calendar] — ASK USER - MULTI**
+- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
+
 **4. [Swiggy+Telegram] — ASK USER - MULTI**
 - Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
+
+**6. [Zomato+Telegram] — ASK USER - MULTI**
+- I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__zomato__001-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->

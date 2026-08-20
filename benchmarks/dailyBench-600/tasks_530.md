@@ -506,10 +506,6 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **37. [Music+Telegram] — ASK USER SINGLE**
 - I'm making a two-song playlist and want to compare notes with a friend. Create it in Music, name it, check Telegram for whether that friend has mentioned a similar playlist, message them only if a match exists, and verify the playlist saved (deliberately no recipient or songs are named, so the agent must ask the user who to compare notes with and which two songs to include) <!--hard__music-telegram__037-->
 
-**16. [Telegram+Calendar] — ASK USER - MULTI**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- My friends and I have been planning a get-together in our Telegram group and went back and forth on the date before settling on one. Can you find which date we finally agreed on and put it on my calendar with a reminder? <!--hard__telegram-calendar__016-->
-
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 
 **[Music]**
@@ -693,9 +689,17 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just met someone and want to save their number before I lose it. Can you add a new contact named [X] with a phone number in Contacts? <!--easy__contacts__010-->
 
-**6. [Swiggy+Telegram] — ASK USER - MULTI**
+**6. [Telegram+Calendar] — ASK USER - MULTI**
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
+
+**7. [Swiggy+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
+
+**8. [Zomato+Telegram] — ASK USER - MULTI**
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__zomato__001-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->
