@@ -46,18 +46,76 @@ the agent didn't request. If the agent asks nothing, the KB contributes nothing
 Each `ask_user` call is logged to `<run>/ask_user_metrics.jsonl` with the
 question, the answer, model, turn number, tokens, and cost.
 
+### What exactly is sent to the oracle (and what is NOT)
+
+Only the task's **`profile`** is handed to the simulated user. The KB file stores
+`{task_id: {correct_target, profile}}`; the harness (`src/DailyBench/cli.py`)
+strips the wrapper and passes **`entry["profile"]`** — the `correct_target`
+field is **never** sent to the oracle. It is pure metadata for the human running
+the benchmark / the report generator, so the oracle cannot leak or be biased by
+the expected outcome.
+
 ---
 
 ## 2. The four tasks at a glance
 
 | task_id | goal (abridged) | correct target (KB) | ask_user calls | self-report | verdict |
 |---|---|---|---|---|---|
-| `hard__swiggy__005` | "craving the food I ate in the past week — get me that again; also message him on Telegram the order total" | `swiggy::reorder-downtown-delight-murgh-mughlai` | **1** | success=True | ⚠️ **wrong target** (wrong contact, no reorder) |
-| `hard__telegram-calendar__016` | "date dropped in a Telegram chat → calendar event + reminder" | `telegram::forever-21-date` | **0** | success=True | ✅ pass (GUI-only shortcut) |
+| `hard__swiggy__005` | "craving the food I ate in the past week — get me that again; also message him on Telegram the order total" | `swiggy::reorder-downtown-delight-murgh-mughlai` | **1** | success=True | ⚠️ **wrong target** (messaged right contact, but never reordered) |
+| `hard__telegram-calendar__016` | "find the date we settled on in our Telegram group → calendar event + reminder" | `telegram::forever-21-meetup-22nd` | **0** | success=True | ✅ pass (GUI-only shortcut) |
 | `hard__gmail-calendar__003` | "find my flight confirmation for the next trip → calendar reminder 3h before" | `gmail-calendar::bbi-del-reminder` | **0** | success=False | ❌ fail (wrong flight, never asked) |
 | `hard__music-obsidian__077` | "make music stop by itself at my bedtime in YT Music" | `youtube-music::sleep-timer-1030pm` | **0** | success=False | ❌ fail (step-cap) |
 
 Only **1 of 4** ever called `ask_user`.
+
+---
+
+## 2b. How the rolling conversation history works (with a real example)
+
+The "rolling memory" is a plain **list of prior Q&A pairs** kept on the harness
+side, inside the ask_user tool's closure (`src/DailyBench/custom_tools.py`):
+
+- On every call in KB/multi-turn mode the harness appends
+  `{"role": "user", "content": <the agent's question>}` then
+  `{"role": "assistant", "content": <the oracle's answer>}` to `history`.
+- On the next call, that whole history is serialised into the system prompt as
+  `You: <prior answer>` / `Agent: <prior question>` lines, plus the task goal,
+  the KB profile, and the device's real current date.
+- So the oracle is never stateless: it can remind the agent of an earlier answer,
+  stay consistent across turns, and notice when a follow-up contradicts what it
+  already said. This is what makes multi-turn disambiguation possible (ask one
+  thing, then build on the answer).
+
+Single-fact (`--ask-user-context`) tasks do **not** keep history — only
+KB/multi-turn mode persists it, so legacy single-fact runs behave exactly as
+before.
+
+**Real example from the 2026-08-20 public run** — the only task that actually
+engaged the loop was `hard__swiggy__005` (1 turn, so no second-turn follow-up
+happened). The best real *multi-turn* (2+ call) conversations in the same run
+are these two (both single-fact tasks, logged in `ask_user_metrics.jsonl`):
+
+`medium__google-search__008` — asked twice, oracle consistently says it has no
+route info (single-fact mode, no memory needed):
+
+| turn | question | answer |
+|---|---|---|
+| 1 | "What is the specific route (origin and destination)…?" | "I'm sorry, but I don't have the origin and destination information…" |
+| 2 | "Please provide the starting point and destination…" | "I'm sorry, but I don't have the starting point or destination information." |
+
+`hard__google-search-telegram-clock__018` — one real answer, then an honest
+refusal for a fact the oracle doesn't hold:
+
+| turn | question | answer |
+|---|---|---|
+| 1 | "What is the name of the place you are going to?" | "The place is the SBI ATM." |
+| 2 | "Who is the person you are going with that I should message on Telegram?" | "I'm sorry, but I don't have that information." |
+
+These show the two behaviours the oracle is trained into: answer from the KB
+when it has the fact, and refuse plainly when it doesn't. Because no KB-mode task
+reached a 2nd `ask_user` call in this run, we don't yet have a real transcript of
+the *history line* firing — that's expected to appear once a KB task actually
+disambiguates across turns.
 
 ---
 
@@ -71,13 +129,13 @@ paying."
 - `account.name` = Yuvraj Singh, address Work = K 504 IIIT Bhubaneswar.
 - `orders[0]` = **Downtown Delight · Khandagiri · Murgh Mughlai + Kushka Rice ·
   ₹523** (status delivered, `recent: true`, `this_week: true`, `favourite: true`).
-- `contacts` / `selected_contacts` include **Yuvraj Singh Jio** and **Yuvraj Airtel**.
+- `preferences.recipient` = **Yuvraj Airtel** — "him" on Telegram.
 
 **Actual dialogue (1 ask_user turn), from `ask_user_metrics.jsonl`:**
 
 | # | question (from agent) | oracle answer (from KB) | when |
 |---|---|---|---|
-| 1 | `"Who is "him" that you want to message on Telegram? Please provide the contact name."` | **`Yuvraj Singh Jio`** | step ~18 (01:53:59 IST) |
+| 1 | `"Who is "him" that you want to message on Telegram? Please provide the contact name."` | **`Yuvraj Singh Jio`** *(pre-fix KB — see note below)* | step ~18 (01:53:59 IST) |
 
 Model `gpt-5.4-mini-2026-03-17`, turn 1, ~2.5 s, 1786 tokens, **$0.00137**.
 
@@ -88,17 +146,24 @@ Model `gpt-5.4-mini-2026-03-17`, turn 1, ~2.5 s, 1786 tokens, **$0.00137**.
    ₹160 to Maharani Restaurant**.
 3. Opened Telegram, saw a chat with **Yuvraj Airtel**, decided "him" was
    ambiguous, and **called `ask_user`** with the question above.
-4. Oracle answered **"Yuvraj Singh Jio"**.
+4. Oracle answered **"Yuvraj Singh Jio"** (pre-fix KB — the profile was
+   inconsistent: `preferences.recipient` said Yuvraj Airtel but `contacts`
+   described Yuvraj Singh Jio as the order-total friend, so the oracle read
+   `contacts` and answered Jio).
 5. Agent searched Telegram for **"Yuvraj Singh Jio"** → **no exact match**.
 6. It fell back to the existing **Yuvraj Airtel** chat and sent:
    *"The order total for the food I ate last week was Rs. 160."*
 7. `complete(success=true)`.
 
-**What went wrong vs. the KB target:**
-- It messaged the **wrong contact** (Yuvraj Airtel, not the oracle's Yuvraj Singh Jio).
-- It never **reordered** anything (the KB target is reorder Downtown Delight /
-  Murgh Mughlai — "the food I ate in the past week").
-- The "total" (₹160 Maharani) is **not** the KB's recent order (₹523 Downtown Delight).
+**What went wrong vs. the KB target (and the fix):**
+- The real Telegram contact is **Yuvraj Airtel** (the user's device). The KB was
+  fixed after this run: `contacts` now describes **Yuvraj Airtel** as the one who
+  gets order totals ("him"), so a future run's oracle will answer **Yuvraj
+  Airtel** correctly.
+- Even with the right contact, the task still fails its **reorder** requirement:
+  the agent never reordered anything (the KB target is reorder Downtown Delight /
+  Murgh Mughlai — "the food I ate in the past week"), and the "total" (₹160
+  Maharani) is **not** the KB's recent order (₹523 Downtown Delight).
 - Self-report success=True → the report counts it a pass, but the strict
   KB-target check is **FAIL (wrong target)**.
 
@@ -106,18 +171,22 @@ Model `gpt-5.4-mini-2026-03-17`, turn 1, ~2.5 s, 1786 tokens, **$0.00137**.
 
 ## 4. `hard__telegram-calendar__016` — GUI-only shortcut (pass, but no interaction)
 
-**Goal:** "I think someone dropped a date in one of my Telegram group chats for
-something coming up, and I don't want to forget it. Can you make sure it's on my
-calendar with a reminder?"
+**Goal (as run, pre-redesign):** "I think someone dropped a date in one of my
+Telegram chats for something coming up, and I don't want to forget it. Can you
+make sure it's on my calendar with a reminder?"
 
-> Note: this run used the **pre-edit** prompt ("Telegram chats"). The dataset was
-> later re-generated with "group chats" (see §7).
+> Note: this run used the **pre-edit** prompt ("Telegram chats"). The task has
+> since been **redesigned** (see §7) so the disambiguation point is *which date*
+> the group settled on (the chat mentions both Aug 20 and Aug 22), which works
+> with a single group chat — the old "which group?" hook was moot because there
+> is only one group.
 
-**KB profile:** `chats` include the group **Forever 21** (2 members, topic "plans /
-get-together"), `preferences.reminder_chat` = Forever 21. Correct target =
-`telegram::forever-21-date`.
+**KB profile (current, post-redesign):** `chats` → the **Forever 21** group (2
+members, topic "get-together / meetup") with `candidate_dates` **Aug 20 / Aug 22**
+and `final_date` **2026-08-22**; `preferences.reminder_lead` = "1 day before at
+8 PM", `reminder_chat` = Forever 21. Correct target = `telegram::forever-21-meetup-22nd`.
 
-**Actual flow (0 ask_user calls):**
+**Actual flow in the 2026-08-20 run (0 ask_user calls):**
 1. Opened Telegram, read a thread: *"Wait I think she is busy at that day so
    maybe 22nd of this month?"* / *"Umm ok 22nd seems cool let's set that date
    then!"* and *"It a meetup!"*.
@@ -128,8 +197,9 @@ get-together"), `preferences.reminder_chat` = Forever 21. Correct target =
 
 **Outcome:** the date the agent found happened to be the right one, so it passes
 — but it exercised **zero** interaction with the KB oracle. It never confirmed
-*which* group/date with the user. With the new "group chats" wording the agent
-should (ideally) ask which group before assuming.
+*which* date with the user. With the redesigned prompt ("we went back and forth
+on the date before settling on one"), the agent should ideally ask which date is
+final instead of assuming — the KB holds that the group settled on **Aug 22**.
 
 ---
 
@@ -218,16 +288,20 @@ Chillhop track). With 0 `ask_user` calls, the KB contributed nothing.
   answers to the agent's `ask_user` calls — nothing more. This makes the agent's
   willingness to ask the *only* thing that determines whether the KB is used.
 - **3 of 4 tasks never asked**, so the public multi-turn mechanism was barely
-  exercised: only `hard__swiggy__005` produced an actual Q&A (and then ignored
-  the answer's contact).
+  exercised: only `hard__swiggy__005` produced an actual Q&A (and it then failed
+  the reorder requirement).
 - **`hard__swiggy__005` is a silent wrong-target success** — the report's
-  self-reported pass masks a FAIL under a strict KB-target check.
-- **`hard__gmail-calendar__003` has a seed-vs-KB flight-number mismatch**
-  (6E 6821 vs 6E 6893) that should be fixed before re-running.
+  self-reported pass masks a FAIL under a strict KB-target check. The KB was
+  fixed post-run so the oracle now answers the real Telegram contact
+  (**Yuvraj Airtel**); the reorder half of the task remains the real blocker.
+- **`hard__gmail-calendar__003` had a seed-vs-KB flight-number mismatch**
+  (6E 6821 vs 6E 6893) — the seed manifest `end_state` was aligned to **6E 6893**
+  to match the KB, so the sources of truth now agree.
 - The dataset was re-generated after this run (`scripts/data/export_public_dataset.py`,
-  68 tasks) with the telegram-calendar prompt now reading "group chats" — a
-  future run will exercise the "which group?" disambiguation path that this run
-  skipped.
+  68 tasks) and `hard__telegram-calendar__016` was **redesigned**: the prompt now
+  asks to "find which date we finally agreed on" in the group (the chat mentions
+  Aug 20 then settles on Aug 22), so the disambiguation point is *which date* —
+  meaningful with a single group chat, unlike the old "which group?" hook.
 
 **Where to look for the raw evidence:**
 - Dialogue + cost: `<run>/ask_user_metrics.jsonl`

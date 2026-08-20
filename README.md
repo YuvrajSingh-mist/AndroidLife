@@ -77,65 +77,21 @@ HF_TOKEN=hf_...            # only needed for pushing dataset exports to Hugging 
 
 > **Note:** The `ask_user` simulated user (`--ask-user-model`, default `gpt-5.4-mini`) only supports **OpenAI-hosted models** — the `ask_user` tool calls the OpenAI API directly, and its per-1M-token cost table covers OpenAI models. It is a separate service from the agent's LLM (`--model`), which can be any model your LLM host (e.g. OpenRouter) serves.
 
-## Tracing (Phoenix)
+## Tracing (Phoenix) & cost tracking
 
-[Arize Phoenix](https://github.com/Arize-ai/phoenix) captures every LLM call, tool execution, and agent step as OpenTelemetry traces — essential for debugging runs, comparing model behavior, and auditing token usage. The `mobilerun` SDK auto-instruments traces when it detects a Phoenix server running locally.
-
-### Start the Phoenix server
-
-Phoenix DBs are **per-day**: each day's run writes into its own SQLite DB at
-`assets/db/dayN/phoenix.db` (project `dailybench-dayN`). Point the server at the day
-you're running:
+[Arize Phoenix](https://github.com/Arize-ai/phoenix) captures every LLM call, tool execution, and agent step as OpenTelemetry traces. It's **per-day**: each day's run writes into `assets/db/dayN/phoenix.db` (project `dailybench-dayN`). Start the server before any run:
 
 ```bash
-uv run python scripts/run/start_phoenix.py --day 4   # helper: creates assets/db/day4/phoenix.db, project dailybench-day4
+uv run python scripts/run/start_phoenix.py --day 4   # helper -> assets/db/day4/phoenix.db, project dailybench-day4
 ```
 
-or, equivalently (raw command, for custom ports/hosts):
+The dashboard is at http://localhost:6006. The harness auto-targets the day's project and fails fast if tracing is ON but the collector is unreachable (`--no-tracing` deliberately skips capture). OpenRouter slug spans show **$0.00** until you register real pricing once:
 
 ```bash
-PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/day1/phoenix.db" \
-PHOENIX_PROJECT_NAME=dailybench-day1 \
-uv run phoenix serve --port 6006
+uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash   # or --all
 ```
 
-This must be running **before** you start any benchmark run. The server's web UI will be at [http://localhost:6006](http://localhost:6006).
-
-> **Note:** `run_day.py --day N` auto-targets the `dailybench-dayN` project, so a day's
-traces land in that day's own project + DB. Query a day's spans directly with `sqlite3`
-against `assets/db/dayN/phoenix.db`, or use the Phoenix UI to explore span trees, token
-counts, and latency.
->
-> **Guard (added 2026-08-13):** `run_day.py` and the per-task runner now **fail fast
-> when tracing is ON but the Phoenix collector isn't reachable** — a silent miss like
-> day-4 (2026-08-13, no `day4/phoenix.db` because `phoenix serve` was never started)
-> can't happen again. Pass `--no-tracing` only to deliberately skip trace capture.
-
-### How traces flow
-
-1. `phoenix serve` starts a gRPC (port 4317) and HTTP (port 6006/v1/traces) collector
-2. `dailybench_runner.py` / `dailybench_tasks.py` set `PHOENIX_HOST=localhost` and `PHOENIX_PORT=4317` automatically when they detect the server — no `--tracing` flag needed
-3. The `mobilerun` SDK sends every step (LLM chat, tool call, app launch, etc.) as spans to Phoenix
-4. View the full trace tree at [http://localhost:6006](http://localhost:6006)
-
-### Cost tracking (OpenRouter pricing)
-
-Phoenix prices LLM spans by matching `llm.model_name` against a built-in model catalog (OpenAI/Anthropic/Gemini/…). OpenRouter slugs like `qwen/qwen3.6-plus` aren't in that catalog, so their cost shows as **$0.00** even though token counts are recorded. Register real OpenRouter pricing so new spans get costed:
-
-```bash
-uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash
-```
-
-This fetches live per-token prices from OpenRouter's model API and upserts them into the live per-day DB (`assets/db/dayN/phoenix.db`; override with `--db`) as user-defined models; Phoenix's cost daemon picks them up within ~5 seconds. Options:
-
-- `--all` — register every model in OpenRouter's catalog
-- `--model A --model B` — register specific slugs (repeatable)
-- `--prompt-price-per-m 0.15 --completion-price-per-m 0.60` — set prices manually (USD per 1M tokens) without calling the API
-
-Existing spans are not retroactively repriced — run the script once, and new spans for those models carry real cost.
-
-
-The main tables are `traces`, `spans`, `projects`, and `span_annotations`. See [docs/advanced-features.md](docs/advanced-features.md) for more tracing configuration.
+Full detail (raw `phoenix serve` command, custom ports, trajectory recording, pricing options) is in [docs/advanced-features.md](docs/advanced-features.md).
 
 ## MobileWorld-style batch metrics
 
@@ -152,25 +108,37 @@ applies between tasks (`dailybench_tasks.py --cooldown-seconds`). The report sub
 elapsed time is the **TRUE agent running time** (set `0` to report raw per-run elapsed).
 Pass it only when the batch was run with the same non-default value.
 
-This writes `report.json` + `report.md` in the current directory. Interaction (ASK USER) tasks are identified via the ask_user_facts sidecar for the runs' source: `--source tasks.md` (default) selects `benchmarks/dailyBench-600/ask_user_facts_730.json`, `--source public.md` selects `benchmarks/dailyBench-600/ask_user_facts.json` (overridable with `--ask-user-facts`). Each run's `meta.json` records its `task_id` (batch runner passes `--task-id`), and `run_metrics.json` records `ask_user_call_count`. See [docs/leaderboard-format.md](docs/leaderboard-format.md).
+This writes `report.json` + `report.md` in the current directory — pass `--out`/`--out-md`
+to place them elsewhere. Interaction (ASK USER) tasks are identified via the ask_user_facts
+sidecar for the runs' source: `--source tasks.md` (default) selects
+`benchmarks/dailyBench-600/ask_user_facts_730.json`, `--source public.md` selects
+`benchmarks/dailyBench-600/ask_user_facts.json` (overridable with `--ask-user-facts`).
+Each run's `meta.json` records its `task_id` (batch runner passes `--task-id`), and
+`run_metrics.json` records `ask_user_call_count`. See
+[docs/leaderboard-format.md](docs/leaderboard-format.md).
+
+The repo's own run metrics live in `reports/metrics/` (per-day files, a `public/`
+subfolder for the public sample, and `hallucination/{full-bench,public}/` for the
+hallucination-control evals). To re-run the DeepEval hallucination judge over a set of
+control runs (see [docs/evaluation-policy.md](docs/evaluation-policy.md)):
+
+```bash
+uv run scripts/eval/eval_hallucination_controls.py --runs 'assets/runs/<batch>/dayN/*' --sub full-bench
+# --sub public routes output to reports/metrics/hallucination/public/ instead of full-bench/
+```
 
 ## Quick start
 
+Point the harness at your phone and a model. Easiest is OpenRouter (no model server to run):
+
 ```bash
 cd /Users/yuvrajsingh9886/Desktop/DrainBench300
-export DAILYBENCH_SERIAL=172.24.2.66:5555
-export LLM_UPSTREAM=http://100.75.134.64:8081/v1  # mini2 over Tailscale; LAN IP drifts
-export MODEL='bartowski/Qwen_Qwen3-4B-Instruct-2507-GGUF:Q4_K_M'
+export DAILYBENCH_SERIAL=100.108.15.119:5555   # your phone's wireless ADB serial
+export LLM_UPSTREAM=https://openrouter.ai/api   # or your own OpenAI-compatible host, e.g. http://<host>:8081/v1
+export MODEL='qwen/qwen3.6-plus'
 ```
 
-Prefer a hosted model over running your own? Point `LLM_UPSTREAM`/`MODEL` at [OpenRouter](https://openrouter.ai) instead of a local host — no model server to manage:
-
-```bash
-export LLM_UPSTREAM=https://openrouter.ai/api
-export MODEL='qwen/qwen3.7-flash'
-```
-
-`qwen/qwen3.7-flash` is the default agent model (see `scripts/run/run_day.py`): it's cheap
+`qwen/qwen3.7-flash` is the repo's default agent model (see `scripts/run/run_day.py`): cheap
 ($0.03/$0.13 per 1M tokens), open-source, and XML-reliable for mobilerun's tool-calling
 protocol. Override per run with `--model` or `$MODEL`.
 
@@ -202,8 +170,8 @@ The device health check itself is pure SDK: [scripts/tools/device_health_check.p
 ### Known-good target (last verified working configuration)
 
 - phone: OnePlus `CPH2423`, Android `15`, SoC `MT6895`
-- model host: `mini2` at `http://100.75.134.64:8081/v1`
-- model: `bartowski/Qwen_Qwen3-4B-Instruct-2507-GGUF:Q4_K_M`
+- model host: OpenRouter (`https://openrouter.ai/api`) or a local OpenAI-compatible server
+- model: `qwen/qwen3.6-plus` (the public-sample run, 2026-08-20) — the repo default is `qwen/qwen3.7-flash` (see `scripts/run/run_day.py`)
 
 ## Wireless ADB
 
@@ -286,8 +254,10 @@ Full flag reference for both entry points, including the app-reset fairness beha
 The benchmark is a **28-day schedule of 530 runnable tasks** (530 dataset rows: 216 easy / 242 medium / 72 hard, of which 36 ASK USER + 36 DETERMINISTIC hard; 31 apps, ~10-12 apps/day (mean ~10.8), max 1302 pts). It ships as `tasks_530.md` + `DailyBench_530_v1.json`/`.jsonl` (the dataset the runner reads by default). The corpus is **exactly 530 tasks** — the Google Workspace task sets (Docs/Sheets/Slides/Meet), the Weather app, and 6 newly-installed real apps (Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping) replaced repetitive tasks rather than adding to the count (see `docs/benchmark-spec.md` → "Benchmark at a glance" for the full stats).
 
 - **`benchmarks/dailyBench-600/tasks_530.md`** — the source of truth. Edit it and regenerate the JSON/JSONL with `scripts/data/export_530_dataset.py`; each task line carries its `task_id` in an HTML comment so ids survive edits.
-- **`benchmarks/dailyBench-600/public.md`** — the public 50-task preview (same structure, a curated sample you can publish/share).
+- **`benchmarks/dailyBench-600/public.md`** — the public sample (same structure, a curated sample you can publish/share): **68 tasks** (61 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device). Regenerate `DailyBench_public_v2.json`/`.jsonl` with `scripts/data/export_public_dataset.py`.
 - **`config/user.yaml`** — supplies the persona values for every `[placeholder]` automatically (override per run with `--var`, per day with `--vars-file`).
+
+Hard **ASK USER - MULTI** tasks are driven by a knowledge-base profile (the simulated user is an honest oracle over the profile with rolling memory — see `benchmarks/dailyBench-600/multiturn_kb_530.json`, `multiturn_kb_public.json`, and [docs/multiturn-public-flow.md](docs/multiturn-public-flow.md)). Pass `--ask-user-kb <path>` to enable it.
 
 ### Prep the dataset (from scratch)
 
@@ -346,6 +316,31 @@ uv run dailybench_tasks.py \
 
 Every run lands under `assets/runs/<batch>/day<N>/...` automatically (see [Run artifacts](#run-artifacts)), and every day's fabricated-data manifests are generated under `assets/seeds/manifests/day_<N>/` (per-task `manifest.json` + `manifest_index.json` + `day_<N>_fabricated_data.jsonl`), with the real seed files (photos/pdf/notes) materialised flat under `assets/seeds/day_<N>/`, so the benchmark is fully inspectable and extensible day by day — see [docs/benchmark-spec.md](docs/benchmark-spec.md).
 
+### Run the public sample
+
+The public sample (`benchmarks/dailyBench-600/DailyBench_public_v2.json`, 68 tasks) runs the same way as a full day — select the dataset explicitly and pass the multi-turn KB so the ASK USER - MULTI tasks get their oracle:
+
+```bash
+uv run dailybench_tasks.py \
+  --serial "$DAILYBENCH_SERIAL" \
+  --llm-upstream-base "$LLM_UPSTREAM" \
+  --model "$MODEL" \
+  --run-root assets/runs/public \
+  --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
+  --source public.md \
+  --ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json \
+  --dry-run          # inspect the exact per-task commands first
+```
+
+Public runs land under `assets/runs/public/<date-time>/dayN/...`. Report them with `--source public.md` (and write into `reports/metrics/public/`):
+
+```bash
+uv run scripts/eval/dailybench_report.py --runs 'assets/runs/public/<date-time>/*' \
+  --source public.md \
+  --out reports/metrics/public/public-<date-time>.json \
+  --out-md reports/metrics/public/public-<date-time>.md
+```
+
 ## Run artifacts
 
 Run folders are grouped under `assets/runs/<date-time>/...` automatically, and contain phone/model metrics, logs, and the task's final result. Full contents and metric definitions: [docs/run-artifacts.md](docs/run-artifacts.md).
@@ -360,13 +355,15 @@ Run folders are grouped under `assets/runs/<date-time>/...` automatically, and c
 - [Makefile](Makefile): common test commands
 - [scripts/tools/openai_proxy_logger.py](scripts/tools/openai_proxy_logger.py): per-run proxy/logger
 - [scripts/data/export_530_dataset.py](scripts/data/export_530_dataset.py): tasks_530.md -> DailyBench_530_v1.json/.jsonl exporter
+- [scripts/data/export_public_dataset.py](scripts/data/export_public_dataset.py): public.md -> DailyBench_public_v2.json/.jsonl exporter
+- [scripts/run/run_day.py](scripts/run/run_day.py): run a whole schedule day (default agent model lives here)
 - [scripts/run/smoke_test.sh](scripts/run/smoke_test.sh): pre-flight check for the LLM server, wired/wireless ADB + mobilerun, and one real end-to-end task
 - [scripts/tools/device_health_check.py](scripts/tools/device_health_check.py): SDK-only device health check used by `smoke_test.sh`
-- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the source of truth for the 530-task corpus, `public.md` = public 50-task preview), exported datasets (`.json`/`.jsonl`), and per-day vars (`tasks_vars/`)
+- [benchmarks/dailyBench-600](benchmarks/dailyBench-600): the 28-day schedule (`tasks_530.md` = the source of truth for the 530-task corpus, `public.md` = public 68-task sample), exported datasets (`.json`/`.jsonl`), per-day vars (`tasks_vars/`), the ask-user facts sidecars, `multiturn_kb_530.json`/`multiturn_kb_public.json` (multi-turn KB profiles), and `hallucination_controls.json`
 - [config](config): the user config — `user_config.example` is the committed, documented persona template; copy to `user.yaml` (gitignored) and edit
 - [assets](assets): everything generated — `assets/runs/` (run artifacts), `assets/seeds/` (per-day real seed files + generated manifests with on-device paths), `assets/db/dayN/phoenix.db` (per-day Phoenix DBs)
 - [docs](docs): CLI reference, advanced features, run artifacts, methodology, and task authoring notes
-- [reports](reports): benchmark reports and notes
+- [reports](reports): benchmark reports and notes — `reports/metrics/` (per-day JSON/MD, `public/` subfolder, `hallucination/{full-bench,public}/` evals)
 - [tests](tests): pytest coverage for CLI, parsing, helpers, and process wiring
 
 ## Testing
@@ -383,9 +380,11 @@ make test-cli
 ## Further documentation
 
 - [docs/cli-reference.md](docs/cli-reference.md) — full flag tables, app-reset fairness, repeats caveat, step-budget policy
-- [docs/advanced-features.md](docs/advanced-features.md) — starting the mini2 model server, tracing, trajectory recording
+- [docs/advanced-features.md](docs/advanced-features.md) — model server, OpenRouter, tracing, trajectory recording, custom tools
+- [docs/multiturn-public-flow.md](docs/multiturn-public-flow.md) — annotated multi-turn KB dialogues + how the oracle/rolling memory works
 - [docs/run-artifacts.md](docs/run-artifacts.md) — run folder contents and metric definitions
-- [docs/benchmark-spec.md](docs/benchmark-spec.md), [docs/evaluation-policy.md](docs/evaluation-policy.md), [docs/task-authoring.md](docs/task-authoring.md), [docs/leaderboard-format.md](docs/leaderboard-format.md)
+- [docs/benchmark-spec.md](docs/benchmark-spec.md), [docs/evaluation-policy.md](docs/evaluation-policy.md), [docs/task-authoring.md](docs/task-authoring.md), [docs/leaderboard-format.md](docs/leaderboard-format.md), [docs/fabricated-test-data.md](docs/fabricated-test-data.md)
 - [reports/day1-run-2026-08-09.md](reports/day1-run-2026-08-09.md) — Day-1 run report
 - [reports/day-2.md](reports/day-2.md) — Day-2 run report
-- [reports/metrics/](reports/metrics/) — per-day metric JSON/MD and hallucination-control evals
+- [reports/public/public-2026-08-20-003030.md](reports/public/public-2026-08-20-003030.md) — public-sample day-style report (61-task run)
+- [reports/metrics/](reports/metrics/) — per-day metric JSON/MD, `public/` metrics, and `hallucination/{full-bench,public}/` evals

@@ -909,7 +909,7 @@ DAY6_TASKS: dict[str, dict] = {
             {"type": "gmail_flight_email", "location": "Gmail (real)", "value": "A flight-confirmation email with a departure time (operator ensures one exists in the inbox).", "status": "needs_ui"},
             {"type": "calendar_event", "location": "Calendar (creation)", "value": "Agent sets a reminder 3 hours before departure.", "status": "creation"},
         ],
-        "end_state": "A calendar reminder is set 3h before the next trip's departure (IndiGo 6E 6821 BBI→DEL); agent replies with only the flight number and the reminder time.",
+        "end_state": "A calendar reminder is set 3h before the next trip's departure (IndiGo 6E 6893 BBI→DEL); agent replies with only the flight number and the reminder time.",
     },
     "medium__youtube__002": {
         "vars": {"contact": "{contact}"},

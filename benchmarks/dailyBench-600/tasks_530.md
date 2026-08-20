@@ -508,7 +508,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **16. [Telegram+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I think someone dropped a date in one of my Telegram chats for something coming up, and I don't want to forget it. Can you make sure it's on my calendar with a reminder? <!--hard__telegram-calendar__016-->
+- My friends and I have been planning a get-together in our Telegram group and went back and forth on the date before settling on one. Can you find which date we finally agreed on and put it on my calendar with a reminder? <!--hard__telegram-calendar__016-->
 
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
 

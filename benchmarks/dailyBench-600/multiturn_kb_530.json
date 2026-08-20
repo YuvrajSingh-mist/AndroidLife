@@ -187,8 +187,8 @@
         }
       ],
       "preferences": {
-        "recipient": "Yuvraj Singh Jio",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him",
+        "recipient": "Yuvraj Airtel",
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram)",
         "favourite_restaurants": [
           "Downtown Delight",
           "Jugaad Jn",
@@ -203,8 +203,8 @@
       "contacts": {
         "Maa": "family",
         "Dad": "family",
-        "Yuvraj Singh Jio": "the friend I share order confirmations with (gets the order totals)",
-        "Yuvraj Airtel": "family / alternate number"
+        "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
+        "Yuvraj Singh Jio": "family / alternate number"
       }
     }
   },
@@ -458,39 +458,24 @@
     }
   },
   "hard__telegram-calendar__016": {
-    "correct_target": "telegram::forever-21-date",
+    "correct_target": "telegram::forever-21-meetup-22nd",
     "profile": {
       "chats": [
         {
           "name": "Forever 21",
           "type": "group",
           "members": 2,
-          "recent_date_mentioned": "2026-08-20",
-          "topic": "plans / get-together"
-        },
-        {
-          "name": "Sumeet Crompton Fan",
-          "type": "pm",
-          "recent_date_mentioned": null,
-          "topic": "general"
-        },
-        {
-          "name": "New Flat",
-          "type": "pm",
-          "recent_date_mentioned": "2026-08-18",
-          "topic": "flat matters"
+          "topic": "get-together / meetup",
+          "candidate_dates": ["2026-08-20", "2026-08-22"],
+          "final_date": "2026-08-22",
+          "event_title": "Meetup",
+          "agreement_note": "group first suggested Aug 20 ('Let's gather on 20th August then this time?') but then settled on Aug 22 ('22nd of this month' -> 'Umm ok 22nd seems cool let's set that date then!') for the meetup"
         }
       ],
       "preferences": {
+        "reminder_lead": "1 day before at 8 PM",
         "reminder_chat": "Forever 21",
-        "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886",
-        "selected_contacts": [
-          "Maa",
-          "Dad",
-          "Yuvraj Singh Jio",
-          "Yuvraj Airtel"
-        ],
-        "group_note": "real Telegram group 'Forever 21' (2 members) confirmed on device"
+        "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886"
       }
     }
   },
