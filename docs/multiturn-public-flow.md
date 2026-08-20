@@ -192,18 +192,23 @@ make sure it's on my calendar with a reminder?"
 > with a single group chat — the old "which group?" hook was moot because there
 > is only one group.
 
-**KB profile (current, post-redesign):** `group_chat` → the **Forever 21** group
-(2 members, topic "get-together / meetup") with the raw `messages` (20th floated,
-moved to 22nd) — the on-device thread — plus `my_memory` holding the settled
-**date (Sat 22nd)**, **time (7 PM)**, **venue (The Terrace, Patia)** and
+**KB profile (current, post-redesign, 2026-08-21):** `group_chat` → the
+**Forever 21** group (2 members, topic "get-together / meetup") with the raw
+`messages` **mirroring the on-device thread** (20th floated → 22nd suggested →
+*"22nd could work for me too, let me confirm once she's free"* — i.e. the date
+is **left unresolved in the chat**), plus `my_memory` holding the privately
+settled **date (Sat 22nd)**, **time (7 PM)**, **venue (The Terrace, Patia)** and
 **reminder** ("a day before at 8 PM") as separate, natural facts, and
 `preferences` (`account`, `event_name` "Meetup", `reminder_chat`). There is **no
 `final_date`/`final_time`/`venue`/`event_title`/`agreement_note` answer-key blob**
 (removed 2026-08-21 so the KB doesn't hand over the whole plan in one field —
-the oracle answers each fact only when asked). Correct target =
-`telegram::forever-21-meetup-sat-7pm`.
+the oracle answers each fact only when asked). The on-device settling message
+*"Umm ok 22nd seems cool let's set that date then!"* was **edited in the real
+Telegram group to leave the plan open**, so reading the app no longer reveals the
+answer — the agent must ask the user for each detail (genuinely multi-turn).
+Correct target = `telegram::forever-21-meetup-sat-7pm`.
 
-**Actual flow in the 2026-08-20 run (0 ask_user calls):**
+**Actual flow in the 2026-08-20 run (0 ask_user calls, pre-fix):**
 1. Opened Telegram, read a thread: *"Wait I think she is busy at that day so
    maybe 22nd of this month?"* / *"Umm ok 22nd seems cool let's set that date
    then!"* and *"It a meetup!"*.
@@ -212,11 +217,15 @@ the oracle answers each fact only when asked). Correct target =
 3. Opened Calendar, created **"Meetup"** on **Sat, Aug 22, 2026**, saved it.
 4. `complete(success=true)`.
 
-**Outcome:** the date the agent found happened to be the right one, so it passes
-— but it exercised **zero** interaction with the KB oracle. It never confirmed
-*which* date with the user. With the redesigned prompt ("we went back and forth
-on the date before settling on one"), the agent should ideally ask which date is
-final instead of assuming — the KB holds that the group settled on **Aug 22**.
+**Outcome (pre-fix):** the date the agent found happened to be the right one, so
+it passed — but it exercised **zero** interaction with the KB oracle. It never
+confirmed *which* date with the user. **Fixed 2026-08-21:** the on-device group
+chat no longer settles the date (edited to *"22nd could work for me too, let me
+confirm once she's free"*), and the prompt now explicitly says the thread
+"never actually locked anything down" and to "confirm each detail with me one at
+a time". The KB `my_memory` still holds the settled **Sat 22nd / 7 PM / The
+Terrace, Patia / reminder a day before at 8 PM**, so a correct agent must ask for
+the date, time, venue and reminder separately before creating the event.
 
 ---
 

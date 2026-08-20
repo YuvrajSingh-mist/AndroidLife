@@ -691,7 +691,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 **3. [Telegram+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it? <!--hard__telegram-calendar__016-->
+- I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it? <!--hard__telegram-calendar__016-->
 
 **4. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->

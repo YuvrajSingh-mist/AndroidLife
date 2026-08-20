@@ -149,7 +149,7 @@ PROFILES: dict[str, dict] = {
             "Obsidian: delete run notes (e.g. Birthday Reminders)",
             "Photos/Gallery: delete run albums (Invoices, Trip 2026); unstar the 2 starred photos",
             "YT Music: delete the 'Chill Vibes' playlist",
-            "Telegram: unmute the 'Forever 21' group",
+            "Telegram: unmute the 'Forever 21' group; keep the meetup thread UNRESOLVED (edited 2026-08-21: last message is \"22nd could work for me too, let me confirm once she's free\" — no settled date/time/venue in the chat, so hard__telegram-calendar__016 forces ask_user; do NOT re-add a settling message)",
             "Digital Wellbeing: remove the 30-min app timers the agent set",
             "Camera: delete the run-recorded 'Camera Video' clip if present",
             "Drive: delete 'Copy of SPORTS_VIDEO_DATA' leftovers; re-download the 5 uploaded files, then delete that Drive folder",

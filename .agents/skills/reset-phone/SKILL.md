@@ -59,7 +59,7 @@ agent touched them (each is a quick UI action, ~5–10 min total).
   task 48); unstar the 2 starred photos (task 48); don't restore photos the agent
   deleted (GIFs/screenshot from tasks 37/36) unless you want them back.
 - **YT Music** — delete the "Chill Vibes" playlist (task 39).
-- **Telegram** — unmute the "Forever 21" group (task 12).
+- **Telegram** — unmute the "Forever 21" group (task 12); the meetup thread must stay **unresolved** (last message edited 2026-08-21 to *"22nd could work for me too, let me confirm once she's free"* so `hard__telegram-calendar__016` forces a multi-turn ask — don't re-add a settling message).
 - **Digital Wellbeing** — remove the 30-min app timers the agent set
   (Gallery, Messages, YT Music, WhatsApp, Chrome; task 45).
 - **Camera** — delete the run-recorded "Camera Video" clip if it shows up

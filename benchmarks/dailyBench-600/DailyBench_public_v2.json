@@ -179,8 +179,8 @@
       "is_ask_user": true,
       "task_number_within_app": 16,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
-      "prompt_template": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, even whether I asked for a reminder. I think the group thread has some of it but I don't trust my memory. Can you check our group, then confirm each detail with me — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
+      "prompt_text": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
+      "prompt_template": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -359,7 +359,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "absent-entity",
+      "hallucination_control_absence": "No calendar event titled 'Team Sync Weekly' exists."
     },
     {
       "task_id": "medium__gallery__007",
@@ -444,7 +448,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "absent-entity",
+      "hallucination_control_absence": "No 'Old Scans' folder exists in Files."
     },
     {
       "task_id": "medium__files-pdf__001",
@@ -1275,7 +1283,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "absent-entity",
+      "hallucination_control_absence": "No Telegram group named 'Old College Group' exists."
     },
     {
       "task_id": "easy__contacts__008",
@@ -1303,7 +1315,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "absent-entity",
+      "hallucination_control_absence": "No contact named 'Rahul Mehta' exists to favourite."
     },
     {
       "task_id": "medium__google-photos__012",
@@ -1756,7 +1772,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "absent-entity",
+      "hallucination_control_absence": "No folder named 'Old Projects' exists in the Obsidian vault."
     },
     {
       "task_id": "medium__notes__004",
@@ -1784,7 +1804,11 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "middle-failure",
+      "hallucination_control_absence": "No note titled 'Old Draft' exists in Notes. The agent opens Notes and lists the notes present + their recency (real work) before discovering no 'Old Draft' note exists to delete."
     },
     {
       "task_id": "easy__msn-news__002",
@@ -1933,7 +1957,11 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Files+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "hallucination_control": true,
+      "data_absent": true,
+      "hallucination_control_type": "end-failure",
+      "hallucination_control_absence": "No storage-limit note exists in Notes, so the under-limit decision (delete originals only if the archive is under the limit) cannot be made. Compressing the files + noting archive size are real/doable; only the limit note is absent."
     },
     {
       "task_id": "easy__prime-video__002",
