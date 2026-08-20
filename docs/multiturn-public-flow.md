@@ -57,21 +57,27 @@ the expected outcome.
 
 ---
 
-## 2. The five tasks at a glance
+## 2. The four tasks at a glance
 
 | task_id | goal (abridged) | correct target (KB) | ask_user calls | self-report | verdict |
 |---|---|---|---|---|---|
 | `hard__swiggy__005` | "craving the food I ate in the past week — get me that again; also message him on Telegram the order total" | `swiggy::reorder-downtown-delight-murgh-mughlai` | **1** | success=True | ⚠️ **wrong target** (messaged right contact, but never reordered) |
-| `hard__zomato__001` | "ordered something off Zomato this week — want it again; message him the order total" | `zomato::reorder-downtown-delight-murgh-dum-biryani` | — | — | 🆕 (added 2026-08-20, real on-device orders) |
 | `hard__telegram-calendar__016` | "get-together planned in our Telegram group; lost track of date/time/venue — put it on the calendar with a reminder" | `telegram::forever-21-meetup-sat-7pm` | **0** | success=True | ✅ pass (GUI-only shortcut) — now genuinely multi-turn |
 | `hard__gmail-calendar__003` | "find my flight confirmation for the next trip → calendar reminder 3h before" | `gmail-calendar::bbi-del-reminder` | **0** | success=False | ❌ fail (wrong flight, never asked) |
 | `hard__music-obsidian__077` | "make music stop by itself at my bedtime in YT Music" | `youtube-music::sleep-timer-1030pm` | **0** | success=False | ❌ fail (step-cap) |
 
-Only **1 of 4** ever called `ask_user` (Zomato hasn't been run yet). The
-`telegram-calendar` task was redesigned on 2026-08-20 into a **genuinely
-multi-turn** query: the KB now holds the date, the time, the venue, and a
-reminder preference — so the agent must ask *several* questions (which date,
-what time, where, what reminder), not just one.
+Only **1 of 4** ever called `ask_user`. The `telegram-calendar` task was
+redesigned on 2026-08-20 into a **genuinely multi-turn** query: the KB now holds
+the date, the time, the venue, and a reminder preference — so the agent must ask
+*several* questions (which date, what time, where, what reminder), not just one.
+
+On 2026-08-20 `hard__swiggy__005`'s KB was also **merged to cover both food
+apps**: the profile now carries a `zomato` section (real on-device Zomato order
+history) alongside the existing Swiggy orders. Because the same task spans two
+platforms, the agent must **ask which platform's order** the user means before it
+can reorder — a genuine multi-turn disambiguation, not a separate Zomato task.
+`last_week_craving` was removed so the oracle infers the recent order from the
+dated orders list rather than being handed the answer.
 
 ---
 
@@ -303,14 +309,16 @@ Chillhop track). With 0 `ask_user` calls, the KB contributed nothing.
   (6E 6821 vs 6E 6893) — the seed manifest `end_state` was aligned to **6E 6893**
   to match the KB, so the sources of truth now agree.
 - The dataset was re-generated after this run (`scripts/data/export_public_dataset.py`,
-  now 69 tasks) and `hard__telegram-calendar__016` was **redesigned** into a
+  back to 68 tasks) and `hard__telegram-calendar__016` was **redesigned** into a
   **genuinely multi-turn** task: the KB holds the agreed date, time, venue, and a
   reminder preference, and the prompt asks the agent to work out the whole plan
   it lost track of — so it must ask several clarifying questions, not one.
-- **`hard__zomato__001` was added** (2026-08-20) as a separate app alongside
-  Swiggy, with a KB profile grounded in the **real on-device Zomato order
-  history** (Downtown Delight Murgh Dum Biryani ₹367.23 on Aug 20, etc.) — see
-  §8.
+- **`hard__swiggy__005`'s KB now spans both Swiggy + Zomato** (2026-08-20): the
+  profile gained a `zomato` section grounded in the **real on-device Zomato order
+  history** (Downtown Delight Murgh Dum Biryani ₹367.23 on Aug 20, + 9 more), so
+  the agent must ask **which platform's order** to reorder. `last_week_craving`
+  was removed so the oracle infers from the dated orders lists. No separate
+  Zomato task — the platforms live in one KB profile.
 
 **Where to look for the raw evidence:**
 - Dialogue + cost: `<run>/ask_user_metrics.jsonl`

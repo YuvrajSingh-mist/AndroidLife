@@ -66,10 +66,13 @@ that fabricates a plausible-sounding answer.
 > **unrelated multi-intent composites** (e.g. "check my meetings, then message
 > [contact] I'll be late") — see the cross-app note below. On 2026-08-12 a
 > **second diversification pass** wove 6 newly-installed real apps into the
-> corpus as **replacements** (again, dist unchanged): Swiggy (food delivery —
-> the installed app is Swiggy, not Zomato), Prime Video (OTT), MakeMyTrip
+> corpus as **replacements** (again, dist unchanged): Swiggy (food delivery),
+> Prime Video (OTT), MakeMyTrip
 > (travel), BookMyShow (movie tickets), MSN News, and Amazon Shopping (shopping).
-> 7 repetitive easy Chrome/Search/YouTube/Files/Photos tasks were swapped for one
+> Zomato was installed later (2026-08-20) and its **real order history was merged
+> into the swiggy multi-turn KB** (the `hard__swiggy__005` profile now carries a
+> `zomato` section) so the agent must ask *which platform* — no separate Zomato
+> task. 7 repetitive easy Chrome/Search/YouTube/Files/Photos tasks were swapped for one
 > task each on the new apps, keeping every day at ≤11 apps, 216/242/72, 36/36, and
 > 61 HC. (Adobe Scan was briefly added for PDF open/scan but removed on request —
 > it's a mostly-human scanning app; instead the corpus keeps its PDF open+read

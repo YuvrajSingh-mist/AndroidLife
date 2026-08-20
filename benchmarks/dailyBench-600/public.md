@@ -68,11 +68,8 @@ aren't grouped or predictable by position.**
 **5. [Telegram+Calendar] — ASK USER - MULTI**
 - I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
 
-**4. [Swiggy+Telegram] — ASK USER - MULTI**
+**4. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
 - Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
-
-**6. [Zomato+Telegram] — ASK USER - MULTI**
-- I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__zomato__001-->
 
 **3. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->

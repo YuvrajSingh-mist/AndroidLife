@@ -693,13 +693,9 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
 
-**7. [Swiggy+Telegram] — ASK USER - MULTI**
+**7. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
-
-**8. [Zomato+Telegram] — ASK USER - MULTI**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__zomato__001-->
 
 **[BookMyShow]**
 - Easy (1pt): I'm free tonight and want to catch a movie nearby. Can you open BookMyShow and tell me which movies are playing at the nearest cinema today? <!--easy__bookmyshow__001-->

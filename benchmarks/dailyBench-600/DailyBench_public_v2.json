@@ -2,9 +2,9 @@
   "dataset_name": "DailyBench-Public",
   "dataset_version": "v2",
   "source_path": "benchmarks/dailyBench-600/public.md",
-  "task_count": 69,
+  "task_count": 68,
   "bucket_counts": {
-    "hard": 18,
+    "hard": 17,
     "medium": 25,
     "easy": 26
   },
@@ -601,7 +601,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 1,
-      "app": "Swiggy+Telegram",
+      "app": "Swiggy+Zomato+Telegram",
       "app_slug": "swiggy",
       "apps": [
         "Swiggy",
@@ -621,35 +621,7 @@
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
-      "cross_app_label": "Swiggy+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "hard__zomato__001",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 1,
-      "app": "Zomato+Telegram",
-      "app_slug": "zomato",
-      "apps": [
-        "Telegram"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": "ASK USER",
-      "interaction": "multi",
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": true,
-      "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying.",
-      "prompt_template": "I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying.",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": true,
-      "cross_app_label": "Zomato+Telegram",
+      "cross_app_label": "Swiggy+Zomato+Telegram",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {

@@ -129,7 +129,6 @@ BENCHMARK_APPS: dict[str, list[str]] = {
         "com.android.weather",
     ],
     "Swiggy": ["in.swiggy.android"],
-    "Zomato": ["com.application.zomato"],
     "Prime Video": ["com.amazon.avod.thirdpartyclient"],
     "MakeMyTrip": ["com.makemytrip"],
     "BookMyShow": ["com.bt.bms"],

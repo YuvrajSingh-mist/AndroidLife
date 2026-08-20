@@ -188,7 +188,6 @@
       ],
       "preferences": {
         "recipient": "Yuvraj Airtel",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him",
         "favourite_restaurants": [
           "Downtown Delight",
           "Jugaad Jn",
@@ -198,278 +197,255 @@
         "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
         "spice_preference": "medium",
         "typical_budget": "₹300-₹600 per order",
-        "last_week_craving": "the Downtown Delight order from this week (Aug 14) - Murgh Mughlai + Kushka Rice"
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram). I order on BOTH Swiggy and Zomato - if the agent asks which platform's order, answer from the right app's list."
       },
       "contacts": {
         "Maa": "family",
         "Dad": "family",
         "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
         "Yuvraj Singh Jio": "family / alternate number"
-      }
-    }
-  },
-  "hard__zomato__001": {
-    "correct_target": "zomato::reorder-downtown-delight-murgh-dum-biryani",
-    "profile": {
-      "account": {
-        "name": "Yuvraj",
-        "email": "rajceo2031@gmail.com",
-        "gold_member": true,
-        "gold_saved": "₹16,577",
-        "zomato_money": "₹0",
-        "addresses": [
+      },
+      "zomato": {
+        "account": {
+          "name": "Yuvraj",
+          "email": "rajceo2031@gmail.com",
+          "gold_member": true,
+          "gold_saved": "₹16,577",
+          "zomato_money": "₹0",
+          "addresses": [
+            {
+              "label": "Work",
+              "address": "K 504, IIIT Bhubaneswar, Gothapatna, Odisha, India",
+              "default": true
+            },
+            {
+              "label": "College",
+              "address": "IIIT Bhubaneswar Campus, Gothapatna"
+            }
+          ],
+          "payment_methods": [
+            "Bank (UPI)",
+            "Cash on Delivery"
+          ]
+        },
+        "orders": [
           {
-            "label": "Work",
-            "address": "K 504, IIIT Bhubaneswar, Gothapatna, Odisha, India",
-            "default": true
+            "service": "Zomato",
+            "restaurant": "Downtown Delight",
+            "location": "Kalinga Nagar, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Murgh Dum Biryani [650ml 2pc]",
+                "qty": 1
+              },
+              {
+                "name": "Egg",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹367.23",
+            "status": "delivered",
+            "delivered_on": "2026-08-20",
+            "delivered_time": "1:09 PM",
+            "recent": true,
+            "this_week": true,
+            "favourite": true
           },
           {
-            "label": "College",
-            "address": "IIIT Bhubaneswar Campus, Gothapatna"
+            "service": "Zomato",
+            "restaurant": "Badami Sweet & Restaurant",
+            "location": "Sector 72",
+            "items": [
+              {
+                "name": "Besan Dry Ladoo (250g)",
+                "qty": 1
+              },
+              {
+                "name": "White Rasbhari (250g)",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹422.04",
+            "status": "delivered",
+            "delivered_on": "2026-08-19",
+            "delivered_time": "6:07 PM",
+            "recent": true,
+            "this_week": true,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Big Cup Cafe",
+            "location": "Kalinga Nagar, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Steamed Rice",
+                "qty": 1
+              },
+              {
+                "name": "Chicken Tikka Masala",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹529.98",
+            "status": "delivered",
+            "delivered_on": "2026-08-13",
+            "delivered_time": "2:05 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Jugaad Jn.",
+            "location": "Bharatpur, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Papdi Chat",
+                "qty": 1
+              },
+              {
+                "name": "Sattu Kachori",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹264.67",
+            "status": "delivered",
+            "delivered_on": "2026-08-11",
+            "delivered_time": "7:43 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Downtown Delight",
+            "location": "Kalinga Nagar, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Kushka Rice",
+                "qty": 1
+              },
+              {
+                "name": "Murgh Changezi",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹468.87",
+            "status": "delivered",
+            "delivered_on": "2026-08-10",
+            "delivered_time": "2:29 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Downtown Delight",
+            "location": "Kalinga Nagar, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Murgh Dum Biryani [650ml 2pc]",
+                "qty": 1
+              },
+              {
+                "name": "Egg",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹367.23",
+            "status": "delivered",
+            "delivered_on": "2026-08-09",
+            "delivered_time": "2:12 PM",
+            "recent": false,
+            "favourite": true
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Burger King",
+            "location": "Patrapada, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Chicken Seekh Craver (10cm)",
+                "qty": 1
+              },
+              {
+                "name": "Spicy Chicken Craver (10cm)",
+                "qty": 1
+              },
+              {
+                "name": "Dark Chunk Chocolate Cookie (eggless)",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹372.48",
+            "status": "delivered",
+            "delivered_on": "2026-08-07",
+            "delivered_time": "4:03 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Asia Seven - Sizzling Chinese",
+            "location": "Patrapada, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Honey Chilli Potato",
+                "qty": 1
+              },
+              {
+                "name": "Exotic Veg Hot Garlic With Noodles/Rice",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹405.03",
+            "status": "delivered",
+            "delivered_on": "2026-08-04",
+            "delivered_time": "7:15 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Jugaad Jn.",
+            "location": "Bharatpur, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Papdi Chat",
+                "qty": 1
+              },
+              {
+                "name": "Chole Chawal",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹303.18",
+            "status": "payment_failed",
+            "delivered_on": "2026-08-04",
+            "delivered_time": "12:18 PM",
+            "recent": false,
+            "favourite": false
+          },
+          {
+            "service": "Zomato",
+            "restaurant": "Downtown Delight",
+            "location": "Kalinga Nagar, Bhubaneshwar",
+            "items": [
+              {
+                "name": "Kushka Rice",
+                "qty": 1
+              },
+              {
+                "name": "Murgh Hyderabadi",
+                "qty": 1
+              }
+            ],
+            "bill_total": "₹486.72",
+            "status": "delivered",
+            "delivered_on": "2026-08-03",
+            "delivered_time": "4:31 PM",
+            "recent": false,
+            "favourite": false
           }
-        ],
-        "payment_methods": [
-          "Bank (UPI)",
-          "Cash on Delivery"
         ]
-      },
-      "orders": [
-        {
-          "service": "Zomato",
-          "restaurant": "Downtown Delight",
-          "location": "Kalinga Nagar, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Murgh Dum Biryani [650ml 2pc]",
-              "qty": 1
-            },
-            {
-              "name": "Egg",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹367.23",
-          "status": "delivered",
-          "delivered_on": "2026-08-20",
-          "delivered_time": "1:09 PM",
-          "recent": true,
-          "this_week": true,
-          "favourite": true
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Badami Sweet & Restaurant",
-          "location": "Sector 72",
-          "items": [
-            {
-              "name": "Besan Dry Ladoo (250g)",
-              "qty": 1
-            },
-            {
-              "name": "White Rasbhari (250g)",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹422.04",
-          "status": "delivered",
-          "delivered_on": "2026-08-19",
-          "delivered_time": "6:07 PM",
-          "recent": true,
-          "this_week": true,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Big Cup Cafe",
-          "location": "Kalinga Nagar, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Steamed Rice",
-              "qty": 1
-            },
-            {
-              "name": "Chicken Tikka Masala",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹529.98",
-          "status": "delivered",
-          "delivered_on": "2026-08-13",
-          "delivered_time": "2:05 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Jugaad Jn.",
-          "location": "Bharatpur, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Papdi Chat",
-              "qty": 1
-            },
-            {
-              "name": "Sattu Kachori",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹264.67",
-          "status": "delivered",
-          "delivered_on": "2026-08-11",
-          "delivered_time": "7:43 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Downtown Delight",
-          "location": "Kalinga Nagar, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Kushka Rice",
-              "qty": 1
-            },
-            {
-              "name": "Murgh Changezi",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹468.87",
-          "status": "delivered",
-          "delivered_on": "2026-08-10",
-          "delivered_time": "2:29 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Downtown Delight",
-          "location": "Kalinga Nagar, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Murgh Dum Biryani [650ml 2pc]",
-              "qty": 1
-            },
-            {
-              "name": "Egg",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹367.23",
-          "status": "delivered",
-          "delivered_on": "2026-08-09",
-          "delivered_time": "2:12 PM",
-          "recent": false,
-          "favourite": true
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Burger King",
-          "location": "Patrapada, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Chicken Seekh Craver (10cm)",
-              "qty": 1
-            },
-            {
-              "name": "Spicy Chicken Craver (10cm)",
-              "qty": 1
-            },
-            {
-              "name": "Dark Chunk Chocolate Cookie (eggless)",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹372.48",
-          "status": "delivered",
-          "delivered_on": "2026-08-07",
-          "delivered_time": "4:03 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Asia Seven - Sizzling Chinese",
-          "location": "Patrapada, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Honey Chilli Potato",
-              "qty": 1
-            },
-            {
-              "name": "Exotic Veg Hot Garlic With Noodles/Rice",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹405.03",
-          "status": "delivered",
-          "delivered_on": "2026-08-04",
-          "delivered_time": "7:15 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Jugaad Jn.",
-          "location": "Bharatpur, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Papdi Chat",
-              "qty": 1
-            },
-            {
-              "name": "Chole Chawal",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹303.18",
-          "status": "payment_failed",
-          "delivered_on": "2026-08-04",
-          "delivered_time": "12:18 PM",
-          "recent": false,
-          "favourite": false
-        },
-        {
-          "service": "Zomato",
-          "restaurant": "Downtown Delight",
-          "location": "Kalinga Nagar, Bhubaneshwar",
-          "items": [
-            {
-              "name": "Kushka Rice",
-              "qty": 1
-            },
-            {
-              "name": "Murgh Hyderabadi",
-              "qty": 1
-            }
-          ],
-          "bill_total": "₹486.72",
-          "status": "delivered",
-          "delivered_on": "2026-08-03",
-          "delivered_time": "4:31 PM",
-          "recent": false,
-          "favourite": false
-        }
-      ],
-      "preferences": {
-        "recipient": "Yuvraj Airtel",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram)",
-        "favourite_restaurants": [
-          "Downtown Delight",
-          "Jugaad Jn.",
-          "Big Cup Cafe"
-        ],
-        "usual_order": "Murgh Dum Biryani [650ml 2pc] with Egg from Downtown Delight",
-        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani",
-        "spice_preference": "medium",
-        "typical_budget": "₹250-₹550 per order",
-        "last_week_craving": "the Downtown Delight Murgh Dum Biryani order from this week (Aug 20)"
-      },
-      "contacts": {
-        "Maa": "family",
-        "Dad": "family",
-        "Yuvraj Airtel": "the friend I share order confirmations with; 'him' on Telegram is Yuvraj Airtel",
-        "Yuvraj Singh Jio": "family / alternate number"
       }
     }
   },

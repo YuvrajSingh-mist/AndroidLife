@@ -3,11 +3,11 @@
   "dataset_version": "v1",
   "parent": null,
   "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
-  "task_count": 531,
+  "task_count": 530,
   "bucket_counts": {
     "easy": 216,
     "medium": 242,
-    "hard": 73
+    "hard": 72
   },
   "selection": "scripts/export_530_dataset.py: parse tasks_530.md (source of truth) -> DailyBench_530_v1.json/.jsonl",
   "tasks": [
@@ -6574,7 +6574,7 @@
       "difficulty": "hard",
       "points": 5,
       "day": 12,
-      "app": "Swiggy+Telegram",
+      "app": "Swiggy+Zomato+Telegram",
       "app_slug": "swiggy",
       "apps": [
         "Swiggy",
@@ -6594,35 +6594,7 @@
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
-      "cross_app_label": "Swiggy+Telegram",
-      "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
-    },
-    {
-      "task_id": "hard__zomato__001",
-      "bucket": "hard",
-      "difficulty": "hard",
-      "points": 5,
-      "day": 12,
-      "app": "Zomato+Telegram",
-      "app_slug": "zomato",
-      "apps": [
-        "Telegram"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": "ASK USER",
-      "interaction": "multi",
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": true,
-      "task_number_within_app": 1,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying.",
-      "prompt_template": "I ordered something off Zomato earlier this week and I want it again tonight. Can you order that for me? Also, message him on Telegram the order total so I can confirm before paying.",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": true,
-      "cross_app_label": "Zomato+Telegram",
+      "cross_app_label": "Swiggy+Zomato+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
     },
     {
@@ -9032,7 +9004,7 @@
       "ask_user_fact": null,
       "is_ask_user": true,
       "task_number_within_app": 7,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 1,
       "prompt_text": "Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm?",
       "prompt_template": "Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm?",
       "placeholders": [],
