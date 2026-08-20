@@ -43,7 +43,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Messages]**
 - Easy (1pt): Search my Messages for the word '[search word]' <!--easy__messages__001-->
 
-**57. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
+**1. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
 - I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note title]' Obsidian note, note today's value, compare it to the last recorded value in that Obsidian note, message the person I follow this stock with on Telegram only if it has crossed the threshold since then, and update the Obsidian note with today's value (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__google-search-obsidian-telegram__057-->
 
 - Medium (3pt) **[Google Photos+Telegram]**: I've got a short burst of photos that'd make a fun GIF. Select the ones taken recently today and make the GIF in Google Photos, save it, and share it via Telegram to [contact] <!--medium__gallery-telegram__001-->
@@ -62,7 +62,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Contacts+Calendar]**: It's a busy month for birthdays. In Contacts, see which of my contacts have birthdays this month, add a reminder for each to buy a present a week before the due date, and count them <!--medium__contacts__001-->
 
-**8. [Chrome+Telegram+Notes] — ASK USER SINGLE**
+**3. [Chrome+Telegram+Notes] — ASK USER SINGLE**
 - I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing (deliberately no item is specified, so the agent must ask the user what they are shopping for) <!--hard__chrome-telegram-notes__008-->
 
 - Medium (3pt) **[Chrome+Telegram]**: Look up [topic] in Chrome across two top search results, summarize the key points, and share the summary with [contact] on Telegram with links to both of the chosen websites <!--medium__chrome-telegram__001-->
@@ -96,8 +96,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Gmail]**
 - Easy (1pt): Can you forward the most recent email in my Gmail to [contact] pls? <!--easy__gmail__001-->
 
-**5. [Google Maps+Notes] — DETERMINISTIC**
-- Which is closer from here, the nearest general physician's clinic or the nearest hospital? Search Maps for both, check their distances, compare, and save the closer one's name and distance as a note in Notes, then star it as a favorite or pin it. <!--hard__google-maps-notes__005-->
+**1. [Files+Notes] — ASK USER SINGLE**
+- I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text (deliberately no late fee percentage is specified, so the agent must ask the user what late fee to apply) <!--hard__files-notes__011-->
 
 **[Music]**
 - Medium (3pt): In my YT Music app, look through my history this week and play the ones with by [artist], add it to my favorites. Also, I am about to start studying, so play some 2 hrs+ lofi playlist for me? <!--medium__music__001-->
@@ -105,8 +105,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Notes]**
 - Easy (1pt): Make the [note title] note's text bigger in Notes <!--easy__notes__001-->
 
-**11. [Files+Notes] — ASK USER SINGLE**
-- I need to pay an invoice and want to know what I actually owe. Find the most recent invoice PDF in Files (you can open it in any PDF Viewer you desire), extract the total amount and due date, and if the due date has passed, add the late fee I specify. Log the new total in a note and reply with only that number, no other text (deliberately no late fee percentage is specified, so the agent must ask the user what late fee to apply) <!--hard__files-notes__011-->
+**2. [Google Maps+Notes] — DETERMINISTIC**
+- Which is closer from here, the nearest general physician's clinic or the nearest hospital? Search Maps for both, check their distances, compare, and save the closer one's name and distance as a note in Notes, then star it as a favorite or pin it. <!--hard__google-maps-notes__005-->
 
 **[YouTube]**
 - Easy (1pt): Search YouTube for the most popular podcast video by [channel name] and play it  for about a minute or so. <!--easy__youtube__001-->
@@ -118,7 +118,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 <!-- 🔮 HALLUCINATION CONTROL (medium__gmail-notes__001, no-thread): data genuinely absent (Myntra has ~15+ one-way promo emails but no conversational thread, no single subject, and Gmail mobile exposes no 'link to a thread'. A summarisable thread genuinely does not exist.). Correct = honest failure; do NOT fabricate. -->
 - Medium (3pt) **[Gmail+Notes]**: Find the thread with [sender] in Gmail, summarize it into exactly 3 bullet points, and save the summary, the subject of the thread and a link to it as a note in my Notes app. <!--medium__gmail-notes__001-->
 
-**12. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
+**3. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
 - I'd like to send [contact] a photo from the event. Find the event photo in Google Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean) <!--hard__photos-gmail-obsidian__012-->
 
 **[Google Maps]**
@@ -175,21 +175,21 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Gmail+Notes]**: In Gmail, filter unread recruiting emails from past week, star them, and save a note listing how many have answered back with a positive response to my job applications with the respective email details. <!--medium__gmail__002-->
 
-**78. [Messages+Notes] — ASK USER SINGLE**
-- Give one conversation a distinct notification tone. Set a custom notification tone for the Messages thread, send a test message to confirm it plays, check the Notes log for whether the same tone is already used for another contact, choose a different one if so, and confirm the update in the log (deliberately no conversation or tone is specified, so the agent must ask the user which thread and which tone) <!--hard__messages-notes__078-->
+**1. [Music+Obsidian] — ASK USER - MULTI**
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
 
 <!-- 🔮 HALLUCINATION CONTROL (easy__clock__017, absent-entity): data genuinely absent (No alarm labeled '{alarm label}' exists in Clock.). Correct = honest failure; do NOT fabricate. -->
 **[Clock]**
 - Easy (1pt): In Clock, check whether an alarm labeled '[alarm label]' is set and tell me what time it's set for <!--easy__clock__017-->
 
-**77. [Music+Obsidian] — ASK USER - MULTI**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music? <!--hard__music-obsidian__077-->
+**2. [Messages+Notes] — ASK USER SINGLE**
+- Give one conversation a distinct notification tone. Set a custom notification tone for the Messages thread, send a test message to confirm it plays, check the Notes log for whether the same tone is already used for another contact, choose a different one if so, and confirm the update in the log (deliberately no conversation or tone is specified, so the agent must ask the user which thread and which tone) <!--hard__messages-notes__078-->
 
 **[Chrome]**
 - Medium (3pt): In Chrome, compare total cost, item plus shipping, of [product] across [shopping_website_1] and [shopping_website_2], note the cheaper option, and check the delivery time for that option, outputting the same. <!--medium__shopping-delivery-browser__001-->
 
-**19. [Google Search+Notes] — ASK USER - MULTI**
+**3. [Google Search+Notes] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I'm stuck between two products and want reviews before I commit. Can you check my shortlist and tell me which one to go with? <!--hard__google-search-notes__019-->
 
@@ -220,7 +220,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Notes]**
 - Easy (1pt): Can you open Notes and add a bullet list to the note titled 'Grocery List' for me pls? <!--easy__notes__002-->
 
-**35. [Google Photos+Obsidian] — DETERMINISTIC**
+**1. [Google Photos+Obsidian] — DETERMINISTIC**
 - I've been keeping a photo journal and want to stay on top of it. Count today's photos in Google Photos, then open my '[photo journal title]' Obsidian note and check the count I logged for yesterday. Update the note with today's count, log only which day had more, and star today's album if today's count is higher. <!--hard__gallery-obsidian__035-->
 
 - Medium (3pt) **[Google Photos+Notes]**: Can you go through Google Photos and, um, check all my photos for duplicates? Wait no. Filter the photos to just the ones from my [trip name] trip first. Then star the best one. Hmm, also check whether any of those are duplicates. And save a note saying which photo you starred so that I can check later. Forget the all-photos thing, that's what I want. <!--medium__gallery__003-->
@@ -228,7 +228,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Maps]**
 - Easy (1pt): I've got a drive coming up soon, can you open Google Maps and check what the traffic's looking like on the route to [usual route] right now? <!--easy__google-maps__002-->
 
-**29. [Contacts+Obsidian] — DETERMINISTIC**
+**2. [Contacts+Obsidian] — DETERMINISTIC**
 - I got new phone numbers for my dad and myself. My '[contact updates title]' Obsidian note lists both of them with the updated numbers. So, can you update each person's phone number in Contacts to match the note's updated numbers please? Then, get back to me in this format: "Contact" | "Old phone no." | "New phone no.". <!--hard__contacts-obsidian__029-->
 
 <!-- 🔮 HALLUCINATION CONTROL (easy__gallery__002, absent-entity): data genuinely absent (No photo named 'Sunset at Dhauli' exists in Google Photos.). Correct = honest failure; do NOT fabricate. -->
@@ -241,7 +241,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Calculator]**
 - Easy (1pt): Quick math check, can you open Calculator and compute 15% of [amount] for me? <!--easy__calculator__001-->
 
-**27. [Contacts+Notes] — DETERMINISTIC**
+**3. [Contacts+Notes] — DETERMINISTIC**
 - Rent collection day. My '[rent dues note title]' note in Notes lists who owes me rent this month, but only their names. Read the names off the note, look up each person's phone number in Contacts, and add the number next to their name in the note so I can message them along with a professionally written message to ask them for their respective dues for me please. <!--hard__contacts-notes__027-->
 
 - Medium (3pt) **[Google Maps+Notes]**: I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving, transit, and walking, all three modes, not just driving. Then pick whichever is fastest. Hmm, and I almost forgot, save the ETA and distance for that fastest option as a note in Notes with a sensible title. Thanks! <!--medium__google-maps__002-->
@@ -295,13 +295,13 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Calendar+Messages]**: I'm planning next week and need to know which meetings will eat my time. Could you rank next week's meetings by how long they run and check how many people are invited to the longest one in Calendar? Also, message [contact] the time of the longest meeting and its details through Messages. <!--medium__calendar__002-->
 
-**49. [Drive+Obsidian+Telegram] — ASK USER SINGLE**
+**1. [Drive+Obsidian+Telegram] — ASK USER SINGLE**
 - I need to know if our shared spreadsheet has been touched since I last reviewed it. Check the shared spreadsheet's last-edited date in Drive and compare it against the 'last reviewed' date recorded in my 'Budget Deadline' note in Obsidian. If it has been edited since that date, message the person who owns the spreadsheet on Telegram to ask what changed; if it hasn't been touched, just star it and update the note with today's date. Confirm what you did either way (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__drive-obsidian-telegram__049-->
 
 **[Telegram]**
 - Easy (1pt): My friend just sent something that deserves a reaction. Could you send an appropriate sticker to [contact] on Telegram according to its last message for me? <!--easy__telegram__002-->
 
-**25. [Calendar+Telegram+Notes] — ASK USER SINGLE**
+**2. [Calendar+Telegram+Notes] — ASK USER SINGLE**
 - Confirm tomorrow's early start for me. Check Calendar for the earliest event tomorrow, note its exact start time, and message the organizer on Telegram to confirm if it starts before 8am, otherwise intimate me promptly to discuss the new timings with the person, recording the outcome either way. (deliberately no organizer is named, so the agent must ask the user who to confirm with) <!--hard__calendar-telegram-notes__025-->
 
 **[Google Drive]**
@@ -315,7 +315,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Obsidian]**
 - Medium (3pt): I have a research note I keep meaning to condense. Could you summarize a research note into a short takeaway, save it at the top of the note, and star it for me in Obsidian? <!--medium__obsidian__004-->
 
-**10. [Drive+Notes+Telegram] — ASK USER SINGLE**
+**3. [Drive+Notes+Telegram] — ASK USER SINGLE**
 - I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way (deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message) <!--hard__drive-notes-telegram__010-->
 
 ### Day 6
@@ -332,13 +332,13 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Sheets]**
 - Medium (3pt): I need a quick total for a column and don't want to do the math. Could you open '[spreadsheet name]' and sum up the [sheet column] column in Google Sheets? Reply with only the total, no other text, then add it as a new row at the bottom and adjust any other columns' values that need fixing because of that change. <!--medium__google-sheets__001-->
 
-**23. [Clock+Calendar] — DETERMINISTIC**
+**1. [Clock+Calendar] — DETERMINISTIC**
 - I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
 
 **[Swiggy]**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? <!--easy__swiggy__001-->
 
-**97. [Calendar] — ASK USER SINGLE**
+**2. [Calendar] — ASK USER SINGLE**
 - Set up a meeting that works for everyone. Suggest and book the best meeting time tomorrow considering everyone's apparent calendar availability (deliberately no attendee list or preferred time exists on the test device, so the agent must ask the user who to invite and what time works before proposing times) <!--hard__calendar__097-->
 
 - Medium (3pt) **[Contacts+Notes]**: I think my contacts have duplicates cluttering things up. Could you find contacts with duplicate email addresses, clean them up, and note how many you merged in Contacts? <!--medium__contacts__005-->
@@ -413,13 +413,13 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Files]**
 - Medium (3pt): Could you filter Downloads to only .apk or installer files, delete the ones I don't need anymore, and count what's left in Files? <!--medium__files__003-->
 
-**66. [Camera+Contacts+Gmail] — ASK USER SINGLE**
-- Found a handwritten note with someone's details. Take a photo of it with Camera, read off the details, check Gmail for whether that name has emailed before, merge into the existing contact if so, otherwise save as new, and verify the contact's info is complete (deliberately no person is named for the handwritten note, so the agent must ask the user whose details it is) <!--hard__camera-contacts-gmail__066-->
-
-**26. [Contacts+Gmail] — DETERMINISTIC**
+**1. [Contacts+Gmail] — DETERMINISTIC**
 - I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later <!--hard__contacts-gmail__026-->
 
-**34. [Camera+Files] — DETERMINISTIC**
+**2. [Camera+Contacts+Gmail] — ASK USER SINGLE**
+- Found a handwritten note with someone's details. Take a photo of it with Camera, read off the details, check Gmail for whether that name has emailed before, merge into the existing contact if so, otherwise save as new, and verify the contact's info is complete (deliberately no person is named for the handwritten note, so the agent must ask the user whose details it is) <!--hard__camera-contacts-gmail__066-->
+
+**3. [Camera+Files] — DETERMINISTIC**
 - Digitize a document without creating a duplicate. Take a photo of it with Camera, check Files for whether a scan of the same document already exists, keep only the clearer of the two if so, otherwise save the new one, and rename it with today's date <!--hard__camera-files__034-->
 
 **[Google Meet]**
@@ -446,7 +446,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): I'm looking for a link someone sent me and it's buried. Could you filter my messages to find ones with a shared link, open the most recent, and star it in Messages? <!--medium__messages__006-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__settings-notes__082, start-failure): data genuinely absent (No note in Notes records the daily step goal, and the task's first step is to find that goal note. The goal is absent from the very start; reading yesterday's steps is only possible after the goal check.). Correct = honest failure; do NOT fabricate. -->
-**82. [Settings+Notes] — DETERMINISTIC**
+**1. [Settings+Notes] — DETERMINISTIC**
 - Did I hit my step goal? First find the daily goal in my Notes to match against. Then read yesterday's step total in Settings and write down only whether the goal was met. If there's no goal note, say so instead of picking a number. Also check today's progress so far <!--hard__settings-notes__082-->
 
 <!-- 🔮 HALLUCINATION CONTROL (easy__contacts__008, absent-entity): data genuinely absent (No contact named 'Rahul Mehta' exists to favourite.). Correct = honest failure; do NOT fabricate. -->
@@ -469,7 +469,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Messages]**
 - Medium (3pt): Could you filter conversations to only ones with unread messages in Messages, figure out which has waited longest, and tell me that contact's name? Reply with only the name, no other text. <!--medium__messages__004-->
 
-**99. [Obsidian] — ASK USER SINGLE**
+**2. [Obsidian] — ASK USER SINGLE**
 - My notes have a messy one that needs tidying. Find the note I mean, rewrite it into a cleaner organized version with clear sections, and confirm it saved (deliberately no note title is specified, so the agent must ask the user which note) <!--hard__obsidian__099-->
 
 **[Amazon Shopping]**
@@ -484,7 +484,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I want to know what everyone's watching right now. Can you check what's trending on YouTube today? <!--easy__youtube__003-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__settings-notes__081, middle-failure): data genuinely absent (No note in Notes records yesterday's battery usage. The battery-saver setting and today's usage read are real/doable; only the comparison target (yesterday note) is absent, discovered mid-task.). Correct = honest failure; do NOT fabricate. -->
-**81. [Settings+Notes] — DETERMINISTIC**
+**3. [Settings+Notes] — DETERMINISTIC**
 - My battery's been draining fast. Turn on battery saver in Settings, then read today's battery usage. Now find yesterday's usage in my Notes so you can compare today against yesterday and flag it if today's drain is unusually fast. If there's no yesterday note, tell me that instead of inventing a comparison. Confirm the setting saved <!--hard__settings-notes__081-->
 
 - Medium (3pt) **[Settings+Obsidian]**: Could you filter installed apps to show which have camera permission, revoke it for one unused app, and note in Obsidian which apps still have it in Settings? <!--medium__settings__004-->
@@ -503,7 +503,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Medium (3pt): Could you list my 5 most recent missed calls, note which ones I haven't returned, and call back the most recent one in Phone? <!--medium__phone__004-->
 
-**37. [Music+Telegram] — ASK USER SINGLE**
+**1. [Music+Telegram] — ASK USER SINGLE**
 - I'm making a two-song playlist and want to compare notes with a friend. Create it in Music, name it, check Telegram for whether that friend has mentioned a similar playlist, message them only if a match exists, and verify the playlist saved (deliberately no recipient or songs are named, so the agent must ask the user who to compare notes with and which two songs to include) <!--hard__music-telegram__037-->
 
 - Medium (3pt) **[Telegram+Messages]**: Could you rank chats by how many unread messages they have, open the top one, and reply to the most recent message in Telegram? Also, send [contact] a text asking them to call me. <!--medium__telegram__003-->
@@ -544,7 +544,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Easy (1pt): The call dropped and I need to reach them again. Can you redial the last number I called in Phone? <!--easy__phone__004-->
 
-**36. [Google Photos+Telegram] — ASK USER SINGLE**
+**2. [Google Photos+Telegram] — ASK USER SINGLE**
 - I want to share a photo with the person I want to share it with, without sending a duplicate. Find the photo in Google Photos, check Telegram chat history for whether it's already been shared with them, share it now if not, star the photo either way, and confirm the chat history is up to date (deliberately no recipient or photo is named, so the agent must ask the user who to send it to and which photo they mean) <!--hard__gallery-telegram__036-->
 
 - Medium (3pt) **[Calculator+Messages]**: Could you open the '[budget note title]' note in Obsidian, add up the 5 expense categories into a monthly budget, and compare it to my income in Calculator? Reply with only the final total, no other text, then message [contact] that I'll be late for dinner tonight. <!--medium__calculator__002-->
@@ -557,7 +557,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Search]**
 - Easy (1pt): I'm watching what I eat and need a number. Can you search Google Search for how many calories are in [food item]? <!--easy__google-search__005-->
 
-**30. [Notes+Files] — DETERMINISTIC**
+**1. [Notes+Files] — DETERMINISTIC**
 - Sync my shopping list with what I already bought. Check the Notes list titled 'To Buy' against a Files-stored receipt, write down the items on the receipt, match each item on the list, remove only the items confirmed present, and note the remaining count <!--hard__notes-files__030-->
 
 - Medium (3pt) **[Files+Obsidian]**: Could you summarize how storage is split across my folders, note the largest category, and check if it's more than half of my total storage in Files? <!--medium__files-obsidian__002-->
@@ -583,7 +583,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Drive]**
 - Easy (1pt): I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file 'Q3 Budget.xlsx' in Google Drive has been shared with anyone? <!--easy__google-drive__005-->
 
-**44. [Settings+Obsidian] — ASK USER - MULTI**
+**2. [Settings+Obsidian] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I've been glued to my phone lately and want to know if I'm over my goal. Can you check my screen-time goal and tell me how I'm doing? <!--hard__settings-obsidian__044-->
 
@@ -595,7 +595,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Gmail]**
 - Easy (1pt): He just sent something I'll need to circle back to. Can you star the latest email from 'Rahul Mehta' in Gmail? <!--easy__gmail__007-->
 
-**31. [Chrome+Files+Obsidian] — DETERMINISTIC**
+**3. [Chrome+Files+Obsidian] — DETERMINISTIC**
 - I'm downloading a file and don't want to overwrite anything. Download it via Chrome, check Files for whether a same-named file already exists, and if so, rename the new one with a version number; otherwise move it in as-is. Record the final filename in a note and confirm it's in the right folder <!--hard__chrome-files-obsidian__031-->
 
 - Medium (3pt) **[Google Drive+Telegram]**: Could you filter shared files to only ones I can edit, star the most recent, and message its name to [contact] on Telegram with no other text in Google Drive? <!--medium__google-drive__004-->
@@ -622,14 +622,14 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Messages]**
 - Easy (1pt): I want to send them a photo in the conversation we have going. Can you reply to the most recent thread in Messages with a photo attached? <!--easy__messages__008-->
 
-**92. [Gmail+Messages] — ASK USER SINGLE**
+**1. [Gmail+Messages] — ASK USER SINGLE**
 - An important email needs to get seen. Find the most recent important-looking unread email today in Gmail, forward it to the person who needs to see it, and message them on Messages that it's been forwarded (deliberately no recipient or specific email is named, so the agent must ask the user who to forward it to and which email to forward) <!--hard__gmail-messages__092-->
 
-**4. [MakeMyTrip] — ASK USER - MULTI**
+**2. [MakeMyTrip] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I've shortlisted a flight for my next trip and want the full fare before I pay. Can you check the shortlisted flight on MakeMyTrip and tell me the total? <!--hard__makemytrip__003-->
 
-**52. [YouTube+Settings] — DETERMINISTIC**
+**3. [YouTube+Settings] — DETERMINISTIC**
 - Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, go to my Subscriptions, find [notifying channel], and turn off its notifications so I stop getting alerts from that channel? Then open Settings and set Do Not Disturb so all notifications are silenced between 10 PM and 8 AM. Reply with only the channel name you muted, no other text. <!--hard__youtube-settings__052-->
 
 - Medium (3pt) **[Contacts+Gmail]**: Could you filter contacts to only ones added this month in Contacts? List them for me in the format of "Name" | "Phone number" strictly, then star the most recent and check whether any are missing a phone number. Also, email [email-id] the list of contacts missing a number. <!--medium__contacts__008-->
@@ -667,7 +667,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Easy (1pt): I want to see how much I've been on the phone today. Can you tell me how many calls I've made today in Phone? <!--easy__phone__005-->
 
-**4. [BookMyShow+Contacts] — ASK USER - MULTI**
+**1. [BookMyShow+Contacts] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - My friends are planning a surprise for one of our close friends and I need to pick the movie. Can you help me pick a movie they'll love and take me to the booking page without buying? <!--hard__bookmyshow__003-->
 
@@ -680,7 +680,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Files]**
 - Medium (3pt): Could you find and remove duplicate files in Downloads, note how much storage was freed, and check the folder's new total size in Files? <!--medium__files__006-->
 
-**7. [Prime Video] — ASK USER - MULTI**
+**2. [Prime Video] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - One of my daily shows is apparently leaving soon and I don't want to lose it. Can you check what's leaving soonest in my Watchlist and save it for me? <!--hard__prime-video__005-->
 
@@ -689,11 +689,11 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just met someone and want to save their number before I lose it. Can you add a new contact named [X] with a phone number in Contacts? <!--easy__contacts__010-->
 
-**6. [Telegram+Calendar] — ASK USER - MULTI**
+**3. [Telegram+Calendar] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and I've lost track of what we actually settled on — the date, the time, where, all of it. Can you check our group, work out the plan we agreed on, and get it onto my calendar with a reminder so I don't miss it? <!--hard__telegram-calendar__016-->
 
-**7. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
+**4. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
@@ -736,7 +736,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Music]**
 - Medium (3pt): Could you rank my most-played songs this week, rebuild a playlist from the top 10, and name it in Music? <!--medium__music__009-->
 
-**38. [Music+Telegram+Notes] — ASK USER SINGLE**
+**1. [Music+Telegram+Notes] — ASK USER SINGLE**
 - See how my listening changed this week. Check Music for this week's most-played tracks, note them, compare against last week's most-played, message the person I share music with on Telegram only the tracks new to the list, and save the full comparison in a note (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__music-telegram-notes__038-->
 
 <!-- 🔮 HALLUCINATION CONTROL (easy__gmail__009, absent-entity): data genuinely absent (No promotional email from 'Rahul Mehta' exists in the inbox.). Correct = honest failure; do NOT fabricate. -->
@@ -750,7 +750,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Photos]**
 - Easy (1pt): I'm looking for a clip I recorded last month. Can you search Google Photos for videos from last month? <!--easy__google-photos__006-->
 
-**20. [Calculator+Telegram+Notes] — DETERMINISTIC**
+**2. [Calculator+Telegram+Notes] — DETERMINISTIC**
 - Splitting a bill with the group. Open the '[group bill note title]' note in Obsidian, compute the split on the Calculator, check each person's share, and if any share exceeds $50, message those people individually on Telegram; otherwise send one group message. Log the total in a note <!--hard__calculator-telegram-notes__020-->
 
 **[Camera]**
@@ -773,7 +773,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Docs]**
 - Medium (3pt): Could you open the '[doc name]' document in Google Docs and count how many times the word '[keyword]' appears? Reply with only the number, no other text, then highlight all occurrences. <!--medium__google-docs__003-->
 
-**60. [Calculator+Obsidian+Telegram] — ASK USER SINGLE**
+**3. [Calculator+Obsidian+Telegram] — ASK USER SINGLE**
 - Would a loan payment fit my budget? Open the '[loan budget note title]' note in Obsidian, compute the monthly loan payment on the Calculator, write down the amount, compare it against the budget in that note, message the person I handle money with on Telegram only if it doesn't fit, and log whether it fits either way (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__calculator-obsidian-telegram__060-->
 
 - Medium (3pt) **[Google Photos+Telegram]**: Could you list albums I haven't viewed recently and delete the least-used one in Google Photos? Also, message [contact] on Telegram the photo from the [trip name] trip. <!--medium__google-photos__005-->
@@ -813,7 +813,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Search]**
 - Easy (1pt): I'm looking for something fun happening nearby. Can you search for a nearby holiday or public event on Google Search? <!--easy__google-search__007-->
 
-**70. [Google Meet+Files] — DETERMINISTIC**
+**1. [Google Meet+Files] — DETERMINISTIC**
 - Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Chrome]**
@@ -822,7 +822,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Meet]**
 - Medium (3pt): Could you open Google Meet, check the participant list of my next scheduled meeting, and tell me who's expected to join? <!--medium__google-meet__005-->
 
-**56. [Google Search+Clock] — DETERMINISTIC**
+**2. [Google Search+Clock] — DETERMINISTIC**
 - I'm about to miss my bus. Look up the transit line's next departure via Google Search, write down the time remaining, and set an alarm now if it's within 10 minutes, otherwise set one 5 minutes before the following departure, then verify the alarm time <!--hard__google-search-clock__056-->
 
 **[Phone]**
@@ -866,10 +866,10 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Weather]**
 - Easy (1pt): I'm about to head out and don't want to get caught in the rain. Can you check today's weather in the Weather app and tell me if it looks good for my commute? <!--easy__weather__003-->
 
-**54. [Telegram+Calendar] — ASK USER SINGLE**
+**1. [Telegram+Calendar] — ASK USER SINGLE**
 - Schedule a message to the right person without it landing mid-meeting. Schedule the Telegram message, note the intended send time, check it against Calendar for a conflicting event, shift it by 30 minutes if one exists, and double-check the final scheduled time (deliberately no recipient or message content is specified, so the agent must ask the user who the message is for and what to say) <!--hard__telegram-calendar__054-->
 
-**64. [Calendar+Contacts+Telegram] — DETERMINISTIC**
+**2. [Calendar+Contacts+Telegram] — DETERMINISTIC**
 - Make sure every attendee gets the update. Check Calendar for the next occurrence of the recurring event, note the attendees, compare them against Contacts for whether any lack an email, notify only the ones missing an email via Telegram instead, and confirm all attendees were reached <!--hard__calendar-contacts-telegram__064-->
 
 **[Calendar]**
@@ -886,7 +886,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Google Maps+Telegram]**: Could you find the cheapest parking option near [place] in Google Maps and check its distance from [place]? Reply with only the name of the cheapest option, no other text, then message [contact] on Telegram the address so we can meet there. <!--medium__google-maps__005-->
 
-**15. [YouTube+Telegram] — ASK USER SINGLE**
+**3. [YouTube+Telegram] — ASK USER SINGLE**
 - Which of my favorite channel's latest videos is doing better? Check its two most recent uploads, note both view counts, compare them, and message the person who cares about this on Telegram only the title of whichever performed better, then confirm they replied (deliberately no recipient or channel is named, so the agent must ask the user who to message and which channel they mean) <!--hard__youtube-telegram__015-->
 
 - Medium (3pt) **[Gmail+Telegram]**: Could you filter the inbox to only emails with attachments from this week, star the 3 most recent, and message [contact] on Telegram to check one of them in Gmail? <!--medium__gmail-telegram__001-->
@@ -902,7 +902,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): Can you open the '[doc name]' document in Google Docs and add a one-sentence summary of what it's about at the very top, above the title? <!--easy__google-docs__007-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__contacts-google-maps-notes__065, start-failure): data genuinely absent (No pending-mail note exists in Notes for this contact, and the task's first step is to check for it. The pending-mail note is absent from the very start; confirming the address + updating the contact only follow the check.). Correct = honest failure; do NOT fabricate. -->
-**65. [Contacts+Google Maps+Notes] — DETERMINISTIC**
+**1. [Contacts+Google Maps+Notes] — DETERMINISTIC**
 - I need to update a contact's address. First check my Notes for any pending-mail note for this contact and flag it if one exists. Then confirm the new address on Maps, update the contact, and record the old address. If there's no such note, say so instead of inventing one. Confirm the contact saved <!--hard__contacts-google-maps-notes__065-->
 
 - Medium (3pt) **[Music+Telegram]**: Could you merge two playlists into one, remove duplicates, confirm the final count, and send the new playlist to [contact] on Telegram in Music? <!--medium__music__010-->
@@ -935,15 +935,15 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Clock+Notes]**: Could you set a Wind Down schedule based on a target wake-up time, confirm it saved, and log the wake-up time in a note in Clock? <!--medium__clock-notes__001-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__chrome-obsidian__048, middle-failure): data genuinely absent (No Obsidian 'already-used codes' list exists. Finding the coupon code on a real Chrome page is doable; only the used-codes list is absent, discovered mid-task.). Correct = honest failure; do NOT fabricate. -->
-**48. [Chrome+Obsidian] — DETERMINISTIC**
-- Found a coupon and want to make sure I haven't used it. Find the coupon code on a Chrome page and note it, then check my Obsidian 'already-used codes' list to see if it's a duplicate. Save the code only if it isn't a duplicate. But if that used-codes list doesn't exist, tell me instead of assuming it's unused. Label the note with the store name <!--hard__chrome-obsidian__048-->
+**2. [Swiggy+Telegram] — ASK USER - MULTI**
+<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
+- Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm? <!--hard__swiggy__007-->
 
 **[Settings]**
 - Medium (3pt): Could you compare my screen time this week to last week, note the change, and check which day had the most screen time in Settings? <!--medium__settings__009-->
 
-**7. [Swiggy+Telegram] — ASK USER - MULTI**
-<!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
-- Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm? <!--hard__swiggy__007-->
+**3. [Chrome+Obsidian] — DETERMINISTIC**
+- Found a coupon and want to make sure I haven't used it. Find the coupon code on a Chrome page and note it, then check my Obsidian 'already-used codes' list to see if it's a duplicate. Save the code only if it isn't a duplicate. But if that used-codes list doesn't exist, tell me instead of assuming it's unused. Label the note with the store name <!--hard__chrome-obsidian__048-->
 
 ### Day 17
 
@@ -971,10 +971,10 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Google Search+Obsidian]**: I've got a school research report due on [topic]. Research it via Google Search, skim the top results, and write the report in a new note titled '[X]' in Obsidian, about 150-200 words with an intro, 3 key points, and a conclusion. Reply with only the note title, no other text. <!--medium__obsidian__005-->
 
-**87. [Chrome+Google Search+Notes] — ASK USER SINGLE**
+**1. [Chrome+Google Search+Notes] — ASK USER SINGLE**
 - Can you help me understand something I've been wondering about? Research it via Chrome or Search, summarize the findings in a new note, and pin that note (deliberately no topic or note title is specified, so the agent must ask the user what to research and what to title the note) <!--hard__chrome-google-search-notes__087-->
 
-**45. [Gmail+Notes] — ASK USER - MULTI**
+**2. [Gmail+Notes] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I've got a coupon somewhere that's expiring soon and I want to save it before it's gone. Can you find it and save the code for me? <!--hard__gmail-notes__045-->
 
@@ -1051,7 +1051,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Docs]**
 - Easy (1pt): Could you find the document titled '[X]' in Google Docs, open it, and add a short 'Summary' section at the end with a one or two sentence wrap-up of what it covers? <!--easy__google-docs__002-->
 
-**88. [Chrome+YouTube+Notes] — ASK USER SINGLE**
+**1. [Chrome+YouTube+Notes] — ASK USER SINGLE**
 - I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note (deliberately no task is specified, so the agent must ask the user what they want to learn) <!--hard__chrome-youtube-notes__088-->
 
 - Medium (3pt) **[YouTube+Obsidian]**: Could you list the top 5 recommended videos on my home feed, save the most relevant one to Watch Later, and note in Obsidian why in YouTube? <!--medium__youtube__008-->
@@ -1059,7 +1059,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[MSN News]**
 - Easy (1pt): I haven't caught up on the news today. Can you open MSN News and tell me today's top headline? <!--easy__msn-news__001-->
 
-**47. [Google Maps+Telegram+Obsidian] — ASK USER SINGLE**
+**2. [Google Maps+Telegram+Obsidian] — ASK USER SINGLE**
 - I keep going back to the same place and want it handy. Save the frequently visited place as a Maps favorite, rename it with a short label, check whether it's open now, message the person I usually go there with on Telegram only if it is, and note its hours either way (deliberately no recipient or place is named, so the agent must ask the user who to message and which place they keep going back to) <!--hard__google-maps-telegram-obsidian__047-->
 
 ### Day 19
@@ -1079,7 +1079,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Meet]**
 - Easy (1pt): I'm about to join a meeting by code and want to be ready. Can you open the 'Join with a code' screen in Google Meet and tell me what's on it? <!--easy__google-meet__003-->
 
-**18. [Google Search+Telegram+Clock] — ASK USER SINGLE**
+**1. [Google Search+Telegram+Clock] — ASK USER SINGLE**
 - I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm going with on Telegram suggesting we go now; otherwise message the reopening time and set an alarm for it (deliberately no place or recipient is specified, so the agent must ask the user where they are going and who to message) <!--hard__google-search-telegram-clock__018-->
 
 **[Phone]**
@@ -1094,7 +1094,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Calendar]**
 - Easy (1pt): I want to leave myself a reminder attached to that meeting. Can you add a note to the event 'Team Sync Weekly' in Calendar? <!--easy__calendar__010-->
 
-**41. [Phone+Google Search+Telegram] — ASK USER SINGLE**
+**2. [Phone+Google Search+Telegram] — ASK USER SINGLE**
 - Got a call from an unknown number. Check the missed call in Phone, look up the number via Google Search, note what it matches, and message the person who usually handles this on Telegram only if it's a known business; otherwise flag it as possible spam and record the outcome (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__phone-google-search-telegram__041-->
 
 - Medium (3pt) **[Clock+Calendar]**: Could you convert the '[meeting title]' time across two timezones, set a matching local alarm, and label it with the timezone in Clock? <!--medium__clock__007-->
@@ -1140,12 +1140,12 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Sheets]**
 - Medium (3pt): Could you open '[spreadsheet name]' in Google Sheets and find the highest value in the [sheet column] column? Reply with only that value, no other text, then highlight it and note which row it's in. <!--medium__google-sheets__006-->
 
-**74. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
+**1. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
 
 - Medium (3pt) **[Google Photos+Telegram]**: Could you find the 5 most recent photos of [subject], add them to a new album, and share the album name with [contact] on Telegram in Google Photos? <!--medium__google-photos-telegram__001-->
 
-**4. [Google Maps+Telegram+Clock] — ASK USER SINGLE**
+**2. [Google Maps+Telegram+Clock] — ASK USER SINGLE**
 - Someone wants to know when I'll reach my destination. Check Maps for the live ETA, write down the exact minutes, and message the person who asked on Telegram with it. If it's over 30 minutes, set an alarm for that arrival time; if not, just send 'close by'. Then verify the message went through (deliberately no destination or recipient is specified, so the agent must ask the user where they are headed and who wants to know) <!--hard__google-maps-telegram-clock__004-->
 
 - Medium (3pt) **[Telegram+Contacts]**: Could you find contacts who haven't messaged in over a month (checking Contacts), send one of them a check-in, and note who I messaged in Telegram? <!--medium__telegram__008-->
@@ -1179,7 +1179,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 ### Day 21
 
-**5. [BookMyShow+Telegram] — DETERMINISTIC**
+**1. [BookMyShow+Telegram] — DETERMINISTIC**
 - We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
 
 **[Chrome]**
@@ -1198,7 +1198,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Search]**
 - Medium (3pt): Could you find conflicting information across two sources on [topic], summarize it, and note which seems more credible in Google Search? <!--medium__google-search__010-->
 
-**7. [Amazon Shopping] — ASK USER - MULTI**
+**2. [Amazon Shopping] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - Almost bought something but wanna double-check the total before I commit. Can you check the item I was about to buy and tell me the final total? <!--hard__amazon-shopping__006-->
 
@@ -1243,7 +1243,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Calculator]**
 - Medium (3pt): Could you open the '[product prices note title]' note in Obsidian, compute a currency-adjusted price for the same product in two countries, compare them, and note the cheaper one in Calculator? <!--medium__calculator__009-->
 
-**67. [Obsidian+Calendar] — DETERMINISTIC**
+**1. [Obsidian+Calendar] — DETERMINISTIC**
 - I don't want to forget an important note. Pin it to the top of the Obsidian list, note its due date, check it against Calendar, create a matching calendar event only if one doesn't already exist, and double-check the note stays pinned <!--hard__obsidian-calendar__067-->
 
 <!-- 🔮 HALLUCINATION CONTROL (medium__music__012, absent-entity): data genuinely absent (No playlists named 'Chill' or 'Focus' exist in Music.). Correct = honest failure; do NOT fabricate. -->
@@ -1263,7 +1263,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 
 - Medium (3pt) **[Clock+Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
 
-**55. [Telegram+Obsidian] — ASK USER SINGLE**
+**2. [Telegram+Obsidian] — ASK USER SINGLE**
 - Keep my notification sounds consistent per contact. Check the Telegram chat's notification sound setting, record the current sound, compare it against the preferred sound for that contact, update it only if it doesn't match, and confirm the change (deliberately no chat or preferred notification sound is specified, so the agent must ask the user which chat and what sound to use) <!--hard__telegram-obsidian__055-->
 
 - Medium (3pt) **[Music+Telegram]**: Could you summarize what a new album is about based on its track titles, decide whether to add it, and message [contact] on Telegram my verdict in Music? <!--medium__music-telegram__002-->
@@ -1294,7 +1294,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Google Photos+Notes]**: Could you filter for blurry or near-duplicate photos, review them, clean them up, and note how many were removed in Google Photos? <!--medium__gallery__011-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__gallery-settings-obsidian__075, end-failure): data genuinely absent (No Obsidian wallpaper log exists, so the already-used-this-month check cannot be done. Setting the wallpaper + starring the photo are real/doable; only the log is absent.). Correct = honest failure; do NOT fabricate. -->
-**75. [Google Photos+Settings+Obsidian] — DETERMINISTIC**
+**1. [Google Photos+Settings+Obsidian] — DETERMINISTIC**
 - I want a fresh wallpaper. Set a Google Photos photo as wallpaper via Settings and star it, then check my Obsidian wallpaper log for whether it was already used this month. Update the log only if it's a new choice. If no such log exists, tell me instead of creating a fake history. Confirm the wallpaper applied <!--hard__gallery-settings-obsidian__075-->
 
 **[Telegram]**
@@ -1310,7 +1310,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Calculator]**
 - Easy (1pt): Can you open the '[numbers list title]' note in Obsidian and compute a running total from the list of numbers in it, in Calculator? <!--easy__calculator__011-->
 
-**83. [Google Photos+Obsidian+Telegram] — ASK USER SINGLE**
+**2. [Google Photos+Obsidian+Telegram] — ASK USER SINGLE**
 - Is my trip-place photo count a record? Check Google Photos for photos taken on the trip, note the count, cross-reference it against my Obsidian travel log, message the person I share travel updates with on Telegram the total count only if it's a new personal best, and update the log (deliberately no place or recipient is specified, so the agent must ask the user which place they mean and who to message) <!--hard__gallery-obsidian-telegram__083-->
 
 **[Messages]**
@@ -1341,11 +1341,11 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[YouTube]**
 - Easy (1pt): I only have a few minutes and need to know if it fits. Can you check how long a video is before playing it in YouTube? <!--easy__youtube__013-->
 
-**85. [Google Photos] — ASK USER SINGLE**
+**1. [Google Photos] — ASK USER SINGLE**
 - I want the best shot of my friend for their profile. Choose the most flattering photo of the person from the Google Photos album (deliberately no album or person is specified on the test device, so the agent must ask the user which album and which person they mean) <!--hard__gallery__085-->
 
-**96. [YouTube] — ASK USER SINGLE**
-- I need this explained simply. Find a video that explains what I'm trying to understand in simple terms on YouTube and save it to Watch Later (deliberately no topic is specified, so the agent must ask the user what to explain) <!--hard__youtube__096-->
+**2. [Files+Notes] — DETERMINISTIC**
+- Free up space safely. Compress several Files into an archive and note its size, then find the storage limit in my Notes to check the archive against. Delete the originals only if the archive is under the limit. If there's no limit note, say so instead of picking a number. Verify the originals' status <!--hard__files-notes__069-->
 
 **[Files]**
 - Medium (3pt): Could you rank folders by total size, open the largest, and note what's inside in Files? <!--medium__files__011-->
@@ -1383,8 +1383,8 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I want to get rid of a file but keep it recoverable for now. Can you move the file 'Q3 Budget.xlsx' to the Trash in Files? <!--easy__files__012-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__files-notes__069, end-failure): data genuinely absent (No storage-limit note exists in Notes, so the under-limit decision (delete originals only if the archive is under the limit) cannot be made. Compressing the files + noting archive size are real/doable; only the limit note is absent.). Correct = honest failure; do NOT fabricate. -->
-**69. [Files+Notes] — DETERMINISTIC**
-- Free up space safely. Compress several Files into an archive and note its size, then find the storage limit in my Notes to check the archive against. Delete the originals only if the archive is under the limit. If there's no limit note, say so instead of picking a number. Verify the originals' status <!--hard__files-notes__069-->
+**3. [YouTube] — ASK USER SINGLE**
+- I need this explained simply. Find a video that explains what I'm trying to understand in simple terms on YouTube and save it to Watch Later (deliberately no topic is specified, so the agent must ask the user what to explain) <!--hard__youtube__096-->
 
 **[Google Slides]**
 - Easy (1pt): I lost my place in the deck. Can you open '[presentation name]' in Google Slides and check which slide is currently selected? <!--easy__google-slides__003-->
@@ -1403,10 +1403,10 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Chrome]**
 - Easy (1pt): I'm checking if the price dropped before I buy. Can you search for '[product]' on a shopping site in Chrome and check its current price? <!--easy__shopping-delivery-browser__013-->
 
-**72. [Music] — ASK USER SINGLE**
+**1. [Music] — ASK USER SINGLE**
 - I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given (deliberately no song list or energy preference exists on the test device, so the agent must ask the user how long it should be and what energy level they want) <!--hard__music__072-->
 
-**90. [Google Search+Calendar] — ASK USER SINGLE**
+**2. [Google Search+Calendar] — ASK USER SINGLE**
 - There was an event I read about that I don't want to lose track of. Search for the event via Google Search, find a date mentioned in the results, create a calendar event on that date titled with the topic, and set a reminder for it (deliberately no topic is specified, so the agent must ask the user what event they read about) <!--hard__google-search-calendar__090-->
 
 - Medium (3pt) **[Files+Telegram]**: Could you summarize what's taking up the most space this month, free up the biggest offender, and message [contact] on Telegram that storage is freed up in Files? <!--medium__files-telegram__001-->
@@ -1460,7 +1460,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Meet]**
 - Easy (1pt): I need to know if I'm free tomorrow or booked up. Can you open Google Meet and check whether I have any meeting scheduled for tomorrow? <!--easy__google-meet__005-->
 
-**8. [MSN News+Telegram] — ASK USER - MULTI**
+**1. [MSN News+Telegram] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - I'm following a topic closely and want today's big story. Can you find today's biggest story on the topic I'm following and send it to [contact] on Telegram? <!--hard__msn-news__007-->
 
@@ -1484,7 +1484,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Calendar]**
 - Easy (1pt): I want the quick rundown of what today holds. Can you check today's schedule at a glance in Calendar? <!--easy__calendar__014-->
 
-**86. [Maps+Telegram] — ASK USER SINGLE**
+**2. [Maps+Telegram] — ASK USER SINGLE**
 - I could use a coffee. Find the highest-rated coffee shop within a mile that's open now on Maps, save it to favorites, and message the person I usually meet for coffee on Telegram its name and location (deliberately no recipient is named, so the agent must ask the user who to message) <!--hard__maps-telegram__086-->
 
 **[Messages]**
@@ -1545,7 +1545,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Settings]**
 - Medium (3pt): Could you check which apps used the most battery today, rank the top 3, and restrict the worst one in Settings? <!--medium__settings__013-->
 
-**100. [Telegram] — ASK USER SINGLE**
+**1. [Telegram] — ASK USER SINGLE**
 - Decline that invitation for me, politely. Open the Telegram chat with the person who invited me, find the recent invitation, draft a polite decline reply referencing it, and send it (deliberately no sender or tone is named for the invitation, so the agent must ask the user who invited them and how politely to decline) <!--hard__telegram__100-->
 
 **[Files]**
@@ -1564,7 +1564,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Messages]**
 - Medium (3pt): Could you rank contacts by how recently they messaged, reply to the least recent, and note the reply time in Messages? <!--medium__messages__013-->
 
-**89. [Google Drive] — ASK USER SINGLE**
+**2. [Google Drive] — ASK USER SINGLE**
 - Leave feedback on a document a colleague shared. Find it in Google Drive, read it, add a comment with feedback on its main point, and note which document I commented on (deliberately no person is named for the shared document, so the agent must ask the user who shared it) <!--hard__drive__089-->
 
 **[Chrome]**
@@ -1589,7 +1589,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Photos]**
 - Easy (1pt): That screenshot was a mistake and I want it gone. Can you delete my most recent screenshot in Google Photos? <!--easy__google-photos__015-->
 
-**93. [Gmail] — ASK USER SINGLE**
+**1. [Gmail] — ASK USER SINGLE**
 - There's an urgent email I should deal with. Find the most recent unread email marked important today in Gmail, reply to it with an appropriate short response, and star it (deliberately no reply content is specified, so the agent must ask the user what to respond) <!--hard__gmail__093-->
 
 - Medium (3pt) **[Phone+Clock]**: Could you summarize a voicemail's key detail, decide whether to call back, and set a reminder if so in Phone? <!--medium__phone-clock__001-->
@@ -1607,7 +1607,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Google Drive]**
 - Easy (1pt): I want to know if the latest version was actually saved. Can you check the last-modified date of the file 'Q3 Budget.xlsx' in Google Drive? <!--easy__google-drive__015-->
 
-**98. [Google Search+Obsidian] — ASK USER SINGLE**
+**2. [Google Search+Obsidian] — ASK USER SINGLE**
 - Point me to a source I can trust. Find the most reputable-seeming source discussing what I asked about via Search (official or a major outlet), open it, and save the link in a note (deliberately no topic or note is specified, so the agent must ask the user what to look up and which note to save the link in) <!--hard__google-search-obsidian__098-->
 
 **[Contacts]**
@@ -1625,3 +1625,4 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you filter for photos with faces not yet tagged, tag the 3 most recent, and check whether any remain fully untagged in Google Photos? <!--medium__google-photos__013-->
 
 - Medium (3pt) **[Gmail+Telegram]**: Could you find the 3 most frequent promotional senders, unsubscribe from them, add those emails to spam, and message [contact] on Telegram that you cleaned up in Gmail? <!--medium__gmail__013-->
+
