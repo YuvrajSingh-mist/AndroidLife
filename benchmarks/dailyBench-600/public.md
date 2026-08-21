@@ -77,7 +77,7 @@ aren't grouped or predictable by position.**
 - Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **6. [Contacts+Gmail] — DETERMINISTIC**
-- I want to tidy up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, and tell me how many have neither a phone number nor an email. Star one of the contacts that has a complete profile as a reminder to verify it later <!--hard__contacts-gmail__026-->
+- I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and read out their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format. <!--hard__contacts-gmail__026-->
 
 **[Calculator]**
 - Easy (1pt): A recipe uses a temperature I'm not used to. Convert [temperature] between Celsius and Fahrenheit in Calculator? <!--easy__calculator__006-->
@@ -96,7 +96,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Calculator + Messages]**: Could you open the '[budget note title]' note in Obsidian, add up the 5 expense categories into a monthly budget, and compare it to my income in Calculator? Reply with only the final total, no other text, then message [contact] that I'll be late for dinner tonight. <!--medium__calculator__002-->
 
 **[Files]**
-- Medium (3pt): Could you find all my screenshots across folders and tell me how many there are, and the total size they take up in Files? Reply with only the count, no other text. <!--medium__files__009-->
+- Medium (3pt): Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files? <!--medium__files__009-->
 
 - Medium (3pt) **[Files]**: I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know. <!--medium__files__015-->
 
@@ -147,7 +147,7 @@ aren't grouped or predictable by position.**
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
 
-- Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month and tell me how many there are in Chrome? Also, message [contact] the count. Reply with only the count, no other text. <!--medium__chrome__011-->
+- Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month, and message [contact] the links for any related to [topic]? Reply with `Topic | Count` format. <!--medium__chrome__011-->
 
 **6. [Google Search+Telegram+Clock] — ASK USER SINGLE**
 - I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm going with on Telegram suggesting we go now; otherwise message the reopening time and set an alarm for it <!--hard__google-search-telegram-clock__018-->
@@ -155,7 +155,7 @@ aren't grouped or predictable by position.**
 
 ### Day 3
 
-- Medium (3pt) **[Google Photos + Phone]**: I'm trying to find a video I recorded recently. Can you open Google Photos, find my most recent video, and tell me how long it is? Also, call [contact] to confirm the plan for tonight. Reply with only the video length, no other text. <!--medium__google-photos__008-->
+- Medium (3pt) **[Google Photos + Phone]**: I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open it, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Reply with the video name and its length in `Name | MM:SS` format. <!--medium__google-photos__008-->
 
 **1. [Clock+Calendar] — DETERMINISTIC**
 - I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
@@ -173,7 +173,7 @@ aren't grouped or predictable by position.**
 **2. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
 - I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note title]' Obsidian note, note today's value, compare it to the last recorded value in that Obsidian note, message the person I follow this stock with on Telegram only if it has crossed the threshold since then, and update the Obsidian note with today's value <!--hard__google-search-obsidian-telegram__057-->
 
-- Medium (3pt) **[Contacts + Phone]**: Could you find contacts that share the same phone number and tell me how many duplicate pairs there are in Contacts? Also, call [contact] to confirm their address. Reply with only the count, no other text. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts + Phone]**: I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format. <!--medium__contacts__012-->
 
 - Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. Reply with only the final grade, no other text. <!--medium__calculator__001-->
 
@@ -208,7 +208,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only the number, no other text. <!--easy__prime-video__002-->
 
 **[Google Photos]**
-- Easy (1pt): I want to double-check something I screenshotted earlier. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with only the date, no other text. <!--easy__google-photos__015-->
+- Easy (1pt): I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format. <!--easy__google-photos__015-->
 
-- Medium (3pt) **[Music + Telegram]**: I've had a song stuck in my head all day and can't remember the name. Can you open YouTube Music, check my Recently Played, and tell me the last song I listened to? Then message [contact] on Telegram with the song name so they can check it out. Reply with only the song name, no other text. <!--medium__music-telegram__001-->
+- Medium (3pt) **[Music + Telegram]**: I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Music for that line, find the song, and tell me the title and artist? Then message [contact] on Telegram the song name so they can check it out. Reply with `Song | Artist` format. <!--medium__music-telegram__001-->
 

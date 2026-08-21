@@ -169,6 +169,13 @@ search word: ticket
 # Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must not run past.
 bedtime: 10:30 PM
 
+# `[video name]` — a real video to search for in the Photos video task (must exist on device).
+video name: feas_video
+
+# `[lyrics]` — a real lyric line for the YouTube Music lyrics-search task (resolves to a
+# song already in Recently Played, e.g. Blinding Lights by The Weeknd).
+lyrics: I said, ooh, I'm blinded by the lights, no, I can't sleep until I feel your touch
+
 # Recipe (name + URL) for the Clock multi-timer task; must have explicit
 # multi-step timers (`[recipe]`).
 recipe: World's Best Lasagna https://www.allrecipes.com/recipe/23600/worlds-best-lasagna/

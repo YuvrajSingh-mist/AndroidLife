@@ -83,6 +83,11 @@ SCHEMA: dict[str, tuple[str, str]] = {
       # music / clock / sleep
     "bedtime": ("Bedtime noted in the Obsidian 'Bedtime' note the sleep timer must "
                  "not run past (seed value).", "10:30 PM"),
+    "video name": ("Name of a video to search for in the Photos video task "
+                    "(`[video name]`; must exist on device).", "feas_video"),
+    "lyrics": ("A real lyric line to search for in the YouTube Music lyrics task "
+                "(`[lyrics]`; resolves to a song already in Recently Played).",
+                "I said, ooh, I'm blinded by the lights, no, I can't sleep until I feel your touch"),
     "recipe": ("Recipe (name + URL) for the Clock multi-timer task; must have explicit "
                 "multi-step timers (`[recipe]`).", "World's Best Lasagna https://www.allrecipes.com/recipe/23600/worlds-best-lasagna/"),
     # misc

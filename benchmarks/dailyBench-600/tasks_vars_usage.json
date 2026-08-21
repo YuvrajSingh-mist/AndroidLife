@@ -3,8 +3,8 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 78,
-  "placeholder_key_count_in_dataset": 113,
+  "var_key_count_in_local_env": 80,
+  "placeholder_key_count_in_dataset": 115,
   "vars": {
     "X": {
       "configured_in_local_env": true,
@@ -304,14 +304,18 @@
     },
     "contact name": {
       "configured_in_local_env": true,
-      "task_count": 2,
+      "task_count": 4,
       "days": [
         1,
-        3
+        3,
+        7,
+        20
       ],
       "tasks": [
         "easy__contacts__001",
-        "easy__contacts__003"
+        "easy__contacts__003",
+        "hard__contacts-gmail__026",
+        "medium__contacts__012"
       ]
     },
     "contact updates title": {
@@ -735,6 +739,16 @@
       ],
       "tasks": [
         "hard__calculator-obsidian-telegram__060"
+      ]
+    },
+    "lyrics": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        13
+      ],
+      "tasks": [
+        "medium__music-telegram__001"
       ]
     },
     "meeting folder": {
@@ -1356,7 +1370,7 @@
     },
     "topic": {
       "configured_in_local_env": true,
-      "task_count": 13,
+      "task_count": 14,
       "days": [
         1,
         3,
@@ -1365,6 +1379,7 @@
         17,
         18,
         21,
+        23,
         24,
         26
       ],
@@ -1379,6 +1394,7 @@
         "medium__obsidian__005",
         "easy__msn-news__002",
         "medium__google-search__010",
+        "medium__chrome__011",
         "easy__google-search__012",
         "easy__msn-news__003",
         "easy__msn-news__008"
@@ -1426,6 +1442,16 @@
       ],
       "tasks": [
         "easy__google-maps__002"
+      ]
+    },
+    "video name": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        20
+      ],
+      "tasks": [
+        "medium__google-photos__008"
       ]
     },
     "weekly meeting": {

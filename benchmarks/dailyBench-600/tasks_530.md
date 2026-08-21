@@ -414,7 +414,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you filter Downloads to only .apk or installer files, delete the ones I don't need anymore, and count what's left in Files? <!--medium__files__003-->
 
 **1. [Contacts+Gmail] — DETERMINISTIC**
-- I want to tidy up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, and tell me how many have neither a phone number nor an email. Star one of the contacts that has a complete profile as a reminder to verify it later <!--hard__contacts-gmail__026-->
+- I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and read out their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format. <!--hard__contacts-gmail__026-->
 
 **2. [Camera+Contacts+Gmail] — ASK USER SINGLE**
 - Found a handwritten note with someone's details. Take a photo of it with Camera, read off the details, check Gmail for whether that name has emailed before, merge into the existing contact if so, otherwise save as new, and verify the contact's info is complete (deliberately no person is named for the handwritten note, so the agent must ask the user whose details it is) <!--hard__camera-contacts-gmail__066-->
@@ -768,7 +768,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Medium (3pt): Could you filter today's call log to only calls over 5 minutes, note the longest, and check who it was with in Phone? <!--medium__phone__006-->
 
-- Medium (3pt) **[Music+Telegram]**: I've had a song stuck in my head all day and can't remember the name. Can you open YouTube Music, check my Recently Played, and tell me the last song I listened to? Then message [contact] on Telegram with the song name so they can check it out. Reply with only the song name, no other text. <!--medium__music-telegram__001-->
+- Medium (3pt) **[Music+Telegram]**: I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Music for that line, find the song, and tell me the title and artist? Then message [contact] on Telegram the song name so they can check it out. Reply with `Song | Artist` format. <!--medium__music-telegram__001-->
 
 **[Google Docs]**
 - Medium (3pt): Could you open the '[doc name]' document in Google Docs and count how many times the word '[keyword]' appears? Reply with only the number, no other text, then highlight all occurrences. <!--medium__google-docs__003-->
@@ -1153,7 +1153,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Telegram]**
 - Easy (1pt): I don't want them to know I've seen the message yet. Can you mute notifications for [contact] in Telegram so I can check quietly? <!--easy__telegram__010-->
 
-- Medium (3pt) **[Google Photos+Phone]**: I'm trying to find a video I recorded recently. Can you open Google Photos, find my most recent video, and tell me how long it is? Also, call [contact] to confirm the plan for tonight. Reply with only the video length, no other text. <!--medium__google-photos__008-->
+- Medium (3pt) **[Google Photos+Phone]**: I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open it, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Reply with the video name and its length in `Name | MM:SS` format. <!--medium__google-photos__008-->
 
 **[Calendar]**
 - Easy (1pt): I want a sense of how full tomorrow's going to be. Can you tell me how many events are scheduled tomorrow in Calendar? <!--easy__calendar__012-->
@@ -1165,7 +1165,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just found out when their birthday is. Can you add a birthday to the contact [hc contact name] in Contacts? <!--easy__contacts__013-->
 
-- Medium (3pt) **[Contacts+Phone]**: Could you find contacts that share the same phone number and tell me how many duplicate pairs there are in Contacts? Also, call [contact] to confirm their address. Reply with only the count, no other text. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts+Phone]**: I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format. <!--medium__contacts__012-->
 
 **[Phone]**
 - Easy (1pt): I saw I missed a call and want to know who it was. Can you check my most recent missed call in Phone? <!--easy__phone__010-->
@@ -1303,7 +1303,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Settings]**
 - Medium (3pt): Could you rank apps by notification count this week, turn off notifications for the noisiest, and note the change in Settings? <!--medium__settings__011-->
 
-- Medium (3pt) **[Chrome+Messages]**: Could you filter my bookmarks to only ones added this month and tell me how many there are in Chrome? Also, message [contact] the count. Reply with only the count, no other text. <!--medium__chrome__011-->
+- Medium (3pt) **[Chrome+Messages]**: Could you filter my bookmarks to only ones added this month, and message [contact] the links for any related to [topic]? Reply with `Topic | Count` format. <!--medium__chrome__011-->
 
 - Medium (3pt) **[Messages+Obsidian]**: Could you summarize a group thread's discussion while I was away, save the summary as a note, and reply if action is needed in Messages? <!--medium__messages-obsidian__001-->
 
@@ -1587,7 +1587,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? <!--medium__calendar__013-->
 
 **[Google Photos]**
-- Easy (1pt): I want to double-check something I screenshotted earlier. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with only the date, no other text. <!--easy__google-photos__015-->
+- Easy (1pt): I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format. <!--easy__google-photos__015-->
 
 **1. [Gmail] — ASK USER SINGLE**
 - There's an urgent email I should deal with. Find the most recent unread email marked important today in Gmail, reply to it with an appropriate short response, and star it (deliberately no reply content is specified, so the agent must ask the user what to respond) <!--hard__gmail__093-->
