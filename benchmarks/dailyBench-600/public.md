@@ -89,7 +89,7 @@ aren't grouped or predictable by position.**
 - I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the difference, and message [contact] on Telegram the cheaper link if it's over $10; otherwise note both prices and star the cheaper listing <!--hard__chrome-telegram-notes__008-->
 
 **2. [Gmail+Calendar] — ASK USER - MULTI**
-- I'm need details about my trip quickly. Find my flight confirmation email for that trip, extract the details like flight name, departure time and terminal for me and yea could you forward it to my friend's email id too? And also for my end, add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
+- I'm need details about my next trip quickly. Find my flight confirmation email for that trip, extract the details like flight name, departure time and terminal for me and yea could you forward it to my friend's email id too? And also for my end, add it to the Calendar as a reminder 3 hours before departure so I get a heads-up? <!--hard__gmail-calendar__003-->
 
 - Medium (3pt) **[Chrome + Messages]**: Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's been looking for cheap earbuds recently. <!--medium__chrome__003-->
 
@@ -122,7 +122,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
 
 **5. [Music+Obsidian] — ASK USER - MULTI**
-- I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what jusic helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately? <!--hard__music-obsidian__077-->
+- I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately? <!--hard__music-obsidian__077-->
 
 **[Swiggy]**
 - Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? Reply with only the delivery status, no other text. <!--easy__swiggy__001-->

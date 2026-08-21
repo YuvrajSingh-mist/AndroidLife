@@ -479,14 +479,15 @@
       "music_apps": [
         {
           "app": "YouTube Music",
-          "account": "yuvraj.mist@gmail.com",
+          "account": "b123153@iiit-bh.ac.in",
           "premium": false,
           "downloads_enabled": true,
           "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix"
         },
         {
           "app": "Amazon Music",
-          "account": "rajceo2031@gmail.com",
+           "downloads_enabled": true,
+          "account": "ranirajesh786@gmail.com",
           "premium": true,
           "sleep_playlist": "Lo-Fi Sleep Beats"
         }
@@ -496,8 +497,8 @@
       "notes": {
         "Bedtime": {
           "time": "10:30 PM",
-          "record": "sleep routine log: 10:30 PM bedtime, lo-fi beats by Chillhop helps me fall asleep",
-          "source": "real on-device note (Obsidian 'Bedtime.md', filled per the task)"
+          "record": "sleep routine log (Obsidian 'Bedtime.md'): lo-fi beats by Chillhop — sleep playlist 'Chillhop Lofi Beats - Sleep Mix' (YouTube Music) + back-up 'Lo-Fi Sleep Beats' (Amazon Music); bedtime 10:30 PM, wake 6:30 AM, ~8h goal; recent nights logged with sleep timings",
+          "source": "real on-device note (Obsidian 'Bedtime.md', seeded with the sleep-routine record per the task)"
         }
       },
       "preferences": {

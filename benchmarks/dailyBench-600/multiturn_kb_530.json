@@ -690,8 +690,8 @@
       "notes": {
         "Bedtime": {
           "time": "10:30 PM",
-          "record": "sleep routine log: 10:30 PM bedtime, lo-fi beats by Chillhop helps me fall asleep",
-          "source": "real on-device note (Obsidian 'Bedtime.md', filled per the task)"
+          "record": "sleep routine log (Obsidian 'Bedtime.md'): lo-fi beats by Chillhop — sleep playlist 'Chillhop Lofi Beats - Sleep Mix' (YouTube Music) + back-up 'Lo-Fi Sleep Beats' (Amazon Music); bedtime 10:30 PM, wake 6:30 AM, ~8h goal; recent nights logged with sleep timings",
+          "source": "real on-device note (Obsidian 'Bedtime.md', seeded with the sleep-routine record per the task)"
         }
       },
       "preferences": {

@@ -21,10 +21,10 @@ Notes enriched (answer value kept EXACTLY):
                           (medium__gallery__007)
 - Contact Updates.md   -> Dad Evalueserve +91 00030 30301, Yuvraj Singh Jio
                           +91 00030 30302 (hard__contacts-obsidian__029)
-
-Bedtime.md is intentionally NOT enriched: the sleep-timer task targets a single
-bedtime and the seed logic (seed_data.py seed_day3_music) deliberately keeps it
-to only the time.
+- Bedtime.md           -> sleep-routine record: bedtime 10:30 PM, wake 6:30 AM,
+                          lo-fi beats by Chillhop (Chillhop Lofi Beats - Sleep
+                          Mix on YouTube Music / Lo-Fi Sleep Beats on Amazon),
+                          recent nights logged (hard__music-obsidian__077)
 
 Pure-python; pushes to the device vault and media-scans. Writes templates to
 assets/seeds/public/notes/ so the enrichment is reproducible.
@@ -200,6 +200,32 @@ Numbers that changed recently - update Contacts when you see these.
 ## Notes
 - Dad's office line; reachable only in the evening.
 - Jio is the second SIM; WhatsApp is on the same number.
+""",
+    "Bedtime.md": """# Bedtime
+
+## Sleep routine record
+What I listen to wind down and my sleep timings - kept as a log so I can see
+what's working and when I'm actually getting to bed.
+
+## Wind-down music
+- Genre: lo-fi beats (go-to artist: Chillhop)
+- Sleep playlist (YouTube Music): Chillhop Lofi Beats - Sleep Mix
+- Back-up sleep playlist (Amazon Music): Lo-Fi Sleep Beats
+- Volume low (~20%), repeat off (single track)
+
+## Sleep timings
+- Bedtime: 10:30 PM
+- Wake-up: 6:30 AM
+- Sleep goal: ~8 hours
+
+## Recent log
+- 2026-08-18 (Mon): 10:30 PM - Chillhop Lofi Beats - Sleep Mix, asleep by ~11:15 PM
+- 2026-08-19 (Tue): 10:30 PM - Lo-Fi Sleep Beats (Amazon Music), asleep by ~11:00 PM
+- 2026-08-20 (Wed): 10:30 PM - Chillhop Lofi Beats - Sleep Mix, asleep by ~10:55 PM
+- 2026-08-21 (Thu): 10:30 PM - Chillhop lo-fi track with sleep timer, stopped on time
+
+## Habit
+- Start a Chillhop lo-fi track before bed, let the sleep timer stop it at bedtime.
 """,
 }
 

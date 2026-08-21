@@ -708,7 +708,19 @@ def seed_day3_music(serial: str) -> None:
     if not (d3 / "bedtime.md").exists():
         d3.mkdir(parents=True, exist_ok=True)
         (d3 / "bedtime.md").write_text(
-            f"# Bedtime\n\n- {bedtime}\n", encoding="utf-8")
+            f"# Bedtime\n\n## Sleep routine record\n"
+            f"What I listen to wind down and my sleep timings — kept as a log so I can see\n"
+            f"what's working and when I'm actually getting to bed.\n\n"
+            f"## Wind-down music\n"
+            f"- Genre: lo-fi beats (go-to artist: Chillhop)\n"
+            f"- Sleep playlist (YouTube Music): Chillhop Lofi Beats - Sleep Mix\n"
+            f"- Back-up sleep playlist (Amazon Music): Lo-Fi Sleep Beats\n"
+            f"- Volume low (~20%), repeat off (single track)\n\n"
+            f"## Sleep timings\n"
+            f"- Bedtime: {bedtime}\n"
+            f"- Wake-up: 6:30 AM\n"
+            f"- Sleep goal: ~8 hours\n",
+            encoding="utf-8")
         print(f"  materialised assets/seeds/day_3/bedtime.md (Bedtime={bedtime})")
         # (re)push now that the file exists
         vault = device_paths.vault_path(serial)
