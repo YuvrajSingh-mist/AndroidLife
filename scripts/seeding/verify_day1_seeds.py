@@ -272,8 +272,7 @@ def device_checks_day2(serial: str, cfg: dict[str, str]) -> None:
     # photos-gmail-obsidian__012: {contact} has a fabricated saved email so the
     # "email it to them if so" branch can trigger.
     contact = cfg["contact"]
-    seed_mod = load_module("seed_data", SEED_SCRIPT)
-    contact_email = seed_mod.CONTACT_EMAIL
+    contact_email = device_paths.contact_email(cfg)
     rc, out = shell(serial, "content query --uri content://com.android.contacts/data --projection data1")
     email_ok = contact_email in out
     report("contact_email", "PASS" if email_ok else "FAIL",
@@ -399,16 +398,9 @@ def device_checks_day6(serial: str, cfg: dict[str, str]) -> None:
            "old_doc_1-3.txt present (medium__files__002)" if not missing else f"missing: {missing}")
 
     rc, out = shell(serial, "content query --uri content://com.android.contacts/data --projection data1")
-    email_ok = seed_contact_email_value() in out
+    email_ok = device_paths.contact_email(cfg) in out
     report("duplicate_email", "PASS" if email_ok else "FAIL",
-           f"'{seed_contact_email_value()}' on persona contact (medium__contacts__005)" if email_ok else "no fabricated email to duplicate")
-
-
-def seed_contact_email_value() -> str:
-    """The fabricated persona email used across seeds (imported lazily to avoid
-    a hard dependency on seed_data internals at import time)."""
-    seed_mod = load_module("seed_data", SEED_SCRIPT)
-    return seed_mod.CONTACT_EMAIL
+           f"'{device_paths.contact_email(cfg)}' on persona contact (medium__contacts__005)" if email_ok else "no fabricated email to duplicate")
 
 
 def main() -> int:
