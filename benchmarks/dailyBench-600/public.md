@@ -77,7 +77,7 @@ aren't grouped or predictable by position.**
 - Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **6. [Contacts+Gmail] — DETERMINISTIC**
-- I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and read out their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format. <!--hard__contacts-gmail__026-->
+- I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and tell me their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format. <!--hard__contacts-gmail__026-->
 
 **[Calculator]**
 - Easy (1pt): A recipe uses a temperature I'm not used to. Convert [temperature] between Celsius and Fahrenheit in Calculator? <!--easy__calculator__006-->
@@ -155,7 +155,7 @@ aren't grouped or predictable by position.**
 
 ### Day 3
 
-- Medium (3pt) **[Google Photos + Phone]**: I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open it, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Reply with the video name and its length in `Name | MM:SS` format. <!--medium__google-photos__008-->
+- Medium (3pt) **[Google Photos + Phone]**: I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format. <!--medium__google-photos__008-->
 
 **1. [Clock+Calendar] — DETERMINISTIC**
 - I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
@@ -173,7 +173,7 @@ aren't grouped or predictable by position.**
 **2. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
 - I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note title]' Obsidian note, note today's value, compare it to the last recorded value in that Obsidian note, message the person I follow this stock with on Telegram only if it has crossed the threshold since then, and update the Obsidian note with today's value <!--hard__google-search-obsidian-telegram__057-->
 
-- Medium (3pt) **[Contacts + Phone]**: I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts + Phone]**: I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say "The number isn't available". <!--medium__contacts__012-->
 
 - Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. Reply with only the final grade, no other text. <!--medium__calculator__001-->
 
@@ -208,7 +208,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only the number, no other text. <!--easy__prime-video__002-->
 
 **[Google Photos]**
-- Easy (1pt): I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format. <!--easy__google-photos__015-->
+- Easy (1pt): I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format. <!--easy__google-photos__015-->
 
 - Medium (3pt) **[Music + Telegram]**: I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Music for that line, find the song, and tell me the title and artist? Then message [contact] on Telegram the song name so they can check it out. Reply with `Song | Artist` format. <!--medium__music-telegram__001-->
 

@@ -689,8 +689,8 @@
       "is_ask_user": false,
       "task_number_within_app": 26,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and read out their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format.",
-      "prompt_template": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named {{ contact name }}, and read out their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format.",
+      "prompt_text": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and tell me their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format.",
+      "prompt_template": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named {{ contact name }}, and tell me their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format.",
       "placeholders": [
         "contact name"
       ],
@@ -1474,8 +1474,8 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open it, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Reply with the video name and its length in `Name | MM:SS` format.",
-      "prompt_template": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '{{ video name }}', open it, and see if it plays without any errors? Also, call {{ contact }} to confirm the plan for tonight. Reply with the video name and its length in `Name | MM:SS` format.",
+      "prompt_text": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
+      "prompt_template": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '{{ video name }}', open the first video, and see if it plays without any errors? Also, call {{ contact }} to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
       "placeholders": [
         "video name",
         "contact"
@@ -1687,8 +1687,8 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format.",
-      "prompt_template": "I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named {{ contact name }}, and read out the phone number saved for them. Then call {{ contact }} to confirm their address. Reply with `Name | Number` format.",
+      "prompt_text": "I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say \"The number isn't available\".",
+      "prompt_template": "I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named {{ contact name }}, and read out the phone number saved for them. Then call {{ contact }} to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say \"The number isn't available\".",
       "placeholders": [
         "contact name",
         "contact"
@@ -2028,8 +2028,8 @@
       "is_ask_user": false,
       "task_number_within_app": 15,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format.",
-      "prompt_template": "I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format.",
+      "prompt_text": "I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format.",
+      "prompt_template": "I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,

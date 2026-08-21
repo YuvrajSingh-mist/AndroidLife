@@ -1587,7 +1587,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? <!--medium__calendar__013-->
 
 **[Google Photos]**
-- Easy (1pt): I want to find a screenshot I took recently. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot and the total number of screenshots in the album? Reply with `Date | Count` format. <!--easy__google-photos__015-->
+- Easy (1pt): I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format. <!--easy__google-photos__015-->
 
 **1. [Gmail] — ASK USER SINGLE**
 - There's an urgent email I should deal with. Find the most recent unread email marked important today in Gmail, reply to it with an appropriate short response, and star it (deliberately no reply content is specified, so the agent must ask the user what to respond) <!--hard__gmail__093-->
