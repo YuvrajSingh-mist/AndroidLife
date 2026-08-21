@@ -538,7 +538,7 @@ def verify(serial: str, prof: dict) -> bool:
 
 def _line_for(haystack: str, title: str) -> str:
     for line in haystack.splitlines():
-        if title in line:
+        if title in line and "deleted=1" not in line:
             return line
     return ""
 

@@ -208,7 +208,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only the number, no other text. <!--easy__prime-video__002-->
 
 **[Google Photos]**
-- Easy (1pt): I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format. <!--easy__google-photos__015-->
+- Easy (1pt): I'm trying to recall where I took my most recent photo. Can you open Google Photos, tell me the location of that photo? Actually, along with that, also please let me know if it's backed up to the cloud or not. <!--easy__google-photos__015-->
 
 - Medium (3pt) **[Music + Telegram]**: I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Music for that line, find the song, and tell me the title and artist? Then message [contact] on Telegram the song name so they can check it out. Reply with `Song | Artist` format. <!--medium__music-telegram__001-->
 

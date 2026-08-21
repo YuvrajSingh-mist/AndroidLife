@@ -841,7 +841,7 @@
       "task_id": "easy__google-photos__015",
       "difficulty": "easy",
       "category_name": "Google Photos",
-      "prompt": "I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format.",
+      "prompt": "I'm trying to recall where I took my most recent photo. Can you open Google Photos, tell me the location of that photo? Actually, along with that, also please let me know if it's backed up to the cloud or not.",
       "points": 1,
       "cross_app": false,
       "is_ask_user": false,
@@ -10608,7 +10608,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 0,
-      "prompt": "I'm trying to find a screenshot I took recently to reference something. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with just the date in `YYYY-MM-DD` format.",
+      "prompt": "I'm trying to recall where I took my most recent photo. Can you open Google Photos, tell me the location of that photo? Actually, along with that, also please let me know if it's backed up to the cloud or not.",
       "note": ""
     },
     {
