@@ -21,10 +21,11 @@ Notes enriched (answer value kept EXACTLY):
                           (medium__gallery__007)
 - Contact Updates.md   -> Dad Evalueserve +91 00030 30301, Yuvraj Singh Jio
                           +91 00030 30302 (hard__contacts-obsidian__029)
-- Bedtime.md           -> sleep-routine record: bedtime 10:30 PM, wake 6:30 AM,
-                          lo-fi beats by Chillhop (Chillhop Lofi Beats - Sleep
-                          Mix on YouTube Music / Lo-Fi Sleep Beats on Amazon),
-                          recent nights logged (hard__music-obsidian__077)
+- Bedtime.md           -> 7-day sleep-journey record: varied bedtimes + artists/
+                          genres (jazz, classic rock, lo-fi) with lo-fi most
+                          frequent; bedtime 10:30 PM; the sole source of truth
+                          for hard__music-obsidian__077 (KB holds only the note
+                          name/path, no answer-leaking fields)
 
 Pure-python; pushes to the device vault and media-scans. Writes templates to
 assets/seeds/public/notes/ so the enrichment is reproducible.
@@ -205,27 +206,50 @@ Numbers that changed recently - update Contacts when you see these.
 
 ## Sleep routine record
 What I listen to wind down and my sleep timings - kept as a log so I can see
-what's working and when I'm actually getting to bed.
+what's working and when I'm actually getting to bed. Last 7 nights.
 
-## Wind-down music
-- Genre: lo-fi beats (go-to artist: Chillhop)
-- Sleep playlist (YouTube Music): Chillhop Lofi Beats - Sleep Mix
-- Back-up sleep playlist (Amazon Music): Lo-Fi Sleep Beats
-- Volume low (~20%), repeat off (single track)
+## 2026-08-15 (Sat)
+- Bedtime: 10:30 PM, asleep by ~11:15 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) - lo-fi beats
+- Note: easy night, sleep timer stopped it right on time
 
-## Sleep timings
-- Bedtime: 10:30 PM
-- Wake-up: 6:30 AM
-- Sleep goal: ~8 hours
+## 2026-08-16 (Sun)
+- Bedtime: 10:45 PM, asleep by ~11:30 PM
+- Wind-down: Kind of Blue - Miles Davis (Amazon Music) - jazz
+- Note: tried jazz, took a little longer to drift off
 
-## Recent log
-- 2026-08-18 (Mon): 10:30 PM - Chillhop Lofi Beats - Sleep Mix, asleep by ~11:15 PM
-- 2026-08-19 (Tue): 10:30 PM - Lo-Fi Sleep Beats (Amazon Music), asleep by ~11:00 PM
-- 2026-08-20 (Wed): 10:30 PM - Chillhop Lofi Beats - Sleep Mix, asleep by ~10:55 PM
-- 2026-08-21 (Thu): 10:30 PM - Chillhop lo-fi track with sleep timer, stopped on time
+## 2026-08-17 (Mon)
+- Bedtime: 10:20 PM, asleep by ~11:05 PM
+- Wind-down: Hotel California - Eagles (YouTube Music) - classic rock
+- Note: rock was too upbeat, had to skip to something calmer
+
+## 2026-08-18 (Tue)
+- Bedtime: 10:30 PM, asleep by ~11:10 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) - lo-fi beats
+- Note: back to lo-fi, felt properly sleepy
+
+## 2026-08-19 (Wed)
+- Bedtime: 10:25 PM, asleep by ~11:00 PM
+- Wind-down: Lo-Fi Sleep Beats (Amazon Music) - lo-fi beats
+- Note: lo-fi again, worked just as well on Amazon
+
+## 2026-08-20 (Thu)
+- Bedtime: 10:30 PM, asleep by ~11:05 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) - lo-fi beats
+- Note: usual routine, timer stopped at bedtime
+
+## 2026-08-21 (Fri)
+- Bedtime: 10:30 PM, asleep by ~11:00 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) - lo-fi beats
+- Note: consistent - lo-fi beats help me sleep most nights
+
+## What's been working
+- Lo-fi beats get me to sleep fastest (used most of the last 7 nights)
+- Bedtime settled at 10:30 PM
+- Favorite app for this lately: YouTube Music
 
 ## Habit
-- Start a Chillhop lo-fi track before bed, let the sleep timer stop it at bedtime.
+- Start a Chillhop lo-fi track, set a sleep timer so it stops by itself at bedtime.
 """,
 }
 

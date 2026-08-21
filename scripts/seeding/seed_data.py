@@ -687,19 +687,79 @@ def seed_day4(serial: str) -> None:
     seed_missed_call(serial, cfg["digits"])
 
 
+def _bedtime_note_template(bedtime: str) -> str:
+    """Render the 7-day Obsidian 'Bedtime' sleep-routine record (day-3 seed).
+
+    A proper human sleep log: varied bedtimes + artists/genres across 7 nights
+    (lo-fi most frequent - that is the answer the agent must read out). The
+    bedtime line comes from the config var so it stays consistent with the
+    sleep-timer target.
+    """
+    return f"""# Bedtime
+
+## Sleep routine record
+What I listen to wind down and my sleep timings — kept as a log so I can see
+what's working and when I'm actually getting to bed. Last 7 nights.
+
+## 2026-08-15 (Sat)
+- Bedtime: {bedtime}, asleep by ~11:15 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) — lo-fi beats
+- Note: easy night, sleep timer stopped it right on time
+
+## 2026-08-16 (Sun)
+- Bedtime: 10:45 PM, asleep by ~11:30 PM
+- Wind-down: Kind of Blue - Miles Davis (Amazon Music) — jazz
+- Note: tried jazz, took a little longer to drift off
+
+## 2026-08-17 (Mon)
+- Bedtime: 10:20 PM, asleep by ~11:05 PM
+- Wind-down: Hotel California - Eagles (YouTube Music) — classic rock
+- Note: rock was too upbeat, had to skip to something calmer
+
+## 2026-08-18 (Tue)
+- Bedtime: {bedtime}, asleep by ~11:10 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) — lo-fi beats
+- Note: back to lo-fi, felt properly sleepy
+
+## 2026-08-19 (Wed)
+- Bedtime: 10:25 PM, asleep by ~11:00 PM
+- Wind-down: Lo-Fi Sleep Beats (Amazon Music) — lo-fi beats
+- Note: lo-fi again, worked just as well on Amazon
+
+## 2026-08-20 (Thu)
+- Bedtime: {bedtime}, asleep by ~11:05 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) — lo-fi beats
+- Note: usual routine, timer stopped at bedtime
+
+## 2026-08-21 (Fri)
+- Bedtime: {bedtime}, asleep by ~11:00 PM
+- Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) — lo-fi beats
+- Note: consistent — lo-fi beats help me sleep most nights
+
+## What's been working
+- Lo-fi beats get me to sleep fastest (used most of the last 7 nights)
+- Bedtime settled at {bedtime}
+- Favorite app for this lately: YouTube Music
+
+## Habit
+- Start a Chillhop lo-fi track, set a sleep timer so it stops by itself at bedtime
+"""
+
+
 def seed_day3_music(serial: str) -> None:
     """Seed Day-3 Music sleep-timer artifacts (hard__music-obsidian__077).
 
-    The task now requires the agent to *search YouTube Music for the [music type]
-    and download the highly-liked video of it* (real app + web state, no
-    fabricated audio), so the only ADB-seedable artifact here is the Obsidian
-    'Bedtime' note the sleep timer must be compared against and not run past.
+    The task asks the agent to set a sleep timer so music stops by itself around
+    the user's bedtime, and the source of truth is the Obsidian 'Bedtime' note
+    (a 7-day sleep-routine record: what music helps sleep + the sleep timings).
+    The only ADB-seedable artifact here is that note; the music playback itself
+    is real app + web state (no fabricated audio).
     """
     cfg = load_user_config(CONFIG_PATH)
 
-    # Obsidian Bedtime note. Carries ONLY the bedtime time (from the config var) —
-    # no date: the sleep-timer task targets "the next upcoming bedtime", so the
-    # note just needs the time and the agent picks the next occurrence of it.
+    # Obsidian Bedtime note: a 7-day sleep-journey record with varied artists /
+    # genres (lo-fi most frequent) + varied sleep timings (bedtime from config).
+    # The agent must READ this note to find the bedtime + the music that helps.
     bedtime = cfg.get("bedtime", "10:30 PM")
     push_obsidian_note(
         serial, 3, "hard__music-obsidian__077", "bedtime.md", "Bedtime.md")
@@ -708,19 +768,7 @@ def seed_day3_music(serial: str) -> None:
     if not (d3 / "bedtime.md").exists():
         d3.mkdir(parents=True, exist_ok=True)
         (d3 / "bedtime.md").write_text(
-            f"# Bedtime\n\n## Sleep routine record\n"
-            f"What I listen to wind down and my sleep timings — kept as a log so I can see\n"
-            f"what's working and when I'm actually getting to bed.\n\n"
-            f"## Wind-down music\n"
-            f"- Genre: lo-fi beats (go-to artist: Chillhop)\n"
-            f"- Sleep playlist (YouTube Music): Chillhop Lofi Beats - Sleep Mix\n"
-            f"- Back-up sleep playlist (Amazon Music): Lo-Fi Sleep Beats\n"
-            f"- Volume low (~20%), repeat off (single track)\n\n"
-            f"## Sleep timings\n"
-            f"- Bedtime: {bedtime}\n"
-            f"- Wake-up: 6:30 AM\n"
-            f"- Sleep goal: ~8 hours\n",
-            encoding="utf-8")
+            _bedtime_note_template(bedtime), encoding="utf-8")
         print(f"  materialised assets/seeds/day_3/bedtime.md (Bedtime={bedtime})")
         # (re)push now that the file exists
         vault = device_paths.vault_path(serial)

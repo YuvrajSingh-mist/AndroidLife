@@ -673,35 +673,20 @@
       "music_apps": [
         {
           "app": "YouTube Music",
-          "account": "yuvraj.mist@gmail.com",
-          "premium": false,
-          "downloads_enabled": true,
-          "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix"
+          "account": "yuvraj.mist@gmail.com"
         },
         {
           "app": "Amazon Music",
-          "account": "rajceo2031@gmail.com",
-          "premium": true,
-          "sleep_playlist": "Lo-Fi Sleep Beats"
+          "account": "rajceo2031@gmail.com"
         }
       ],
-      "favorite_genre": "lo-fi beats",
-      "sleep_artist": "Chillhop",
       "notes": {
         "Bedtime": {
-          "time": "10:30 PM",
-          "record": "sleep routine log (Obsidian 'Bedtime.md'): lo-fi beats by Chillhop — sleep playlist 'Chillhop Lofi Beats - Sleep Mix' (YouTube Music) + back-up 'Lo-Fi Sleep Beats' (Amazon Music); bedtime 10:30 PM, wake 6:30 AM, ~8h goal; recent nights logged with sleep timings",
-          "source": "real on-device note (Obsidian 'Bedtime.md', seeded with the sleep-routine record per the task)"
+          "name": "Bedtime",
+          "path": "/sdcard/Obsidian/Papers vault oneplus /Bedtime.md",
+          "app": "Obsidian",
+          "purpose": "my sleep-routine record (what I listen to wind down + my sleep timings) - read it to set up the timer"
         }
-      },
-      "preferences": {
-        "wake_up_time": "6:30 AM",
-        "sleep_goal_hours": 8,
-        "wind_down_routine": "listens to lo-fi beats while falling asleep",
-        "volume": "low (~20%)",
-        "repeat_mode": "off (single track)",
-        "fall_asleep_habit": "starts a Chillhop lo-fi track then lets the timer stop it",
-        "favorite_music_app": "YouTube Music"
       }
     }
   },
