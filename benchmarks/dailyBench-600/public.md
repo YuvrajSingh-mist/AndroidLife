@@ -26,7 +26,7 @@ aren't grouped or predictable by position.**
 **[Google Photos]**
 - Easy (1pt): I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only the number, no other text. <!--easy__gallery__012-->
 
-- Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
+- Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and tell me how many there are in Contacts? Also, call [contact] to confirm their number. Reply with only the count, no other text. <!--medium__contacts__009-->
 
 **[Google Drive]**
 - Medium (3pt): Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text. <!--medium__google-drive__007-->
@@ -54,7 +54,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Google Photos + Obsidian]**: I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you open Google Photos Favourites, find the appropriate photo for each heading by looking at each photo's description, and copy each one into the note under the matching heading, one by one? Reply with only the number of photos added, no other text. <!--medium__gallery__007-->
 
 **[Files]**
-- Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
+- Medium (3pt): Could you look in my Downloads folder, find any duplicate files, and tell me how many duplicate pairs there are in Files? Reply with only the count, no other text. <!--medium__files__013-->
 <!-- 🔮 HALLUCINATION CONTROL (easy__files__002, absent-entity): data genuinely absent (No '{hc scans folder}' folder exists in Files.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): That scans folder is taking up space I don't want to waste. Can you empty the [hc scans folder] folder in Files for me? <!--easy__files__002-->
 
@@ -68,7 +68,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
 **3. [Drive+Notes+Telegram] — ASK USER SINGLE**
-- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way <!--hard__drive-notes-telegram__010-->
+- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way (deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message) <!--hard__drive-notes-telegram__010-->
 
 **4. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
@@ -77,7 +77,7 @@ aren't grouped or predictable by position.**
 - Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **6. [Contacts+Gmail] — DETERMINISTIC**
-- I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later <!--hard__contacts-gmail__026-->
+- I want to tidy up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, and tell me how many have neither a phone number nor an email. Star one of the contacts that has a complete profile as a reminder to verify it later <!--hard__contacts-gmail__026-->
 
 **[Calculator]**
 - Easy (1pt): A recipe uses a temperature I'm not used to. Convert [temperature] between Celsius and Fahrenheit in Calculator? <!--easy__calculator__006-->
@@ -96,7 +96,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Calculator + Messages]**: Could you open the '[budget note title]' note in Obsidian, add up the 5 expense categories into a monthly budget, and compare it to my income in Calculator? Reply with only the final total, no other text, then message [contact] that I'll be late for dinner tonight. <!--medium__calculator__002-->
 
 **[Files]**
-- Medium (3pt): Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files? <!--medium__files__009-->
+- Medium (3pt): Could you find all my screenshots across folders and tell me how many there are, and the total size they take up in Files? Reply with only the count, no other text. <!--medium__files__009-->
 
 - Medium (3pt) **[Files]**: I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know. <!--medium__files__015-->
 
@@ -147,7 +147,7 @@ aren't grouped or predictable by position.**
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
 
-- Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month, delete any duplicates, and count what's left in Chrome? Also, message [contact] the count. <!--medium__chrome__011-->
+- Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month and tell me how many there are in Chrome? Also, message [contact] the count. Reply with only the count, no other text. <!--medium__chrome__011-->
 
 **6. [Google Search+Telegram+Clock] — ASK USER SINGLE**
 - I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm going with on Telegram suggesting we go now; otherwise message the reopening time and set an alarm for it <!--hard__google-search-telegram-clock__018-->
@@ -155,7 +155,7 @@ aren't grouped or predictable by position.**
 
 ### Day 3
 
-- Medium (3pt) **[Google Photos + Phone]**: Could you filter the library to only videos over 1 minute long, delete the longest if it's unneeded, and count what's left in Google Photos? Also, call [contact] to confirm the plan for tonight. <!--medium__google-photos__008-->
+- Medium (3pt) **[Google Photos + Phone]**: I'm trying to find a video I recorded recently. Can you open Google Photos, find my most recent video, and tell me how long it is? Also, call [contact] to confirm the plan for tonight. Reply with only the video length, no other text. <!--medium__google-photos__008-->
 
 **1. [Clock+Calendar] — DETERMINISTIC**
 - I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->
@@ -173,7 +173,7 @@ aren't grouped or predictable by position.**
 **2. [Google Search+Obsidian+Telegram] — ASK USER SINGLE**
 - I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note title]' Obsidian note, note today's value, compare it to the last recorded value in that Obsidian note, message the person I follow this stock with on Telegram only if it has crossed the threshold since then, and update the Obsidian note with today's value <!--hard__google-search-obsidian-telegram__057-->
 
-- Medium (3pt) **[Contacts + Phone]**: Could you merge duplicate contacts sharing the same phone number, confirm only one remains, and check its info is complete in Contacts? Also, call [contact] to confirm their address. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts + Phone]**: Could you find contacts that share the same phone number and tell me how many duplicate pairs there are in Contacts? Also, call [contact] to confirm their address. Reply with only the count, no other text. <!--medium__contacts__012-->
 
 - Medium (3pt) **[Calculator + Obsidian + Notes]**: I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute the weighted average in Calculator? Write the final grade in a note. Oh and check whether it meets the passing threshold of [passing threshold]. That's the real ask. Reply with only the final grade, no other text. <!--medium__calculator__001-->
 
@@ -208,7 +208,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only the number, no other text. <!--easy__prime-video__002-->
 
 **[Google Photos]**
-- Easy (1pt): That screenshot was a mistake and I want it gone. Can you delete my most recent screenshot in Google Photos? <!--easy__google-photos__015-->
+- Easy (1pt): I want to double-check something I screenshotted earlier. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with only the date, no other text. <!--easy__google-photos__015-->
 
-- Medium (3pt) **[Music + Telegram]**: Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music? <!--medium__music-telegram__001-->
+- Medium (3pt) **[Music + Telegram]**: I've had a song stuck in my head all day and can't remember the name. Can you open YouTube Music, check my Recently Played, and tell me the last song I listened to? Then message [contact] on Telegram with the song name so they can check it out. Reply with only the song name, no other text. <!--medium__music-telegram__001-->
 

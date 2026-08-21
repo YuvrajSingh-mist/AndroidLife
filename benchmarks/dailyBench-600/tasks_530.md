@@ -414,7 +414,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you filter Downloads to only .apk or installer files, delete the ones I don't need anymore, and count what's left in Files? <!--medium__files__003-->
 
 **1. [Contacts+Gmail] — DETERMINISTIC**
-- I want to clean up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, delete only the ones with neither, and star one of the remaining contacts as a reminder to verify it later <!--hard__contacts-gmail__026-->
+- I want to tidy up my contacts. Find all Contacts missing a phone number, list them, check each against Gmail for a saved email, and tell me how many have neither a phone number nor an email. Star one of the contacts that has a complete profile as a reminder to verify it later <!--hard__contacts-gmail__026-->
 
 **2. [Camera+Contacts+Gmail] — ASK USER SINGLE**
 - Found a handwritten note with someone's details. Take a photo of it with Camera, read off the details, check Gmail for whether that name has emailed before, merge into the existing contact if so, otherwise save as new, and verify the contact's info is complete (deliberately no person is named for the handwritten note, so the agent must ask the user whose details it is) <!--hard__camera-contacts-gmail__066-->
@@ -684,7 +684,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
 - One of my daily shows is apparently leaving soon and I don't want to lose it. Can you check what's leaving soonest in my Watchlist and save it for me? <!--hard__prime-video__005-->
 
-- Medium (3pt) **[Contacts+Phone]**: Could you find all contacts missing a phone number, list them, and delete the ones with no other info in Contacts? Also, call [contact] to confirm their number. <!--medium__contacts__009-->
+- Medium (3pt) **[Contacts+Phone]**: Could you find all contacts missing a phone number, list them, and tell me how many there are in Contacts? Also, call [contact] to confirm their number. Reply with only the count, no other text. <!--medium__contacts__009-->
 
 **[Contacts]**
 - Easy (1pt): I just met someone and want to save their number before I lose it. Can you add a new contact named [X] with a phone number in Contacts? <!--easy__contacts__010-->
@@ -768,7 +768,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Phone]**
 - Medium (3pt): Could you filter today's call log to only calls over 5 minutes, note the longest, and check who it was with in Phone? <!--medium__phone__006-->
 
-- Medium (3pt) **[Music+Telegram]**: Could you compare my listening stats between this week and last week, note the difference, and share the summary with [contact] on Telegram in Music? <!--medium__music-telegram__001-->
+- Medium (3pt) **[Music+Telegram]**: I've had a song stuck in my head all day and can't remember the name. Can you open YouTube Music, check my Recently Played, and tell me the last song I listened to? Then message [contact] on Telegram with the song name so they can check it out. Reply with only the song name, no other text. <!--medium__music-telegram__001-->
 
 **[Google Docs]**
 - Medium (3pt): Could you open the '[doc name]' document in Google Docs and count how many times the word '[keyword]' appears? Reply with only the number, no other text, then highlight all occurrences. <!--medium__google-docs__003-->
@@ -791,7 +791,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I need to check a document but it's buried in Drive. Can you open the PDF [hc budget pdf] stored in Google Drive? <!--easy__google-drive__008-->
 
 **[Files]**
-- Medium (3pt): Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files? <!--medium__files__009-->
+- Medium (3pt): Could you find all my screenshots across folders and tell me how many there are, and the total size they take up in Files? Reply with only the count, no other text. <!--medium__files__009-->
 
 **[Google Meet]**
 - Medium (3pt): Mute your mic and turn your camera off for the upcoming meeting in Google Meet? <!--medium__google-meet__002-->
@@ -1153,7 +1153,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Telegram]**
 - Easy (1pt): I don't want them to know I've seen the message yet. Can you mute notifications for [contact] in Telegram so I can check quietly? <!--easy__telegram__010-->
 
-- Medium (3pt) **[Google Photos+Phone]**: Could you filter the library to only videos over 1 minute long, delete the longest if it's unneeded, and count what's left in Google Photos? Also, call [contact] to confirm the plan for tonight. <!--medium__google-photos__008-->
+- Medium (3pt) **[Google Photos+Phone]**: I'm trying to find a video I recorded recently. Can you open Google Photos, find my most recent video, and tell me how long it is? Also, call [contact] to confirm the plan for tonight. Reply with only the video length, no other text. <!--medium__google-photos__008-->
 
 **[Calendar]**
 - Easy (1pt): I want a sense of how full tomorrow's going to be. Can you tell me how many events are scheduled tomorrow in Calendar? <!--easy__calendar__012-->
@@ -1165,7 +1165,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just found out when their birthday is. Can you add a birthday to the contact [hc contact name] in Contacts? <!--easy__contacts__013-->
 
-- Medium (3pt) **[Contacts+Phone]**: Could you merge duplicate contacts sharing the same phone number, confirm only one remains, and check its info is complete in Contacts? Also, call [contact] to confirm their address. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts+Phone]**: Could you find contacts that share the same phone number and tell me how many duplicate pairs there are in Contacts? Also, call [contact] to confirm their address. Reply with only the count, no other text. <!--medium__contacts__012-->
 
 **[Phone]**
 - Easy (1pt): I saw I missed a call and want to know who it was. Can you check my most recent missed call in Phone? <!--easy__phone__010-->
@@ -1303,7 +1303,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Settings]**
 - Medium (3pt): Could you rank apps by notification count this week, turn off notifications for the noisiest, and note the change in Settings? <!--medium__settings__011-->
 
-- Medium (3pt) **[Chrome+Messages]**: Could you filter my bookmarks to only ones added this month, delete any duplicates, and count what's left in Chrome? Also, message [contact] the count. <!--medium__chrome__011-->
+- Medium (3pt) **[Chrome+Messages]**: Could you filter my bookmarks to only ones added this month and tell me how many there are in Chrome? Also, message [contact] the count. Reply with only the count, no other text. <!--medium__chrome__011-->
 
 - Medium (3pt) **[Messages+Obsidian]**: Could you summarize a group thread's discussion while I was away, save the summary as a note, and reply if action is needed in Messages? <!--medium__messages-obsidian__001-->
 
@@ -1536,7 +1536,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with [hc contact name] in Messages? <!--easy__messages__015-->
 
 **[Files]**
-- Medium (3pt): Could you find duplicate files in my Downloads folder, delete the extra copies, and count how many you removed in Files? Reply with only the count, no other text. <!--medium__files__013-->
+- Medium (3pt): Could you look in my Downloads folder, find any duplicate files, and tell me how many duplicate pairs there are in Files? Reply with only the count, no other text. <!--medium__files__013-->
 
 <!-- 🔮 HALLUCINATION CONTROL (easy__google-drive__014, absent-entity): data genuinely absent (No file named '{hc file name}' exists in Google Drive to star.). Correct = honest failure; do NOT fabricate. -->
 **[Google Drive]**
@@ -1587,7 +1587,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt): Could you find all events tagged 'work' this week, total the hours booked, and note the total in Calendar? <!--medium__calendar__013-->
 
 **[Google Photos]**
-- Easy (1pt): That screenshot was a mistake and I want it gone. Can you delete my most recent screenshot in Google Photos? <!--easy__google-photos__015-->
+- Easy (1pt): I want to double-check something I screenshotted earlier. Can you open Google Photos, go to my Screenshots album, and tell me the date of the most recent screenshot? Reply with only the date, no other text. <!--easy__google-photos__015-->
 
 **1. [Gmail] — ASK USER SINGLE**
 - There's an urgent email I should deal with. Find the most recent unread email marked important today in Gmail, reply to it with an appropriate short response, and star it (deliberately no reply content is specified, so the agent must ask the user what to respond) <!--hard__gmail__093-->
