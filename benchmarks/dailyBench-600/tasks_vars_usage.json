@@ -3,8 +3,8 @@
   "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
   "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
   "generated_at": "2026-08-12",
-  "var_key_count_in_local_env": 59,
-  "placeholder_key_count_in_dataset": 94,
+  "var_key_count_in_local_env": 78,
+  "placeholder_key_count_in_dataset": 113,
   "vars": {
     "X": {
       "configured_in_local_env": true,
@@ -77,12 +77,14 @@
     },
     "album name": {
       "configured_in_local_env": true,
-      "task_count": 1,
+      "task_count": 2,
       "days": [
-        2
+        2,
+        27
       ],
       "tasks": [
-        "medium__google-photos__001"
+        "medium__google-photos__001",
+        "medium__google-photos__012"
       ]
     },
     "amount": {
@@ -199,7 +201,7 @@
     },
     "contact": {
       "configured_in_local_env": true,
-      "task_count": 71,
+      "task_count": 69,
       "days": [
         1,
         2,
@@ -250,7 +252,6 @@
         "medium__google-drive__004",
         "medium__music__006",
         "medium__youtube__005",
-        "hard__swiggy__005",
         "medium__calendar__006",
         "medium__contacts__009",
         "easy__phone__007",
@@ -262,7 +263,6 @@
         "medium__google-maps__005",
         "medium__messages__008",
         "medium__telegram__005",
-        "hard__swiggy__007",
         "medium__chrome__008",
         "medium__music__010",
         "easy__calendar__009",
@@ -461,6 +461,250 @@
       ],
       "tasks": [
         "hard__clock-calendar__023"
+      ]
+    },
+    "hc budget pdf": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        14
+      ],
+      "tasks": [
+        "easy__google-drive__008"
+      ]
+    },
+    "hc channel name": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        11
+      ],
+      "tasks": [
+        "easy__youtube__004"
+      ]
+    },
+    "hc contact name": {
+      "configured_in_local_env": true,
+      "task_count": 10,
+      "days": [
+        8,
+        10,
+        13,
+        15,
+        17,
+        20,
+        21,
+        26,
+        27
+      ],
+      "tasks": [
+        "easy__contacts__008",
+        "easy__gmail__005",
+        "easy__gmail__007",
+        "easy__gmail__009",
+        "easy__gmail__011",
+        "medium__gmail__011",
+        "easy__contacts__013",
+        "medium__google-drive__009",
+        "easy__telegram__014",
+        "easy__messages__015"
+      ]
+    },
+    "hc draft note": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        16
+      ],
+      "tasks": [
+        "medium__notes__004"
+      ]
+    },
+    "hc event name": {
+      "configured_in_local_env": true,
+      "task_count": 3,
+      "days": [
+        15,
+        19,
+        28
+      ],
+      "tasks": [
+        "easy__calendar__008",
+        "easy__calendar__010",
+        "easy__calendar__015"
+      ]
+    },
+    "hc file name": {
+      "configured_in_local_env": true,
+      "task_count": 9,
+      "days": [
+        10,
+        11,
+        21,
+        23,
+        24,
+        25,
+        27,
+        28
+      ],
+      "tasks": [
+        "easy__google-drive__005",
+        "easy__google-drive__006",
+        "easy__google-drive__010",
+        "easy__google-drive__011",
+        "easy__files__012",
+        "easy__files__013",
+        "easy__google-drive__012",
+        "easy__google-drive__014",
+        "easy__google-drive__015"
+      ]
+    },
+    "hc grocery note": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        4
+      ],
+      "tasks": [
+        "easy__notes__002"
+      ]
+    },
+    "hc group name": {
+      "configured_in_local_env": true,
+      "task_count": 3,
+      "days": [
+        9,
+        13,
+        18
+      ],
+      "tasks": [
+        "easy__telegram__004",
+        "easy__telegram__006",
+        "easy__telegram__008"
+      ]
+    },
+    "hc photo file": {
+      "configured_in_local_env": true,
+      "task_count": 4,
+      "days": [
+        7,
+        17,
+        19,
+        22
+      ],
+      "tasks": [
+        "easy__files__003",
+        "easy__gallery__009",
+        "easy__google-photos__009",
+        "easy__google-photos__012"
+      ]
+    },
+    "hc place name": {
+      "configured_in_local_env": true,
+      "task_count": 3,
+      "days": [
+        16,
+        18,
+        26
+      ],
+      "tasks": [
+        "easy__google-maps__008",
+        "easy__google-maps__009",
+        "easy__google-maps__014"
+      ]
+    },
+    "hc playlist 1": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        22
+      ],
+      "tasks": [
+        "medium__music__012"
+      ]
+    },
+    "hc playlist 2": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        22
+      ],
+      "tasks": [
+        "medium__music__012"
+      ]
+    },
+    "hc projects folder": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        23
+      ],
+      "tasks": [
+        "easy__obsidian__009"
+      ]
+    },
+    "hc proposal file": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        7
+      ],
+      "tasks": [
+        "easy__google-drive__004"
+      ]
+    },
+    "hc report file": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        12
+      ],
+      "tasks": [
+        "easy__files__006"
+      ]
+    },
+    "hc scan folder": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        2
+      ],
+      "tasks": [
+        "medium__files__014"
+      ]
+    },
+    "hc scans folder": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        6
+      ],
+      "tasks": [
+        "easy__files__002"
+      ]
+    },
+    "hc temp folder": {
+      "configured_in_local_env": true,
+      "task_count": 1,
+      "days": [
+        9
+      ],
+      "tasks": [
+        "medium__files__004"
+      ]
+    },
+    "hc trip name": {
+      "configured_in_local_env": true,
+      "task_count": 3,
+      "days": [
+        14,
+        20,
+        24
+      ],
+      "tasks": [
+        "easy__gallery__006",
+        "medium__gallery__010",
+        "easy__gallery__013"
       ]
     },
     "keyword": {

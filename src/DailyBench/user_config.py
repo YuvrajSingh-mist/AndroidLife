@@ -110,6 +110,47 @@ SCHEMA: dict[str, tuple[str, str]] = {
                    "Calendar event).", "Gym"),
     "agenda file": ("Agenda file the Meet-Files task opens in Files (`[agenda file]`; matches "
                      "the seeded file).", "Weekly Agenda"),
+    # hallucination-control absent-entity targets (`[hc ...]`). Each names the entity the
+    # control task asks about that is GENUINELY ABSENT on device (the honest outcome is a
+    # failure). Values stay the absent entity so controls keep testing honest absence.
+    "hc contact name": ("Absent contact/sender the hallucination-control gmail/contacts/telegram/"
+                        "messages tasks ask about (`[hc contact name]`).", "Rahul Mehta"),
+    "hc file name": ("Absent file the Google Drive/Files hallucination-control tasks ask about "
+                     "(`[hc file name]`).", "Q3 Budget.xlsx"),
+    "hc event name": ("Absent calendar event the hallucination-control Calendar tasks ask about "
+                      "(`[hc event name]`).", "Team Sync Weekly"),
+    "hc group name": ("Absent Telegram group the hallucination-control Telegram tasks ask about "
+                      "(`[hc group name]`).", "Old College Group"),
+    "hc photo file": ("Absent photo filename the hallucination-control Files/Gallery/Photos tasks "
+                      "ask about (`[hc photo file]`).", "IMG_20250101.jpg"),
+    "hc place name": ("Absent saved place the hallucination-control Maps tasks ask about "
+                      "(`[hc place name]`).", "Bali Cafe"),
+    "hc trip name": ("Absent trip/album name the hallucination-control Gallery tasks ask about "
+                     "(`[hc trip name]`).", "Bali"),
+    "hc scans folder": ("Absent folder the easy__files__002 hallucination-control asks about "
+                        "(`[hc scans folder]`).", "Old Scans"),
+    "hc scan folder": ("Absent folder the medium__files__014 hallucination-control asks about "
+                       "(`[hc scan folder]`).", "Scan Backup"),
+    "hc temp folder": ("Absent folder the medium__files__004 hallucination-control asks about "
+                       "(`[hc temp folder]`).", "Temp"),
+    "hc projects folder": ("Absent folder the easy__obsidian__009 hallucination-control asks about "
+                           "(`[hc projects folder]`).", "Old Projects"),
+    "hc grocery note": ("Absent note the easy__notes__002 hallucination-control asks about "
+                        "(`[hc grocery note]`).", "Grocery List"),
+    "hc draft note": ("Absent note the medium__notes__004 hallucination-control asks about "
+                      "(`[hc draft note]`).", "Old Draft"),
+    "hc proposal file": ("Absent doc the easy__google-drive__004 hallucination-control asks about "
+                         "(`[hc proposal file]`).", "Project Proposal v2"),
+    "hc budget pdf": ("Absent PDF the easy__google-drive__008 hallucination-control asks about "
+                      "(`[hc budget pdf]`).", "Q3 Budget.pdf"),
+    "hc report file": ("Absent file the easy__files__006 hallucination-control asks about "
+                       "(`[hc report file]`).", "report_final_v2.pdf"),
+    "hc channel name": ("Absent YouTube channel the easy__youtube__004 hallucination-control asks "
+                        "about (`[hc channel name]`).", "TechDaily"),
+    "hc playlist 1": ("First absent playlist the medium__music__012 hallucination-control asks "
+                      "about (`[hc playlist 1]`).", "Chill"),
+    "hc playlist 2": ("Second absent playlist the medium__music__012 hallucination-control asks "
+                      "about (`[hc playlist 2]`).", "Focus"),
     # device layout (overrides for the seed scripts' auto-detection; omit to
     # auto-detect from the connected phone - see scripts/seeding/device_paths.py)
     "vault path": ("Obsidian vault dir on the device (auto-detected if omitted). "

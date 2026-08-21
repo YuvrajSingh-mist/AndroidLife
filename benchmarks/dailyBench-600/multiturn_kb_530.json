@@ -670,18 +670,28 @@
   "hard__music-obsidian__077": {
     "correct_target": "youtube-music::sleep-timer-1030pm",
     "profile": {
-      "music": {
-        "favorite_genre": "lo-fi beats",
-        "sleep_artist": "Chillhop",
-        "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix",
-        "premium": false,
-        "youtube_music_account": "yuvraj.mist@gmail.com",
-        "downloads_enabled": true
-      },
+      "music_apps": [
+        {
+          "app": "YouTube Music",
+          "account": "yuvraj.mist@gmail.com",
+          "premium": false,
+          "downloads_enabled": true,
+          "sleep_playlist": "Chillhop Lofi Beats - Sleep Mix"
+        },
+        {
+          "app": "Amazon Music",
+          "account": "rajceo2031@gmail.com",
+          "premium": true,
+          "sleep_playlist": "Lo-Fi Sleep Beats"
+        }
+      ],
+      "favorite_genre": "lo-fi beats",
+      "sleep_artist": "Chillhop",
       "notes": {
         "Bedtime": {
           "time": "10:30 PM",
-          "source": "real on-device note (Obsidian 'Bedtime.md', verified 2026-08-19)"
+          "record": "sleep routine log: 10:30 PM bedtime, lo-fi beats by Chillhop helps me fall asleep",
+          "source": "real on-device note (Obsidian 'Bedtime.md', filled per the task)"
         }
       },
       "preferences": {
@@ -690,37 +700,33 @@
         "wind_down_routine": "listens to lo-fi beats while falling asleep",
         "volume": "low (~20%)",
         "repeat_mode": "off (single track)",
-        "fall_asleep_habit": "starts a Chillhop lo-fi track then lets the timer stop it"
+        "fall_asleep_habit": "starts a Chillhop lo-fi track then lets the timer stop it",
+        "favorite_music_app": "YouTube Music"
       }
     }
   },
   "hard__telegram-calendar__016": {
     "correct_target": "telegram::forever-21-meetup-sat-7pm",
     "profile": {
-      "group_chat": {
-        "name": "Forever 21",
-        "type": "group",
-        "members": 2,
-        "topic": "get-together / meetup",
-        "messages": [
-          "Let's gather on 20th August then this time?",
-          "It a meetup!",
-          "All four of us ig?",
-          "Did you ask her? She seems quite busy",
-          "Wait I think she is busy at that day so maybe 22nd of this month?",
-          "22nd could work for me too, let me confirm once she's free"
-        ]
-      },
-      "my_memory": {
-        "date": "Saturday the 22nd - we first floated the 20th but moved it because someone was busy",
-        "time": "7 PM",
-        "venue": "The Terrace, Patia",
-        "reminder": "a day before at 8 PM"
-      },
+      "social_media_app": "Telegram",
+      "chat_groups": [
+        {
+          "name": "Forever 21",
+          "type": "group",
+          "members": 2,
+          "topic": "get-together / meetup"
+        }
+      ],
       "preferences": {
         "account": "Yuvraj Airtel +91 9354672378 @YuvrajSingh9886",
         "event_name": "Meetup",
-        "reminder_chat": "Forever 21"
+        "reminder_chat": "Forever 21",
+        "get_together_plan": {
+          "date": "Saturday the 22nd - we first floated the 20th but moved it because someone was busy",
+          "time": "7 PM",
+          "venue": "The Terrace, Patia",
+          "reminder": "a day before at 8 PM"
+        }
       }
     }
   },
@@ -769,26 +775,23 @@
     "profile": {
       "flights": [
         {
-          "airline": "IndiGo",
-          "flight": "6E 6893",
+          "airline": "Scapia booking (PNR X84NVI)",
+          "flight": "BBI→DEL",
           "route": "BBI→DEL",
-          "date": "2026-08-24",
-          "depart": "07:10",
-          "confirmation_email": true
-        },
-        {
-          "airline": "IndiGo",
-          "flight": "6E 6737",
-          "route": "BBI→DEL",
-          "date": "2026-05-08",
+          "date": "2026-10-16 (Fri)",
           "depart": "12:05",
+          "arrive": "14:30",
+          "duration": "2h 25m non-stop",
+          "cabin": "Economy Flexi Plus",
+          "fare": "₹2,499",
+          "trip_id": "17873089939535",
           "confirmation_email": true
         }
       ],
       "preferences": {
         "reminder_hours_before": 3,
         "next_trip": "BBI→DEL",
-        "email_account": "yuvraj.mist@gmail.com"
+        "email_account": "rajceo2031@gmail.com"
       }
     }
   },

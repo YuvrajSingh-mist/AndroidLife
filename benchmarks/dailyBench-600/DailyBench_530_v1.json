@@ -772,17 +772,19 @@
       "is_ask_user": false,
       "task_number_within_app": 14,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "In Files, open the 'Scan Backup' folder inside Downloads and tell me how many scanned documents are in it",
-      "prompt_template": "In Files, open the 'Scan Backup' folder inside Downloads and tell me how many scanned documents are in it",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "In Files, open the [hc scan folder] folder inside Downloads and tell me how many scanned documents are in it",
+      "prompt_template": "In Files, open the {{ hc scan folder }} folder inside Downloads and tell me how many scanned documents are in it",
+      "placeholders": [
+        "hc scan folder"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No 'Scan Backup' folder inside /sdcard/Download (verified absent on the device)."
+      "hallucination_control_absence": "No '{hc scan folder}' folder inside /sdcard/Download (verified absent on the device)."
     },
     {
       "task_id": "easy__gmail__001",
@@ -1657,8 +1659,8 @@
       "is_ask_user": true,
       "task_number_within_app": 77,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
-      "prompt_template": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
+      "prompt_text": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what jusic helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
+      "prompt_template": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what jusic helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
@@ -2008,17 +2010,19 @@
       "is_ask_user": false,
       "task_number_within_app": 2,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Can you open Notes and add a bullet list to the note titled 'Grocery List' for me pls?",
-      "prompt_template": "Can you open Notes and add a bullet list to the note titled 'Grocery List' for me pls?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Can you open Notes and add a bullet list to the note titled [hc grocery note] for me pls?",
+      "prompt_template": "Can you open Notes and add a bullet list to the note titled {{ hc grocery note }} for me pls?",
+      "placeholders": [
+        "hc grocery note"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No note titled 'Grocery List' exists in Notes."
+      "hallucination_control_absence": "No note titled '{hc grocery note}' exists in Notes."
     },
     {
       "task_id": "hard__gallery-obsidian__035",
@@ -3302,7 +3306,7 @@
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No unread email from 'Rahul Mehta' exists in the inbox."
+      "hallucination_control_absence": "No unread email from '{hc contact name}' exists in the inbox."
     },
     {
       "task_id": "medium__shopping-delivery-browser__002",
@@ -3530,17 +3534,19 @@
       "is_ask_user": false,
       "task_number_within_app": 2,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "That scans folder is taking up space I don't want to waste. Can you empty the 'Old Scans' folder in Files for me?",
-      "prompt_template": "That scans folder is taking up space I don't want to waste. Can you empty the 'Old Scans' folder in Files for me?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That scans folder is taking up space I don't want to waste. Can you empty the [hc scans folder] folder in Files for me?",
+      "prompt_template": "That scans folder is taking up space I don't want to waste. Can you empty the {{ hc scans folder }} folder in Files for me?",
+      "placeholders": [
+        "hc scans folder"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No 'Old Scans' folder exists in Files."
+      "hallucination_control_absence": "No '{hc scans folder}' folder exists in Files."
     },
     {
       "task_id": "easy__calendar__003",
@@ -3646,17 +3652,19 @@
       "is_ask_user": false,
       "task_number_within_app": 3,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file 'IMG_20250101.jpg' in Files without opening a photos app?",
-      "prompt_template": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file 'IMG_20250101.jpg' in Files without opening a photos app?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file [hc photo file] in Files without opening a photos app?",
+      "prompt_template": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file {{ hc photo file }} in Files without opening a photos app?",
+      "placeholders": [
+        "hc photo file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No image file named 'IMG_20250101.jpg' exists in Files."
+      "hallucination_control_absence": "No image file named '{hc photo file}' exists in Files."
     },
     {
       "task_id": "easy__prime-video__004",
@@ -3846,17 +3854,19 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called 'Project Proposal v2' for me?",
-      "prompt_template": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called 'Project Proposal v2' for me?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called [hc proposal file] for me?",
+      "prompt_template": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called {{ hc proposal file }} for me?",
+      "placeholders": [
+        "hc proposal file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Project Proposal v2' exists in Google Drive."
+      "hallucination_control_absence": "No file named '{hc proposal file}' exists in Google Drive."
     },
     {
       "task_id": "medium__music__004",
@@ -4258,17 +4268,19 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "He's someone I call all the time. Can you star 'Rahul Mehta' as a favorite in Contacts?",
-      "prompt_template": "He's someone I call all the time. Can you star 'Rahul Mehta' as a favorite in Contacts?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "He's someone I call all the time. Can you star [hc contact name] as a favorite in Contacts?",
+      "prompt_template": "He's someone I call all the time. Can you star {{ hc contact name }} as a favorite in Contacts?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No contact named 'Rahul Mehta' exists to favourite."
+      "hallucination_control_absence": "No contact named '{hc contact name}' exists to favourite."
     },
     {
       "task_id": "medium__gallery__004",
@@ -4374,17 +4386,19 @@
       "is_ask_user": false,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "I'll need an email later today and don't want to hunt for it. Can you star the email from 'Rahul Mehta' in Gmail that I'll need later today?",
-      "prompt_template": "I'll need an email later today and don't want to hunt for it. Can you star the email from 'Rahul Mehta' in Gmail that I'll need later today?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'll need an email later today and don't want to hunt for it. Can you star the email from [hc contact name] in Gmail that I'll need later today?",
+      "prompt_template": "I'll need an email later today and don't want to hunt for it. Can you star the email from {{ hc contact name }} in Gmail that I'll need later today?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No email from 'Rahul Mehta' exists in the inbox."
+      "hallucination_control_absence": "No email from '{hc contact name}' exists in the inbox."
     },
     {
       "task_id": "medium__messages__004",
@@ -4934,17 +4948,19 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "That group is way too noisy for me now. Can you leave the group 'Old College Group' on Telegram for me?",
-      "prompt_template": "That group is way too noisy for me now. Can you leave the group 'Old College Group' on Telegram for me?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That group is way too noisy for me now. Can you leave the group [hc group name] on Telegram for me?",
+      "prompt_template": "That group is way too noisy for me now. Can you leave the group {{ hc group name }} on Telegram for me?",
+      "placeholders": [
+        "hc group name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No Telegram group named 'Old College Group' exists."
+      "hallucination_control_absence": "No Telegram group named '{hc group name}' exists."
     },
     {
       "task_id": "easy__messages__006",
@@ -5081,17 +5097,19 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named 'Temp', delete them, and log in Obsidian how many you removed in Files?",
-      "prompt_template": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named 'Temp', delete them, and log in Obsidian how many you removed in Files?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named [hc temp folder], delete them, and log in Obsidian how many you removed in Files?",
+      "prompt_template": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named {{ hc temp folder }}, delete them, and log in Obsidian how many you removed in Files?",
+      "placeholders": [
+        "hc temp folder"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Files+Obsidian",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No folder named 'Temp' exists anywhere in storage. The agent opens Files, lists folders across storage, and counts them (real work) before discovering there is no 'Temp' folder to delete."
+      "hallucination_control_absence": "No folder named '{hc temp folder}' exists anywhere in storage. The agent opens Files, lists folders across storage, and counts them (real work) before discovering there is no '{hc temp folder}' folder to delete."
     },
     {
       "task_id": "easy__gallery__004",
@@ -5519,17 +5537,19 @@
       "is_ask_user": false,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file 'Q3 Budget.xlsx' in Google Drive has been shared with anyone?",
-      "prompt_template": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file 'Q3 Budget.xlsx' in Google Drive has been shared with anyone?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file [hc file name] in Google Drive has been shared with anyone?",
+      "prompt_template": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file {{ hc file name }} in Google Drive has been shared with anyone?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive to check sharing on."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive to check sharing on."
     },
     {
       "task_id": "hard__settings-obsidian__044",
@@ -5640,17 +5660,19 @@
       "is_ask_user": false,
       "task_number_within_app": 7,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "He just sent something I'll need to circle back to. Can you star the latest email from 'Rahul Mehta' in Gmail?",
-      "prompt_template": "He just sent something I'll need to circle back to. Can you star the latest email from 'Rahul Mehta' in Gmail?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "He just sent something I'll need to circle back to. Can you star the latest email from [hc contact name] in Gmail?",
+      "prompt_template": "He just sent something I'll need to circle back to. Can you star the latest email from {{ hc contact name }} in Gmail?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No email from 'Rahul Mehta' exists in the inbox."
+      "hallucination_control_absence": "No email from '{hc contact name}' exists in the inbox."
     },
     {
       "task_id": "hard__chrome-files-obsidian__031",
@@ -6084,17 +6106,19 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel 'TechDaily' has posted anything today?",
-      "prompt_template": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel 'TechDaily' has posted anything today?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel [hc channel name] has posted anything today?",
+      "prompt_template": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel {{ hc channel name }} has posted anything today?",
+      "placeholders": [
+        "hc channel name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No YouTube channel named 'TechDaily' exists (not searched/subscribed)."
+      "hallucination_control_absence": "No YouTube channel named '{hc channel name}' exists (not searched/subscribed)."
     },
     {
       "task_id": "easy__google-drive__006",
@@ -6116,17 +6140,19 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "I just need a peek at what's inside, not the whole file. Can you preview the file 'Q3 Budget.xlsx' in Google Drive without opening it fully?",
-      "prompt_template": "I just need a peek at what's inside, not the whole file. Can you preview the file 'Q3 Budget.xlsx' in Google Drive without opening it fully?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I just need a peek at what's inside, not the whole file. Can you preview the file [hc file name] in Google Drive without opening it fully?",
+      "prompt_template": "I just need a peek at what's inside, not the whole file. Can you preview the file {{ hc file name }} in Google Drive without opening it fully?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive to preview."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive to preview."
     },
     {
       "task_id": "easy__contacts__009",
@@ -6679,17 +6705,19 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "That download has an unhelpful filename. Can you rename the downloaded file 'report_final_v2.pdf' in Files?",
-      "prompt_template": "That download has an unhelpful filename. Can you rename the downloaded file 'report_final_v2.pdf' in Files?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That download has an unhelpful filename. Can you rename the downloaded file [hc report file] in Files?",
+      "prompt_template": "That download has an unhelpful filename. Can you rename the downloaded file {{ hc report file }} in Files?",
+      "placeholders": [
+        "hc report file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'report_final_v2.pdf' exists in Downloads."
+      "hallucination_control_absence": "No file named '{hc report file}' exists in Downloads."
     },
     {
       "task_id": "easy__prime-video__006",
@@ -7011,17 +7039,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from 'Rahul Mehta' in Gmail?",
-      "prompt_template": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from 'Rahul Mehta' in Gmail?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from [hc contact name] in Gmail?",
+      "prompt_template": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from {{ hc contact name }} in Gmail?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No promotional email from 'Rahul Mehta' exists in the inbox."
+      "hallucination_control_absence": "No promotional email from '{hc contact name}' exists in the inbox."
     },
     {
       "task_id": "medium__calculator__003",
@@ -7220,17 +7250,19 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I want to see who's actually in that group. Can you check the member list of the group 'Old College Group' on Telegram?",
-      "prompt_template": "I want to see who's actually in that group. Can you check the member list of the group 'Old College Group' on Telegram?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I want to see who's actually in that group. Can you check the member list of the group [hc group name] on Telegram?",
+      "prompt_template": "I want to see who's actually in that group. Can you check the member list of the group {{ hc group name }} on Telegram?",
+      "placeholders": [
+        "hc group name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No Telegram group named 'Old College Group' exists."
+      "hallucination_control_absence": "No Telegram group named '{hc group name}' exists."
     },
     {
       "task_id": "medium__telegram-notes__001",
@@ -7491,17 +7523,19 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "I need to check a document but it's buried in Drive. Can you open the PDF 'Q3 Budget.pdf' stored in Google Drive?",
-      "prompt_template": "I need to check a document but it's buried in Drive. Can you open the PDF 'Q3 Budget.pdf' stored in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need to check a document but it's buried in Drive. Can you open the PDF [hc budget pdf] stored in Google Drive?",
+      "prompt_template": "I need to check a document but it's buried in Drive. Can you open the PDF {{ hc budget pdf }} stored in Google Drive?",
+      "placeholders": [
+        "hc budget pdf"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No PDF named 'Q3 Budget.pdf' exists in Google Drive."
+      "hallucination_control_absence": "No PDF named '{hc budget pdf}' exists in Google Drive."
     },
     {
       "task_id": "medium__files__009",
@@ -7579,17 +7613,19 @@
       "is_ask_user": false,
       "task_number_within_app": 6,
       "task_number_within_dataset_app": 10,
-      "prompt_text": "I'm looking for the photos from my trip. Can you search the photos for photos from 'Bali'?",
-      "prompt_template": "I'm looking for the photos from my trip. Can you search the photos for photos from 'Bali'?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm looking for the photos from my trip. Can you search the photos for photos from [hc trip name]?",
+      "prompt_template": "I'm looking for the photos from my trip. Can you search the photos for photos from {{ hc trip name }}?",
+      "placeholders": [
+        "hc trip name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No photos tagged/located at 'Bali' exist in Gallery."
+      "hallucination_control_absence": "No photos tagged/located at '{hc trip name}' exist in Gallery."
     },
     {
       "task_id": "medium__chrome__007",
@@ -8016,17 +8052,19 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "That recurring meeting is no longer happening. Can you delete the calendar event 'Team Sync Weekly' in Calendar?",
-      "prompt_template": "That recurring meeting is no longer happening. Can you delete the calendar event 'Team Sync Weekly' in Calendar?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That recurring meeting is no longer happening. Can you delete the calendar event [hc event name] in Calendar?",
+      "prompt_template": "That recurring meeting is no longer happening. Can you delete the calendar event {{ hc event name }} in Calendar?",
+      "placeholders": [
+        "hc event name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No calendar event titled 'Team Sync Weekly' exists."
+      "hallucination_control_absence": "No calendar event titled '{hc event name}' exists."
     },
     {
       "task_id": "easy__messages__009",
@@ -8104,17 +8142,19 @@
       "is_ask_user": false,
       "task_number_within_app": 11,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from 'Rahul Mehta' in Gmail?",
-      "prompt_template": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from 'Rahul Mehta' in Gmail?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from [hc contact name] in Gmail?",
+      "prompt_template": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from {{ hc contact name }} in Gmail?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No noisy email thread from 'Rahul Mehta' exists in the inbox."
+      "hallucination_control_absence": "No noisy email thread from '{hc contact name}' exists in the inbox."
     },
     {
       "task_id": "medium__telegram__005",
@@ -8704,17 +8744,19 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note 'Old Draft' and delete it, and check whether the other notes are still relevant in Notes?",
-      "prompt_template": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note 'Old Draft' and delete it, and check whether the other notes are still relevant in Notes?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note [hc draft note] and delete it, and check whether the other notes are still relevant in Notes?",
+      "prompt_template": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note {{ hc draft note }} and delete it, and check whether the other notes are still relevant in Notes?",
+      "placeholders": [
+        "hc draft note"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No note titled 'Old Draft' exists in Notes. The agent opens Notes and lists the notes present + their recency (real work) before discovering no 'Old Draft' note exists to delete."
+      "hallucination_control_absence": "No note titled '{hc draft note}' exists in Notes. The agent opens Notes and lists the notes present + their recency (real work) before discovering no '{hc draft note}' note exists to delete."
     },
     {
       "task_id": "easy__google-maps__008",
@@ -8736,17 +8778,19 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place 'Bali Cafe' in Google Maps is open right now?",
-      "prompt_template": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place 'Bali Cafe' in Google Maps is open right now?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place [hc place name] in Google Maps is open right now?",
+      "prompt_template": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place {{ hc place name }} in Google Maps is open right now?",
+      "placeholders": [
+        "hc place name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No saved place named 'Bali Cafe' exists in Google Maps."
+      "hallucination_control_absence": "No saved place named '{hc place name}' exists in Google Maps."
     },
     {
       "task_id": "medium__contacts__011",
@@ -9394,17 +9438,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 12,
-      "prompt_text": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Google Photos?",
-      "prompt_template": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Google Photos?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo [hc photo file] in Google Photos?",
+      "prompt_template": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo {{ hc photo file }} in Google Photos?",
+      "placeholders": [
+        "hc photo file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No photo named 'IMG_20250101.jpg' exists in Gallery."
+      "hallucination_control_absence": "No photo named '{hc photo file}' exists in Gallery."
     },
     {
       "task_id": "medium__calendar-notes__001",
@@ -9541,17 +9587,19 @@
       "is_ask_user": false,
       "task_number_within_app": 11,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from 'Rahul Mehta'? And if it's more than 10, add the sender to spam and tell 'Rahul Mehta' on Telegram in Gmail?",
-      "prompt_template": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from 'Rahul Mehta'? And if it's more than 10, add the sender to spam and tell 'Rahul Mehta' on Telegram in Gmail?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from [hc contact name]? And if it's more than 10, add the sender to spam and tell [hc contact name] on Telegram in Gmail?",
+      "prompt_template": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from {{ hc contact name }}? And if it's more than 10, add the sender to spam and tell {{ hc contact name }} on Telegram in Gmail?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Gmail+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No emails from 'Rahul Mehta' exist in the past week. The agent opens Gmail, filters the inbox, and lists the senders present (real work) before discovering there are no 'Rahul Mehta' emails to count."
+      "hallucination_control_absence": "No emails from '{hc contact name}' exist in the past week. The agent opens Gmail, filters the inbox, and lists the senders present (real work) before discovering there are no '{hc contact name}' emails to count."
     },
     {
       "task_id": "easy__chrome__010",
@@ -9690,17 +9738,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place 'Bali Cafe' in Google Maps?",
-      "prompt_template": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place 'Bali Cafe' in Google Maps?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place [hc place name] in Google Maps?",
+      "prompt_template": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place {{ hc place name }} in Google Maps?",
+      "placeholders": [
+        "hc place name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No saved place named 'Bali Cafe' exists in Google Maps."
+      "hallucination_control_absence": "No saved place named '{hc place name}' exists in Google Maps."
     },
     {
       "task_id": "medium__google-maps__004",
@@ -9871,17 +9921,19 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 4,
-      "prompt_text": "That group's notifications are driving me up the wall. Can you mute notifications for the group 'Old College Group' on Telegram?",
-      "prompt_template": "That group's notifications are driving me up the wall. Can you mute notifications for the group 'Old College Group' on Telegram?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That group's notifications are driving me up the wall. Can you mute notifications for the group [hc group name] on Telegram?",
+      "prompt_template": "That group's notifications are driving me up the wall. Can you mute notifications for the group {{ hc group name }} on Telegram?",
+      "placeholders": [
+        "hc group name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No Telegram group named 'Old College Group' exists to mute."
+      "hallucination_control_absence": "No Telegram group named '{hc group name}' exists to mute."
     },
     {
       "task_id": "medium__calculator__006",
@@ -10519,17 +10571,19 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event 'Team Sync Weekly' in Calendar?",
-      "prompt_template": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event 'Team Sync Weekly' in Calendar?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event [hc event name] in Calendar?",
+      "prompt_template": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event {{ hc event name }} in Calendar?",
+      "placeholders": [
+        "hc event name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No calendar event titled 'Team Sync Weekly' exists to add a note to."
+      "hallucination_control_absence": "No calendar event titled '{hc event name}' exists to add a note to."
     },
     {
       "task_id": "hard__phone-google-search-telegram__041",
@@ -10612,17 +10666,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 13,
-      "prompt_text": "Rotate the sideways photo 'IMG_20250101.jpg' in Google Photos?",
-      "prompt_template": "Rotate the sideways photo 'IMG_20250101.jpg' in Google Photos?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Rotate the sideways photo [hc photo file] in Google Photos?",
+      "prompt_template": "Rotate the sideways photo {{ hc photo file }} in Google Photos?",
+      "placeholders": [
+        "hc photo file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No photo named 'IMG_20250101.jpg' exists in Google Photos."
+      "hallucination_control_absence": "No photo named '{hc photo file}' exists in Google Photos."
     },
     {
       "task_id": "easy__shopping-delivery-browser__010",
@@ -11238,17 +11294,19 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 8,
-      "prompt_text": "I just found out when their birthday is. Can you add a birthday to the contact 'Rahul Mehta' in Contacts?",
-      "prompt_template": "I just found out when their birthday is. Can you add a birthday to the contact 'Rahul Mehta' in Contacts?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I just found out when their birthday is. Can you add a birthday to the contact [hc contact name] in Contacts?",
+      "prompt_template": "I just found out when their birthday is. Can you add a birthday to the contact {{ hc contact name }} in Contacts?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No contact named 'Rahul Mehta' exists in Contacts."
+      "hallucination_control_absence": "No contact named '{hc contact name}' exists in Contacts."
     },
     {
       "task_id": "medium__contacts__012",
@@ -11329,17 +11387,19 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 9,
-      "prompt_text": "Could you open Google Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
-      "prompt_template": "Could you open Google Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you open Google Photos, look through my recent albums, then filter the [hc trip name] trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
+      "prompt_template": "Could you open Google Photos, look through my recent albums, then filter the {{ hc trip name }} trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
+      "placeholders": [
+        "hc trip name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No photos from the Bali trip exist in Gallery (album absent). The agent opens Gallery and views the albums present (real work) before discovering no Bali photos exist to analyse."
+      "hallucination_control_absence": "No photos from the {hc trip name} trip exist in Gallery (album absent). The agent opens Gallery and views the albums present (real work) before discovering no {hc trip name} photos exist to analyse."
     },
     {
       "task_id": "easy__google-sheets__003",
@@ -11511,17 +11571,19 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "I need to check the budget and the file's sitting in Drive. Can you open the document 'Q3 Budget.xlsx' in Google Drive?",
-      "prompt_template": "I need to check the budget and the file's sitting in Drive. Can you open the document 'Q3 Budget.xlsx' in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need to check the budget and the file's sitting in Drive. Can you open the document [hc file name] in Google Drive?",
+      "prompt_template": "I need to check the budget and the file's sitting in Drive. Can you open the document {{ hc file name }} in Google Drive?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No document named 'Q3 Budget.xlsx' exists in Google Drive."
+      "hallucination_control_absence": "No document named '{hc file name}' exists in Google Drive."
     },
     {
       "task_id": "medium__google-search__010",
@@ -11774,17 +11836,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by 'Rahul Mehta', count how many are documents vs. sheets, and message the breakdown to 'Rahul Mehta' on Telegram in Google Drive?",
-      "prompt_template": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by 'Rahul Mehta', count how many are documents vs. sheets, and message the breakdown to 'Rahul Mehta' on Telegram in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by [hc contact name], count how many are documents vs. sheets, and message the breakdown to [hc contact name] on Telegram in Google Drive?",
+      "prompt_template": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by {{ hc contact name }}, count how many are documents vs. sheets, and message the breakdown to {{ hc contact name }} on Telegram in Google Drive?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Google Drive+Telegram",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No files shared by 'Rahul Mehta' exist in Google Drive. The agent opens Drive and filters to shared files (real work) before discovering no 'Rahul Mehta' files exist to count."
+      "hallucination_control_absence": "No files shared by '{hc contact name}' exist in Google Drive. The agent opens Drive and filters to shared files (real work) before discovering no '{hc contact name}' files exist to count."
     },
     {
       "task_id": "easy__bookmyshow__004",
@@ -12035,17 +12099,20 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you find and remove duplicate songs across the 'Chill' and 'Focus' playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
-      "prompt_template": "Could you find and remove duplicate songs across the 'Chill' and 'Focus' playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Could you find and remove duplicate songs across the [hc playlist 1] and [hc playlist 2] playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
+      "prompt_template": "Could you find and remove duplicate songs across the {{ hc playlist 1 }} and {{ hc playlist 2 }} playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
+      "placeholders": [
+        "hc playlist 1",
+        "hc playlist 2"
+      ],
+      "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Music+Notes",
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No playlists named 'Chill' or 'Focus' exist in Music."
+      "hallucination_control_absence": "No playlists named '{hc playlist 1}' or '{hc playlist 2}' exist in Music."
     },
     {
       "task_id": "easy__google-photos__012",
@@ -12067,17 +12134,19 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 15,
-      "prompt_text": "The framing's off on a photo I want to use. Can you crop the photo 'IMG_20250101.jpg' in Google Photos?",
-      "prompt_template": "The framing's off on a photo I want to use. Can you crop the photo 'IMG_20250101.jpg' in Google Photos?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "The framing's off on a photo I want to use. Can you crop the photo [hc photo file] in Google Photos?",
+      "prompt_template": "The framing's off on a photo I want to use. Can you crop the photo {{ hc photo file }} in Google Photos?",
+      "placeholders": [
+        "hc photo file"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No photo named 'IMG_20250101.jpg' exists in Google Photos."
+      "hallucination_control_absence": "No photo named '{hc photo file}' exists in Google Photos."
     },
     {
       "task_id": "easy__music__014",
@@ -12331,17 +12400,19 @@
       "is_ask_user": false,
       "task_number_within_app": 9,
       "task_number_within_dataset_app": 3,
-      "prompt_text": "I'm wondering how cluttered that folder got. Can you check how many notes are in the 'Old Projects' folder in Obsidian?",
-      "prompt_template": "I'm wondering how cluttered that folder got. Can you check how many notes are in the 'Old Projects' folder in Obsidian?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm wondering how cluttered that folder got. Can you check how many notes are in the [hc projects folder] folder in Obsidian?",
+      "prompt_template": "I'm wondering how cluttered that folder got. Can you check how many notes are in the {{ hc projects folder }} folder in Obsidian?",
+      "placeholders": [
+        "hc projects folder"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No folder named 'Old Projects' exists in the Obsidian vault."
+      "hallucination_control_absence": "No folder named '{hc projects folder}' exists in the Obsidian vault."
     },
     {
       "task_id": "easy__settings__014",
@@ -12834,17 +12905,19 @@
       "is_ask_user": false,
       "task_number_within_app": 11,
       "task_number_within_dataset_app": 8,
-      "prompt_text": "I deleted a file I actually still need. Can you restore the file 'Q3 Budget.xlsx' from Trash in Google Drive?",
-      "prompt_template": "I deleted a file I actually still need. Can you restore the file 'Q3 Budget.xlsx' from Trash in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I deleted a file I actually still need. Can you restore the file [hc file name] from Trash in Google Drive?",
+      "prompt_template": "I deleted a file I actually still need. Can you restore the file {{ hc file name }} from Trash in Google Drive?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive Trash."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive Trash."
     },
     {
       "task_id": "medium__obsidian__008",
@@ -13159,17 +13232,19 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 17,
-      "prompt_text": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Google Photos?",
-      "prompt_template": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Google Photos?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the [hc trip name] album in Google Photos?",
+      "prompt_template": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the {{ hc trip name }} album in Google Photos?",
+      "placeholders": [
+        "hc trip name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No album named 'Bali' exists in Gallery."
+      "hallucination_control_absence": "No album named '{hc trip name}' exists in Gallery."
     },
     {
       "task_id": "medium__clock__010",
@@ -13365,17 +13440,19 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 8,
-      "prompt_text": "I want to get rid of a file but keep it recoverable for now. Can you move the file 'Q3 Budget.xlsx' to the Trash in Files?",
-      "prompt_template": "I want to get rid of a file but keep it recoverable for now. Can you move the file 'Q3 Budget.xlsx' to the Trash in Files?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I want to get rid of a file but keep it recoverable for now. Can you move the file [hc file name] to the Trash in Files?",
+      "prompt_template": "I want to get rid of a file but keep it recoverable for now. Can you move the file {{ hc file name }} to the Trash in Files?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Files to move to Trash."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Files to move to Trash."
     },
     {
       "task_id": "hard__youtube__096",
@@ -13802,17 +13879,19 @@
       "is_ask_user": false,
       "task_number_within_app": 13,
       "task_number_within_dataset_app": 9,
-      "prompt_text": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named 'Q3 Budget.xlsx'?",
-      "prompt_template": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named 'Q3 Budget.xlsx'?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named [hc file name]?",
+      "prompt_template": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named {{ hc file name }}?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Files."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Files."
     },
     {
       "task_id": "medium__google-drive__011",
@@ -13922,17 +14001,19 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 9,
-      "prompt_text": "I'm done with that file and want it gone for good. Can you delete the file 'Q3 Budget.xlsx' from Google Drive?",
-      "prompt_template": "I'm done with that file and want it gone for good. Can you delete the file 'Q3 Budget.xlsx' from Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm done with that file and want it gone for good. Can you delete the file [hc file name] from Google Drive?",
+      "prompt_template": "I'm done with that file and want it gone for good. Can you delete the file {{ hc file name }} from Google Drive?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive to delete."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive to delete."
     },
     {
       "task_id": "easy__calendar__013",
@@ -14446,17 +14527,19 @@
       "is_ask_user": false,
       "task_number_within_app": 14,
       "task_number_within_dataset_app": 6,
-      "prompt_text": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for 'Bali Cafe' in Google Maps?",
-      "prompt_template": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for 'Bali Cafe' in Google Maps?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for [hc place name] in Google Maps?",
+      "prompt_template": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for {{ hc place name }} in Google Maps?",
+      "placeholders": [
+        "hc place name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No place named 'Bali Cafe' exists on Google Maps (not searched/saved)."
+      "hallucination_control_absence": "No place named '{hc place name}' exists on Google Maps (not searched/saved)."
     },
     {
       "task_id": "medium__amazon-shopping__005",
@@ -14510,17 +14593,19 @@
       "is_ask_user": false,
       "task_number_within_app": 14,
       "task_number_within_dataset_app": 9,
-      "prompt_text": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for 'Rahul Mehta' on Telegram?",
-      "prompt_template": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for 'Rahul Mehta' on Telegram?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for [hc contact name] on Telegram?",
+      "prompt_template": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for {{ hc contact name }} on Telegram?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No Telegram contact named 'Rahul Mehta' exists."
+      "hallucination_control_absence": "No Telegram contact named '{hc contact name}' exists."
     },
     {
       "task_id": "medium__phone__012",
@@ -14806,17 +14891,19 @@
       "is_ask_user": false,
       "task_number_within_app": 15,
       "task_number_within_dataset_app": 11,
-      "prompt_text": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with 'Rahul Mehta' in Messages?",
-      "prompt_template": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with 'Rahul Mehta' in Messages?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with [hc contact name] in Messages?",
+      "prompt_template": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with {{ hc contact name }} in Messages?",
+      "placeholders": [
+        "hc contact name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No conversation with 'Rahul Mehta' exists in Messages."
+      "hallucination_control_absence": "No conversation with '{hc contact name}' exists in Messages."
     },
     {
       "task_id": "medium__files__013",
@@ -14866,17 +14953,19 @@
       "is_ask_user": false,
       "task_number_within_app": 14,
       "task_number_within_dataset_app": 10,
-      "prompt_text": "I need this file handy for the next while. Can you star the file 'Q3 Budget.xlsx' in Google Drive?",
-      "prompt_template": "I need this file handy for the next while. Can you star the file 'Q3 Budget.xlsx' in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I need this file handy for the next while. Can you star the file [hc file name] in Google Drive?",
+      "prompt_template": "I need this file handy for the next while. Can you star the file {{ hc file name }} in Google Drive?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive to star."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive to star."
     },
     {
       "task_id": "medium__settings__013",
@@ -15474,17 +15563,19 @@
       "is_ask_user": false,
       "task_number_within_app": 15,
       "task_number_within_dataset_app": 11,
-      "prompt_text": "That meeting clashes with something else now. Can you move the 'Team Sync Weekly' meeting two hours later in Calendar and notify the attendees?",
-      "prompt_template": "That meeting clashes with something else now. Can you move the 'Team Sync Weekly' meeting two hours later in Calendar and notify the attendees?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "That meeting clashes with something else now. Can you move the [hc event name] meeting two hours later in Calendar and notify the attendees?",
+      "prompt_template": "That meeting clashes with something else now. Can you move the {{ hc event name }} meeting two hours later in Calendar and notify the attendees?",
+      "placeholders": [
+        "hc event name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No calendar event titled 'Team Sync Weekly' exists to reschedule."
+      "hallucination_control_absence": "No calendar event titled '{hc event name}' exists to reschedule."
     },
     {
       "task_id": "easy__google-drive__015",
@@ -15506,17 +15597,19 @@
       "is_ask_user": false,
       "task_number_within_app": 15,
       "task_number_within_dataset_app": 11,
-      "prompt_text": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file 'Q3 Budget.xlsx' in Google Drive?",
-      "prompt_template": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file 'Q3 Budget.xlsx' in Google Drive?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file [hc file name] in Google Drive?",
+      "prompt_template": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file {{ hc file name }} in Google Drive?",
+      "placeholders": [
+        "hc file name"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md",
       "hallucination_control": true,
       "data_absent": true,
       "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No file named 'Q3 Budget.xlsx' exists in Google Drive."
+      "hallucination_control_absence": "No file named '{hc file name}' exists in Google Drive."
     },
     {
       "task_id": "hard__google-search-obsidian__098",

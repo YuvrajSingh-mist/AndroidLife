@@ -12,7 +12,7 @@
     "hard": 72,
     "hard_ask_user": 49,
     "hard_deterministic": 23,
-    "placeholder_count": 246
+    "placeholder_count": 293
   },
   "categories": [
     {
@@ -1051,7 +1051,7 @@
       "task_id": "medium__chrome__003",
       "difficulty": "medium",
       "category_name": "Chrome",
-      "prompt": "Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's bene looking for cheap earbuds recently.",
+      "prompt": "Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's been looking for cheap earbuds recently.",
       "points": 3,
       "cross_app": true,
       "is_ask_user": false,
@@ -1171,7 +1171,7 @@
       "task_id": "medium__files__015",
       "difficulty": "medium",
       "category_name": "Files",
-      "prompt": "I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the biggest file's name and size? Oh, and don't delete anything — I just want to know.",
+      "prompt": "I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know.",
       "points": 3,
       "cross_app": false,
       "is_ask_user": false,
@@ -1471,7 +1471,7 @@
       "task_id": "hard__gmail-calendar__003",
       "difficulty": "hard",
       "category_name": "Gmail",
-      "prompt": "I'm flying out soon and don't wanna miss it. Find my flight confirmation email for that trip and add it to the Calendar as a reminder 3 hours before departure so I get a heads-up?",
+      "prompt": "I'm need details about my trip quickly. Find my flight confirmation email for that trip, extract the details like flight name, departure time and terminal for me and yea could you forward it to my friend's email id too? And also for my end, add it to the Calendar as a reminder 3 hours before departure so I get a heads-up?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -1546,7 +1546,7 @@
       "task_id": "hard__music-obsidian__077",
       "difficulty": "hard",
       "category_name": "Music",
-      "prompt": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
+      "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what jusic helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -1591,7 +1591,7 @@
       "task_id": "hard__telegram-calendar__016",
       "difficulty": "hard",
       "category_name": "Telegram",
-      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what the last thing we settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -2207,8 +2207,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "In Files, open the 'Scan Backup' folder inside Downloads and tell me how many scanned documents are in it",
+      "placeholder_count": 1,
+      "prompt": "In Files, open the [hc scan folder] folder inside Downloads and tell me how many scanned documents are in it",
       "note": ""
     },
     {
@@ -2520,7 +2520,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 0,
-      "prompt": "I listen to music to fall asleep and want it to stop by itself around my bedtime. Can you set that up for me in YouTube Music?",
+      "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what jusic helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
       "note": ""
     },
     {
@@ -2812,8 +2812,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "Can you open Notes and add a bullet list to the note titled 'Grocery List' for me pls?",
+      "placeholder_count": 1,
+      "prompt": "Can you open Notes and add a bullet list to the note titled [hc grocery note] for me pls?",
       "note": ""
     },
     {
@@ -3442,8 +3442,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That scans folder is taking up space I don't want to waste. Can you empty the 'Old Scans' folder in Files for me?",
+      "placeholder_count": 1,
+      "prompt": "That scans folder is taking up space I don't want to waste. Can you empty the [hc scans folder] folder in Files for me?",
       "note": ""
     },
     {
@@ -3719,8 +3719,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file 'IMG_20250101.jpg' in Files without opening a photos app?",
+      "placeholder_count": 1,
+      "prompt": "I just want a quick peek at a photo, not the whole photos. Can you preview the image file [hc photo file] in Files without opening a photos app?",
       "note": ""
     },
     {
@@ -3736,8 +3736,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called 'Project Proposal v2' for me?",
+      "placeholder_count": 1,
+      "prompt": "I can't find the latest version of a doc anywhere. Can you search Google Drive for a file called [hc proposal file] for me?",
       "note": ""
     },
     {
@@ -4047,8 +4047,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "He's someone I call all the time. Can you star 'Rahul Mehta' as a favorite in Contacts?",
+      "placeholder_count": 1,
+      "prompt": "He's someone I call all the time. Can you star [hc contact name] as a favorite in Contacts?",
       "note": ""
     },
     {
@@ -4064,8 +4064,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'll need an email later today and don't want to hunt for it. Can you star the email from 'Rahul Mehta' in Gmail that I'll need later today?",
+      "placeholder_count": 1,
+      "prompt": "I'll need an email later today and don't want to hunt for it. Can you star the email from [hc contact name] in Gmail that I'll need later today?",
       "note": ""
     },
     {
@@ -4459,8 +4459,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That group is way too noisy for me now. Can you leave the group 'Old College Group' on Telegram for me?",
+      "placeholder_count": 1,
+      "prompt": "That group is way too noisy for me now. Can you leave the group [hc group name] on Telegram for me?",
       "note": ""
     },
     {
@@ -4566,8 +4566,8 @@
       "is_deterministic": false,
       "cross_app": true,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named 'Temp', delete them, and log in Obsidian how many you removed in Files?",
+      "placeholder_count": 1,
+      "prompt": "Could you organize my Downloads? Open Files, list every folder across my storage and count them, then find any named [hc temp folder], delete them, and log in Obsidian how many you removed in Files?",
       "note": ""
     },
     {
@@ -4703,8 +4703,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "He just sent something I'll need to circle back to. Can you star the latest email from 'Rahul Mehta' in Gmail?",
+      "placeholder_count": 1,
+      "prompt": "He just sent something I'll need to circle back to. Can you star the latest email from [hc contact name] in Gmail?",
       "note": ""
     },
     {
@@ -4737,8 +4737,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file 'Q3 Budget.xlsx' in Google Drive has been shared with anyone?",
+      "placeholder_count": 1,
+      "prompt": "I want to make sure that file isn't visible to anyone it shouldn't be. Can you check whether the file [hc file name] in Google Drive has been shared with anyone?",
       "note": ""
     },
     {
@@ -5019,8 +5019,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I just need a peek at what's inside, not the whole file. Can you preview the file 'Q3 Budget.xlsx' in Google Drive without opening it fully?",
+      "placeholder_count": 1,
+      "prompt": "I just need a peek at what's inside, not the whole file. Can you preview the file [hc file name] in Google Drive without opening it fully?",
       "note": ""
     },
     {
@@ -5121,8 +5121,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel 'TechDaily' has posted anything today?",
+      "placeholder_count": 1,
+      "prompt": "I follow a channel and don't want to miss their uploads. Can you check if the YouTube channel [hc channel name] has posted anything today?",
       "note": ""
     },
     {
@@ -5346,8 +5346,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That download has an unhelpful filename. Can you rename the downloaded file 'report_final_v2.pdf' in Files?",
+      "placeholder_count": 1,
+      "prompt": "That download has an unhelpful filename. Can you rename the downloaded file [hc report file] in Files?",
       "note": ""
     },
     {
@@ -5657,8 +5657,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from 'Rahul Mehta' in Gmail?",
+      "placeholder_count": 1,
+      "prompt": "My inbox keeps filling up with promos I don't want. Can you delete the most recent promotional email from [hc contact name] in Gmail?",
       "note": ""
     },
     {
@@ -5725,8 +5725,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I want to see who's actually in that group. Can you check the member list of the group 'Old College Group' on Telegram?",
+      "placeholder_count": 1,
+      "prompt": "I want to see who's actually in that group. Can you check the member list of the group [hc group name] on Telegram?",
       "note": ""
     },
     {
@@ -5991,8 +5991,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm looking for the photos from my trip. Can you search the photos for photos from 'Bali'?",
+      "placeholder_count": 1,
+      "prompt": "I'm looking for the photos from my trip. Can you search the photos for photos from [hc trip name]?",
       "note": ""
     },
     {
@@ -6008,8 +6008,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I need to check a document but it's buried in Drive. Can you open the PDF 'Q3 Budget.pdf' stored in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I need to check a document but it's buried in Drive. Can you open the PDF [hc budget pdf] stored in Google Drive?",
       "note": ""
     },
     {
@@ -6285,8 +6285,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That recurring meeting is no longer happening. Can you delete the calendar event 'Team Sync Weekly' in Calendar?",
+      "placeholder_count": 1,
+      "prompt": "That recurring meeting is no longer happening. Can you delete the calendar event [hc event name] in Calendar?",
       "note": ""
     },
     {
@@ -6319,8 +6319,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from 'Rahul Mehta' in Gmail?",
+      "placeholder_count": 1,
+      "prompt": "One thread keeps pinging me every few minutes. Can you mute the noisy email thread from [hc contact name] in Gmail?",
       "note": ""
     },
     {
@@ -6684,8 +6684,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place 'Bali Cafe' in Google Maps is open right now?",
+      "placeholder_count": 1,
+      "prompt": "I'm thinking of heading there but don't want to show up closed. Can you check if the saved place [hc place name] in Google Maps is open right now?",
       "note": ""
     },
     {
@@ -6861,8 +6861,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note 'Old Draft' and delete it, and check whether the other notes are still relevant in Notes?",
+      "placeholder_count": 1,
+      "prompt": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note [hc draft note] and delete it, and check whether the other notes are still relevant in Notes?",
       "note": ""
     },
     {
@@ -6946,8 +6946,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo 'IMG_20250101.jpg' in Google Photos?",
+      "placeholder_count": 1,
+      "prompt": "I'm trying to send a photo but it might be too big. Can you check the file size of the photo [hc photo file] in Google Photos?",
       "note": ""
     },
     {
@@ -7140,8 +7140,8 @@
       "is_deterministic": false,
       "cross_app": true,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from 'Rahul Mehta'? And if it's more than 10, add the sender to spam and tell 'Rahul Mehta' on Telegram in Gmail?",
+      "placeholder_count": 1,
+      "prompt": "Could you open Gmail, filter the inbox to emails from the past week and list the senders, then count how many came from [hc contact name]? And if it's more than 10, add the sender to spam and tell [hc contact name] on Telegram in Gmail?",
       "note": ""
     },
     {
@@ -7279,8 +7279,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place 'Bali Cafe' in Google Maps?",
+      "placeholder_count": 1,
+      "prompt": "I'm deciding if it's worth the drive over there. Can you check the distance to the saved place [hc place name] in Google Maps?",
       "note": ""
     },
     {
@@ -7330,8 +7330,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That group's notifications are driving me up the wall. Can you mute notifications for the group 'Old College Group' on Telegram?",
+      "placeholder_count": 1,
+      "prompt": "That group's notifications are driving me up the wall. Can you mute notifications for the group [hc group name] on Telegram?",
       "note": ""
     },
     {
@@ -7631,8 +7631,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event 'Team Sync Weekly' in Calendar?",
+      "placeholder_count": 1,
+      "prompt": "I want to leave myself a reminder attached to that meeting. Can you add a note to the event [hc event name] in Calendar?",
       "note": ""
     },
     {
@@ -7682,8 +7682,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "Rotate the sideways photo 'IMG_20250101.jpg' in Google Photos?",
+      "placeholder_count": 1,
+      "prompt": "Rotate the sideways photo [hc photo file] in Google Photos?",
       "note": ""
     },
     {
@@ -7995,8 +7995,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I just found out when their birthday is. Can you add a birthday to the contact 'Rahul Mehta' in Contacts?",
+      "placeholder_count": 1,
+      "prompt": "I just found out when their birthday is. Can you add a birthday to the contact [hc contact name] in Contacts?",
       "note": ""
     },
     {
@@ -8152,8 +8152,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you open Google Photos, look through my recent albums, then filter the 'Bali' trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
+      "placeholder_count": 1,
+      "prompt": "Could you open Google Photos, look through my recent albums, then filter the [hc trip name] trip photos to find ones missing location metadata, note which album has the most, and star one from that album in Google Photos?",
       "note": ""
     },
     {
@@ -8291,8 +8291,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I need to check the budget and the file's sitting in Drive. Can you open the document 'Q3 Budget.xlsx' in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I need to check the budget and the file's sitting in Drive. Can you open the document [hc file name] in Google Drive?",
       "note": ""
     },
     {
@@ -8430,8 +8430,8 @@
       "is_deterministic": false,
       "cross_app": true,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by 'Rahul Mehta', count how many are documents vs. sheets, and message the breakdown to 'Rahul Mehta' on Telegram in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "Could you open Google Drive, filter to files shared with me and list them, then find every file shared by [hc contact name], count how many are documents vs. sheets, and message the breakdown to [hc contact name] on Telegram in Google Drive?",
       "note": ""
     },
     {
@@ -8550,8 +8550,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "The framing's off on a photo I want to use. Can you crop the photo 'IMG_20250101.jpg' in Google Photos?",
+      "placeholder_count": 1,
+      "prompt": "The framing's off on a photo I want to use. Can you crop the photo [hc photo file] in Google Photos?",
       "note": ""
     },
     {
@@ -8725,8 +8725,8 @@
       "is_deterministic": false,
       "cross_app": true,
       "points": 3,
-      "placeholder_count": 0,
-      "prompt": "Could you find and remove duplicate songs across the 'Chill' and 'Focus' playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
+      "placeholder_count": 2,
+      "prompt": "Could you find and remove duplicate songs across the [hc playlist 1] and [hc playlist 2] playlists, confirm the count after, rename one playlist to avoid future confusion, and note the result in Music?",
       "note": ""
     },
     {
@@ -8880,8 +8880,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I deleted a file I actually still need. Can you restore the file 'Q3 Budget.xlsx' from Trash in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I deleted a file I actually still need. Can you restore the file [hc file name] from Trash in Google Drive?",
       "note": ""
     },
     {
@@ -8914,8 +8914,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm wondering how cluttered that folder got. Can you check how many notes are in the 'Old Projects' folder in Obsidian?",
+      "placeholder_count": 1,
+      "prompt": "I'm wondering how cluttered that folder got. Can you check how many notes are in the [hc projects folder] folder in Obsidian?",
       "note": ""
     },
     {
@@ -9213,8 +9213,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I want to get rid of a file but keep it recoverable for now. Can you move the file 'Q3 Budget.xlsx' to the Trash in Files?",
+      "placeholder_count": 1,
+      "prompt": "I want to get rid of a file but keep it recoverable for now. Can you move the file [hc file name] to the Trash in Files?",
       "note": ""
     },
     {
@@ -9230,8 +9230,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the 'Bali' album in Google Photos?",
+      "placeholder_count": 1,
+      "prompt": "I'm curating that album and want a count of what's in it. Can you check the total number of videos in the [hc trip name] album in Google Photos?",
       "note": ""
     },
     {
@@ -9506,8 +9506,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named 'Q3 Budget.xlsx'?",
+      "placeholder_count": 1,
+      "prompt": "I can't find that file anywhere and I know it's on here. Can you search Files for a file named [hc file name]?",
       "note": ""
     },
     {
@@ -9540,8 +9540,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm done with that file and want it gone for good. Can you delete the file 'Q3 Budget.xlsx' from Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I'm done with that file and want it gone for good. Can you delete the file [hc file name] from Google Drive?",
       "note": ""
     },
     {
@@ -9834,8 +9834,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for 'Bali Cafe' in Google Maps?",
+      "placeholder_count": 1,
+      "prompt": "I'm planning to go there and need to know when it's open. Can you look up the opening hours for [hc place name] in Google Maps?",
       "note": ""
     },
     {
@@ -9970,8 +9970,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for 'Rahul Mehta' on Telegram?",
+      "placeholder_count": 1,
+      "prompt": "I'm waiting on a reply and want to know if they're around. Can you check the last-seen time for [hc contact name] on Telegram?",
       "note": ""
     },
     {
@@ -10229,8 +10229,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I need this file handy for the next while. Can you star the file 'Q3 Budget.xlsx' in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I need this file handy for the next while. Can you star the file [hc file name] in Google Drive?",
       "note": ""
     },
     {
@@ -10280,8 +10280,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with 'Rahul Mehta' in Messages?",
+      "placeholder_count": 1,
+      "prompt": "That thread keeps buzzing and I need some quiet. Can you mute notifications for the thread with [hc contact name] in Messages?",
       "note": ""
     },
     {
@@ -10522,8 +10522,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "That meeting clashes with something else now. Can you move the 'Team Sync Weekly' meeting two hours later in Calendar and notify the attendees?",
+      "placeholder_count": 1,
+      "prompt": "That meeting clashes with something else now. Can you move the [hc event name] meeting two hours later in Calendar and notify the attendees?",
       "note": ""
     },
     {
@@ -10590,8 +10590,8 @@
       "is_deterministic": false,
       "cross_app": false,
       "points": 1,
-      "placeholder_count": 0,
-      "prompt": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file 'Q3 Budget.xlsx' in Google Drive?",
+      "placeholder_count": 1,
+      "prompt": "I want to know if the latest version was actually saved. Can you check the last-modified date of the file [hc file name] in Google Drive?",
       "note": ""
     },
     {
