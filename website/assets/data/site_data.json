@@ -1126,7 +1126,7 @@
       "task_id": "medium__contacts__012",
       "difficulty": "medium",
       "category_name": "Contacts",
-      "prompt": "I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say \"The number isn't available\".",
+      "prompt": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If the call goes through, reply back to me with `Name | Number` format; otherwise just say \"The number isn't available\".",
       "points": 3,
       "cross_app": true,
       "is_ask_user": false,
@@ -8136,7 +8136,7 @@
       "cross_app": true,
       "points": 3,
       "placeholder_count": 2,
-      "prompt": "I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format.",
+      "prompt": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If the call goes through, reply back to me with `Name | Number` format; otherwise just say \"The number isn't available\".",
       "note": ""
     },
     {

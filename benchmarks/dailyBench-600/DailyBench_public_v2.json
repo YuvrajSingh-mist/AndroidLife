@@ -1687,8 +1687,8 @@
       "is_ask_user": false,
       "task_number_within_app": 12,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say \"The number isn't available\".",
-      "prompt_template": "I want to reach out to an old contact butwant to know if the number is still reachable. Open Contacts, find the contact named {{ contact name }}, and read out the phone number saved for them. Then call {{ contact }} to confirm their number's still active or not. If its active like the call went then reply back to me with `Name | Number` format else just say \"The number isn't available\".",
+      "prompt_text": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If the call goes through, reply back to me with `Name | Number` format; otherwise just say \"The number isn't available\".",
+      "prompt_template": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named {{ contact name }}, and read out the phone number saved for them. Then call {{ contact }} to confirm their number's still active or not. If the call goes through, reply back to me with `Name | Number` format; otherwise just say \"The number isn't available\".",
       "placeholders": [
         "contact name",
         "contact"

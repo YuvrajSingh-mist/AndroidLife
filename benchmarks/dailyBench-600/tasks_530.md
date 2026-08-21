@@ -1165,7 +1165,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 **[Contacts]**
 - Easy (1pt): I just found out when their birthday is. Can you add a birthday to the contact [hc contact name] in Contacts? <!--easy__contacts__013-->
 
-- Medium (3pt) **[Contacts+Phone]**: I want to reach out to an old contact but I'm not sure I have the right number saved anymore. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their address. Reply with `Name | Number` format. <!--medium__contacts__012-->
+- Medium (3pt) **[Contacts+Phone]**: I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the phone number saved for them. Then call [contact] to confirm their number's still active or not. If the call goes through, reply back to me with `Name | Number` format; otherwise just say "The number isn't available". <!--medium__contacts__012-->
 
 **[Phone]**
 - Easy (1pt): I saw I missed a call and want to know who it was. Can you check my most recent missed call in Phone? <!--easy__phone__010-->
