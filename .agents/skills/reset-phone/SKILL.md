@@ -37,7 +37,10 @@ uv run python -m pytest tests/ -q -p no:cacheprovider --deselect tests/test_adb.
 > 2026-08-23 task changes (re-export picks them up): `easy__swiggy__001` reworded to
 > "sum last month's Swiggy spendings"; `hard__google-search-telegram-clock__018` fact
 > now includes the recipient (Yuvraj Singh Jio); `medium__google-search__008` promoted
-> to ASK USER with the route fact (IIIT Bhubaneswar → Bhubaneswar Airport).
+> to ASK USER with the route fact (IIIT Bhubaneswar → Bhubaneswar Airport);
+> `hard__photos-gmail-obsidian__012` fact now = photo + recipient email
+> (`hafari4025@aghism.com`). **Public set trimmed 68 → 60 (20/20/20 per day)** — 8
+> duplicate tasks removed (see `docs/benchmark-spec-public.md`).
 > `ask_user_facts.json` was patched by hand — keep it in sync with the dataset.
 ```
 > Note: `test_openrouter_live.py` needs a real network to OpenRouter — it fails
@@ -107,10 +110,12 @@ date, don't assume.
 
 The reset script + canned manual list do NOT catch leftover UI state the agents
 left behind (learned the hard way 2026-08-23: unsent Telegram drafts were missed).
-After Steps 1–1c, sweep EVERY task trajectory's end-state and clear persisted state:
+After Steps 1–1c, sweep **EVERY task** under the run's `day*/` folders — one folder
+per task, do not skip any — and clear persisted state:
 
-1. **Scan** — for each run folder, open the latest `trajectories/<ts>/trajectory.json`
-   and list the final tool calls + any `type` action text. Flag:
+1. **Scan every task** (all N task folders, not a sample): for each, open the latest
+   `trajectories/<ts>/trajectory.json` and list the final tool calls + any `type`
+   action text. Flag:
    - `type` into a messaging compose that was never sent (→ draft to clear)
    - `type` into a search/filter box (ephemeral; dies on force-stop — verify app
      isn't mid-dialog)
@@ -124,6 +129,20 @@ After Steps 1–1c, sweep EVERY task trajectory's end-state and clear persisted 
    (uiautomator `text=''`). Note: Telegram force-stop can drop the draft, but
    RE-CHECK every chat the agent touched — the chat list is a custom view
    uiautomator can't read, so open each chat individually.
+
+   > 2026-08-22-195244 run, all-task scan → undo list (match by run-window):
+   > calendar events to soft-delete: "Get-together with friends"
+   > (`hard__telegram-calendar__016`), "IndiGo 6E-6737 Flight - BBI to DEL"
+   > (`hard__gmail-calendar__003`), "Review July Photos"
+   > (`medium__google-photos-calendar__001`). Obsidian notes to `rm`:
+   > "Fastest route to Bhubaneswar Airport" (`medium__google-maps__002`),
+   > "Photo sent to Yuvraj Airtel" (`hard__photos-gmail-obsidian__012`, + unstar
+   > the photo + delete the Sent email). Unsent drafts to clear (Yuvraj Airtel
+   > chat): "Order total: Rs. 30.00" (`hard__swiggy__005`). Clock leftover:
+   > "Work Alarm" (`medium__clock__009`), stop "Workout" timer
+   > (`medium__clock__011`). Maps favourite to remove: "parked here"
+   > (`easy__google-maps__004`). Note `medium__contacts__009` placed a REAL call
+   > (call-log gap is operator-seeded, not undone).
 3. **Clock** — open `com.oneplus.deskclock`; delete leftover alarms (e.g.
    `medium__clock-009` "Work Alarm") and stop any running timer (`medium__clock-011`
    "Workout") so the next run's clock tasks start clean.
@@ -261,7 +280,7 @@ Quick cloud verify (in-app, ~10 min):
 - **Photos** food captions + Favourites for `medium__gallery__007` — **app-private AND per-account**: favourites/captions do NOT carry across accounts; if the Photos app is on a different account than where they were set, they appear gone. Re-add 3 food photos (favourited + captioned) in the SAME account the app is signed into.
 - **Digital Wellbeing** → "App timers" → "No timers set".
 
-## Step 5 — Run inference (public 68-task sample)
+## Step 5 — Run inference (public 60-task sample)
 
 Start Phoenix for the public project (DB `assets/db/public/phoenix.db`), then launch:
 
