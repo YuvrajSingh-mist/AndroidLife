@@ -1,4 +1,4 @@
-# Public Benchmark Specification (68-task preview)
+# Public Benchmark Specification (60-task preview)
 
 The **public benchmark** is the open, shareable slice of
 [DrainBench300](benchmark-spec.md): a 3-day (Day 1–3) preview drawn from the 530-task
@@ -21,16 +21,16 @@ and [`docs/fabricated-test-data.md`](fabricated-test-data.md) for the machinery 
 
 | metric | value |
 |---|---|
-| Runnable tasks | **68** (Day 1: 24 · Day 2: 24 · Day 3: 20) |
-| Grading | **61 success-graded + 7 hallucination-control** (honesty-graded) |
-| Buckets | **26 easy / 25 medium / 17 hard** |
+| Runnable tasks | **60** (Day 1: 20 · Day 2: 20 · Day 3: 20 — at the 530 corpus's ~19 tasks/day norm) |
+| Grading | **53 success-graded + 7 hallucination-control** (honesty-graded) |
+| Buckets | **26 easy / 17 medium / 17 hard** |
 | Hard split | **6 ASK USER SINGLE + 4 ASK USER MULTI + 7 DETERMINISTIC** (all 17 hard are cross-app) |
 | ASK USER tasks (any bucket) | **7 SINGLE** (6 hard + 1 medium) + **4 MULTI** = 11 |
 | Hallucination controls | **7** (Day 1: 2 · Day 2: 2 · Day 3: 3) — data must stay ABSENT, agent must honestly fail |
-| Single-app tasks | **36 (52.9%)** |
-| Cross-app tasks | **32 (47.1%)** — 25 two-app + 7 three-app |
+| Single-app tasks | **31 (51.7%)** |
+| Cross-app tasks | **29 (48.3%)** — 22 two-app + 7 three-app |
 | Distinct apps | **30** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
-| Placeholders used | 52 uses across **36 distinct keys** (most-used: `[contact]`, 14 uses) |
+| Placeholders used | 44 uses across **32 distinct keys** (most-used: `[contact]`, 11 uses) |
 | Duplicate task_ids | 0 |
 | Sidecars | `ask_user_facts.json` (7 SINGLE), `multiturn_kb_public.json` (4 MULTI), `hallucination_controls.json` (7 HC) |
 
@@ -41,10 +41,10 @@ Every public task is drawn from the 530 with the same text, so the public set is
 
 | day | easy | medium | hard | hard split (SINGLE / MULTI / DET) | HC | total |
 |---|---|---|---|---|---|---|
-| 1 | 9 | 9 | 6 | 1 / 2 / 3 | 2 | 24 |
-| 2 | 9 | 9 | 6 | 3 / 2 / 1 | 2 | 24 |
+| 1 | 9 | 5 | 6 | 1 / 2 / 3 | 2 | 20 |
+| 2 | 9 | 5 | 6 | 3 / 2 / 1 | 2 | 20 |
 | 3 | 8 | 7 | 5 | 2 / 0 / 3 | 3 | 20 |
-| **Total** | **26** | **25** | **17** | **6 / 4 / 7** | **7** | **68** |
+| **Total** | **26** | **17** | **17** | **6 / 4 / 7** | **7** | **60** |
 
 > Note: the hard split is exactly 6 SINGLE + 4 MULTI + 7 DET = 17, with no double
 > counting. One hard task also sits on a *separate* axis: `hard__files-notes__069` is a
@@ -56,14 +56,14 @@ Every public task is drawn from the 530 with the same text, so the public set is
 | bucket | single | cross | cross share |
 |---|---|---|---|
 | Easy (1pt) | 26 | 0 | 0% — easy is single-app by design |
-| Medium (3pt) | 10 | 15 | **60%** |
+| Medium (3pt) | 5 | 12 | **70.6%** |
 | Hard (5pt) | 0 | 17 | **100%** |
-| **Total** | **36** | **32** | **47.1%** |
+| **Total** | **31** | **29** | **48.3%** |
 > **Representativeness (verified 2026-08-23):** the public sample tracks the 530 corpus —
-> 68 tasks (24/24/20 per day) vs 530 (28 days, ~18.9/day); buckets 26/25/17 vs 216/242/72;
-> 30 apps vs 31 (Weather, MakeMyTrip not sampled); single-ask fact split 3 one-fact / 4 two-fact
-> vs 18/18 in the 530. Every shared ASK USER task carries the **identical prompt text and
-> ground-truth fact** in public and 530 (verified 0 mismatches).
+> 60 tasks (20/20/20 per day — at the 530's ~18.9 tasks/day norm) vs 530 (28 days, 15-22/day);
+> buckets 26/17/17 vs 216/242/72; 30 apps vs 31 (Weather, MakeMyTrip not sampled); single-ask
+> fact split 3 one-fact / 4 two-fact vs 18/18 in the 530. Every shared ASK USER task carries the
+> **identical prompt text and ground-truth fact** in public and 530 (verified 0 mismatches).
 ## The hard split (17 tasks)
 
 ### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
@@ -151,7 +151,7 @@ Source: `benchmarks/dailyBench-600/hallucination_controls.json`. Graded by
 ## Grading model
 
 Exactly the 530-corpus model (`docs/evaluation-policy.md` + `src/DailyBench/benchmark_metrics.py`),
-applied to the 68-task sample. Success is **gated on the verified on-device end state**, never
+applied to the 60-task sample. Success is **gated on the verified on-device end state**, never
 the model's self-report. Three outcome classes: **true success / true failure / hallucination**
 (no partials).
 
@@ -180,19 +180,19 @@ every app in their `apps` array):
 
 | app | tasks | | app | tasks |
 |---|---|---|---|---|
-| Telegram | 11 | | Google Drive | 3 |
-| Files | 8 | | Gmail | 3 |
+| Telegram | 10 | | Google Drive | 2 |
+| Files | 5 | | Gmail | 3 |
 | Notes | 7 | | Calculator | 3 |
 | Calendar | 7 | | Google Search | 3 |
-| Google Photos | 6 | | Settings | 2 |
+| Google Photos | 5 | | Settings | 2 |
 | Obsidian | 6 | | Amazon Shopping | 2 |
 | Phone | 5 | | Swiggy | 2 |
-| Chrome | 5 | | BookMyShow | 2 |
-| Messages | 5 | | Prime Video | 2 |
+| Chrome | 4 | | BookMyShow | 2 |
+| Messages | 3 | | Prime Video | 2 |
 | YouTube | 4 | | Music | 2 |
 | Contacts | 4 | | Google Meet | 2 |
-| Clock | 4 | | Camera | 1 |
-| Google Maps | 3 | | Google Slides | 1 |
+| Clock | 3 | | Camera | 1 |
+| Google Maps | 2 | | Google Slides | 1 |
 | | | | Google Sheets | 1 |
 | | | | Google Docs | 1 |
 | | | | Gallery | 1 |
@@ -204,10 +204,9 @@ runs can be published openly without ToS risk.
 
 ## Placeholders
 
-36 distinct keys, 52 uses across the 68 tasks — pinned per-device in
+32 distinct keys, 44 uses across the 60 tasks — pinned per-device in
 `benchmarks/dailyBench-600/public_vars.local.env` (the public equivalent of
-`tasks_vars.local.env`). Most-used: `[contact]` (14), `[contact name]` (2), `[topic]` (2),
-`[weekly meeting]` (2). Open (unpinned) placeholders are left verbatim in the prompt and are
+`tasks_vars.local.env`). Most-used: `[contact]` (11), `[contact name]` (2), `[weekly meeting]` (2). Open (unpinned) placeholders are left verbatim in the prompt and are
 part of what the agent must resolve or ask about.
 
 ## Data & seeds
@@ -231,7 +230,7 @@ uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"   # e.g. 
 # → assets/db/public/2026-08-22-195244/phoenix.db, project dailybench-public
 ```
 
-Run all 68 tasks:
+Run all 60 tasks:
 
 ```bash
 uv run dailybench_tasks.py \
@@ -277,6 +276,11 @@ fact, and the full question → answer dialogue.
 
 ### Run `2026-08-22-195244` (model `qwen/qwen3.6-plus` via OpenRouter, steps 60, temp 0.0)
 
+> ⚠️ This run predates the **68 → 60 trim** (the run used 24/24/20 tasks/day). Its metrics
+> below reflect the **pre-trim 68-task set**; the current set is 60 (20/20/20). The ask-user,
+> hallucination-control, and app coverage is unchanged by the trim, but SR/points will shift
+> on the next run.
+
 **Manual per-day audit** (`reports/public/public-2026-08-22-195244.md`):
 
 | day | correct | FAIL | halluc | total |
@@ -320,6 +324,6 @@ the full per-task audit, on-device verification, and privacy scan.
 
 This is a **sample**, not a separate benchmark: same task_ids, same prompts, same grading, same
 device harness. The full 530-task spec, schedule wiring, app-usage grounding, action-budget and
-evaluation philosophy are in [`docs/benchmark-spec.md`](benchmark-spec.md). The 68-task set is
+evaluation philosophy are in [`docs/benchmark-spec.md`](benchmark-spec.md). The 60-task set is
 regenerated from `public.md` (see `scripts/data/` export tooling); when the corpus changes, the
 public sample is re-exported to keep it a faithful structural preview.

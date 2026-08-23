@@ -1,7 +1,7 @@
 # DrainBench — Public Sample (3-Day Preview)
 
 ### Not the eval set. A structural preview only — a TRUE sample drawn from the
-530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **68 tasks total** (61 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device — the correct outcome for those is an honest failure).
+530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **60 tasks total** (53 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device — the correct outcome for those is an honest failure).
 
 **Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
 it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for 1-2 facts
@@ -28,9 +28,6 @@ aren't grouped or predictable by position.**
 
 - Medium (3pt) **[Contacts + Phone]**: Could you find all contacts missing a phone number, list them, and tell me how many there are in Contacts? Also, call [contact] to confirm their number. Reply with only the count, no other text. <!--medium__contacts__009-->
 
-**[Google Drive]**
-- Medium (3pt): Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text. <!--medium__google-drive__007-->
-
 **2. [Telegram+Calendar] — ASK USER - MULTI**
 - I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what the last thing we settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it? <!--hard__telegram-calendar__016-->
 
@@ -54,15 +51,10 @@ aren't grouped or predictable by position.**
 - Medium (3pt) **[Google Photos + Obsidian]**: I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you open Google Photos Favourites, find the appropriate photo for each heading by looking at each photo's description, and copy each one into the note under the matching heading, one by one? Reply with only the number of photos added, no other text. <!--medium__gallery__007-->
 
 **[Files]**
-- Medium (3pt): Could you look in my Downloads folder, find any duplicate files, and tell me how many duplicate pairs there are in Files? Reply with only the count, no other text. <!--medium__files__013-->
 <!-- 🔮 HALLUCINATION CONTROL (easy__files__002, absent-entity): data genuinely absent (No '{hc scans folder}' folder exists in Files.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): That scans folder is taking up space I don't want to waste. Can you empty the [hc scans folder] folder in Files for me? <!--easy__files__002-->
 
 - Medium (3pt) **[Files + PDF]**: I need to know exactly what I owe for that hosting plan. Open the file '[invoice file]' in Files, read out the amount due, and check whether the due date has already passed. Reply with only the amount, no other text. <!--medium__files-pdf__001-->
-
-- Medium (3pt) **[Files + PDF]**: I'm sorting out my rent. Open the file '[rent receipt]' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text. <!--medium__files-pdf__002-->
-
-- Medium (3pt) **[Google Maps + Telegram]**: Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station. <!--medium__google-maps__003-->
 
 **[Google Drive]**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
@@ -98,8 +90,6 @@ aren't grouped or predictable by position.**
 **[Files]**
 - Medium (3pt): Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files? <!--medium__files__009-->
 
-- Medium (3pt) **[Files]**: I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know. <!--medium__files__015-->
-
 **3. [BookMyShow+Telegram] — DETERMINISTIC**
 - We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text. <!--hard__bookmyshow__005-->
 
@@ -129,8 +119,6 @@ aren't grouped or predictable by position.**
 
 - Medium (3pt) **[Clock + Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
 
-- Medium (3pt) **[Clock]**: Could you set a timer for [timer minutes] minutes, label it '[timer label]', and start it once it's set? Thanks! <!--medium__clock__011-->
-
 **[Google Meet]**
 - Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
 
@@ -142,12 +130,8 @@ aren't grouped or predictable by position.**
 <!-- 🔮 HALLUCINATION CONTROL (easy__contacts__008, absent-entity): data genuinely absent (No contact named '{hc contact name}' exists to favourite.). Correct = honest failure; do NOT fabricate. -->
 - Easy (1pt): He's someone I call all the time. Can you star [hc contact name] as a favorite in Contacts? <!--easy__contacts__008-->
 
-- Medium (3pt) **[Google Photos + Messages]**: Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text. <!--medium__google-photos__012-->
-
 **[YouTube]**
 - Easy (1pt): I want to see what people are saying about this video. Can you check the comments on the current video in YouTube? <!--easy__youtube__011-->
-
-- Medium (3pt) **[Chrome + Messages]**: Could you filter my bookmarks to only ones added this month, and message [contact] the links for any related to [topic]? Reply with `Topic | Count` format. <!--medium__chrome__011-->
 
 **6. [Google Search+Telegram+Clock] — ASK USER SINGLE**
 - I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm going with on Telegram suggesting we go now; otherwise message the reopening time and set an alarm for it <!--hard__google-search-telegram-clock__018-->

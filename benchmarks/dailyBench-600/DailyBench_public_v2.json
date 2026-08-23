@@ -2,10 +2,10 @@
   "dataset_name": "DailyBench-Public",
   "dataset_version": "v2",
   "source_path": "benchmarks/dailyBench-600/public.md",
-  "task_count": 68,
+  "task_count": 60,
   "bucket_counts": {
     "hard": 17,
-    "medium": 25,
+    "medium": 17,
     "easy": 26
   },
   "tasks": [
@@ -128,34 +128,6 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Contacts + Phone",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "medium__google-drive__007",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 1,
-      "app": "Google Drive",
-      "app_slug": "google-drive",
-      "apps": [
-        "Google Drive"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 7,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text.",
-      "prompt_template": "Could you check my Google Drive for files that were shared with me, list the ones I can edit, and tell me how many there are? Reply with only the count, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": false,
-      "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -393,34 +365,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "medium__files__013",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 1,
-      "app": "Files",
-      "app_slug": "files",
-      "apps": [
-        "Files"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 13,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you look in my Downloads folder, find any duplicate files, and tell me how many duplicate pairs there are in Files? Reply with only the count, no other text.",
-      "prompt_template": "Could you look in my Downloads folder, find any duplicate files, and tell me how many duplicate pairs there are in Files? Reply with only the count, no other text.",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": false,
-      "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "easy__files__002",
       "bucket": "easy",
       "difficulty": "easy",
@@ -481,67 +425,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "medium__files-pdf__002",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 1,
-      "app": "Files + PDF",
-      "app_slug": "files-pdf",
-      "apps": [
-        "Files"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 2,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "I'm sorting out my rent. Open the file '[rent receipt]' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text.",
-      "prompt_template": "I'm sorting out my rent. Open the file '{{ rent receipt }}' in Files, read the rent amount, and tell me whether the receipt shows it as paid in full. Reply with only the amount, no other text.",
-      "placeholders": [
-        "rent receipt"
-      ],
-      "placeholder_count": 1,
-      "is_cross_app": true,
-      "cross_app_label": "Files + PDF",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "medium__google-maps__003",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 1,
-      "app": "Google Maps + Telegram",
-      "app_slug": "google-maps",
-      "apps": [
-        "Google Maps",
-        "Telegram"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 3,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message [contact] on Telegram the address of the nearest station.",
-      "prompt_template": "Could you filter EV charging stations near the route by connector type and check the nearest one's availability in Google Maps? Also, message {{ contact }} on Telegram the address of the nearest station.",
-      "placeholders": [
-        "contact"
-      ],
-      "placeholder_count": 1,
-      "is_cross_app": true,
-      "cross_app_label": "Google Maps + Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "medium__google-drive__001",
       "bucket": "medium",
       "difficulty": "medium",
@@ -560,7 +443,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 1,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 1,
       "prompt_text": "I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date.",
       "prompt_template": "I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date.",
       "placeholders": [],
@@ -866,37 +749,9 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 9,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 1,
       "prompt_text": "Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files?",
       "prompt_template": "Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files?",
-      "placeholders": [],
-      "placeholder_count": 0,
-      "is_cross_app": false,
-      "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "medium__files__015",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 2,
-      "app": "Files",
-      "app_slug": "files",
-      "apps": [
-        "Files"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 15,
-      "task_number_within_dataset_app": 3,
-      "prompt_text": "I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know.",
-      "prompt_template": "I'm trying to free up space on my phone. Can you check what's in my Downloads, sort them by size, and tell me the top 5 biggest file's name and size? Oh, and don't delete anything — I just want to know.",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -1197,37 +1052,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "medium__clock__011",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 2,
-      "app": "Clock",
-      "app_slug": "clock",
-      "apps": [
-        "Clock"
-      ],
-      "num_apps": 1,
-      "cross_app_required": false,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 11,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you set a timer for [timer minutes] minutes, label it '[timer label]', and start it once it's set? Thanks!",
-      "prompt_template": "Could you set a timer for {{ timer minutes }} minutes, label it '{{ timer label }}', and start it once it's set? Thanks!",
-      "placeholders": [
-        "timer minutes",
-        "timer label"
-      ],
-      "placeholder_count": 2,
-      "is_cross_app": false,
-      "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "easy__google-meet__004",
       "bucket": "easy",
       "difficulty": "easy",
@@ -1316,38 +1140,6 @@
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
-      "task_id": "medium__google-photos__012",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 2,
-      "app": "Google Photos + Messages",
-      "app_slug": "google-photos",
-      "apps": [
-        "Google Photos",
-        "Messages"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 12,
-      "task_number_within_dataset_app": 1,
-      "prompt_text": "Could you open Google Photos, put my 3 most recent photos into a new album called '[album name]', and message [contact] the album name so they can find it? Reply with only the album name, no other text.",
-      "prompt_template": "Could you open Google Photos, put my 3 most recent photos into a new album called '{{ album name }}', and message {{ contact }} the album name so they can find it? Reply with only the album name, no other text.",
-      "placeholders": [
-        "album name",
-        "contact"
-      ],
-      "placeholder_count": 2,
-      "is_cross_app": true,
-      "cross_app_label": "Google Photos + Messages",
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
       "task_id": "easy__youtube__011",
       "bucket": "easy",
       "difficulty": "easy",
@@ -1373,38 +1165,6 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
-    },
-    {
-      "task_id": "medium__chrome__011",
-      "bucket": "medium",
-      "difficulty": "medium",
-      "points": 3,
-      "day": 2,
-      "app": "Chrome + Messages",
-      "app_slug": "chrome",
-      "apps": [
-        "Chrome",
-        "Messages"
-      ],
-      "num_apps": 2,
-      "cross_app_required": true,
-      "ahi": null,
-      "interaction": null,
-      "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
-      "task_number_within_app": 11,
-      "task_number_within_dataset_app": 2,
-      "prompt_text": "Could you filter my bookmarks to only ones added this month, and message [contact] the links for any related to [topic]? Reply with `Topic | Count` format.",
-      "prompt_template": "Could you filter my bookmarks to only ones added this month, and message {{ contact }} the links for any related to {{ topic }}? Reply with `Topic | Count` format.",
-      "placeholders": [
-        "contact",
-        "topic"
-      ],
-      "placeholder_count": 2,
-      "is_cross_app": true,
-      "cross_app_label": "Chrome + Messages",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1457,7 +1217,7 @@
       "ask_user_fact": null,
       "is_ask_user": false,
       "task_number_within_app": 8,
-      "task_number_within_dataset_app": 2,
+      "task_number_within_dataset_app": 1,
       "prompt_text": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
       "prompt_template": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '{{ video name }}', open the first video, and see if it plays without any errors? Also, call {{ contact }} to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
       "placeholders": [

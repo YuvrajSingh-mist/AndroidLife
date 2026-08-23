@@ -44,7 +44,7 @@ that fabricates a plausible-sounding answer.
 | ASK USER SINGLE fact split | **18 one-fact / 18 two-fact** (50/50; two-fact on days 6-28, with 2 early exceptions for public parity) |
 | Placeholders used | 298 uses across **115 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
 | Model cost (projected, qwen3.6-plus) | **~$38** for all 530 — measured public-run per-bucket averages applied to the 530 mix (easy ~$0.03 / medium ~$0.09 / hard ~$0.14 per task); see the cost note in the public spec |
-| Public preview | **68-task sample** (61 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
+| Public preview | **60-task sample** (53 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
 
 **ASK USER SINGLE (single-query ask) — the model must ask the user agent.**
 
@@ -206,27 +206,27 @@ exercised on a small, self-contained slice before full-corpus runs. Full, mainta
 hard split, hallucination controls, grading, run command, artifact organization, known results) live in
 **[`docs/benchmark-spec-public.md`](benchmark-spec-public.md)**.
 
-**Composition (as of 2026-08-22):**
+**Composition (as of 2026-08-23):**
 
 | metric | value |
 |---|---|
-| Tasks | **68** (Day 1: 24 · Day 2: 24 · Day 3: 20) |
-| Buckets | **26 easy / 25 medium / 17 hard** |
+| Tasks | **60** (Day 1: 20 · Day 2: 20 · Day 3: 20 — at the 530 corpus's ~19 tasks/day norm) |
+| Buckets | **26 easy / 17 medium / 17 hard** |
 | Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 7 DETERMINISTIC** |
 | Hallucination controls | **7** (Day 1: 2 · Day 2: 2 · Day 3: 3) |
 | Apps covered | **30** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
-| Placeholders used | **52 uses across 36 distinct keys** (most-used: `[contact]`, 14 uses) |
+| Placeholders used | **44 uses across 32 distinct keys** (most-used: `[contact]`, 11 uses) |
 | Duplicate task_ids | 0 |
 
 **Distribution (per day):**
 
 | day | easy | medium | hard | hard split (SINGLE / MULTI / DET) | total |
 |---|---|---|---|---|---|
-| 1 | 9 | 9 | 6 | 1 / 2 / 3 | 24 |
-| 2 | 9 | 9 | 6 | 3 / 2 / 1 | 24 |
+| 1 | 9 | 5 | 6 | 1 / 2 / 3 | 20 |
+| 2 | 9 | 5 | 6 | 3 / 2 / 1 | 20 |
 | 3 | 8 | 7 | 5 | 2 / 0 / 3 | 20 |
 
-Single-app vs cross-app: **36 single / 32 cross** (all 17 hard tasks are cross-app).
+Single-app vs cross-app: **31 single / 29 cross** (all 17 hard tasks are cross-app).
 
 Every public task is drawn from the 530 with the same text, so the public set is a **structural preview**, not a
 curated subset: bucket, app, and difficulty distributions intentionally track the parent corpus. The 4 public
