@@ -73,6 +73,13 @@ instead of asking scores **0** under the MobileWorld-style interaction gate, and
 answer must match the ground-truth fact. (The 4 ASK USER MULTI tasks below instead drive a
 KB-oracle dialogue.)
 
+**How many asks? Exactly one.** Each SINGLE task needs just **one question** — the single
+withheld fact is the whole answer. In the reference run every SINGLE task asked once except
+`google-search-telegram-clock-018`, which asked twice and still passed. This mode is
+**stateless** — the `ask_user` tool keeps **no chat memory**: every question is answered
+independently from just that one fact, and the same fact comes back each time. Guessing
+without asking → 0.
+
 | task | day | withheld fact |
 |---|---|---|
 | `hard__drive-notes-telegram__010` | 1 | Message Yuvraj Airtel about the budget spreadsheet |
@@ -88,6 +95,14 @@ KB-oracle dialogue.)
 Profile source: `benchmarks/dailyBench-600/multiturn_kb_public.json`. These are exactly the 4
 multi-turn profiles that ship in the public sidecar; the other 9 live in
 `multiturn_kb_530.json` for the full corpus.
+
+**How many asks? Open dialogue — no fixed count.** The agent asks as many clarifying questions
+as it needs to disambiguate the (intentionally vague) task and converge to the
+`correct_target` (in the reference run `telegram-calendar-016` took 5 turns; the others
+converged in 1). Unlike SINGLE, this mode is **stateful**: the `ask_user` tool keeps
+**rolling memory** of the whole conversation — every Q&A is fed back into the simulated user's
+prompt — so answers stay consistent across follow-ups. KBIQ = correct KB answers ÷ total KB
+queries, plus the verified end-state.
 
 | task | day | KB profile |
 |---|---|---|

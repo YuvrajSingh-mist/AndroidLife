@@ -54,6 +54,15 @@ instead of asking scores **0** under the MobileWorld-style interaction gate, and
 answer must match the ground-truth fact (`ask_user_facts_730.json`). The 13 ASK USER MULTI tasks
 instead drive a KB-oracle multi-turn dialogue; the 23 DETERMINISTIC hard tasks need no ask at all.
 
+**Exactly one ask, and no chat memory.** Each SINGLE task is answered with **one question** —
+the single withheld fact is the whole answer (in the public reference run every SINGLE task
+asked once except `google-search-telegram-clock-018`, which asked twice and still passed). The
+`ask_user` tool is **stateless** in this mode: **no conversation memory**, each question is
+answered independently from just that one fact. The 13 ASK USER MULTI tasks are the opposite —
+an **open dialogue with rolling memory** (the simulated user remembers the whole conversation
+and stays consistent), where the agent asks as many clarifying questions as it needs to
+converge to the KB `correct_target`.
+
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 
 | bucket | single | cross | cross share |
