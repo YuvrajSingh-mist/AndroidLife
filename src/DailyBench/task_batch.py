@@ -70,6 +70,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model", default=os.environ.get("MODEL"))
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--steps", type=int, default=60, help="Step budget for each task run (60 default - the 50-60 step consensus cap for agentic benchmarks).")
+    parser.add_argument("--task-timeout", type=int, default=None, help="Wall-clock timeout in seconds for every task run (0 = no wall-clock cap, step budget only). Default: per-bucket 2400s (40 min).")
     parser.add_argument("--repeats", type=int, default=1, help="Run each selected task this many times (opt-in; runs are already deterministic at temperature=0).")
     parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
     parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
@@ -178,8 +179,8 @@ def build_run_command(
         command.extend(["--run-root", args.run_root])
     if task.get("task_id"):
         command.extend(["--task-id", task["task_id"]])
-    timeout = task_timeout_seconds(task)
-    # Hard/None = no wall-clock cap: pass --task-timeout 0, which dailybench_runner translates
+    timeout = args.task_timeout if getattr(args, "task_timeout", None) is not None else task_timeout_seconds(task)
+    # 0 = no wall-clock cap: pass --task-timeout 0, which dailybench_runner translates
     # to timeout=None. (Omitting the flag would fall back to the runner's own 1000s default and
     # silently cap hard tasks - smoke-test finding.)
     command.extend(["--task-timeout", "0" if timeout is None else str(timeout)])

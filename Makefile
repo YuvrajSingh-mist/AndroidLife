@@ -26,6 +26,10 @@ app-audit:
 smoke-test:
 	./scripts/run/smoke_test.sh
 
+.PHONY: organize-public
+organize-public:
+	uv run python scripts/tools/organize_public_artifacts.py --sweep
+
 .PHONY: help
 help:
 	@printf "Targets:\n"
@@ -36,3 +40,4 @@ help:
 	@printf "  make test-fast   Run fast parser/helper coverage\n"
 	@printf "  make test-cli    Run harness CLI/process coverage\n"
 	@printf "  make smoke-test  Pre-flight check: LLM server, wired/wireless ADB + mobilerun, one real task\n"
+	@printf "  make organize-public  File all public-run artifacts into per-run folders + rebuild turn-based audits\n"

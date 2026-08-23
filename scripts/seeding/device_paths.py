@@ -33,7 +33,7 @@ CFG_KEY_CONTACT_EMAIL = "contact email"
 # persona "Yuvraj Singh"). Kept as the final fallback so nothing breaks.
 DEFAULT_VAULT = "/sdcard/Obsidian/Papers vault oneplus "  # NB: trailing space is real
 DEFAULT_CALENDAR_ID = "16"
-DEFAULT_CONTACT_EMAIL = "yuvraj.airtel@example.com"
+DEFAULT_CONTACT_EMAIL = "yuvraj.mist@gmail.com"
 
 # Camera / Screenshots are stable Android paths (no trailing-space quirk).
 CAMERA = "/sdcard/DCIM/Camera"

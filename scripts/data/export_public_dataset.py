@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import json
 import re
 import sys
 from pathlib import Path
@@ -56,18 +55,6 @@ def main() -> int:
     # Stays on the PUBLIC facts file (ask_user_facts.json, via ask_user_facts_path) - never the
     # 730 benchmark's ask_user_facts_730.json, since the preview is fine to publish with answers.
     merge_ask_user_facts(dataset, ROOT / ask_user_facts_path("public.md"))
-    # Tag hallucination-control tasks from the sidecar (same as export_530_dataset.py) so the
-    # public dataset carries the flag/absence like the 530 corpus. The md annotations are doc
-    # chrome; this is what actually lands in the dataset. Grading reads the sidecar directly.
-    controls_path = ROOT / "benchmarks" / "dailyBench-600" / "hallucination_controls.json"
-    controls: dict[str, dict] = json.loads(controls_path.read_text(encoding="utf-8"))
-    for task in dataset["tasks"]:
-        ctl = controls.get(task["task_id"])
-        if ctl:
-            task["hallucination_control"] = True
-            task["data_absent"] = ctl.get("data_absent", True)
-            task["hallucination_control_type"] = ctl.get("type", "")
-            task["hallucination_control_absence"] = ctl.get("absence", "")
     # Per-task prompt overrides that survive regeneration (the datasets are gitignored and
     # rebuilt from this script). easy__contacts__001 is scoped to a different real device
     # contact (Akash Kumar) so the shared `contact` var used by messaging tasks is

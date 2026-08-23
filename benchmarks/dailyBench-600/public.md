@@ -125,7 +125,7 @@ aren't grouped or predictable by position.**
 - I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately? <!--hard__music-obsidian__077-->
 
 **[Swiggy]**
-- Easy (1pt): I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? Reply with only the delivery status, no other text. <!--easy__swiggy__001-->
+- Easy (1pt): Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please? <!--easy__swiggy__001-->
 
 - Medium (3pt) **[Clock + Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
 
@@ -155,7 +155,7 @@ aren't grouped or predictable by position.**
 
 ### Day 3
 
-- Medium (3pt) **[Google Photos + Phone]**: I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format. <!--medium__google-photos__008-->
+- Medium (3pt) **[Gallery + Phone]**: I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format. <!--medium__google-photos__008-->
 
 **1. [Clock+Calendar] — DETERMINISTIC**
 - I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM on weekdays (I think there's a [weekly meeting] on Monday and [gym event] on Tuesday)? Then open Clock, create a repeating weekday alarm at 7:00 AM, and if any event clashes, shift it 30 minutes later so it doesn't overlap. Confirm the final alarm time. Reply with only the final alarm time, no other text. <!--hard__clock-calendar__023-->

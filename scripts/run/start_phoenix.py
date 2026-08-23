@@ -7,6 +7,7 @@ command but also creates the day's DB directory and refuses to start twice.
 
 Usage:
   uv run python scripts/run/start_phoenix.py --day 4          # assets/db/day4/phoenix.db, project dailybench-day4
+  uv run python scripts/run/start_phoenix.py --public          # assets/db/public/phoenix.db, project dailybench-public
   uv run python scripts/run/start_phoenix.py --project myproj  # shared project, default assets/db/misc/phoenix.db
   uv run python scripts/run/start_phoenix.py --day 4 --port 6006 --host localhost
 
@@ -33,7 +34,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="Start phoenix serve for a day's run.")
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--day", type=int, metavar="N", help="Day 1-28: DB assets/db/dayN/phoenix.db, project dailybench-dayN")
+    g.add_argument("--public", action="store_true", help="Public-sample run: DB assets/db/public/phoenix.db, project dailybench-public")
     g.add_argument("--project", default=None, help="Shared project name -> assets/db/misc/phoenix.db")
+    ap.add_argument("--run-ts", default=None, metavar="YYYYMMDD-HHMMSS", help="With --public: use assets/db/public/<run-ts>/phoenix.db (dedicated per-run DB folder)")
     ap.add_argument("--port", type=int, default=6006, help="Phoenix dashboard/HTTP port (default 6006)")
     ap.add_argument("--host", default="localhost", help="Bind host (default localhost)")
     ap.add_argument("--no-open", action="store_true", help="Do not print the dashboard URL (informational only; we never auto-open a browser).")
@@ -58,6 +61,9 @@ def main() -> int:
     if args.day is not None:
         project = f"dailybench-day{args.day}"
         db_path = DB_ROOT / f"day{args.day}" / "phoenix.db"
+    elif args.public:
+        project = "dailybench-public"
+        db_path = DB_ROOT / "public" / (args.run_ts or "") / "phoenix.db" if args.run_ts else DB_ROOT / "public" / "phoenix.db"
     else:
         project = args.project
         db_path = DB_ROOT / "misc" / "phoenix.db"

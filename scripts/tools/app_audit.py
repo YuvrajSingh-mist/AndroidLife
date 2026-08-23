@@ -62,6 +62,11 @@ BENCHMARK_APPS: dict[str, list[str]] = {
     "Google Search": ["com.google.android.googlequicksearchbox"],
     "Google Maps": ["com.google.android.apps.maps"],
     "Google Photos": ["com.google.android.apps.photos"],
+    "Gallery": [
+        "com.oneplus.gallery",
+        "com.coloros.gallery3d",
+        "com.android.gallery3d",
+    ],
     "Google Drive": ["com.google.android.apps.docs"],
     "Google Docs": [
         "com.google.android.apps.docs.editors.docs",

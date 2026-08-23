@@ -18,7 +18,7 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, Concert Highlights.mp4, Physics Lecture)
 - ☑ All public Obsidian notes present (Bedtime, Budget Deadline, Exam Scores, Monthly Budget,
   Shared Bill, Stock Watch, Recipe, Food Favourites, Contact Updates, Weekly Agenda.txt)
-- ☑ Contacts (incl. Akash Kumar + fabricated email `yuvraj.airtel@example.com`)
+- ☑ Contacts (incl. Akash Kumar + fabricated email `yuvraj.mist@gmail.com`)
 - ☑ Camera 11/11 + Screenshots 4/4 · screen_off_timeout=1800000 · blocked numbers cleared
 - ☑ Public dataset = **68 tasks** · full test suite **173 passed** · repo clean (git)
 
@@ -36,7 +36,7 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
 - ☐ Run-artifact albums deleted: **Invoices**, **Trip 2026** (create fresh only if the task
   expects them — these were agent-created, so delete leftovers).
 - ☐ **2 starred photos** from prior runs unstarred (unless a task re-stars them).
-- ☐ Recent video `Concert Highlights.mp4` searchable in Photos (`medium__google-photos__008`).
+- ☐ Recent video `feas_video.mp4` searchable in Photos (`medium__google-photos__008`).
 - ☐ Most-recent photo has a location + is cloud-backed (`easy__google-photos__015`).
 
 ## §2 — Gmail
@@ -44,7 +44,7 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
 - ☐ A **flight-confirmation email** exists in the inbox (`hard__gmail-calendar__003`) —
   with flight name, departure time, terminal. (If none, this task cannot extract details.)
 - ☐ Starred emails / agent-created label removed; **sent-with-attachment email** deleted.
-- ☐ `hard__contacts-gmail__026`: the contact email `yuvraj.airtel@example.com` shows up in
+- ☐ `hard__contacts-gmail__026`: the contact email `yuvraj.mist@gmail.com` shows up in
   Gmail search (inbox/sent) so the "confirmed?" branch is reachable.
 
 ## §3 — Google Drive
@@ -99,7 +99,7 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
 - ☐ Notes app: run notes deleted — **Card Payment Due**, **Budget Tracker**,
   **Birthday Reminders**, **IndiGo flight note**.
 - ☐ Obsidian: run notes deleted (e.g. **Birthday Reminders**).
-- ☐ Notes: **storage-limit note** present for `hard__files-notes__069`.
+- ☐ Notes: **storage-limit note must be ABSENT** for `hard__files-notes__069` (hallucination control — the agent must honestly report there is no limit note; do NOT create one).
 
 ## §10 — Settings / other
 
@@ -130,6 +130,6 @@ file side), Obsidian notes (`medium__calculator__001`, `hard__google-search-obsi
 `hard__music-obsidian__077` note side), Contacts (`easy__phone__002`, `medium__contacts__009/012`,
 `hard__contacts-gmail__026` email side), gallery/screenshots (`easy__gallery__012`,
 `medium__google-photos__012`, `easy__google-photos__015`), calculator/clock/settings,
-plus the **6 hallucination controls** (`easy__calendar__008`, `easy__files__002`,
-`easy__telegram__004`, `easy__contacts__008`, `easy__obsidian__009`, `medium__notes__004`)
-which are honest-failure by design (their targets are deliberately absent).
+plus the **7 hallucination controls** (`easy__calendar__008`, `easy__files__002`,
+`easy__telegram__004`, `easy__contacts__008`, `easy__obsidian__009`, `medium__notes__004`,
+`hard__files-notes__069`) which are honest-failure by design (their targets are deliberately absent).

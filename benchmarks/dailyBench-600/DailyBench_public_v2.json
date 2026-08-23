@@ -361,11 +361,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No calendar event titled '{hc event name}' exists."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "medium__gallery__007",
@@ -452,11 +448,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No '{hc scans folder}' folder exists in Files."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "medium__files-pdf__001",
@@ -1167,8 +1159,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? Reply with only the delivery status, no other text.",
-      "prompt_template": "I'm starving and my food's been a while. Can you open Swiggy and check the delivery status of my most recent order? Reply with only the delivery status, no other text.",
+      "prompt_text": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please?",
+      "prompt_template": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -1291,11 +1283,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No Telegram group named '{hc group name}' exists."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "easy__contacts__008",
@@ -1325,11 +1313,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No contact named '{hc contact name}' exists to favourite."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "medium__google-photos__012",
@@ -1441,7 +1425,7 @@
       "ahi": "ASK USER",
       "interaction": "single",
       "note": null,
-      "ask_user_fact": "The place is the SBI ATM.",
+      "ask_user_fact": "The place is the SBI ATM. The person to message is Yuvraj Singh Jio.",
       "is_ask_user": true,
       "task_number_within_app": 18,
       "task_number_within_dataset_app": 1,
@@ -1459,10 +1443,10 @@
       "difficulty": "medium",
       "points": 3,
       "day": 3,
-      "app": "Google Photos + Phone",
+      "app": "Gallery + Phone",
       "app_slug": "google-photos",
       "apps": [
-        "Google Photos",
+        "Gallery",
         "Phone"
       ],
       "num_apps": 2,
@@ -1474,15 +1458,15 @@
       "is_ask_user": false,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 2,
-      "prompt_text": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
-      "prompt_template": "I recorded a video recently and want to check it saved right. Can you open Google Photos, search for the video '{{ video name }}', open the first video, and see if it plays without any errors? Also, call {{ contact }} to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
+      "prompt_text": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '[video name]', open the first video, and see if it plays without any errors? Also, call [contact] to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
+      "prompt_template": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '{{ video name }}', open the first video, and see if it plays without any errors? Also, call {{ contact }} to confirm the plan for tonight. Just tell me its length in `MM:SS` format.",
       "placeholders": [
         "video name",
         "contact"
       ],
       "placeholder_count": 2,
       "is_cross_app": true,
-      "cross_app_label": "Google Photos + Phone",
+      "cross_app_label": "Gallery + Phone",
       "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
@@ -1616,11 +1600,11 @@
       ],
       "num_apps": 2,
       "cross_app_required": true,
-      "ahi": null,
+      "ahi": "ASK USER",
       "interaction": null,
       "note": null,
-      "ask_user_fact": null,
-      "is_ask_user": false,
+      "ask_user_fact": "The route is from IIIT Bhubaneswar to Bhubaneswar Airport.",
+      "is_ask_user": true,
       "task_number_within_app": 8,
       "task_number_within_dataset_app": 1,
       "prompt_text": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route for tomorrow. Reply with only the fastest option, no other text.",
@@ -1787,11 +1771,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "absent-entity",
-      "hallucination_control_absence": "No folder named '{hc projects folder}' exists in the Obsidian vault."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "medium__notes__004",
@@ -1821,11 +1801,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "middle-failure",
-      "hallucination_control_absence": "No note titled '{hc draft note}' exists in Notes. The agent opens Notes and lists the notes present + their recency (real work) before discovering no '{hc draft note}' note exists to delete."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "easy__msn-news__002",
@@ -1974,11 +1950,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Files+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md",
-      "hallucination_control": true,
-      "data_absent": true,
-      "hallucination_control_type": "end-failure",
-      "hallucination_control_absence": "No storage-limit note exists in Notes, so the under-limit decision (delete originals only if the archive is under the limit) cannot be made. Compressing the files + noting archive size are real/doable; only the limit note is absent."
+      "source_path": "benchmarks/dailyBench-600/public.md"
     },
     {
       "task_id": "easy__prime-video__002",

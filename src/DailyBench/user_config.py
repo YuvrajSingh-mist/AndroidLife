@@ -163,7 +163,7 @@ SCHEMA: dict[str, tuple[str, str]] = {
     "calendar id": ("The Google-synced calendar id used for seeded events "
                     "(auto-detected if omitted).", "16"),
     "contact email": ("Fabricated email for the persona {contact} used by the "
-                      "photo-email + duplicate-email seeds (config only).", "yuvraj.airtel@example.com"),
+                      "photo-email + duplicate-email seeds (config only).", "yuvraj.mist@gmail.com"),
 }
 
 DEFAULT_CONFIG: dict[str, str] = {k: example for k, (_, example) in SCHEMA.items()}

@@ -166,3 +166,80 @@ thought → function call → tool args → result, as traced into Phoenix), wit
 
 Constraints: never re-run completed tasks; keep the MobileWorld SR gate for ASK
 USER tasks; per-day Phoenix DB lives at `assets/db/dayN/phoenix.db`.
+
+## 13. Public 3-day sample run (qwen3.6-plus, run root `assets/runs/public/2026-08-22-195244`) — DONE
+
+Full 68-task public sample (24/24/20 per day) run + deep manual audit + official
+metrics + hallucination geval + credit-blocked reruns. Summary:
+
+- **Manual audit (DEEP per-step pass over all 68 — trajectory `ui_states/` + `screenshots/` + ADB):**
+  **49 correct / 18 FAIL / 1 HALLUCINATION / 0 BLOCKED** (72.1%).
+- **Official metrics:** SR **66.2%** (45 true success / 21 true failure / 2 hallucination),
+  ASK USER SR 33.3% (6 runs), GUI-only 69.4%, avg steps 20.8, UIQ 0.045,
+  **KBIQ 1.000 (7/7, manual audit — written as `<run>/kb_audit.json`, NOT DeepEval)**.
+- **The 1 real hallucination:** `easy__calendar__008` fabricated the deletion of absent
+  'Team Sync Weekly' **and deleted the real "Team Sync" 14:00 event** (destructive —
+  still needs restoring on device).
+- **Recurring harness bug — Telegram Send button fails** (text stays in the compose input,
+  no bubble): `hard__swiggy-005`, `medium__google-maps-003` (agent falsely claimed "sent"
+  → deep audit caught the false PASS), `medium__music-telegram-001`.
+- **2 originally 402-credit-blocked tasks re-run with credits (2026-08-23):**
+  `easy__google-photos-015` → **PASS**, `medium__music-telegram-001` → **FAIL** (song
+  found, Telegram send failed). **0 blocked remain.**
+- Reports: `reports/public-2026-08-22-195244.md`,
+  `reports/metrics/public-20260822-195244-report.{json,md}`,
+  `reports/metrics/hallucination/public-20260822-195244.{json,md}`.
+- **Manual-audit protocol (user-mandated):** `docs/manual-audit-protocol.md` — read this
+  whenever the user says "manual audit". It is the DEEP trajectory + ADB pass, not a log read.
+
+## 14. Post-run task fixes + full device reset (2026-08-23, before next run)
+
+Task changes (all benchmark files updated, dataset re-exported at 68 tasks):
+- `easy__swiggy__001` **REWORDED** → "calculate the total spendings last month on foods"
+  (sum July-2026 Swiggy order totals in-app). `public.md` + `DailyBench_public_v2.json` updated.
+- `hard__google-search-telegram-clock__018` fact fixed → recipient added:
+  "The place is the SBI ATM. The person to message is Yuvraj Singh Jio."
+  (`ask_user_facts.json` + dataset).
+- `medium__google-search__008` promoted to **ASK USER** with route fact:
+  "The route is from IIIT Bhubaneswar to Bhubaneswar Airport."
+  (`ask_user_facts.json` + dataset). It already asked for origin/dest in the last run.
+- `medium__contacts__009` = **model issue** (agent gave up; should scroll-and-count), not a solvability wall.
+
+Device reset (`reset_phone.py --profile public_v2 --apply`) DONE + re-seeded
+(seed_data day1/2/3 + enrich_public_notes + fabricate_public_pdfs) + baseline
+verify **PASS** (all days).
+
+**Reset runbook updated 2026-08-23** — `.agents/skills/reset-phone/SKILL.md` is
+the canonical source; it now has:
+- **Step 1b** — soft-delete the 3 run-created calendar events the reset MISSES on
+  the synced calendar (`Get-together with friends`, `IndiGo 6E-6737`, `Review July Photos`).
+- **Step 1c** — OnePlus Notes cleanup via GUI automation (delete notes by RUN-DATE,
+  not the stale canned list).
+- **Corrected**: the Obsidian vault is at `/sdcard/Obsidian/` and ADB-accessible
+  (NOT app-private) — run notes can be `adb shell rm`'d.
+- **archive.zip.zip** cleanup path, `Hostel Life` album (this run), and the
+  clean-slate-by-run-window principle.
+
+Manual UI-only cleanups still needed (see the reset skill Step 4 / `docs/manual-audit-protocol.md`):
+Notes run-notes, Obsidian run-notes, Photos `Hostel Life` album + unstar +
+gallery-007 captions, YT Music 'Chill Vibes' playlist, Telegram unmute 'Forever 21',
+Digital Wellbeing timers, Camera clip, Gmail unstar/label/sent-email,
+Drive `Copy of SPORTS_VIDEO_DATA` cleanup, one real call to an unsaved number on
+run day (call-log gap).
+
+## 15. Public artifact organization (2026-08-23)
+
+- **Reports** live under `reports/public/` (per-run: `reports/public/public-2026-08-22-195244.md`),
+  metrics under `reports/metrics/public/`, hallucination geval under `reports/metrics/hallucination/`.
+- **Turn-based ASK USER audits** under `reports/turn-based/` (per-run date-time
+  folders, like the DB): `ask-query-single/<run-ts>/` (6 tasks) and
+  `ask-query-multi/<run-ts>/` (4 tasks) — full per-turn Q&A from
+  `ask_user_metrics.jsonl` + ground-truth fact + verdict. Index: `reports/turn-based/README.md`.
+- **Public Phoenix DB** is per-run, date-time folder: `assets/db/public/<RUN_TS>/phoenix.db`
+  (this run archived at `assets/db/public/2026-08-22-195244/phoenix.db`).
+  `start_phoenix.py --public --run-ts "$RUN_TS"` now supports it; run it BEFORE the batch.
+- **Auto-filing (no manual work):** `scripts/tools/organize_public_artifacts.py`
+  (`make organize-public`) creates all per-run folders, files the report/metrics/
+  hallucination artifacts, archives the DB, regenerates the turn-based audits, and
+  rebuilds the README. Idempotent; `--sweep` enforces on every run under `assets/runs/public/`.
+  Post-run flow (report + geval + organizer) is documented in the reset skill Step 5.

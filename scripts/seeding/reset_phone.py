@@ -143,7 +143,7 @@ PROFILES: dict[str, dict] = {
         # App-private / cloud run artifacts the reset CANNOT auto-delete (non-rooted)
         # - see .agents/skills/reset-phone/SKILL.md step 2 for the full list.
         "manual_ui_cleanup": [
-            "Google Photos: the 3 food-photo captions + Favourites for medium__gallery__007 live in the app-private Photos DB - the task only reads them, so they persist across runs; if ever lost, re-add captions + favourites in the Photos UI before a run",
+            "Google Photos: the 3 food-photo captions + Favourites for medium__gallery__007 live in the app-private Photos DB - the task only reads them, so they persist across runs; if ever lost, re-add captions + favourites in the Photos UI before a run (SAME account the Photos app is signed into - favourites/captions do NOT carry across Google accounts)",
             "Gmail: unstar starred emails + remove the label the agent created; delete the sent-with-attachment email",
             "Notes: delete run notes (Card Payment Due, Budget Tracker, Birthday Reminders, IndiGo flight note)",
             "Obsidian: delete run notes (e.g. Birthday Reminders)",
