@@ -47,21 +47,22 @@ that fabricates a plausible-sounding answer.
 
 **ASK USER SINGLE (single-query ask) — the model must ask the user agent.**
 
-These are the **36 single-query ask tasks** where the one fact the task needs (recipient, place,
-item, route, threshold, …) is deliberately withheld from the model and given to the simulated
-user agent. The model **must call the `ask_user` tool and ask the user agent** for it — guessing
-instead of asking scores **0** under the MobileWorld-style interaction gate, and the returned
-answer must match the ground-truth fact (`ask_user_facts_730.json`). The 13 ASK USER MULTI tasks
-instead drive a KB-oracle multi-turn dialogue; the 23 DETERMINISTIC hard tasks need no ask at all.
+These are the **36 single-query ask tasks** where the 1–2 facts the task needs (recipient, place,
+item, route, threshold, …) are deliberately withheld from the model and given to the simulated
+user agent. The model **must call the `ask_user` tool and ask the user agent** for them —
+guessing instead of asking scores **0** under the MobileWorld-style interaction gate, and the
+returned answers must match the ground-truth facts (`ask_user_facts_730.json`). The 13 ASK USER
+MULTI tasks instead drive a KB-oracle multi-turn dialogue; the 23 DETERMINISTIC hard tasks need
+no ask at all.
 
-**Exactly one ask, and no chat memory.** Each SINGLE task is answered with **one question** —
-the single withheld fact is the whole answer (in the public reference run every SINGLE task
-asked once except `google-search-telegram-clock-018`, which asked twice and still passed). The
-`ask_user` tool is **stateless** in this mode: **no conversation memory**, each question is
-answered independently from just that one fact. The 13 ASK USER MULTI tasks are the opposite —
-an **open dialogue with rolling memory** (the simulated user remembers the whole conversation
-and stays consistent), where the agent asks as many clarifying questions as it needs to
-converge to the KB `correct_target`.
+**1 or 2 withheld facts, no chat memory.** Each SINGLE task withholds **1 or 2 pieces of info
+(max)** — never more — and the agent asks **once per withheld fact** (1–2 questions). In the
+public reference run most SINGLE tasks asked once, but `google-search-telegram-clock-018` (2
+withheld facts) asked twice and passed. The `ask_user` tool is **stateless** in this mode: **no
+conversation memory**, each question is answered independently from the withheld fact(s). The
+13 ASK USER MULTI tasks are the opposite — an **open dialogue with rolling memory** (the
+simulated user remembers the whole conversation and stays consistent), where the agent asks as
+many clarifying questions as it needs to converge to the KB `correct_target`.
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 
@@ -237,7 +238,7 @@ per-day vars, and fabricated-data records are generated for the public sample se
 - **Control mode**: accessibility-tree/state-driven UI automation, no vision by default (screenshots are opt-in) — the agent reads the same UI hierarchy a screen reader would, not pixels.
 - **Model serving**: any OpenAI-compatible endpoint external to the device (a local model host, or a hosted provider such as OpenRouter) — the model never runs on the phone being benchmarked, so its own inference cost and heat never contaminate the device-cost measurement.
 - **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 31 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
-- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — one deliberately withheld fact the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
+- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — 1-2 deliberately withheld facts the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
 - **Measurement axes**:
   - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
   - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)

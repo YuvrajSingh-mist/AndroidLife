@@ -62,22 +62,23 @@ Every public task is drawn from the 530 with the same text, so the public set is
 
 ## The hard split (17 tasks)
 
-### ASK USER SINGLE (7) — one deliberately withheld fact the agent must ask for
+### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
 
 Fact source: `benchmarks/dailyBench-600/ask_user_facts.json`.
 
-These are the **7 single-query ask tasks**: the one fact the task needs (recipient, place,
-item, route, threshold, …) is deliberately withheld from the model and given to the simulated
-user agent. The model **must call the `ask_user` tool and ask the user agent** for it — guessing
-instead of asking scores **0** under the MobileWorld-style interaction gate, and the returned
-answer must match the ground-truth fact. (The 4 ASK USER MULTI tasks below instead drive a
-KB-oracle dialogue.)
+These are the **7 single-query ask tasks**: the 1–2 facts the task needs (recipient, place,
+item, route, threshold, …) are deliberately withheld from the model and given to the simulated
+user agent. The model **must call the `ask_user` tool and ask the user agent** for them —
+guessing instead of asking scores **0** under the MobileWorld-style interaction gate, and the
+returned answers must match the ground-truth facts. (The 4 ASK USER MULTI tasks below instead
+drive a KB-oracle dialogue.)
 
-**How many asks? Exactly one.** Each SINGLE task needs just **one question** — the single
-withheld fact is the whole answer. In the reference run every SINGLE task asked once except
-`google-search-telegram-clock-018`, which asked twice and still passed. This mode is
+**How many facts? 1 or 2 — never more.** Each SINGLE task withholds **1 or 2 pieces of
+info** (e.g. `google-search-telegram-clock-018` withholds two: the place *and* the person to
+message). The agent asks **once per withheld fact** (1–2 questions); in the reference run most
+SINGLE tasks asked once, and clock-018 (2 facts) asked twice and passed. This mode is
 **stateless** — the `ask_user` tool keeps **no chat memory**: every question is answered
-independently from just that one fact, and the same fact comes back each time. Guessing
+independently from the withheld fact(s), and the same answer comes back each time. Guessing
 without asking → 0.
 
 | task | day | withheld fact |

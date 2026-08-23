@@ -4,8 +4,8 @@
 530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **68 tasks total** (61 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device — the correct outcome for those is an honest failure).
 
 **Grading model**: no separate rubric/LLM-judge "open-ended" bucket — a task either has everything
-it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for a fact
-(**ASK USER SINGLE** — one deliberately omitted fact, answered just-what's-asked) or to run a
+it needs (**DETERMINISTIC**, ADB-verified end state) or needs the agent to ask the user for 1-2 facts
+(**ASK USER SINGLE** — 1-2 deliberately omitted facts, answered just-what's-asked) or to run a
 multi-turn dialogue (**ASK USER - MULTI** — a knowledge-base profile in `multiturn_kb_public.json`
 holds what the simulated user knows, with rolling memory; graded on acting on the correct target,
 turn count as an efficiency signal).
