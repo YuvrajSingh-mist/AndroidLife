@@ -25,6 +25,7 @@ import json
 import os
 import re
 import shutil
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -72,7 +73,51 @@ def _dataset_map():
     return {t["task_id"]: t for t in _load_json(DATASET).get("tasks", [])}
 
 
-def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict, rendered: str = None, run_ts: str = None) -> str:
+def _phoenix_ask_user_prompts(run_ts: str, goal: str) -> dict[str, str]:
+    """Return {question: system_prompt} — the ACTUAL prompts the simulated user
+    was given each turn, read straight from the run's Phoenix DB (ask_user spans).
+    This is the ground truth of what the oracle knew (fact/KB + history), which the
+    JSONL log does not record. Empty dict if the DB is unavailable.
+    """
+    db = DB / run_ts / "phoenix.db"
+    if not db.exists() or not goal:
+        return {}
+    out: dict[str, str] = {}
+    try:
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        cur = con.cursor()
+        # Single-fact template has 'relevant information for the task is'; the
+        # multi-turn KB template has 'Here is everything about you that is relevant'.
+        rows = cur.execute(
+            "SELECT start_time, attributes FROM spans "
+            "WHERE attributes LIKE '%relevant information for the task is%' "
+            "   OR attributes LIKE '%Here is everything about you that is relevant%'"
+        ).fetchall()
+        con.close()
+    except Exception:
+        return {}
+    for _start, attrs in rows:
+        try:
+            a = json.loads(attrs)
+            llm = a.get("llm", {})
+            msgs = llm.get("input_messages")
+            if isinstance(msgs, str):
+                msgs = json.loads(msgs)
+            sysc = next((m.get("content", "") for m in (msgs or [])
+                        if isinstance(m, dict) and m.get("role") == "system"), "")
+            userc = next((m.get("content", "") for m in (msgs or [])
+                         if isinstance(m, dict) and m.get("role") == "user"), "")
+        except Exception:
+            continue
+        if not userc or not sysc:
+            continue
+        if goal[:50] and goal[:50] not in sysc:
+            continue  # not this task's ask_user span
+        out[userc] = sysc
+    return out
+
+
+def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict, rendered: str = None, run_ts: str = None, oracle: dict | None = None) -> str:
     bucket = meta.get("bucket") or meta.get("difficulty") or ""
     apps = ", ".join(meta.get("apps") or [meta.get("app", "")])
     prompt = (rendered or meta.get("prompt_text") or meta.get("prompt_template") or "").strip()
@@ -91,8 +136,12 @@ def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict
         q = req.get("framework_prompt", "(no question captured)")
         a = r.get("response", "")
         ts = r.get("timestamp_utc", "")
-        L += [f"## Turn {i}  ({ts})", "", "**Agent asked:**", "", f"> {q}", "",
-              "**User answered:**", "", f"> {a}", ""]
+        sysp = (oracle or {}).get(q) if oracle else None
+        L += [f"## Turn {i}  ({ts})", ""]
+        if sysp:
+            L += ["**What the simulated user was told (actual system prompt from the run):**", "",
+                  "```text", sysp, "```", ""]
+        L += ["**Agent asked:**", "", f"> {q}", "", "**User answered:**", "", f"> {a}", ""]
     return "\n".join(L)
 
 
@@ -136,14 +185,15 @@ def generate_turn_audits(run_ts: str, root: Path) -> None:
         mj = _load_json(taskdir / "meta.json")
         if mj.get("goal"):
             rendered = mj["goal"]
+        oracle = _phoenix_ask_user_prompts(run_ts, rendered or meta.get("prompt_text") or "")
         if tid in single:
             (SINGLE / run_ts).mkdir(parents=True, exist_ok=True)
             (SINGLE / run_ts / f"{tid}.md").write_text(
-                _audit_text(tid, "ASK USER SINGLE", f"day{day}", single[tid], rows, meta, rendered, run_ts), encoding="utf-8")
+                _audit_text(tid, "ASK USER SINGLE", f"day{day}", single[tid], rows, meta, rendered, run_ts, oracle), encoding="utf-8")
         elif tid in multi:
             (MULTI / run_ts).mkdir(parents=True, exist_ok=True)
             (MULTI / run_ts / f"{tid}.md").write_text(
-                _audit_text(tid, "ASK USER MULTI", f"day{day}", multi[tid], rows, meta, rendered, run_ts), encoding="utf-8")
+                _audit_text(tid, "ASK USER MULTI", f"day{day}", multi[tid], rows, meta, rendered, run_ts, oracle), encoding="utf-8")
 
 
 def _move_if(src: Path, dst: Path) -> bool:

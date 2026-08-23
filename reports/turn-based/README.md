@@ -16,11 +16,11 @@ Runs present: `2026-08-20-003030`, `2026-08-22-195244`
 | Run | Task | Day | # asks | Asked? | Fact |
 |---|---|---|---|---|---|
 | 2026-08-22-195244 | [hard__chrome-telegram-notes__008](ask-query-single/2026-08-22-195244/hard__chrome-telegram-notes__008.md) | day2 | 1 | ✅ asked | The item is wireless earbuds. |
-| 2026-08-22-195244 | [hard__chrome-youtube-notes__088](ask-query-single/2026-08-22-195244/hard__chrome-youtube-notes__088.md) | day3 | 1 | ✅ asked | The task is changing a bike tyre. |
-| 2026-08-22-195244 | [hard__drive-notes-telegram__010](ask-query-single/2026-08-22-195244/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel about the budget spreadsheet. |
+| 2026-08-22-195244 | [hard__chrome-youtube-notes__088](ask-query-single/2026-08-22-195244/hard__chrome-youtube-notes__088.md) | day3 | 1 | ✅ asked | The task is changing a bike tyre. Save the steps as 'How to  |
+| 2026-08-22-195244 | [hard__drive-notes-telegram__010](ask-query-single/2026-08-22-195244/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The spreadsheet to chase is 'shared b |
 | 2026-08-22-195244 | [hard__google-search-obsidian-telegram__057](ask-query-single/2026-08-22-195244/hard__google-search-obsidian-telegram__057.md) | day3 | 0 | ❌ never asked | Message Yuvraj Singh Jio when it crosses the threshold. |
 | 2026-08-22-195244 | [hard__google-search-telegram-clock__018](ask-query-single/2026-08-22-195244/hard__google-search-telegram-clock__018.md) | day2 | 2 | ✅ asked | The place is the SBI ATM. The person to message is Yuvraj Si |
-| 2026-08-22-195244 | [hard__photos-gmail-obsidian__012](ask-query-single/2026-08-22-195244/hard__photos-gmail-obsidian__012.md) | day2 | 0 | ❌ never asked | The event is the Bhubaneswar trip. |
+| 2026-08-22-195244 | [hard__photos-gmail-obsidian__012](ask-query-single/2026-08-22-195244/hard__photos-gmail-obsidian__012.md) | day2 | 0 | ❌ never asked | The event is the Bhubaneswar trip. The photo to send is the  |
 | 2026-08-22-195244 | [medium__google-search__008](ask-query-single/2026-08-22-195244/medium__google-search__008.md) | day3 | 1 | ✅ asked | The route is from IIIT Bhubaneswar to Bhubaneswar Airport. |
 
 ## ask-query-multi/
