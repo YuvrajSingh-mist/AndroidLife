@@ -41,6 +41,7 @@ that fabricates a plausible-sounding answer.
 | Cross-app tasks | **168 (31.7%)** — 145 two-app + 23 three-app |
 | Hallucination controls | **60** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
 | ASK USER fact sidecars | 36 single-turn (`ask_user_facts_730.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
+| ASK USER SINGLE fact split | **18 one-fact / 18 two-fact** (50/50; two-fact on days 6-28, with 2 early exceptions for public parity) |
 | Placeholders used | 298 uses across **115 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
 | Model cost (projected, qwen3.6-plus) | **~$38** for all 530 — measured public-run per-bucket averages applied to the 530 mix (easy ~$0.03 / medium ~$0.09 / hard ~$0.14 per task); see the cost note in the public spec |
 | Public preview | **68-task sample** (61 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
@@ -55,14 +56,16 @@ returned answers must match the ground-truth facts (`ask_user_facts_730.json`). 
 MULTI tasks instead drive a KB-oracle multi-turn dialogue; the 23 DETERMINISTIC hard tasks need
 no ask at all.
 
-**1 or 2 withheld facts, no chat memory.** Each SINGLE task withholds **1 or 2 pieces of info
-(max)** — never more — and the agent asks **once per withheld fact** (1–2 questions). In the
-public reference run most SINGLE tasks asked once, but `google-search-telegram-clock-018` (2
-withheld facts) asked twice and passed. The `ask_user` tool is **stateless** in this mode: **no
-conversation memory**, each question is answered independently from the withheld fact(s). The
-13 ASK USER MULTI tasks are the opposite — an **open dialogue with rolling memory** (the
-simulated user remembers the whole conversation and stays consistent), where the agent asks as
-many clarifying questions as it needs to converge to the KB `correct_target`.
+**50/50: half the SINGLE tasks withhold 1 fact, half withhold 2.** Each SINGLE task withholds
+**1 or 2 facts (never more)** and the agent asks **once per withheld fact** (1–2 questions);
+guessing without asking → 0. The 36 tasks split **18 one-fact / 18 two-fact**. Two-fact tasks sit
+**after day 5** (days 6–28) — the harder, later days — except two
+(`photos-gmail-obsidian-012` day 2, `drive-notes-telegram-010` day 5) that stay two-fact so the
+public sample can mirror the same split with identical task_ids. The `ask_user` tool is
+**stateless** in this mode: **no chat memory**, each question is answered independently from the
+withheld fact(s). The 13 ASK USER MULTI tasks are the opposite — an **open dialogue with rolling
+memory** (the simulated user remembers the whole conversation and stays consistent), where the
+agent asks as many clarifying questions as it needs to converge to the KB `correct_target`.
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 

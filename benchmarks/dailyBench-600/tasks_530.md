@@ -119,7 +119,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Gmail+Notes]**: Find the thread with [sender] in Gmail, summarize it into exactly 3 bullet points, and save the summary, the subject of the thread and a link to it as a note in my Notes app. <!--medium__gmail-notes__001-->
 
 **3. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
-- I'd like to send [contact] a photo from the event. Find the event photo in Google Photos, for which the caption has the [contact] mentioned, and email it to them if so, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event is named, so the agent must ask the user which event's photos they mean) <!--hard__photos-gmail-obsidian__012-->
+- I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event or photo is named, so the agent must ask the user which event's photos they mean and which photo to send) <!--hard__photos-gmail-obsidian__012-->
 
 **[Google Maps]**
 - Easy (1pt): Check how far away [place] is on Google Maps <!--easy__google-maps__001-->
@@ -184,7 +184,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): In Clock, check whether an alarm labeled '[alarm label]' is set and tell me what time it's set for <!--easy__clock__017-->
 
 **2. [Messages+Notes] — ASK USER SINGLE**
-- Give one conversation a distinct notification tone. Set a custom notification tone for the Messages thread, send a test message to confirm it plays, check the Notes log for whether the same tone is already used for another contact, choose a different one if so, and confirm the update in the log (deliberately no conversation or tone is specified, so the agent must ask the user which thread and which tone) <!--hard__messages-notes__078-->
+- Give one conversation a distinct notification tone. Set a custom notification tone for the Messages thread, send a test message to confirm it plays, check the Notes log for whether the same tone is already used for another contact, choose a different one if so, and confirm the update in the log (deliberately no conversation is specified, so the agent must ask the user which thread) <!--hard__messages-notes__078-->
 
 **[Chrome]**
 - Medium (3pt): In Chrome, compare total cost, item plus shipping, of [product] across [shopping_website_1] and [shopping_website_2], note the cheaper option, and check the delivery time for that option, outputting the same. <!--medium__shopping-delivery-browser__001-->
@@ -623,7 +623,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I want to send them a photo in the conversation we have going. Can you reply to the most recent thread in Messages with a photo attached? <!--easy__messages__008-->
 
 **1. [Gmail+Messages] — ASK USER SINGLE**
-- An important email needs to get seen. Find the most recent important-looking unread email today in Gmail, forward it to the person who needs to see it, and message them on Messages that it's been forwarded (deliberately no recipient or specific email is named, so the agent must ask the user who to forward it to and which email to forward) <!--hard__gmail-messages__092-->
+- An important email needs to get seen. Find the specific unread email I mean today in Gmail, forward it to the person who needs to see it, and message them on Messages that it's been forwarded (deliberately no recipient or specific email is named, so the agent must ask the user who to forward it to and which email to forward) <!--hard__gmail-messages__092-->
 
 **2. [MakeMyTrip] — ASK USER - MULTI**
 <!-- 🔄 MULTI-TURN (KB oracle) — see multiturn_kb_530.json -->
@@ -1052,7 +1052,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): Could you find the document titled '[X]' in Google Docs, open it, and add a short 'Summary' section at the end with a one or two sentence wrap-up of what it covers? <!--easy__google-docs__002-->
 
 **1. [Chrome+YouTube+Notes] — ASK USER SINGLE**
-- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note (deliberately no task is specified, so the agent must ask the user what they want to learn) <!--hard__chrome-youtube-notes__088-->
+- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note (deliberately no task or note title is specified, so the agent must ask the user what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->
 
 - Medium (3pt) **[YouTube+Obsidian]**: Could you list the top 5 recommended videos on my home feed, save the most relevant one to Watch Later, and note in Obsidian why in YouTube? <!--medium__youtube__008-->
 
@@ -1404,7 +1404,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm checking if the price dropped before I buy. Can you search for '[product]' on a shopping site in Chrome and check its current price? <!--easy__shopping-delivery-browser__013-->
 
 **1. [Music] — ASK USER SINGLE**
-- I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given (deliberately no song list or energy preference exists on the test device, so the agent must ask the user how long it should be and what energy level they want) <!--hard__music__072-->
+- I want a high-energy workout playlist. Curate a workout playlist in Music based on song energy, with no explicit song list given (deliberately no song list is specified, so the agent must ask the user how long it should be) <!--hard__music__072-->
 
 **2. [Google Search+Calendar] — ASK USER SINGLE**
 - There was an event I read about that I don't want to lose track of. Search for the event via Google Search, find a date mentioned in the results, create a calendar event on that date titled with the topic, and set a reminder for it (deliberately no topic is specified, so the agent must ask the user what event they read about) <!--hard__google-search-calendar__090-->

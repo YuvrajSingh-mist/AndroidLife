@@ -59,7 +59,11 @@ Every public task is drawn from the 530 with the same text, so the public set is
 | Medium (3pt) | 10 | 15 | **60%** |
 | Hard (5pt) | 0 | 17 | **100%** |
 | **Total** | **36** | **32** | **47.1%** |
-
+> **Representativeness (verified 2026-08-23):** the public sample tracks the 530 corpus —
+> 68 tasks (24/24/20 per day) vs 530 (28 days, ~18.9/day); buckets 26/25/17 vs 216/242/72;
+> 30 apps vs 31 (Weather, MakeMyTrip not sampled); single-ask fact split 3 one-fact / 4 two-fact
+> vs 18/18 in the 530. Every shared ASK USER task carries the **identical prompt text and
+> ground-truth fact** in public and 530 (verified 0 mismatches).
 ## The hard split (17 tasks)
 
 ### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
@@ -73,13 +77,13 @@ guessing instead of asking scores **0** under the MobileWorld-style interaction 
 returned answers must match the ground-truth facts. (The 4 ASK USER MULTI tasks below instead
 drive a KB-oracle dialogue.)
 
-**How many facts? 1 or 2 — never more.** Each SINGLE task withholds **1 or 2 pieces of
-info** (e.g. `google-search-telegram-clock-018` withholds two: the place *and* the person to
-message). The agent asks **once per withheld fact** (1–2 questions); in the reference run most
-SINGLE tasks asked once, and clock-018 (2 facts) asked twice and passed. This mode is
-**stateless** — the `ask_user` tool keeps **no chat memory**: every question is answered
-independently from the withheld fact(s), and the same answer comes back each time. Guessing
-without asking → 0.
+**~50/50 one-fact / two-fact.** The 7 SINGLE tasks split **3 one-fact / 4 two-fact**, mirroring
+the 530 corpus's 18/18 so the sample stays representative. A two-fact task withholds **2 pieces
+of info** (e.g. `google-search-telegram-clock-018`: the place *and* the person to message), and
+the agent asks **once per withheld fact** (1–2 questions); in the reference run most SINGLE
+tasks asked once, and clock-018 (2 facts) asked twice and passed. This mode is **stateless** —
+the `ask_user` tool keeps **no chat memory**: every question is answered independently from the
+withheld fact(s), and the same answer comes back each time. Guessing without asking → 0.
 
 | task | day | withheld fact |
 |---|---|---|
