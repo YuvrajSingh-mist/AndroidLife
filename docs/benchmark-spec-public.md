@@ -90,7 +90,7 @@ withheld fact(s), and the same answer comes back each time. Guessing without ask
 | `hard__drive-notes-telegram__010` | 1 | Message Yuvraj Airtel about the budget spreadsheet |
 | `hard__chrome-telegram-notes__008` | 2 | The item is wireless earbuds |
 | `hard__google-search-telegram-clock__018` | 2 | The place is the SBI ATM; the person to message is Yuvraj Singh Jio |
-| `hard__photos-gmail-obsidian__012` | 2 | The event is the Bhubaneswar trip |
+| `hard__photos-gmail-obsidian__012` | 2 | The photo is the 'Sunset at Puri' shot; the recipient's email is `hafari4025@aghism.com` |
 | `hard__google-search-obsidian-telegram__057` | 3 | Message Yuvraj Singh Jio when it crosses the threshold |
 | `hard__chrome-youtube-notes__088` | 3 | The task is changing a bike tyre |
 | `medium__google-search__008` | 3 | The route is from IIT Bhubaneswar to Bhubaneswar Airport |

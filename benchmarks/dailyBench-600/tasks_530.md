@@ -119,7 +119,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Gmail+Notes]**: Find the thread with [sender] in Gmail, summarize it into exactly 3 bullet points, and save the summary, the subject of the thread and a link to it as a note in my Notes app. <!--medium__gmail-notes__001-->
 
 **3. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
-- I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event or photo is named, so the agent must ask the user which event's photos they mean and which photo to send) <!--hard__photos-gmail-obsidian__012-->
+- I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no photo or recipient email is named, so the agent must ask the user which photo to send and the recipient's email) <!--hard__photos-gmail-obsidian__012-->
 
 **[Google Maps]**
 - Easy (1pt): Check how far away [place] is on Google Maps <!--easy__google-maps__001-->
@@ -1052,7 +1052,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): Could you find the document titled '[X]' in Google Docs, open it, and add a short 'Summary' section at the end with a one or two sentence wrap-up of what it covers? <!--easy__google-docs__002-->
 
 **1. [Chrome+YouTube+Notes] — ASK USER SINGLE**
-- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note (deliberately no task or note title is specified, so the agent must ask the user what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->
+- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though! (deliberately no task or note title is specified, so the agent must ask the user what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->
 
 - Medium (3pt) **[YouTube+Obsidian]**: Could you list the top 5 recommended videos on my home feed, save the most relevant one to Watch Later, and note in Obsidian why in YouTube? <!--medium__youtube__008-->
 

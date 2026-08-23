@@ -20,7 +20,7 @@ Runs present: `2026-08-20-003030`, `2026-08-22-195244`
 | 2026-08-22-195244 | [hard__drive-notes-telegram__010](ask-query-single/2026-08-22-195244/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The spreadsheet to chase is 'shared b |
 | 2026-08-22-195244 | [hard__google-search-obsidian-telegram__057](ask-query-single/2026-08-22-195244/hard__google-search-obsidian-telegram__057.md) | day3 | 0 | ❌ never asked | Message Yuvraj Singh Jio when it crosses the threshold. |
 | 2026-08-22-195244 | [hard__google-search-telegram-clock__018](ask-query-single/2026-08-22-195244/hard__google-search-telegram-clock__018.md) | day2 | 2 | ✅ asked | The place is the SBI ATM. The person to message is Yuvraj Si |
-| 2026-08-22-195244 | [hard__photos-gmail-obsidian__012](ask-query-single/2026-08-22-195244/hard__photos-gmail-obsidian__012.md) | day2 | 0 | ❌ never asked | The event is the Bhubaneswar trip. The photo to send is the  |
+| 2026-08-22-195244 | [hard__photos-gmail-obsidian__012](ask-query-single/2026-08-22-195244/hard__photos-gmail-obsidian__012.md) | day2 | 0 | ❌ never asked | The photo to send is the one captioned 'Sunset at Puri' from |
 | 2026-08-22-195244 | [medium__google-search__008](ask-query-single/2026-08-22-195244/medium__google-search__008.md) | day3 | 1 | ✅ asked | The route is from IIIT Bhubaneswar to Bhubaneswar Airport. |
 
 ## ask-query-multi/

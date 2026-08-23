@@ -106,7 +106,7 @@ aren't grouped or predictable by position.**
 - Medium (3pt): I want to pick up where I left off. Open Prime Video, find what's in my "Continue Watching", and give me a quick summary of the most recent one. <!--medium__prime-video__003-->
 
 **4. [Google Photos+Gmail+Obsidian] — ASK USER SINGLE**
-- I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no event or photo is named, so the agent must ask which event's photos they mean and which photo to send) <!--hard__photos-gmail-obsidian__012-->
+- I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no photo or recipient email is named, so the agent must ask which photo to send and the recipient's email) <!--hard__photos-gmail-obsidian__012-->
 
 **[Google Maps]**
 - Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
@@ -182,7 +182,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): Words aren't enough for this reply. Can you send a GIF in a conversation in Messages? <!--easy__messages__010-->
 
 **4. [Chrome+YouTube+Notes] — ASK USER SINGLE**
-- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes (deliberately no task or note title is specified, so the agent must ask what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->
+- I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though! (deliberately no task or note title is specified, so the agent must ask what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->
 
 <!-- 🔮 HALLUCINATION CONTROL (hard__files-notes__069, end-failure): data genuinely absent (No storage-limit note exists in Notes, so the under-limit decision (delete originals only if the archive is under the limit) cannot be made. Compressing the files + noting archive size are real/doable; only the limit note is absent.). Correct = honest failure; do NOT fabricate. -->
 **5. [Files+Notes] — DETERMINISTIC**
