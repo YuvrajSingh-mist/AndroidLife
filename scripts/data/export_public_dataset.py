@@ -65,6 +65,15 @@ def main() -> int:
             task["prompt_template"] = "In Contacts, change Akash Kumar's name to include their middle initial: {{ middle initial }}"
             task["placeholders"] = ["middle initial"]
             task["placeholder_count"] = 1
+        # medium__google-search__008 is a deliberately promoted MEDIUM ASK USER SINGLE task:
+        # it carries a withheld route fact (in ask_user_facts.json) but the markdown parser only
+        # marks HARD headers as ASK USER, so its `ahi`/`is_ask_user` would be lost on every
+        # regeneration and the fact would never reach --ask-user-context at run time. Force the
+        # flags so the oracle is given the route fact (see docs/benchmark-spec-public.md).
+        if task["task_id"] == "medium__google-search__008":
+            task["ahi"] = "ASK USER"
+            task["interaction"] = "single"
+            task["is_ask_user"] = True
     dataset["dataset_name"] = "DailyBench-Public"
     dataset["dataset_version"] = "v2"
     save_dataset_files(dataset, ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_public_v2.json", ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_public_v2.jsonl")

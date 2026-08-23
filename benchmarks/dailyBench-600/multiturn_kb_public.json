@@ -507,6 +507,7 @@
           "date": "2026-10-16 (Fri)",
           "depart": "12:05",
           "arrive": "14:30",
+          "terminal": "Terminal 1",
           "duration": "2h 25m non-stop",
           "cabin": "Economy Flexi Plus",
           "fare": "₹2,499",
