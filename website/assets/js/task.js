@@ -373,10 +373,85 @@ function initStepControls() {
 // Render trajectory section (GIF + meta) and step viewer
 // ---------------------------------------------------------------------------
 
-function renderTrajectory(task, traj, trajData) {
+// Resolve the full list of runs for a task: the index entry carries a `runs`
+// array (multi-run support: e.g. two 26-Aug models + today's 28-Aug); when
+// absent, fall back to the single run represented by the entry itself.
+function runsForTask(traj) {
+  if (traj && Array.isArray(traj.runs) && traj.runs.length) return traj.runs;
+  return traj ? [traj] : [];
+}
+
+// Re-render the whole trajectory section for a single run entry.
+async function renderRun(task, run, stepsSection) {
+  if (!run || !run.has_trajectory) return;
+
+  const gif = document.getElementById("trajectory-gif");
+  if (gif && run.gif) {
+    gif.src = pagePath(run.gif);
+    gif.alt = `Agent trajectory replay for ${task.task_id}`;
+  }
+
+  // Per-run trajectory data (may 404 if has_trajectory is false).
+  let trajData = null;
+  if (run.data) {
+    try {
+      trajData = await loadJson(pagePath(run.data));
+    } catch {
+      trajData = null;
+    }
+  }
+
+  const cap = document.getElementById("trajectory-gif-caption");
+  if (cap) cap.textContent = `${task.task_id} — replay of ${run.step_count ?? trajData?.steps_count ?? "—"} agent steps`;
+
+  const metaList = document.getElementById("trajectory-meta-list");
+  if (metaList) {
+    const items = [
+      ["Run", run.run_label ? escapeHtml(run.run_label) : "—"],
+      ["Model", run.model ? escapeHtml(run.model) : "—"],
+      ["Result", run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "—"],
+      ["Steps (output)", String(run.steps ?? "—")],
+      ["Steps (trajectory)", String(trajData?.steps_count ?? "—")],
+      ["Tool calls", String(trajData?.tool_call_count ?? "—")],
+      ["Started", fmtUtc(run.started_at_utc)],
+      ["Ended", fmtUtc(run.ended_at_utc)],
+      ["Duration", fmtDuration(run.started_at_utc, run.ended_at_utc)],
+    ];
+    metaList.innerHTML = items.map(([k, v]) => `<li><span class="tm-key">${k}</span><span class="tm-val">${v}</span></li>`).join("");
+  }
+
+  // "Open in Phoenix" — deep-links to a local Phoenix instance's project page.
+  // A Phoenix backend only exists on the author's machine (localhost preview);
+  // on the public GitHub Pages site there is no Phoenix, so the button stays
+  // hidden. The step viewer below already IS the Phoenix-traced trajectory.
+  const phoenixBtn = document.getElementById("trajectory-open-phoenix");
+  if (phoenixBtn) {
+    phoenixBtn.onclick = () => {
+      const base = localStorage.getItem("drainbench.phoenixBase") || "http://localhost:6006";
+      window.open(`${base}/projects/dailybench-day${run.day}`, "_blank", "noopener");
+    };
+    phoenixBtn.hidden = !(["localhost", "127.0.0.1"].includes(window.location.hostname) && /^https?:$/.test(window.location.protocol));
+  }
+
+  // Steps viewer
+  if (trajData && trajData.steps && trajData.steps.length) {
+    VIEWER.steps = trajData.steps;
+    VIEWER.index = 0;
+    VIEWER.screenshotBase = trajData.screenshot_base || null;
+    VIEWER.screenshotCount = trajData.screenshot_count || 0;
+    if (stepsSection) stepsSection.hidden = false;
+    initStepControls();
+    renderStep();
+  }
+}
+
+function renderTrajectory(task, traj) {
   const section = document.getElementById("task-trajectory");
   const stepsSection = document.getElementById("task-trajectory-steps");
-  if (!traj || !traj.has_trajectory) {
+  const runs = runsForTask(traj);
+  const hasAny = runs.some((r) => r.has_trajectory);
+
+  if (!hasAny) {
     const btn = document.getElementById("trajectory-btn");
     if (btn) btn.hidden = true;
     const noTraj = document.getElementById("task-desc");
@@ -391,60 +466,32 @@ function renderTrajectory(task, traj, trajData) {
     btn.hidden = false;
     btn.addEventListener("click", () => {
       if (section) section.scrollIntoView({ behavior: "smooth" });
-      const steps = document.getElementById("task-trajectory-steps");
-      if (steps) steps.scrollIntoView({ behavior: "smooth" });
+      if (stepsSection) stepsSection.scrollIntoView({ behavior: "smooth" });
     });
   }
 
   if (section) section.hidden = false;
 
-  const gif = document.getElementById("trajectory-gif");
-  if (gif && traj.gif) {
-    gif.src = pagePath(traj.gif);
-    gif.alt = `Agent trajectory replay for ${task.task_id}`;
-  }
-  const cap = document.getElementById("trajectory-gif-caption");
-  if (cap) cap.textContent = `${task.task_id} — replay of ${traj.step_count ?? trajData?.steps_count ?? "—"} agent steps`;
-
-  const metaList = document.getElementById("trajectory-meta-list");
-  if (metaList) {
-    const items = [
-      ["Model", traj.model ? escapeHtml(traj.model) : "—"],
-      ["Result", traj.success === true ? '<span class="run-ok">Success</span>' : traj.success === false ? '<span class="run-fail">Failure</span>' : "—"],
-      ["Steps (output)", String(traj.steps ?? "—")],
-      ["Steps (trajectory)", String(trajData?.steps_count ?? "—")],
-      ["Tool calls", String(trajData?.tool_call_count ?? "—")],
-      ["Started", fmtUtc(traj.started_at_utc)],
-      ["Ended", fmtUtc(traj.ended_at_utc)],
-      ["Duration", fmtDuration(traj.started_at_utc, traj.ended_at_utc)],
-    ];
-    metaList.innerHTML = items.map(([k, v]) => `<li><span class="tm-key">${k}</span><span class="tm-val">${v}</span></li>`).join("");
-  }
-
-  // "Open in Phoenix" — deep-links to a local Phoenix instance's project page.
-  // A Phoenix backend only exists on the author's machine (localhost preview);
-  // on the public GitHub Pages site there is no Phoenix, so the button stays
-  // hidden. The step viewer below already IS the Phoenix-traced trajectory.
-  const phoenixBtn = document.getElementById("trajectory-open-phoenix");
-  if (phoenixBtn) {
-    const base = localStorage.getItem("drainbench.phoenixBase") || "http://localhost:6006";
-    phoenixBtn.addEventListener("click", () => {
-      window.open(`${base}/projects/dailybench-day${traj.day}`, "_blank", "noopener");
-    });
-    if (/^https?:$/.test(window.location.protocol) && ["localhost", "127.0.0.1"].includes(window.location.hostname)) {
-      phoenixBtn.hidden = false;
-    }
-  }
-
-  // Steps viewer
-  if (trajData && trajData.steps && trajData.steps.length) {
-    VIEWER.steps = trajData.steps;
-    VIEWER.index = 0;
-    VIEWER.screenshotBase = trajData.screenshot_base || null;
-    VIEWER.screenshotCount = trajData.screenshot_count || 0;
-    if (stepsSection) stepsSection.hidden = false;
-    initStepControls();
-    renderStep();
+  // Multi-run selector — when several runs exist (e.g. two 26-Aug models +
+  // today's 28-Aug), let the viewer pick which trajectory to replay.
+  const runSelect = document.getElementById("trajectory-run-select");
+  const runWrap = document.getElementById("run-select-wrap");
+  const runnable = runs.filter((r) => r.has_trajectory);
+  if (runSelect && runWrap && runnable.length > 1) {
+    runSelect.innerHTML = runnable
+      .map((r, i) => `<option value="${i}">${escapeHtml(r.run_label || `Run ${i + 1} (${r.model || "?"})`)}</option>`)
+      .join("");
+    runWrap.hidden = false;
+    const primaryIdx = Math.max(0, runnable.findIndex((r) => r.is_primary));
+    runSelect.value = String(primaryIdx);
+    runSelect.onchange = () => {
+      const run = runnable[Number(runSelect.value)];
+      if (run) renderRun(task, run, stepsSection);
+    };
+    renderRun(task, runnable[primaryIdx], stepsSection);
+  } else {
+    if (runWrap) runWrap.hidden = true;
+    renderRun(task, runnable[0], stepsSection);
   }
 }
 
@@ -499,17 +546,7 @@ async function init() {
     const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
     renderTaskState(task, traj);
 
-    // Per-task trajectory data (may 404 if has_trajectory is false).
-    let trajData = null;
-    if (traj && traj.has_trajectory && traj.data) {
-      try {
-        trajData = await loadJson(pagePath(traj.data));
-      } catch {
-        trajData = null;
-      }
-    }
-
-    renderTrajectory(task, traj, trajData);
+    renderTrajectory(task, traj);
     attachLightbox();
   } catch (error) {
     if (subtitle) subtitle.textContent = "Failed to load task data.";

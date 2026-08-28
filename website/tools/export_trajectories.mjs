@@ -31,6 +31,24 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, statS
 import { execFileSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 
+// Runs live on a synced/mounted volume where copyFileSync can hit transient
+// ETIMEDOUT/EIO errors — retry a few times before giving up.
+function copyFileResilient(src, dest, attempts = 4) {
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      copyFileSync(src, dest);
+      return;
+    } catch (err) {
+      if (i === attempts) throw err;
+      const delay = i * 500;
+      console.warn(`  (retry ${i}/${attempts - 1}) copy ${src.split("/").slice(-3).join("/")} after ${delay}ms — ${err.code}`);
+      // busy-wait instead of sleep() so we don't need Atomics/worker imports
+      const end = Date.now() + delay;
+      while (Date.now() < end) { /* spin */ }
+    }
+  }
+}
+
 const ROOT = resolve(import.meta.dirname, "..", "..");
 
 // set "530" -> day -> run root. Days 4/5 have reruns merged into the root.
@@ -42,12 +60,14 @@ const DAY_RUN_ROOTS = {
   5: "assets/runs/full-bench/2026-08-14-031816/day5",
 };
 
-// set "public" -> public sample run, split into day subfolders (incl. recovered).
-const PUBLIC_RUN_SUBDIRS = [
-  "assets/runs/public/2026-08-20-003030/day1",
-  "assets/runs/public/2026-08-20-003030/day2",
-  "assets/runs/public/2026-08-20-003030/day3",
-  "assets/runs/public/2026-08-20-003030/recovered",
+// set "public" -> public sample runs, each with day1..day3 subfolders. Multiple
+// runs are published (e.g. both 26-Aug models + today's 28-Aug); each run is
+// namespaced under public/<key>/... so the same task_id can carry several
+// trajectories. Order matters: later entries are preferred as the primary run.
+const PUBLIC_RUNS = [
+  { key: "qwen-26", label: "qwen3.8-27b · 26 Aug (vision)", root: "assets/runs/public/2026-08-26-184934" },
+  { key: "gemini-26", label: "gemini-3.1-flash-lite · 26 Aug", root: "assets/runs/public/20260826-105200" },
+  { key: "qwen-28", label: "qwen3.8-27b · 28 Aug (text)", root: "assets/runs/public/2026-08-28-002424" },
 ];
 
 const OUT_DATA = "website/assets/data/trajectories";
@@ -292,7 +312,7 @@ function processRunRoot(indexMap, daySummaries, set, day, relRoot, ns = "") {
         const gifRel = `${prefix}day${day}/${taskId}/trajectory.gif`;
         const gifAbs = joinPath(`${OUT_GIFS}/${gifRel}`);
         mkdirSync(dirname(gifAbs), { recursive: true });
-        copyFileSync(gif, gifAbs);
+        copyFileResilient(gif, gifAbs);
         entry.gif = assetUrl(`assets/trajectories/${gifRel}`);
       } else {
         noGif++;
@@ -315,18 +335,59 @@ function processRunRoot(indexMap, daySummaries, set, day, relRoot, ns = "") {
 }
 
 function main() {
+  const PUBLIC_ONLY = process.env.TRAJ_PUBLIC_ONLY === "1" || process.argv.includes("--public-only");
   const index = { tasks: {}, public: {} };
   const daySummaries = {};
 
-  // 530 set — the private corpus shown on the Tasks page (days 1-5).
-  for (const [dayStr, relRoot] of Object.entries(DAY_RUN_ROOTS)) {
-    processRunRoot(index.tasks, daySummaries, "530", Number(dayStr), relRoot, "");
+  // In public-only mode we keep the already-exported 530 set (unchanged, already
+  // published to HF) and only regenerate the public run set — much faster than
+  // re-downscaling every 530 screenshot.
+  if (PUBLIC_ONLY) {
+    const existing = readJson("website/assets/data/trajectories/index.json");
+    if (existing) {
+      index.tasks = existing.tasks || {};
+      if (existing.days && existing.days["530"]) daySummaries["530"] = existing.days["530"];
+    }
+  } else {
+    // 530 set — the private corpus shown on the Tasks page (days 1-5).
+    for (const [dayStr, relRoot] of Object.entries(DAY_RUN_ROOTS)) {
+      processRunRoot(index.tasks, daySummaries, "530", Number(dayStr), relRoot, "");
+    }
   }
 
-  // Public set — homepage example tasks. Each public subdir maps to a day.
-  PUBLIC_RUN_SUBDIRS.forEach((relRoot, i) => {
-    processRunRoot(index.public, daySummaries, "public", i + 1, relRoot, "public");
+  // Public set — homepage example tasks. Process every run root (day1..day3),
+  // namespacing each run under public/<runKey>/... so multiple runs per task
+  // coexist. Collect per-task entries, then pick the latest run as primary and
+  // attach a `runs` array for the run selector on the task page.
+  const publicByTask = {}; // taskId -> [{runKey, runLabel, entry}]
+  PUBLIC_RUNS.forEach((run) => {
+    const runIndex = {};
+    for (let day = 1; day <= 3; day++) {
+      processRunRoot(runIndex, daySummaries, "public", day, `${run.root}/day${day}`, `public/${run.key}`);
+    }
+    for (const [taskId, entry] of Object.entries(runIndex)) {
+      (publicByTask[taskId] ||= []).push({ runKey: run.key, runLabel: run.label, entry });
+    }
   });
+
+  // Primary = latest run (last in PUBLIC_RUNS); keep its fields at the top level
+  // (homepage/tasks page read these) and expose every run via `runs`.
+  const runPriority = new Map(PUBLIC_RUNS.map((r, i) => [r.key, i]));
+  for (const [taskId, runs] of Object.entries(publicByTask)) {
+    const sorted = [...runs].sort((a, b) => (runPriority.get(b.runKey) ?? -1) - (runPriority.get(a.runKey) ?? -1));
+    const primary = sorted[0];
+    index.public[taskId] = {
+      ...primary.entry,
+      run_key: primary.runKey,
+      run_label: primary.runLabel,
+      runs: sorted.map((r, i) => ({
+        run_key: r.runKey,
+        run_label: r.runLabel,
+        is_primary: i === 0,
+        ...r.entry,
+      })),
+    };
+  }
 
   mkdirSync(joinPath(OUT_DATA), { recursive: true });
   const indexRel = "website/assets/data/trajectories/index.json";

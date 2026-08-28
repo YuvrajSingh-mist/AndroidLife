@@ -47,23 +47,30 @@ def resolve_base(repo: str) -> str:
     return f"https://huggingface.co/datasets/{repo}/resolve/main"
 
 
+def _rewrite_entry(entry: dict, base: str) -> None:
+    """Rewrite gif/data (+ nested runs[] entries) to absolute HF resolve URLs."""
+    for run in [entry] + (entry.get("runs") or []):
+        gif = run.get("gif")
+        data = run.get("data")
+        if gif and gif.startswith("assets/"):
+            run["gif"] = f"{base}/{gif[len('assets/'):]}"
+        if data and data.startswith("assets/"):
+            run["data"] = f"{base}/{data[len('assets/'):]}"
+
+
 def rewrite_index(index: dict, base: str) -> dict:
     """Rewrite every gif/data path to an absolute HF resolve URL.
 
     Local paths are site-root-relative (e.g. assets/trajectories/...) but the
     HF repo stores media under trajectories/... and data under
     data/trajectories/... (the assets/ prefix is dropped on upload), so the
-    prefix is stripped here.
+    prefix is stripped here. Multi-run public entries carry a nested `runs`
+    array that is rewritten too.
     """
     out = json.loads(json.dumps(index))  # deep copy
     for section in ("tasks", "public"):
         for entry in out.get(section, {}).values():
-            gif = entry.get("gif")
-            data = entry.get("data")
-            if gif and gif.startswith("assets/"):
-                entry["gif"] = f"{base}/{gif[len('assets/'):]}"
-            if data and data.startswith("assets/"):
-                entry["data"] = f"{base}/{data[len('assets/'):]}"
+            _rewrite_entry(entry, base)
     return out
 
 

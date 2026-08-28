@@ -125,6 +125,7 @@ function main() {
     })
     .map((t) => {
       const run = publicRuns[t.task_id] || {};
+      const runs = Array.isArray(run.runs) ? run.runs : [];
       return {
         task_id: t.task_id,
         difficulty: t.bucket,
@@ -138,6 +139,7 @@ function main() {
         model: run.model || "",
         success: run.success ?? null,
         has_trajectory: Boolean(run.has_trajectory),
+        run_count: runs.length ? runs.length : (run.has_trajectory ? 1 : 0),
         set: "public",
       };
     });

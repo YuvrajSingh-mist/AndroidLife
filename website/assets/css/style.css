@@ -509,6 +509,7 @@ footer .footnote { font-size: 0.78rem; margin-top: 0.35rem; }
 
 .tag.tag-ask { color: var(--accent); border-color: var(--accent-lt); }
 .tag.tag-cross { color: var(--link); border-color: var(--border); }
+.tag.tag-run { color: var(--accent); border-color: var(--accent-lt); font-style: italic; }
 
 .public-example-prompt { margin: 0.5rem 0 0.85rem; }
 
@@ -1271,6 +1272,31 @@ table.lb-table td.lb-params {
   gap: 1.5rem;
   align-items: flex-start;
   flex-wrap: wrap;
+}
+
+.run-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.run-select-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-ter);
+}
+
+.run-select {
+  font: inherit;
+  font-size: 0.86rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  color: var(--text);
+  max-width: 100%;
 }
 
 .trajectory-gif-wrap {
