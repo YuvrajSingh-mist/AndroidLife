@@ -1018,13 +1018,27 @@ table.lb-table td.lb-params {
 }
 
 .lb-col-info-ico {
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid var(--text-ter);
+  color: var(--text-ter);
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  font-weight: 600;
   line-height: 1;
+  cursor: help;
+  transition: color 0.12s ease, border-color 0.12s ease;
 }
 
-.lb-col-info:hover,
-.lb-col-info:focus-visible {
+.lb-col-info:hover .lb-col-info-ico,
+.lb-col-info:focus-visible .lb-col-info-ico {
   color: var(--accent);
+  border-color: var(--accent);
 }
 
 .lb-col-tip {
@@ -1058,6 +1072,112 @@ table.lb-table td.lb-params {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
+}
+
+/* "Columns" dropdown — checkbox toggles for which metric columns to show */
+.lb-metrics-toggle {
+  display: inline-flex;
+}
+
+.lb-metrics {
+  position: relative;
+}
+
+.lb-metrics-btn {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: border-color 0.15s ease;
+}
+
+.lb-metrics-btn:hover,
+.lb-metrics-btn:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  color: var(--accent);
+}
+
+.lb-metrics-arrow {
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--text-ter);
+}
+
+.lb-metrics-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 40;
+  min-width: 210px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  padding: 0.6rem 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.lb-metrics-panel[hidden] {
+  display: none;
+}
+
+.lb-metrics-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-sec);
+  cursor: pointer;
+  padding: 0.18rem 0.2rem;
+  border-radius: 4px;
+}
+
+.lb-metrics-option:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+.lb-metrics-option input {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Charts tab — axis pickers + scatter */
+.lb-chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.lb-chart-controls .filter-label {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-ter);
+}
+
+.lb-dot-label {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+}
+
+.lb-grid-line-v {
+  stroke: var(--border-lt);
+  stroke-width: 1;
 }
 
 /* Sub-lines under cells (task-set label, agent elapsed, HC detail) */

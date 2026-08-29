@@ -192,13 +192,74 @@ function renderSearchBar() {
   });
 }
 
-const METRICS = {
-  success: { label: "Success", statLabel: "success rate" },
-  steps: { label: "Avg steps", statLabel: "average completion steps" },
-};
+// Ordered column definitions for the leaderboard table. `rank` + `model` are
+// always shown; the rest can be toggled on/off via the "Columns" dropdown.
+const COLUMNS = [
+  { key: "rank", label: "Score rank", always: true, header: (label) => sortableHeader("rank", label), cell: (r) => `<td class="lb-rank">${r.rank}</td>` },
+  { key: "model", label: "Model", always: true, header: () => `<th>Model</th>`, cell: (r) => `<td>${r.model}</td>` },
+  { key: "success", label: "Success rate", def: COL_DEFS.success, cell: (r) => `<td class="lb-score">${r.success.score.toFixed(1)}%</td>` },
+  { key: "askUser", label: "ASK USER", def: COL_DEFS.askUser, cell: (r) => `<td class="lb-score">${formatPct(r.askUser)}</td>` },
+  { key: "guiOnly", label: "GUI-only", def: COL_DEFS.guiOnly, cell: (r) => `<td class="lb-score">${formatPct(r.guiOnly)}</td>` },
+  { key: "steps", label: "Avg steps", def: COL_DEFS.steps, cell: (r) => `<td class="lb-score">${formatSteps(r.steps)}</td>` },
+  { key: "queries", label: "Avg queries", def: COL_DEFS.queries, cell: (r) => `<td class="lb-score">${r.queries.toFixed(2)}</td>` },
+  { key: "uiq", label: "UIQ", def: COL_DEFS.uiq, cell: (r) => `<td class="lb-score">${r.uiq.toFixed(3)}</td>` },
+  { key: "kbiq", label: "KBIQ", def: COL_DEFS.kbiq, cell: (r) => `<td class="lb-score">${escapeHtml(r.kbiq)}</td>` },
+  { key: "elapsed", label: "Elapsed", def: COL_DEFS.elapsed, cell: (r) => `<td class="lb-score"><span class="lb-elapsed">${r.elapsed.wall}</span><span class="lb-sub">agent ${r.elapsed.agent}</span></td>` },
+  { key: "hc", label: "HC honesty", def: COL_DEFS.hc, cell: (r) => `<td class="lb-score">${r.hc.score.toFixed(1)}%<span class="lb-sub">${r.hc.detail}</span></td>` },
+  { key: "buckets", label: "Buckets E / M / H", def: COL_DEFS.buckets, cell: (r) => `<td class="lb-score">${r.buckets.easy.toFixed(1)} / ${r.buckets.medium.toFixed(1)} / ${r.buckets.hard.toFixed(1)}</td>` },
+  { key: "runs", label: "Runs", cell: (r) => `<td>${r.runs}</td>` },
+  { key: "org", label: "Organization", cell: (r) => `<td>${r.org}</td>` },
+];
+
+// Which metric columns are visible in the table (toggled via the Columns
+// dropdown). rank + model are always shown. All metric columns are on by
+// default so the table looks exactly as before.
+const columnVisibility = Object.fromEntries(COLUMNS.filter((c) => !c.always).map((c) => [c.key, true]));
+
+// Renders the "Columns" dropdown with a checkbox per metric column. Toggling a
+// checkbox immediately shows/hides that column in the table.
+function renderMetricsToggle() {
+  const root = document.getElementById("lb-metrics-toggle");
+  if (!root) return;
+  const toggleables = COLUMNS.filter((c) => !c.always);
+  root.innerHTML = `
+    <div class="lb-metrics">
+      <button type="button" class="lb-metrics-btn" id="lb-metrics-btn" aria-haspopup="true" aria-expanded="false">
+        <span>Columns</span><span class="lb-metrics-arrow" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="lb-metrics-panel" id="lb-metrics-panel" hidden>
+        ${toggleables
+          .map(
+            (c) => `
+              <label class="lb-metrics-option">
+                <input type="checkbox" data-col="${c.key}" ${columnVisibility[c.key] ? "checked" : ""} />
+                <span>${c.label}</span>
+              </label>`
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+
+  const btn = root.querySelector("#lb-metrics-btn");
+  const panel = root.querySelector("#lb-metrics-panel");
+  btn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const open = panel.hidden;
+    panel.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+  });
+  for (const box of root.querySelectorAll('input[data-col]')) {
+    box.addEventListener("change", () => {
+      columnVisibility[box.dataset.col] = box.checked;
+      renderTable("mcq-table", rankedRows(getFilteredRows()));
+    });
+  }
+}
 
 // Header for a sortable column. `tip` (optional) renders a hover tooltip with
 // the metric's definition, styled to match the site (same as info-tooltip).
+// The tooltip trigger is a little circular "i" button.
 function sortableHeader(key, label, tip = "", suffix = "") {
   const isActive = currentTableSort.key === key;
   const direction = isActive ? currentTableSort.direction : "none";
@@ -207,7 +268,7 @@ function sortableHeader(key, label, tip = "", suffix = "") {
   const tooltip = tip
     ? `
       <span class="lb-col-info" tabindex="0" role="button" aria-label="Definition of ${label}">
-        <span class="lb-col-info-ico" aria-hidden="true">&#9432;</span>
+        <span class="lb-col-info-ico" aria-hidden="true">i</span>
         <span class="lb-col-tip" role="tooltip">${tip}</span>
       </span>`
     : "";
@@ -221,56 +282,33 @@ function sortableHeader(key, label, tip = "", suffix = "") {
   `;
 }
 
+function visibleColumns() {
+  return COLUMNS.filter((c) => c.always || columnVisibility[c.key]);
+}
+
 function renderTable(containerId, rows) {
   const root = document.getElementById(containerId);
   if (rows.length === 0) {
     root.innerHTML = `<p class="lb-empty">No models benchmarked yet.</p>`;
     return;
   }
+  const cols = visibleColumns();
+
+  const headerCells = cols
+    .map((c) => (c.always ? c.header(c.label) : sortableHeader(c.key, c.label, c.def || "")))
+    .join("");
+
+  const bodyRows = rows
+    .map(
+      (row) =>
+        `<tr class="${row.rank === "1st" ? "lb-row-rank1" : ""}">${cols.map((c) => c.cell(row)).join("")}</tr>`
+    )
+    .join("");
+
   root.innerHTML = `
     <table class="lb-table">
-      <thead>
-        <tr>
-          ${sortableHeader("rank", "Score rank")}
-          <th>Model</th>
-          ${sortableHeader("success", "Success rate", COL_DEFS.success)}
-          ${sortableHeader("askUser", "ASK USER", COL_DEFS.askUser)}
-          ${sortableHeader("guiOnly", "GUI-only", COL_DEFS.guiOnly)}
-          ${sortableHeader("steps", "Avg steps", COL_DEFS.steps)}
-          ${sortableHeader("queries", "Avg queries", COL_DEFS.queries)}
-          ${sortableHeader("uiq", "UIQ", COL_DEFS.uiq)}
-          ${sortableHeader("kbiq", "KBIQ", COL_DEFS.kbiq)}
-          ${sortableHeader("elapsed", "Elapsed", COL_DEFS.elapsed)}
-          ${sortableHeader("hc", "HC honesty", COL_DEFS.hc)}
-          ${sortableHeader("buckets", "Buckets E / M / H", COL_DEFS.buckets)}
-          ${sortableHeader("runs", "Runs")}
-          ${sortableHeader("org", "Organization")}
-        </tr>
-      </thead>
-      <tbody>
-        ${rows
-          .map(
-            (row) => `
-              <tr class="${row.rank === "1st" ? "lb-row-rank1" : ""}">
-                <td class="lb-rank">${row.rank}</td>
-                <td>${row.model}<span class="lb-sub">${row.params.replace("Public · ", "")}</span></td>
-                <td class="lb-score">${row.success.score.toFixed(1)}%</td>
-                <td class="lb-score">${formatPct(row.askUser)}</td>
-                <td class="lb-score">${formatPct(row.guiOnly)}</td>
-                <td class="lb-score">${formatSteps(row.steps)}</td>
-                <td class="lb-score">${row.queries.toFixed(2)}</td>
-                <td class="lb-score">${row.uiq.toFixed(3)}</td>
-                <td class="lb-score">${escapeHtml(row.kbiq)}</td>
-                <td class="lb-score"><span class="lb-elapsed">${row.elapsed.wall}</span><span class="lb-sub">agent ${row.elapsed.agent}</span></td>
-                <td class="lb-score">${row.hc.score.toFixed(1)}%<span class="lb-sub">${row.hc.detail}</span></td>
-                <td class="lb-score">${row.buckets.easy.toFixed(1)} / ${row.buckets.medium.toFixed(1)} / ${row.buckets.hard.toFixed(1)}</td>
-                <td>${row.runs}</td>
-                <td>${row.org}</td>
-              </tr>
-            `
-          )
-          .join("")}
-      </tbody>
+      <thead><tr>${headerCells}</tr></thead>
+      <tbody>${bodyRows}</tbody>
     </table>
   `;
 
@@ -327,137 +365,145 @@ function hideTooltip(tooltip) {
   tooltip.classList.remove("active");
 }
 
-let currentChartMetric = "success";
 let pinnedChartTooltip = null;
+let chartX = "success";
+let chartY = "steps";
 
 document.addEventListener("click", (event) => {
-  if (!pinnedChartTooltip || event.target.closest(".lb-hit")) return;
-  hideTooltip(pinnedChartTooltip.tooltip);
-  pinnedChartTooltip = null;
+  if (pinnedChartTooltip && !event.target.closest(".lb-hit")) {
+    hideTooltip(pinnedChartTooltip.tooltip);
+    pinnedChartTooltip = null;
+  }
+  // Close the Columns dropdown when clicking outside it.
+  const panel = document.getElementById("lb-metrics-panel");
+  const btn = document.getElementById("lb-metrics-btn");
+  if (panel && btn && !panel.hidden && !event.target.closest(".lb-metrics")) {
+    panel.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  }
 });
 
-function renderMetricToggle(card) {
-  const root = card.querySelector(".lb-metric-toggle");
-  if (!root) return;
-  root.innerHTML = Object.entries(METRICS)
-    .map(
-      ([key, meta]) => `
-        <button class="lb-metric-btn${key === currentChartMetric ? " active" : ""}" data-metric="${key}">${meta.label}</button>
-      `
-    )
-    .join("");
-  for (const btn of root.querySelectorAll(".lb-metric-btn")) {
-    btn.addEventListener("click", () => {
-      currentChartMetric = btn.dataset.metric;
-      renderPerfDollarChart();
-    });
-  }
+// Chartable metrics — every leaderboard column that has a numeric value, so the
+// user can pick any X and Y axis freely. Default: X = success, Y = avg steps.
+const CHART_METRICS = {
+  success: { label: "Success rate", unit: "%", value: (r) => r.success.score },
+  askUser: { label: "ASK USER", unit: "%", value: (r) => r.askUser },
+  guiOnly: { label: "GUI-only", unit: "%", value: (r) => r.guiOnly },
+  steps: { label: "Avg steps", unit: "", value: (r) => r.steps },
+  queries: { label: "Avg queries", unit: "", value: (r) => r.queries },
+  uiq: { label: "UIQ", unit: "", value: (r) => r.uiq },
+  kbiq: { label: "KBIQ", unit: "", value: (r) => (r.kbiq === "N/A" ? null : parseFloat(r.kbiq)) },
+  elapsed: { label: "Elapsed (s)", unit: "s", value: (r) => parseFloat(r.elapsed.wall) },
+  hc: { label: "HC honesty", unit: "%", value: (r) => r.hc.score },
+  buckets: { label: "Easy bucket", unit: "%", value: (r) => r.buckets.easy },
+};
+
+// Distinct bubble colours (one per model), so each model reads clearly.
+const CHART_COLORS = ["#2a6f8f", "#7f8f3a", "#c9a227", "#c9732a", "#c94a2a", "#9c3a3a", "#6b4a8f"];
+
+function niceTicks(min, max, count = 5) {
+  const span = Math.max(max - min, 1e-9);
+  const step0 = span / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const norm = step0 / mag;
+  const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10) * mag;
+  const start = Math.floor(min / step) * step;
+  const ticks = [];
+  for (let v = start; v <= max + step * 0.001; v += step) ticks.push(Number(v.toPrecision(12)));
+  return ticks;
 }
 
-// Scatter of the chosen metric (success rate or avg steps) vs. average
-// completion steps, so you can see the success-vs-efficiency tradeoff.
-// Rows without an avg-steps value are placed in a categorical band on the left.
-function renderPerfDollarChart() {
+function renderChartControls() {
+  const xSel = document.getElementById("chart-x");
+  const ySel = document.getElementById("chart-y");
+  if (!xSel || !ySel) return;
+  const opts = (sel, current) => {
+    sel.innerHTML = Object.entries(CHART_METRICS)
+      .map(([key, m]) => `<option value="${key}"${key === current ? " selected" : ""}>${m.label}</option>`)
+      .join("");
+  };
+  opts(xSel, chartX);
+  opts(ySel, chartY);
+  xSel.addEventListener("change", () => { chartX = xSel.value; renderScatterChart(); });
+  ySel.addEventListener("change", () => { chartY = ySel.value; renderScatterChart(); });
+}
+
+// Free-axis scatter chart: X and Y can each be any chartable metric. Every
+// model is a coloured bubble; hovering shows the model name + its x/y values.
+function renderScatterChart() {
   const card = document.getElementById("perf-dollar-chart");
   if (!card) return;
-  const width = 760;
-  const height = 360;
-  const margin = { top: 16, right: 24, bottom: 44, left: 68 };
-  const plotH = height - margin.top - margin.bottom;
-  const paidPlotStart = 250;
-  const paidPlotWidth = width - margin.right - paidPlotStart;
-  const localBandStart = margin.left + 18;
-  const localBandEnd = paidPlotStart - 24;
+  const inner = card.querySelector(".lb-chart-card-inner");
+  if (!inner) return;
+  inner.innerHTML = "";
 
-  const xMin = 20;
-  const xMax = 80;
-  const yMin = 0;
-  const yMax = 100;
-  const visibleRows = getFilteredRows();
-
-  const xScaleSteps = (steps) =>
-    paidPlotStart + ((Math.min(Math.max(steps, xMin), xMax) - xMin) / (xMax - xMin)) * paidPlotWidth;
-  const yScale = (score) => margin.top + plotH - ((score - yMin) / (yMax - yMin)) * plotH;
-
-  // Rows with no avg-steps value get a categorical band on the left.
-  const unknownRows = visibleRows
-    .filter((row) => row.steps == null)
-    .sort((a, b) => a.model.localeCompare(b.model));
-  const unknownXByModel = new Map(
-    unknownRows.map((row, index) => {
-      const ratio = unknownRows.length === 1 ? 0.5 : index / (unknownRows.length - 1);
-      return [row.model + "|" + row.params, localBandStart + ratio * (localBandEnd - localBandStart)];
-    })
-  );
-
-  const pointLayouts = [];
-  const offsetCandidates = [0, -28, 28, -56, 56, -84, 84, -112, 112];
-  for (const row of [...visibleRows].sort((a, b) => (a.steps || 0) - (b.steps || 0) || a.model.localeCompare(b.model))) {
-    const point = row[currentChartMetric];
-    const cy = yScale(currentChartMetric === "success" ? point.score : point);
-    const isUnknown = row.steps == null;
-    const baseX = isUnknown ? unknownXByModel.get(row.model + "|" + row.params) : xScaleSteps(row.steps);
-    let cx = baseX;
-
-    if (!isUnknown) {
-      for (const offset of offsetCandidates) {
-        const candidateX = Math.max(paidPlotStart, Math.min(width - margin.right, baseX + offset));
-        const overlaps = pointLayouts.some(
-          (placed) => Math.hypot(candidateX - placed.cx, cy - placed.cy) < 28
-        );
-        if (!overlaps) {
-          cx = candidateX;
-          break;
-        }
-      }
-    }
-
-    pointLayouts.push({ row, point, cx, cy });
+  const rows = getFilteredRows();
+  if (!rows.length) {
+    inner.innerHTML = `<p class="lb-empty">No models benchmarked yet.</p>`;
+    return;
   }
 
-  const xTicks = [20, 30, 40, 50, 60, 70, 80];
-  const yTicks = [0, 25, 50, 75, 100];
-  const metricMeta = METRICS[currentChartMetric];
-  const localBandCenter = (localBandStart + localBandEnd) / 2;
+  const xMeta = CHART_METRICS[chartX];
+  const yMeta = CHART_METRICS[chartY];
+  const points = rows
+    .map((r) => ({ row: r, x: xMeta.value(r), y: yMeta.value(r) }))
+    .filter((p) => p.x != null && p.y != null);
 
-  let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${metricMeta.label} (${metricMeta.statLabel}) versus average completion steps">`;
+  const width = 760;
+  const height = 400;
+  const margin = { top: 30, right: 30, bottom: 54, left: 64 };
+  const plotW = width - margin.left - margin.right;
+  const plotH = height - margin.top - margin.bottom;
+
+  const xVals = points.map((p) => p.x);
+  const yVals = points.map((p) => p.y);
+  const xMin = Math.min(...xVals);
+  const xMax = Math.max(...xVals);
+  const yMin = Math.min(...yVals);
+  const yMax = Math.max(...yVals);
+  const xPad = (xMax - xMin) * 0.12 || 1;
+  const yPad = (yMax - yMin) * 0.12 || 1;
+
+  const xTicks = niceTicks(xMin - xPad, xMax + xPad, 5);
+  const yTicks = niceTicks(yMin - yPad, yMax + yPad, 5);
+  const xScale = (v) => margin.left + ((v - (xMin - xPad)) / (xMax + xPad - (xMin - xPad))) * plotW;
+  const yScale = (v) => margin.top + plotH - ((v - (yMin - yPad)) / (yMax + yPad - (yMin - yPad))) * plotH;
+
+  let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${xMeta.label} vs ${yMeta.label} scatter">`;
 
   for (const t of yTicks) {
     const y = yScale(t);
     svg += `<line class="lb-grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" />`;
-    svg += `<text class="lb-tick-label" x="${margin.left - 8}" y="${y + 3}" text-anchor="end">${t}%</text>`;
-  }
-  if (unknownRows.length > 0) {
-    svg += `<text class="lb-tick-label" x="${localBandCenter}" y="${height - margin.bottom + 16}" text-anchor="middle">no steps</text>`;
-    svg += `<line class="lb-cost-band-divider" x1="${paidPlotStart - 12}" y1="${margin.top}" x2="${paidPlotStart - 12}" y2="${margin.top + plotH}" />`;
+    svg += `<text class="lb-tick-label" x="${margin.left - 8}" y="${y + 3}" text-anchor="end">${fmtTick(t, yMeta)}</text>`;
   }
   for (const t of xTicks) {
-    const x = xScaleSteps(t);
-    svg += `<text class="lb-tick-label" x="${x}" y="${height - margin.bottom + 16}" text-anchor="middle">${t}</text>`;
-  }
-  svg += `<text class="lb-axis-label" x="${margin.left + (width - margin.right - margin.left) / 2}" y="${height - 6}" text-anchor="middle">Average completion steps per run</text>`;
-  svg += `<text class="lb-axis-label" transform="translate(14 ${margin.top + plotH / 2}) rotate(-90)" text-anchor="middle">${metricMeta.label} (%)</text>`;
-
-  for (const { row, point, cx, cy } of pointLayouts) {
-    const priceLabel = row.steps == null ? "no steps" : row.steps.toFixed(2) + " steps";
-    svg += `<circle class="lb-dot" cx="${cx}" cy="${cy}" r="6" fill="var(--accent)" />`;
-    svg += `<circle class="lb-hit" cx="${cx}" cy="${cy}" r="13" tabindex="0" role="button" aria-label="${row.model} (${row.params}): ${currentChartMetric === "success" ? point.score + "% success" : point + " avg steps"}, ${priceLabel}" data-model="${row.model}" data-price-label="${priceLabel}" data-score="${currentChartMetric === "success" ? point.score : point}" data-stat-label="${metricMeta.statLabel}" />`;
+    const x = xScale(t);
+    svg += `<line class="lb-grid-line-v" x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" />`;
+    svg += `<text class="lb-tick-label" x="${x}" y="${height - margin.bottom + 18}" text-anchor="middle">${fmtTick(t, xMeta)}</text>`;
   }
 
-  const inner = card.querySelector(".lb-chart-card-inner");
-  const container = inner || card;
-  const hits = container.querySelectorAll(".lb-hit");
-  const tooltip = makeTooltip(container);
+  svg += `<text class="lb-axis-label" x="${margin.left + plotW / 2}" y="${height - 6}" text-anchor="middle">${xMeta.label}${xMeta.unit ? ` (${xMeta.unit})` : ""}</text>`;
+  svg += `<text class="lb-axis-label" transform="translate(14 ${margin.top + plotH / 2}) rotate(-90)" text-anchor="middle">${yMeta.label}${yMeta.unit ? ` (${yMeta.unit})` : ""}</text>`;
+
+  points.forEach((p, i) => {
+    const cx = xScale(p.x);
+    const cy = yScale(p.y);
+    const color = CHART_COLORS[i % CHART_COLORS.length];
+    svg += `<circle class="lb-dot" cx="${cx}" cy="${cy}" r="8" fill="${color}" />`;
+    svg += `<text class="lb-dot-label" x="${cx + 14}" y="${cy + 4}" fill="${color}">${escapeHtml(p.row.model)}</text>`;
+    svg += `<circle class="lb-hit" cx="${cx}" cy="${cy}" r="15" tabindex="0" role="button" aria-label="${p.row.model}: ${xMeta.label} ${fmtVal(p.x, xMeta)}, ${yMeta.label} ${fmtVal(p.y, yMeta)}" data-model="${p.row.model}" data-x="${fmtVal(p.x, xMeta)}" data-y="${fmtVal(p.y, yMeta)}" data-xlabel="${xMeta.label}" data-ylabel="${yMeta.label}" />`;
+  });
+
+  svg += `</svg>`;
+  inner.innerHTML = svg;
+
+  const tooltip = makeTooltip(card);
+  const hits = inner.querySelectorAll(".lb-hit");
   for (const hit of hits) {
-    const model = hit.dataset.model;
-    const label = hit.dataset.priceLabel;
-    const score = hit.dataset.score;
-    const statLabel = hit.dataset.statLabel;
-    const row = visibleRows.find((r) => r.model === model);
-    const html = `<strong>${model}</strong><span>${row ? row.params : ""}</span><span>${score} · ${statLabel}</span><span>${label}</span>`;
-    hit.addEventListener("mouseenter", (event) => showTooltip(tooltip, event.clientX - container.getBoundingClientRect().left, event.clientY - container.getBoundingClientRect().top, html));
+    const html = `<strong>${hit.dataset.model}</strong><span>${hit.dataset.xlabel}: ${hit.dataset.x}</span><span>${hit.dataset.ylabel}: ${hit.dataset.y}</span>`;
+    hit.addEventListener("mouseenter", (event) => showTooltip(tooltip, event.clientX - card.getBoundingClientRect().left, event.clientY - card.getBoundingClientRect().top, html));
     hit.addEventListener("mouseleave", () => hideTooltip(tooltip));
-    hit.addEventListener("focus", (event) => showTooltip(tooltip, event.clientX - container.getBoundingClientRect().left, event.clientY - container.getBoundingClientRect().top, html));
+    hit.addEventListener("focus", (event) => showTooltip(tooltip, event.clientX - card.getBoundingClientRect().left, event.clientY - card.getBoundingClientRect().top, html));
     hit.addEventListener("blur", () => hideTooltip(tooltip));
     hit.addEventListener("click", (event) => {
       event.preventDefault();
@@ -465,27 +511,50 @@ function renderPerfDollarChart() {
         hideTooltip(tooltip);
         pinnedChartTooltip = null;
       } else {
-        showTooltip(tooltip, event.clientX - container.getBoundingClientRect().left, event.clientY - container.getBoundingClientRect().top, html);
-        pinnedChartTooltip = { tooltip, model };
+        showTooltip(tooltip, event.clientX - card.getBoundingClientRect().left, event.clientY - card.getBoundingClientRect().top, html);
+        pinnedChartTooltip = { tooltip, model: hit.dataset.model };
       }
     });
   }
+}
 
-  container.innerHTML += svg;
+function fmtTick(v, meta) {
+  const isPct = meta.unit === "%";
+  if (isPct) return `${Math.round(v)}%`;
+  if (v >= 1000) return `${Math.round(v / 100) / 10}k`;
+  if (Number.isInteger(v)) return String(v);
+  return v.toFixed(1);
+}
+
+function fmtVal(v, meta) {
+  if (meta.unit === "%") return `${Math.round(v * 10) / 10}%`;
+  if (meta.unit === "s") return `${Math.round(v)} s`;
+  if (v >= 1) return String(Math.round(v * 100) / 100);
+  return String(Math.round(v * 1000) / 1000);
 }
 
 function renderLeaderboard() {
   renderModeFilter();
   renderSearchBar();
+  renderMetricsToggle();
   renderTable("mcq-table", rankedRows(getFilteredRows()));
   const chartCard = document.getElementById("perf-dollar-chart");
   if (chartCard) {
     chartCard.innerHTML = `
-      <div class="lb-metric-toggle" role="tablist" aria-label="Score dimension"></div>
+      <div class="lb-chart-controls">
+        <div class="select-wrap">
+          <span class="filter-label">X axis</span>
+          <select id="chart-x" class="site-select" aria-label="X axis metric"></select>
+        </div>
+        <div class="select-wrap">
+          <span class="filter-label">Y axis</span>
+          <select id="chart-y" class="site-select" aria-label="Y axis metric"></select>
+        </div>
+      </div>
       <div class="lb-chart-card-inner"></div>
     `;
-    renderMetricToggle(chartCard);
-    renderPerfDollarChart();
+    renderChartControls();
+    renderScatterChart();
   }
 }
 
