@@ -253,9 +253,10 @@ function renderPublicExampleList(containerId, examples) {
 // --- Public-tasks model-run selector (homepage "Public Tasks" section) ---
 //
 // Each public task has runs recorded under several models (e.g. qwen-28 text,
-// gemini-26, qwen-26 vision). Build a dropdown from the trajectory index, and
-// when one is picked, re-render the list with that run's pass/fail + steps per
-// task (runBadge). The badge uses the trajectory index entry for the task.
+// gemini-26, qwen-26 vision). This is now a *typed box with autosuggestion*:
+// the datalist is built from the models actually recorded in the trajectory
+// index (dates stripped), and typing/choosing one re-renders the list with
+// that run's pass/fail + steps per task (runBadge). Clearing the box → all.
 let PUBLIC_RUN_FILTER = "";
 
 function publicRunByKey(example, key) {
@@ -263,6 +264,13 @@ function publicRunByKey(example, key) {
   const entry = TRAJECTORY_INDEX.public[example.task_id];
   if (!entry || !Array.isArray(entry.runs)) return null;
   return entry.runs.find((r) => r.run_key === key) || null;
+}
+
+// Strip the "· 28 Aug" date segment out of a run label so the suggestions show
+// clean model names ("qwen3.8-27b (text)", "gemini-3.1-flash-lite", ...).
+function cleanRunLabel(label) {
+  if (!label) return label;
+  return String(label).replace(/\s*·\s*\d{1,2}\s+\w+\s*/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function renderPublicExampleListFiltered(containerId, examples) {
@@ -276,27 +284,37 @@ function renderPublicExampleListFiltered(containerId, examples) {
 }
 
 function initPublicRunSelect() {
-  const sel = document.getElementById("public-run-select");
-  if (!sel) return;
+  const input = document.getElementById("public-run-select");
+  const dl = document.getElementById("public-run-datalist");
+  if (!input || !dl) return;
   if (!TRAJECTORY_INDEX || !TRAJECTORY_INDEX.public) return;
 
-  // Collect the distinct runs across public tasks, in a stable order.
+  // Collect the distinct runs across public tasks, in a stable order. Build the
+  // autosuggest datalist from the models actually recorded (dates removed).
   const seen = new Map();
   for (const entry of Object.values(TRAJECTORY_INDEX.public)) {
     for (const run of entry.runs || []) {
       if (run && run.run_key && !seen.has(run.run_key)) {
-        seen.set(run.run_key, run.run_label || run.run_key);
+        seen.set(run.run_key, cleanRunLabel(run.run_label) || run.run_key);
       }
     }
   }
-  const opts = ['<option value="">All models</option>'];
-  for (const [key, label] of seen) {
-    opts.push(`<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`);
-  }
-  sel.innerHTML = opts.join("");
+  dl.innerHTML = [...seen.values()]
+    .map((label) => `<option value="${escapeHtml(label)}"></option>`)
+    .join("");
 
-  sel.addEventListener("change", () => {
-    PUBLIC_RUN_FILTER = sel.value;
+  // Match typed text against the cleaned model labels (case-insensitive).
+  const matchRun = (text) => {
+    const t = text.trim().toLowerCase();
+    if (!t) return "";
+    for (const [key, label] of seen) {
+      if (label.toLowerCase() === t || label.toLowerCase().includes(t)) return key;
+    }
+    return "";
+  };
+
+  input.addEventListener("input", () => {
+    PUBLIC_RUN_FILTER = matchRun(input.value);
     renderPublicExampleListFiltered("featured-examples-list", window.__publicExamples || []);
   });
 }

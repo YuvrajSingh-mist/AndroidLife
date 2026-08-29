@@ -166,7 +166,10 @@ function renderTaskState(task, run) {
   if (!root) return;
 
   const diff = capitalize(task.bucket || task.difficulty || "—");
-  const apps = (task.apps && task.apps.length ? task.apps : [task.app]).map((a) => escapeHtml(a)).join(" · ");
+  // App(s): prefer the explicit app list, else the single app, else the
+  // category name (public-sample tasks carry category_name but no app field).
+  const rawApps = (task.apps && task.apps.length ? task.apps : task.app ? [task.app] : []);
+  const apps = (rawApps.length ? rawApps : [task.category_name || task.app_label]).filter(Boolean).map((a) => escapeHtml(a)).join(" · ") || "—";
   const type = task.is_ask_user ? "ASK USER" : task.bucket === "hard" ? "Deterministic" : "GUI-only";
 
   let runModel = "No run recorded";

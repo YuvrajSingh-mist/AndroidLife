@@ -146,6 +146,14 @@
         counted as success). See <em>How the metrics are computed</em> below for each metric's definition.
         More rows will appear as more models are benchmarked.
         <br>
+        <strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> &mdash; it draws
+        a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is
+        <strong>no OCR element-grouping, no element IDs, and no marked touch boxes</strong>. The model
+        inspects the raw screenshot and eyeballs where to tap from pixels + grid, with no per-element
+        anchors to lean on (that marked-boxes approach is UI-TARS / mobile-vlm / Mobile-Agent-v2, not
+        mobilerun). So a vision run has to reconstruct every target from pixels alone &mdash; which is why
+        vision consistently lands below the text runs below.
+        <br>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
           <span id="stats-tooltip" class="info-tooltip" role="tooltip">
@@ -283,18 +291,21 @@
         <p>
           The full public benchmark sample (<code>DailyBench_public_v2.json</code>, exported from
           <code>public.md</code>) — every task we've run, each with its recorded agent trajectory.
-          Each task was run by three models (see the <em>Model run</em> selector below); pick a run
-          to see that model's pass/fail and steps per task. Click any task to open its detail page
-          with the step-by-step model trace and screen replay. The private 530-task corpus lives on
-          the <a href="./pages/tasks.html">Tasks</a> page.
+          Each task card carries a <strong>"N runs"</strong> tag = the number of model runs recorded
+          for that task (here 3: qwen text &middot; gemini &middot; qwen vision). Type a model in the
+          box below to filter the cards to that run's pass/fail and steps per task (or leave it empty
+          for all). Click any task to open its detail page with the step-by-step model trace and
+          screen replay. The private 530-task corpus lives on the
+          <a href="./pages/tasks.html">Tasks</a> page.
         </p>
       </div>
       <div class="public-runs-bar">
         <span class="filter-label">Model run</span>
-        <div class="select-wrap">
-          <select id="public-run-select" class="site-select" aria-label="Filter public tasks by model run">
-            <option value="">All models</option>
-          </select>
+        <div class="select-wrap public-run-combo">
+          <input id="public-run-select" class="site-select public-run-input" type="text"
+            list="public-run-datalist" placeholder="All models — type to filter"
+            autocomplete="off" spellcheck="false" aria-label="Filter public tasks by model run">
+          <datalist id="public-run-datalist"></datalist>
         </div>
       </div>
       <div class="public-example-list" id="featured-examples-list"></div>

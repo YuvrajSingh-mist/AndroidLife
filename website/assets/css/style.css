@@ -1315,6 +1315,20 @@ table.lb-table td .lb-elapsed {
 }
 .select-wrap select option,
 .select-wrap .site-select option { background: var(--bg); color: var(--text); }
+
+/* Typed model filter (Public Tasks): text input with autosuggest. Hide the
+   select arrow (it's an input, not a dropdown) and use a text caret. */
+.public-run-combo::after {
+  display: none;
+}
+.select-wrap .public-run-input {
+  min-width: 15rem;
+  cursor: text;
+}
+.public-run-input::placeholder {
+  color: var(--text-ter);
+  font-style: italic;
+}
 .task-count {
   font-size: 0.9rem;
   opacity: 0.8;
@@ -1530,20 +1544,22 @@ table.lb-table td .lb-elapsed {
 }
 
 .trajectory-gif-wrap {
-  flex: 1 1 380px;
+  flex: 0 1 auto;
   min-width: 0;
   margin: 0;
 }
 
 .trajectory-gif {
   display: block;
-  width: 100%;
-  max-height: 640px;
+  height: min(72vh, 620px);
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
   background: #fff;
   border: 1px solid var(--border-lt);
   border-radius: 8px;
   cursor: zoom-in;
+  margin-inline: auto;
 }
 
 .trajectory-gif-wrap figcaption {
@@ -1630,8 +1646,8 @@ table.lb-table td .lb-elapsed {
   background: var(--bg-subtle);
   padding: 1.1rem 1.2rem;
   display: grid;
-  grid-template-columns: 190px 1fr;
-  gap: 1.2rem;
+  grid-template-columns: 240px 1fr;
+  gap: 1.4rem;
   align-items: start;
 }
 
@@ -1640,11 +1656,14 @@ table.lb-table td .lb-elapsed {
   margin: 0;
   position: sticky;
   top: 70px;
+  width: min(240px, 100%);
+  margin-inline: auto;
 }
 
 .step-screenshot {
   display: block;
   width: 100%;
+  height: auto;
   border-radius: 14px;
   border: 1px solid var(--border);
   background: #fff;
