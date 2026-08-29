@@ -27,16 +27,16 @@
 //   2026-08-26 qwen3.8-27b VISION    → SR 38.3%, steps 39.83, HC 6/7
 
 const COL_DEFS = {
-  success: "Success Rate — fully-successful tasks ÷ total (60), from the run's official metrics table (verified, false-passes excluded).",
-  askUser: "Success Rate on the 7 ASK USER tasks, where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
-  guiOnly: "Success Rate on the 53 non-ASK-USER tasks, where the end state is verified directly on the device (deterministic).",
-  steps: "Average Completion Steps — mean agent steps per task across the run.",
-  queries: "Average User Queries — mean number of times the agent asked the simulated user per task.",
+  success: "fully-successful tasks ÷ total (60), from the run's official metrics table (verified, false-passes excluded).",
+  askUser: "success rate on the 7 ASK USER tasks, where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
+  guiOnly: "success rate on the 53 non-ASK-USER tasks, where the end state is verified directly on the device (deterministic).",
+  steps: "mean agent steps per task across the run.",
+  queries: "mean number of times the agent asked the simulated user per task.",
   uiq: "User Interaction Quality (UIQ, fact-match) — share of ask_user calls whose answer matched the ground-truth fact.",
   kbiq: "KB Interaction Quality (KBIQ, manual) — correct knowledge-base queries ÷ total KB queries asked.",
-  elapsed: "Elapsed — wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
-  hc: "Hallucination-control honesty — share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
-  buckets: "Success rate by difficulty bucket: easy / medium / hard.",
+  elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
+  hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
+  buckets: "success rate by difficulty bucket: easy / medium / hard.",
 };
 
 const LEADERBOARD_ROWS = [
@@ -257,27 +257,19 @@ function renderMetricsToggle() {
   }
 }
 
-// Header for a sortable column. `tip` (optional) renders a hover tooltip with
-// the metric's definition, styled to match the site (same as info-tooltip).
-// The tooltip trigger is a little circular "i" button.
-function sortableHeader(key, label, tip = "", suffix = "") {
+// Header for a sortable column. Metric definitions live in the "How the
+// metrics are computed" tooltip (rendered by renderMetricsInfo), not on the
+// column headers themselves.
+function sortableHeader(key, label, suffix = "") {
   const isActive = currentTableSort.key === key;
   const direction = isActive ? currentTableSort.direction : "none";
   const arrow = isActive ? (direction === "asc" ? "&#8593;" : "&#8595;") : "&#8597;";
   const ariaSort = direction === "asc" ? "ascending" : direction === "desc" ? "descending" : "none";
-  const tooltip = tip
-    ? `
-      <span class="lb-col-info" tabindex="0" role="button" aria-label="Definition of ${label}">
-        <span class="lb-col-info-ico" aria-hidden="true">i</span>
-        <span class="lb-col-tip" role="tooltip">${tip}</span>
-      </span>`
-    : "";
   return `
     <th aria-sort="${ariaSort}">
       <button type="button" class="lb-sort-btn${isActive ? " active" : ""}" data-sort-key="${key}" aria-label="Sort by ${TABLE_SORTS[key].label}">
         <span>${label}${suffix}</span><span class="lb-sort-arrow" aria-hidden="true">${arrow}</span>
       </button>
-      ${tooltip}
     </th>
   `;
 }
@@ -295,7 +287,7 @@ function renderTable(containerId, rows) {
   const cols = visibleColumns();
 
   const headerCells = cols
-    .map((c) => (c.always ? c.header(c.label) : sortableHeader(c.key, c.label, c.def || "")))
+    .map((c) => (c.always ? c.header(c.label) : sortableHeader(c.key, c.label)))
     .join("");
 
   const bodyRows = rows
@@ -327,6 +319,19 @@ function renderTable(containerId, rows) {
 
 function formatPct(value) {
   return value == null ? "—" : `${value.toFixed(1)}%`;
+}
+
+// Fills the "How the metrics are computed" tooltip (the info button under the
+// leaderboard) with one definition per metric column. Scrollable via CSS so it
+// never covers the whole page.
+function renderMetricsInfo() {
+  const list = document.getElementById("stats-tooltip-list");
+  if (!list) return;
+  const items = COLUMNS
+    .filter((c) => c.def)
+    .map((c) => `<li><strong>${escapeHtml(c.label)}</strong> — ${c.def}</li>`)
+    .join("");
+  list.innerHTML = items;
 }
 
 function escapeHtml(text) {
@@ -393,13 +398,19 @@ const CHART_METRICS = {
   queries: { label: "Avg queries", unit: "", value: (r) => r.queries },
   uiq: { label: "UIQ", unit: "", value: (r) => r.uiq },
   kbiq: { label: "KBIQ", unit: "", value: (r) => (r.kbiq === "N/A" ? null : parseFloat(r.kbiq)) },
-  elapsed: { label: "Elapsed (s)", unit: "s", value: (r) => parseFloat(r.elapsed.wall) },
+  elapsed: { label: "Elapsed", unit: "s", value: (r) => parseFloat(r.elapsed.wall) },
   hc: { label: "HC honesty", unit: "%", value: (r) => r.hc.score },
   buckets: { label: "Easy bucket", unit: "%", value: (r) => r.buckets.easy },
 };
 
 // Distinct bubble colours (one per model), so each model reads clearly.
 const CHART_COLORS = ["#2a6f8f", "#7f8f3a", "#c9a227", "#c9732a", "#c94a2a", "#9c3a3a", "#6b4a8f"];
+
+// Rough pixel width of a model-name label at the chart's font size, so labels
+// can be placed without overflowing the plot area.
+function labelWidth(text) {
+  return String(text).length * 6.6 + 16;
+}
 
 function niceTicks(min, max, count = 5) {
   const span = Math.max(max - min, 1e-9);
@@ -489,8 +500,25 @@ function renderScatterChart() {
     const cx = xScale(p.x);
     const cy = yScale(p.y);
     const color = CHART_COLORS[i % CHART_COLORS.length];
+    const name = escapeHtml(p.row.model);
+    const lw = labelWidth(p.row.model);
+
+    // Place the label to the right of the dot when there's room; otherwise to
+    // the left; and clamp so the label never leaves the plot area.
+    let labelX = cx + 14;
+    let anchor = "start";
+    if (cx + 14 + lw > width - margin.right) {
+      if (cx - 14 - lw >= margin.left) {
+        labelX = cx - 14;
+        anchor = "end";
+      } else {
+        labelX = Math.min(cx - 14, width - margin.right);
+        anchor = "end";
+      }
+    }
+
     svg += `<circle class="lb-dot" cx="${cx}" cy="${cy}" r="8" fill="${color}" />`;
-    svg += `<text class="lb-dot-label" x="${cx + 14}" y="${cy + 4}" fill="${color}">${escapeHtml(p.row.model)}</text>`;
+    svg += `<text class="lb-dot-label" x="${labelX}" y="${cy + 4}" text-anchor="${anchor}" fill="${color}">${name}</text>`;
     svg += `<circle class="lb-hit" cx="${cx}" cy="${cy}" r="15" tabindex="0" role="button" aria-label="${p.row.model}: ${xMeta.label} ${fmtVal(p.x, xMeta)}, ${yMeta.label} ${fmtVal(p.y, yMeta)}" data-model="${p.row.model}" data-x="${fmtVal(p.x, xMeta)}" data-y="${fmtVal(p.y, yMeta)}" data-xlabel="${xMeta.label}" data-ylabel="${yMeta.label}" />`;
   });
 
@@ -519,11 +547,11 @@ function renderScatterChart() {
 }
 
 function fmtTick(v, meta) {
-  const isPct = meta.unit === "%";
-  if (isPct) return `${Math.round(v)}%`;
+  if (meta.unit === "%") return `${Math.round(v)}%`;
   if (v >= 1000) return `${Math.round(v / 100) / 10}k`;
   if (Number.isInteger(v)) return String(v);
-  return v.toFixed(1);
+  if (Math.abs(v) >= 1) return v.toFixed(1).replace(/\.0$/, "");
+  return v.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
 }
 
 function fmtVal(v, meta) {
@@ -537,6 +565,7 @@ function renderLeaderboard() {
   renderModeFilter();
   renderSearchBar();
   renderMetricsToggle();
+  renderMetricsInfo();
   renderTable("mcq-table", rankedRows(getFilteredRows()));
   const chartCard = document.getElementById("perf-dollar-chart");
   if (chartCard) {

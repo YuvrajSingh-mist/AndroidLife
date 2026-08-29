@@ -141,20 +141,16 @@
       <div class="lb-disclaimer">
         <strong>Early results.</strong> Each row is a 60-task public-dataset run (20 tasks &times; 3 days)
         on a OnePlus CPH2423 (Android 15, non-rooted). Success rate is the verified fully-successful share
-        from the run's official metrics table, excluding false-passes. Hover any column header for the
-        metric definition. More rows will appear as more models are benchmarked.
+        from the run's official metrics table, excluding false-passes. See
+        <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as
+        more models are benchmarked.
         <br>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
           <span id="stats-tooltip" class="info-tooltip" role="tooltip">
-            <ul>
-              <li>Success = fully-successful tasks &divide; total tasks, verified against on-device state.</li>
-              <li>ASK USER = success rate on the 7 interaction tasks where the agent must ask the simulated user a load-bearing fact.</li>
-              <li>GUI-only = success rate on the 53 deterministic tasks, verified on device.</li>
-              <li>UIQ = User Interaction Quality (fact-match); KBIQ = KB Interaction Quality (manual).</li>
-              <li>Elapsed = wall-clock vs agent running time (cooldown between tasks subtracted).</li>
-              <li>Battery/thermal/cost are captured per second per task and aggregated in <code>run_metrics.json</code>.</li>
-            </ul>
+            <ul id="stats-tooltip-list"></ul>
+            <p class="info-tooltip-note">Battery/thermal/cost are captured per second per task and
+            aggregated in <code>run_metrics.json</code>.</p>
           </span>
         </button>
       </div>
