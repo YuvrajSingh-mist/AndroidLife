@@ -186,24 +186,6 @@
           "favourite": false
         }
       ],
-      "preferences": {
-        "recipient": "Yuvraj Airtel",
-        "favourite_restaurants": [
-          "Downtown Delight",
-          "Jugaad Jn",
-          "Biryani Blues"
-        ],
-        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
-        "spice_preference": "medium",
-        "typical_budget": "₹300-₹600 per order",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram). I order on BOTH Swiggy and Zomato - if the agent asks which platform's order, answer from the right app's list."
-      },
-      "contacts": {
-        "Maa": "family",
-        "Dad": "family",
-        "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
-        "Yuvraj Singh Jio": "family / alternate number"
-      },
       "zomato": {
         "account": {
           "name": "Yuvraj",
@@ -445,11 +427,29 @@
             "favourite": false
           }
         ]
+      },
+      "preferences": {
+        "recipient": "Yuvraj Airtel",
+        "favourite_restaurants": [
+          "Downtown Delight",
+          "Jugaad Jn",
+          "Biryani Blues"
+        ],
+        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
+        "spice_preference": "medium",
+        "typical_budget": "₹300-₹600 per order",
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram). I order on BOTH Swiggy and Zomato - if the agent asks which platform's order, answer from the right app's list."
+      },
+      "contacts": {
+        "Maa": "family",
+        "Dad": "family",
+        "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
+        "Yuvraj Singh Jio": "family / alternate number"
       }
     }
   },
   "hard__telegram-calendar__016": {
-    "correct_target": "telegram::forever-21-meetup-sat-7pm",
+    "correct_target": "telegram::forever-21-meetup-tue-8pm",
     "profile": {
       "social_media_app": "Telegram",
       "chat_groups": [
@@ -465,9 +465,9 @@
         "event_name": "Meetup",
         "reminder_chat": "Forever 21",
         "get_together_plan": {
-          "date": "Saturday the 22nd - we first floated the 20th but moved it because someone was busy",
-          "time": "7 PM",
-          "venue": "The Terrace, Patia",
+          "date": "Tuesday the 22nd (next month) - we first floated the 15th but moved it because someone was busy",
+          "time": "8 PM",
+          "venue": "Hill View Cafe And Restro (real cafe near Patia, Bhubaneswar - findable in Google Maps)",
           "reminder": "a day before at 8 PM"
         }
       }
@@ -491,7 +491,58 @@
           "name": "Bedtime",
           "path": "/sdcard/Obsidian/Papers vault oneplus /Bedtime.md",
           "app": "Obsidian",
-          "purpose": "my sleep-routine record (what I listen to wind down + my sleep timings) - read it to set up the timer"
+          "purpose": "my sleep-routine record (what I listen to wind down + my sleep timings)",
+          "records": [
+            {
+              "date": "2026-08-15 (Sat)",
+              "bedtime": "10:30 PM",
+              "asleep_by": "~11:15 PM",
+              "wind_down": "Chillhop Lofi Beats - Sleep Mix (YouTube Music)",
+              "note": "easy night, sleep timer stopped it right on time"
+            },
+            {
+              "date": "2026-08-16 (Sun)",
+              "bedtime": "10:45 PM",
+              "asleep_by": "~11:30 PM",
+              "wind_down": "Kind of Blue - Miles Davis (Amazon Music)",
+              "note": "tried jazz, took a little longer to drift off"
+            },
+            {
+              "date": "2026-08-17 (Mon)",
+              "bedtime": "10:20 PM",
+              "asleep_by": "~11:05 PM",
+              "wind_down": "Hotel California - Eagles (YouTube Music)",
+              "note": "rock was too upbeat, had to skip to something calmer"
+            },
+            {
+              "date": "2026-08-18 (Tue)",
+              "bedtime": "10:30 PM",
+              "asleep_by": "~11:10 PM",
+              "wind_down": "Chillhop Lofi Beats - Sleep Mix (YouTube Music)",
+              "note": "back to lo-fi, felt properly sleepy"
+            },
+            {
+              "date": "2026-08-19 (Wed)",
+              "bedtime": "10:25 PM",
+              "asleep_by": "~11:00 PM",
+              "wind_down": "Lo-Fi Sleep Beats (Amazon Music)",
+              "note": "lo-fi again, worked just as well on Amazon"
+            },
+            {
+              "date": "2026-08-20 (Thu)",
+              "bedtime": "10:30 PM",
+              "asleep_by": "~11:05 PM",
+              "wind_down": "Chillhop Lofi Beats - Sleep Mix (YouTube Music)",
+              "note": "usual routine, timer stopped at bedtime"
+            },
+            {
+              "date": "2026-08-21 (Fri)",
+              "bedtime": "10:30 PM",
+              "asleep_by": "~11:00 PM",
+              "wind_down": "Chillhop Lofi Beats - Sleep Mix (YouTube Music)",
+              "note": "consistent - lo-fi beats help me sleep most nights"
+            }
+          ]
         }
       }
     }

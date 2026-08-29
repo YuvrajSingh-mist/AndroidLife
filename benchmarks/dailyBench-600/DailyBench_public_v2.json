@@ -157,7 +157,32 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Telegram+Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "intended_ask": {
+        "design": "The chat thread never locked anything down (it 'floated options and left the plan open'). The prompt EXPLICITLY instructs the agent to confirm EACH detail one at a time — exact day, time, place, and reminder — before creating the calendar event. All four are deliberately omitted.",
+        "questions": [
+          {
+            "question": "What day is the get-together?",
+            "expected_answer": "Tuesday the 22nd (next month) — we first floated the 15th but moved it because someone was busy.",
+            "resolves": "date; correct_target = telegram::forever-21-meetup-tue-8pm"
+          },
+          {
+            "question": "What time?",
+            "expected_answer": "8 PM.",
+            "resolves": "time"
+          },
+          {
+            "question": "Where is it?",
+            "expected_answer": "Hill View Cafe And Restro (near Patia, Bhubaneswar — findable in Google Maps).",
+            "resolves": "venue"
+          },
+          {
+            "question": "Do you want a reminder? When?",
+            "expected_answer": "Yes — a day before at 8 PM.",
+            "resolves": "reminder; profile.preferences.get_together_plan.reminder"
+          }
+        ]
+      }
     },
     {
       "task_id": "easy__shopping-delivery-browser__001",
@@ -470,7 +495,7 @@
       "ahi": "ASK USER",
       "interaction": "single",
       "note": "deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message",
-      "ask_user_fact": "Message Yuvraj Airtel. The spreadsheet to chase is 'shared budget.xlsx'.",
+      "ask_user_fact": "Message Yuvraj Airtel. The spreadsheet to chase is 'family_numbers.xlsx'.",
       "is_ask_user": true,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 1,
@@ -535,13 +560,35 @@
       "is_ask_user": true,
       "task_number_within_app": 5,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
-      "prompt_template": "Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Ugh, I'm craving the food I ate on [date] — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+      "prompt_template": "Ugh, I'm craving the food I ate on {{ date }} — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+      "placeholders": [
+        "date"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Swiggy+Zomato+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "intended_ask": {
+        "design": "Deliberately names NO date ('the food I ate on [date]') and NO recipient ('message him on Telegram'). The agent MUST ask which order to reorder and who to message the total to before acting — guessing either is a fail.",
+        "questions": [
+          {
+            "question": "Which order would you like me to reorder? You said 'the food I ate on [date]' — can you tell me which one / the date?",
+            "expected_answer": "The Downtown Delight order from Aug 14 — Murgh Mughlai + Kushka Rice, ₹523 total (my recent favourite).",
+            "resolves": "correct_target = swiggy::reorder-downtown-delight-murgh-mughlai — the agent must pick THIS order out of the 8-order history (Swiggy + Zomato), not the cheapest or the most recent-by-date."
+          },
+          {
+            "question": "Who is 'him' — who should I message the order total to on Telegram for you to confirm before paying?",
+            "expected_answer": "Yuvraj Airtel — the friend I share order confirmations with (gets the order totals).",
+            "resolves": "resolves the unnamed 'him'; profile.preferences.recipient = Yuvraj Airtel, profile.contacts['Yuvraj Airtel'] = 'the friend I share order confirmations with'."
+          },
+          {
+            "question": "(only if the order isn't found on the first app) Was that order from Swiggy or Zomato?",
+            "expected_answer": "Swiggy — I order on BOTH Swiggy and Zomato.",
+            "resolves": "disambiguates which app's order history to search (profile.preferences.recipient_note)."
+          }
+        ]
+      }
     },
     {
       "task_id": "hard__contacts-gmail__026",
@@ -665,7 +712,27 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Gmail+Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "intended_ask": {
+        "design": "The prompt says 'my next trip' and 'my friend's email id' without naming the trip, the Gmail account that holds the confirmation, or the friend's address. The agent MUST ask which trip + which account + the friend's email, then extract the flight details, forward, and add a 3-hours-before-departure reminder.",
+        "questions": [
+          {
+            "question": "Which trip is the flight confirmation for?",
+            "expected_answer": "The next trip — BBI→DEL on Oct 16, 2026 (Scapia booking, PNR X84NVI, departs 12:05, arrives 14:30, Terminal 1).",
+            "resolves": "which flight email to find; correct_target = gmail-calendar::bbi-del-reminder"
+          },
+          {
+            "question": "Which Gmail account holds that confirmation email?",
+            "expected_answer": "rajceo2031@gmail.com — my ticket email account.",
+            "resolves": "which account to search (profile.preferences.ticket_email_account); several Gmail accounts exist on the device."
+          },
+          {
+            "question": "What is your friend's email address to forward it to?",
+            "expected_answer": "yuvraj.mist@gmail.com.",
+            "resolves": "forward recipient (profile.preferences.friend_email)."
+          }
+        ]
+      }
     },
     {
       "task_id": "medium__chrome__003",
@@ -957,8 +1024,8 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'?",
-      "prompt_template": "I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'?",
+      "prompt_text": "I just parked and I'm worried I'll forget where. There's no 'Save parking' option in this Google Maps build, so could you save my current location as 'parked here' as a note in the Notes app, then add that note to my home screen so I can find my way back?",
+      "prompt_template": "I just parked and I'm worried I'll forget where. There's no 'Save parking' option in this Google Maps build, so could you save my current location as 'parked here' as a note in the Notes app, then add that note to my home screen so I can find my way back?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -986,13 +1053,33 @@
       "is_ask_user": true,
       "task_number_within_app": 77,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
-      "prompt_template": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
+      "prompt_text": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you look up to and I think I found something that works for me. I want you set it up so that once you start it yourself, it then stops by itself around my asleep time. Can you set that up for me in the music app I used the most lately to time my sleep and listen to music?",
+      "prompt_template": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you look up to and I think I found something that works for me. I want you set it up so that once you start it yourself, it then stops by itself around my asleep time. Can you set that up for me in the music app I used the most lately to time my sleep and listen to music?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Music+Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/dailyBench-600/public.md",
+      "intended_ask": {
+        "design": "The prompt says 'the music app I used the most lately' and 'stops by itself around my asleep time' without naming the app or the time. The agent should read the Bedtime.md Obsidian note (the sleep-routine record) to identify the most-used app + sleep time, and ASK the user to confirm the app + time before setting the sleep timer.",
+        "questions": [
+          {
+            "question": "Which music app should I set the sleep timer in? (your Bedtime note shows YouTube Music most often)",
+            "expected_answer": "YouTube Music — my most-used sleep app (lo-fi beats on YouTube Music most nights; Amazon Music occasionally).",
+            "resolves": "app; correct_target = youtube-music::sleep-timer-1030pm — must be YouTube Music, NOT Amazon Music."
+          },
+          {
+            "question": "What time should the music stop by — when do you go to sleep?",
+            "expected_answer": "10:30 PM (bedtime ~10:30, asleep ~11:15).",
+            "resolves": "timer stop time = 10:30 PM"
+          },
+          {
+            "question": "What should it play?",
+            "expected_answer": "Chillhop Lofi Beats - Sleep Mix.",
+            "resolves": "what to play (from Bedtime.md wind_down records)"
+          }
+        ]
+      }
     },
     {
       "task_id": "easy__swiggy__001",
@@ -1014,8 +1101,8 @@
       "is_ask_user": false,
       "task_number_within_app": 1,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please?",
-      "prompt_template": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please?",
+      "prompt_text": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings over the last three months on foods please?",
+      "prompt_template": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings over the last three months on foods please?",
       "placeholders": [],
       "placeholder_count": 0,
       "is_cross_app": false,
@@ -1071,10 +1158,15 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one?",
-      "prompt_template": "I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Can you schedule a Google Meet for me? Set the title to [gmeet title], schedule it for [gmeet datetime], and add [invitee email 1] and [invitee email 2] to the invite so they get the meeting link.",
+      "prompt_template": "Can you schedule a Google Meet for me? Set the title to {{ gmeet title }}, schedule it for {{ gmeet datetime }}, and add {{ invitee email 1 }} and {{ invitee email 2 }} to the invite so they get the meeting link.",
+      "placeholders": [
+        "gmeet title",
+        "gmeet datetime",
+        "invitee email 1",
+        "invitee email 2"
+      ],
+      "placeholder_count": 4,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
@@ -1645,10 +1737,12 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Words aren't enough for this reply. Can you send a GIF in a conversation in Messages?",
-      "prompt_template": "Words aren't enough for this reply. Can you send a GIF in a conversation in Messages?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Words aren't enough for this reply. Can you send an appropriate string of emojis to [contact] in Messages? Don't be too snarky or cheeky!",
+      "prompt_template": "Words aren't enough for this reply. Can you send an appropriate string of emojis to {{ contact }} in Messages? Don't be too snarky or cheeky!",
+      "placeholders": [
+        "contact"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "benchmarks/dailyBench-600/public.md"
