@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DailyBench500  -  Tasks</title>
-  <meta name="description" content="Choose the DailyBench500 task set to browse: the public sample (60 tasks with recorded agent trajectories) or the full 530-task corpus.">
+  <title>DailyBench500  -  Public Tasks</title>
+  <meta name="description" content="Public sample tasks for DailyBench500: the 60 tasks benchmarked on-device, each with a recorded agent trajectory, per-model pass/fail, and screen replay.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
@@ -31,39 +31,34 @@
 <main>
   <div class="hero">
     <div class="container">
-      <h1>Tasks</h1>
-      <p class="hero-subtitle">Pick a Task Set to Browse</p>
+      <h1>Public Sample</h1>
+      <p class="hero-subtitle">60 Tasks &middot; Every One Benchmarked On-Device</p>
       <p class="hero-desc">
-        DailyBench500 ships two browsable task sets: the <strong>public sample</strong> (the 60 tasks
-        actually benchmarked on-device, each with a recorded agent trajectory and screen replay) and the
-        <strong>full corpus</strong> (all 530 tasks across the 28-day schedule). Choose one to get started.
+        The full public benchmark sample (<code>DailyBench_public_v2.json</code>, exported from
+        <code>public.md</code>) — every task has a recorded agent trajectory. Each card carries a
+        <strong>"N runs"</strong> tag = the number of model runs recorded for that task (here 3:
+        qwen text &middot; gemini &middot; qwen vision). Type a model to filter to that run's
+        pass/fail and steps; click any task for the step-by-step trace and screen replay.
       </p>
+      <div class="hero-btns">
+        <a href="./tasks.html" class="btn btn-outline">&larr; Pick task set</a>
+      </div>
     </div>
   </div>
 
-  <section id="task-set-picker" aria-labelledby="heading-task-set-picker">
+  <section id="examples" aria-labelledby="heading-examples">
     <div class="container">
-      <h2 class="section-title" id="heading-task-set-picker">Which task set?</h2>
-      <div class="task-set-picker">
-        <a class="task-set-card" href="./tasks-public.html">
-          <span class="task-set-eyebrow">Runs recorded &middot; trajectories</span>
-          <span class="task-set-title">Public</span>
-          <span class="task-set-desc">
-            60 tasks from the public sample (20 &times; 3 days) &mdash; every task has been run on the phone,
-            with step-by-step agent traces, screen replays, and a per-model pass/fail filter.
-          </span>
-          <span class="task-set-cta">Browse public sample <span aria-hidden="true">&rarr;</span></span>
-        </a>
-        <a class="task-set-card" href="./tasks-full.html">
-          <span class="task-set-eyebrow">All 530 tasks &middot; 28 days</span>
-          <span class="task-set-title">Full</span>
-          <span class="task-set-desc">
-            The complete 530-task corpus across 31 apps and a fixed 28-day schedule &mdash; filter by difficulty,
-            type (ASK USER / deterministic / GUI-only), day, and app.
-          </span>
-          <span class="task-set-cta">Browse all 530 tasks <span aria-hidden="true">&rarr;</span></span>
-        </a>
+      <h2 class="section-title" id="heading-examples">Public Tasks</h2>
+      <div class="public-runs-bar">
+        <span class="filter-label">Model run</span>
+        <div class="select-wrap public-run-combo">
+          <input id="public-run-select" class="site-select public-run-input" type="text"
+            list="public-run-datalist" placeholder="All models — type to filter"
+            autocomplete="off" spellcheck="false" aria-label="Filter public tasks by model run">
+          <datalist id="public-run-datalist"></datalist>
+        </div>
       </div>
+      <div class="public-example-list" id="featured-examples-list"></div>
     </div>
   </section>
 </main>

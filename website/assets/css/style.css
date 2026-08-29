@@ -1783,6 +1783,73 @@ table.lb-table td .lb-elapsed {
 
 .step-controls .btn[disabled] { opacity: 0.45; cursor: default; }
 
+/* Task-set picker (Tasks landing) — two square-ish choice cards */
+.task-set-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin-top: 1.25rem;
+}
+
+.task-set-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  padding: 1.6rem 1.5rem 1.4rem;
+  text-decoration: none;
+  color: var(--text);
+  aspect-ratio: 1 / 1;
+  max-height: 420px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 0.7rem;
+}
+
+.task-set-card:hover,
+.task-set-card:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(44, 40, 34, 0.1);
+  outline: none;
+}
+
+.task-set-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-ter);
+}
+
+.task-set-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.task-set-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-sec);
+  flex: 1;
+}
+
+.task-set-cta {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--link);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .task-set-picker { grid-template-columns: 1fr; }
+  .task-set-card {
+    aspect-ratio: auto;
+    max-height: none;
+  }
+}
 @media (max-width: 900px) {
   .task-state-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

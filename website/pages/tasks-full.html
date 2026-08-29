@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyBench500  -  Full Tasks</title>
+  <meta name="description" content="All 530 tasks in the DailyBench500 28-day benchmark, filterable by difficulty, type, day, and app.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-site-data="../assets/data/site_data.json" data-trajectory-index="../assets/data/trajectories/index.json">
+
+<nav aria-label="Main navigation">
+  <span class="nav-title">DailyBench500</span>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="../index.html">Overview</a>
+    <a href="./how-it-was-formed.html">How it was formed</a>
+    <a href="./tasks.html" class="nav-active">Tasks</a>
+    <a href="../index.html#leaderboard">Leaderboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="container">
+      <h1>Full Task Corpus</h1>
+      <p class="hero-subtitle">All 530 Tasks in the 28-Day Schedule</p>
+      <p class="hero-desc">
+        Every task in the benchmark, loaded from the exported dataset. Use the
+        filters to slice by difficulty (Easy / Medium / Hard), task type (ASK
+        USER vs deterministic hard), day, and app.
+      </p>
+      <div class="hero-btns">
+        <a href="#task-browser" class="btn btn-primary">Browse All Tasks</a>
+        <a href="./tasks.html" class="btn btn-outline">&larr; Pick task set</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="task-browser" aria-labelledby="heading-task-browser">
+    <div class="container">
+      <h2 class="section-title" id="heading-task-browser">Task Browser</h2>
+
+      <div class="filter-bar" role="group" aria-label="Task filters">
+        <div class="filter-group">
+          <span class="filter-label">Difficulty</span>
+          <div class="filter-options" id="filter-difficulty" data-filter="difficulty">
+            <button class="filter-btn active" data-value="">All</button>
+            <button class="filter-btn" data-value="easy">Easy</button>
+            <button class="filter-btn" data-value="medium">Medium</button>
+            <button class="filter-btn" data-value="hard">Hard</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Type</span>
+          <div class="filter-options" id="filter-type" data-filter="type">
+            <button class="filter-btn active" data-value="">All</button>
+            <button class="filter-btn" data-value="ask">ASK USER</button>
+            <button class="filter-btn" data-value="det">Deterministic</button>
+            <button class="filter-btn" data-value="gui">GUI-only</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Day</span>
+          <div class="select-wrap">
+            <select id="filter-day" class="site-select" aria-label="Filter by day">
+              <option value="">All days</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">App</span>
+          <div class="select-wrap">
+            <select id="filter-app" class="site-select" aria-label="Filter by app">
+              <option value="">All apps</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-group filter-search">
+          <span class="filter-label">Search</span>
+          <input id="filter-search" type="search" placeholder="Search task text or ID..." aria-label="Search tasks">
+        </div>
+      </div>
+
+      <p class="task-count" id="task-count" aria-live="polite">Loading tasks...</p>
+
+      <div id="task-list" class="task-list"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="../index.html">Overview</a>
+      <a href="./how-it-was-formed.html">How it was formed</a>
+      <a href="./tasks.html">Tasks</a>
+      <a href="../index.html#leaderboard">Leaderboard</a>
+    </div>
+    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; All 530 tasks &nbsp;&middot;&nbsp; GitHub Pages ready</p>
+  </div>
+</footer>
+
+<script src="../assets/js/nav.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
