@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
   <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-<body data-site-data="./assets/data/site_data.json">
+<body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 
 <nav aria-label="Main navigation">
   <span class="nav-title">DailyBench300</span>
@@ -296,14 +296,24 @@
 
   <section id="examples" aria-labelledby="heading-examples">
     <div class="container">
-      <h2 class="section-title" id="heading-examples">Example Tasks</h2>
+      <h2 class="section-title" id="heading-examples">Public Tasks</h2>
       <div class="prose" style="margin-bottom: 1rem;">
         <p>
           The full public benchmark sample (<code>DailyBench_public_v2.json</code>, exported from
           <code>public.md</code>) — every task we've run, each with its recorded agent trajectory.
-          Click any task to open its detail page with the step-by-step model trace and screen replay.
-          The private 530-task corpus lives on the <a href="./pages/tasks.html">Tasks</a> page.
+          Each task was run by three models (see the <em>Model run</em> selector below); pick a run
+          to see that model's pass/fail and steps per task. Click any task to open its detail page
+          with the step-by-step model trace and screen replay. The private 530-task corpus lives on
+          the <a href="./pages/tasks.html">Tasks</a> page.
         </p>
+      </div>
+      <div class="public-runs-bar">
+        <span class="filter-label">Model run</span>
+        <div class="select-wrap">
+          <select id="public-run-select" class="site-select" aria-label="Filter public tasks by model run">
+            <option value="">All models</option>
+          </select>
+        </div>
       </div>
       <div class="public-example-list" id="featured-examples-list"></div>
     </div>

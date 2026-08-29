@@ -82,6 +82,17 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
+// Render a task prompt, turning placeholder tokens ('[product]', [contact]) into
+// italic <em> without the surrounding quotes. Applied to both the 530 corpus and
+// the public sample. Placeholder tokens always look like [something] (with or
+// without single-quote decoration), so we wrap those in a styled <em>.
+function formatPrompt(text) {
+  return escapeHtml(text).replace(/'\[([^\]]+)\]'|\[([^\]]+)\]/g, (m, quoted, bare) => {
+    const name = quoted || bare;
+    return `<em class="placeholder">[${name}]</em>`;
+  });
+}
+
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
@@ -139,7 +150,7 @@ function detailPageHref(query) {
   return `${base}?${query}`;
 }
 
-function publicExampleMarkup(example) {
+function publicExampleMarkup(example, run) {
   const tags = [
     example.is_ask_user ? `<span class="tag tag-ask">ASK USER</span>` : "",
     example.cross_app ? `<span class="tag tag-cross">cross-app</span>` : "",
@@ -149,6 +160,16 @@ function publicExampleMarkup(example) {
   ]
     .filter(Boolean)
     .join("");
+  let runBadge = "";
+  if (run) {
+    // Per-model run outcome: pass/fail + steps when a specific run is selected.
+    runBadge = `
+      <div class="public-example-run">
+        <span class="tag ${run.success === true ? "tag-run-ok" : run.success === false ? "tag-run-fail" : ""}">${run.success === true ? "&#10003; pass" : run.success === false ? "&#10007; fail" : "not run"}</span>
+        ${run.steps != null ? `<span class="public-example-steps">${run.steps} steps</span>` : ""}
+      </div>
+    `;
+  }
   const detailHref = detailPageHref(`set=public&task_id=${encodeURIComponent(example.task_id)}`);
   return `
     <article class="public-example" data-task-id="${escapeHtml(example.task_id)}">
@@ -157,7 +178,8 @@ function publicExampleMarkup(example) {
         <span class="public-example-diff">${capitalize(example.difficulty)}</span>
       </div>
       ${tags ? `<div class="public-example-tags">${tags}</div>` : ""}
-      <pre class="public-example-prompt"><code>${escapeHtml(example.prompt)}</code></pre>
+      ${runBadge}
+      <pre class="public-example-prompt"><code>${formatPrompt(example.prompt)}</code></pre>
       <div class="card-footer">
         <a class="card-trajectory-link" href="${detailHref}" title="View task detail + trajectory replay">&#9654; View task</a>
       </div>
@@ -171,6 +193,57 @@ function renderPublicExampleList(containerId, examples) {
     return;
   }
   root.innerHTML = examples.map((example) => publicExampleMarkup(example)).join("");
+}
+
+// --- Public-tasks model-run selector (homepage "Public Tasks" section) ---
+//
+// Each public task has runs recorded under several models (e.g. qwen-28 text,
+// gemini-26, qwen-26 vision). Build a dropdown from the trajectory index, and
+// when one is picked, re-render the list with that run's pass/fail + steps per
+// task (runBadge). The badge uses the trajectory index entry for the task.
+let PUBLIC_RUN_FILTER = "";
+
+function publicRunByKey(example, key) {
+  if (!key || !TRAJECTORY_INDEX || !TRAJECTORY_INDEX.public) return null;
+  const entry = TRAJECTORY_INDEX.public[example.task_id];
+  if (!entry || !Array.isArray(entry.runs)) return null;
+  return entry.runs.find((r) => r.run_key === key) || null;
+}
+
+function renderPublicExampleListFiltered(containerId, examples) {
+  const root = document.getElementById(containerId);
+  if (!root || !examples) {
+    return;
+  }
+  root.innerHTML = examples
+    .map((example) => publicExampleMarkup(example, PUBLIC_RUN_FILTER ? publicRunByKey(example, PUBLIC_RUN_FILTER) : null))
+    .join("");
+}
+
+function initPublicRunSelect() {
+  const sel = document.getElementById("public-run-select");
+  if (!sel) return;
+  if (!TRAJECTORY_INDEX || !TRAJECTORY_INDEX.public) return;
+
+  // Collect the distinct runs across public tasks, in a stable order.
+  const seen = new Map();
+  for (const entry of Object.values(TRAJECTORY_INDEX.public)) {
+    for (const run of entry.runs || []) {
+      if (run && run.run_key && !seen.has(run.run_key)) {
+        seen.set(run.run_key, run.run_label || run.run_key);
+      }
+    }
+  }
+  const opts = ['<option value="">All models</option>'];
+  for (const [key, label] of seen) {
+    opts.push(`<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`);
+  }
+  sel.innerHTML = opts.join("");
+
+  sel.addEventListener("change", () => {
+    PUBLIC_RUN_FILTER = sel.value;
+    renderPublicExampleListFiltered("featured-examples-list", window.__publicExamples || []);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -216,7 +289,7 @@ function taskCardMarkup(task) {
         <span class="public-example-diff">${capitalize(task.bucket)}${task.day ? ` &middot; Day ${task.day}` : ""}</span>
       </div>
       <div class="public-example-tags">${taskTagsMarkup(task)}</div>
-      <pre class="public-example-prompt"><code>${escapeHtml(task.prompt)}</code></pre>
+      <pre class="public-example-prompt"><code>${formatPrompt(task.prompt)}</code></pre>
       <div class="card-footer">${trajTag}</div>
     </article>
   `;
@@ -323,8 +396,10 @@ loadData()
       renderBenchmarkSummary(data.categories);
       renderDayTable(data.days);
       // Homepage: show the FULL public bench we have runs for, in a 2-col grid.
-      renderPublicExampleList("featured-examples-list", data.public_examples || []);
+      window.__publicExamples = data.public_examples || [];
+      renderPublicExampleListFiltered("featured-examples-list", window.__publicExamples);
       renderPublicExampleList("public-examples-list", data.public_examples || []);
+      initPublicRunSelect();
       initTaskBrowser(data.tasks || []);
       attachLightbox();
     })

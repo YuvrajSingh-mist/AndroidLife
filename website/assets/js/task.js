@@ -24,6 +24,15 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;");
 }
 
+// Render a task prompt, turning placeholder tokens ('[product]', [contact]) into
+// italic <em> without the surrounding quotes (same helper as app.js).
+function formatPrompt(text) {
+  return escapeHtml(text).replace(/'\[([^\]]+)\]'|\[([^\]]+)\]/g, (m, quoted, bare) => {
+    const name = quoted || bare;
+    return `<em class="placeholder">[${name}]</em>`;
+  });
+}
+
 // --- Lightweight syntax highlighting (muted colors, no external lib) ---
 
 // Pretty-print + colorize a JSON value: keys, strings, numbers, booleans/null.
@@ -539,7 +548,7 @@ async function init() {
     if (subtitle) subtitle.textContent = `${capitalize(task.bucket || task.difficulty || "")} · ${appLabel}${task.day ? ` · Day ${task.day}` : ""}${isPublic ? " · public sample" : ""}`;
     if (descEl) descEl.textContent = "";
     if (promptEl) {
-      promptEl.innerHTML = `<code>${escapeHtml(task.prompt)}</code>`;
+      promptEl.innerHTML = `<code>${formatPrompt(task.prompt)}</code>`;
     }
     document.title = `DailyBench300  -  ${task.task_id}`;
 

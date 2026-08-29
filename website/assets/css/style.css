@@ -497,6 +497,19 @@ footer .footnote { font-size: 0.78rem; margin-top: 0.35rem; }
   margin-bottom: 0.55rem;
 }
 
+.public-example-run {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.public-example-steps {
+  font-size: 0.78rem;
+  color: var(--text-sec);
+  letter-spacing: 0.03em;
+}
+
 .tag {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
@@ -510,6 +523,23 @@ footer .footnote { font-size: 0.78rem; margin-top: 0.35rem; }
 .tag.tag-ask { color: var(--accent); border-color: var(--accent-lt); }
 .tag.tag-cross { color: var(--link); border-color: var(--border); }
 .tag.tag-run { color: var(--accent); border-color: var(--accent-lt); font-style: italic; }
+.tag.tag-run-ok { color: var(--accent); border-color: var(--accent-lt); }
+.tag.tag-run-fail { color: #a05656; border-color: #dcc2c2; }
+
+/* Placeholder tokens in task prompts — italic, no quotes */
+.placeholder {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* Model-run selector for the Public Tasks section */
+.public-runs-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1.1rem;
+  flex-wrap: wrap;
+}
 
 .public-example-prompt { margin: 0.5rem 0 0.85rem; }
 
@@ -1113,7 +1143,6 @@ table.lb-table td.lb-params {
   border-color: var(--accent);
   background: var(--bg-subtle);
 }
-.filter-group select,
 .filter-search input {
   font: inherit;
   font-size: 0.85rem;
@@ -1122,15 +1151,54 @@ table.lb-table td.lb-params {
   border: 1px solid var(--border);
   background: transparent;
   color: inherit;
-  min-width: 8rem;
+  min-width: 14rem;
 }
-.filter-search input { min-width: 14rem; }
-.filter-group select:focus,
 .filter-search input:focus {
   outline: none;
   border-color: var(--accent);
 }
 .filter-search input::placeholder { color: var(--text-ter); opacity: 0.8; }
+
+/* Custom selects — match the site's pill design (not native dark popups) */
+.select-wrap {
+  position: relative;
+  display: inline-block;
+}
+.select-wrap select,
+.select-wrap .site-select {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  padding: 0.4rem 2.1rem 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease;
+  min-width: 8rem;
+}
+.select-wrap select:hover,
+.select-wrap select:focus,
+.select-wrap .site-select:hover,
+.select-wrap .site-select:focus { border-color: var(--accent); outline: none; }
+.select-wrap::after {
+  content: "";
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--text-ter);
+  pointer-events: none;
+}
+.select-wrap select option,
+.select-wrap .site-select option { background: var(--bg); color: var(--text); }
 .task-count {
   font-size: 0.9rem;
   opacity: 0.8;
@@ -1288,17 +1356,6 @@ table.lb-table td.lb-params {
   color: var(--text-ter);
 }
 
-.run-select {
-  font: inherit;
-  font-size: 0.86rem;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg-subtle);
-  color: var(--text);
-  max-width: 100%;
-}
-
 .trajectory-gif-wrap {
   flex: 1 1 380px;
   min-width: 0;
@@ -1392,16 +1449,6 @@ table.lb-table td.lb-params {
   padding: 0 0.3rem;
   min-width: 7.5rem;
   text-align: center;
-}
-
-.step-speed {
-  font-family: "Crimson Pro", Georgia, serif;
-  font-size: 0.82rem;
-  color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  padding: 0.42rem 0.6rem;
 }
 
 .step-view {
