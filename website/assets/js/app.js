@@ -302,7 +302,7 @@ function initPublicRunSelect() {
 }
 
 // ---------------------------------------------------------------------------
-// Task browser (all 533 tasks + filters) — used by pages/tasks.html
+// Task browser (all 530 tasks + filters) — used by pages/tasks.html
 // ---------------------------------------------------------------------------
 
 const FILTER_STATE = { difficulty: "", type: "", day: "", app: "", search: "" };

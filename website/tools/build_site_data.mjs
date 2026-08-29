@@ -259,8 +259,8 @@ function main() {
     }));
 
   const data = {
-    title: "DailyBench300",
-    summary: "28-day Android agent benchmark across 533 real-phone tasks, measuring success, cost, battery, and heat.",
+    title: "DailyBench500",
+    summary: "28-day Android agent benchmark across 530 real-phone tasks, measuring success, cost, battery, and heat.",
     stats,
     categories,
     days,

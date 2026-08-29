@@ -1209,7 +1209,7 @@ table.lb-table td .lb-elapsed {
   }
 }
 
-/* --- Task browser (all 533 tasks + filters) --- */
+/* --- Task browser (all 530 tasks + filters) --- */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;

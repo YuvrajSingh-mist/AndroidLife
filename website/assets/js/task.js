@@ -550,7 +550,7 @@ async function init() {
     if (promptEl) {
       promptEl.innerHTML = `<code>${formatPrompt(task.prompt)}</code>`;
     }
-    document.title = `DailyBench300  -  ${task.task_id}`;
+    document.title = `DailyBench500  -  ${task.task_id}`;
 
     const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
     renderTaskState(task, traj);

@@ -1,4 +1,4 @@
-// Leaderboard for DailyBench300. Real results, sourced from the run reports in
+// Leaderboard for DailyBench500. Real results, sourced from the run reports in
 // reports/public/ (the "Official metrics" tables of each run). These numbers are
 // hand-copied here (not fetched at build time) because the run folders are
 // private / gitignored. Update these constants — and add another row — whenever
@@ -44,6 +44,7 @@ const LEADERBOARD_ROWS = [
     model: "qwen3.8-27b (TEXT)",
     params: "Public · 60 tasks · 2026-08-28",
     org: "Alibaba (OpenRouter)",
+    mode: "text",
     runs: 60,
     success: { score: 51.7, margin: 0 },
     askUser: 14.3,
@@ -60,6 +61,7 @@ const LEADERBOARD_ROWS = [
     model: "gemini-3.1-flash-lite",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Google (OpenRouter)",
+    mode: "text",
     runs: 60,
     success: { score: 63.3, margin: 0 },
     askUser: 42.9,
@@ -76,6 +78,7 @@ const LEADERBOARD_ROWS = [
     model: "qwen3.8-27b (VISION)",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Alibaba (OpenRouter)",
+    mode: "vision",
     runs: 60,
     success: { score: 38.3, margin: 0 },
     askUser: 14.3,
@@ -373,6 +376,7 @@ function hideTooltip(tooltip) {
 let pinnedChartTooltip = null;
 let chartX = "success";
 let chartY = "steps";
+let chartMode = "all"; // "all" | "text" | "vision"
 
 document.addEventListener("click", (event) => {
   if (pinnedChartTooltip && !event.target.closest(".lb-hit")) {
@@ -427,6 +431,7 @@ function niceTicks(min, max, count = 5) {
 function renderChartControls() {
   const xSel = document.getElementById("chart-x");
   const ySel = document.getElementById("chart-y");
+  const modeSel = document.getElementById("chart-mode");
   if (!xSel || !ySel) return;
   const opts = (sel, current) => {
     sel.innerHTML = Object.entries(CHART_METRICS)
@@ -437,10 +442,27 @@ function renderChartControls() {
   opts(ySel, chartY);
   xSel.addEventListener("change", () => { chartX = xSel.value; renderScatterChart(); });
   ySel.addEventListener("change", () => { chartY = ySel.value; renderScatterChart(); });
+
+  // Text vs vision filter — only chart runs of the chosen mode.
+  if (modeSel) {
+    const counts = { text: 0, vision: 0 };
+    for (const r of LEADERBOARD_ROWS) if (r.mode) counts[r.mode] = (counts[r.mode] || 0) + 1;
+    modeSel.innerHTML = [
+      `<option value="all">All models</option>`,
+      `<option value="text">Text (${counts.text})</option>`,
+      `<option value="vision">Vision (${counts.vision})</option>`,
+    ].join("");
+    modeSel.value = chartMode;
+    modeSel.addEventListener("change", () => {
+      chartMode = modeSel.value;
+      renderScatterChart();
+    });
+  }
 }
 
 // Free-axis scatter chart: X and Y can each be any chartable metric. Every
 // model is a coloured bubble; hovering shows the model name + its x/y values.
+// Overlapping dots and labels are nudged apart so nothing collides.
 function renderScatterChart() {
   const card = document.getElementById("perf-dollar-chart");
   if (!card) return;
@@ -448,9 +470,9 @@ function renderScatterChart() {
   if (!inner) return;
   inner.innerHTML = "";
 
-  const rows = getFilteredRows();
+  const rows = getFilteredRows().filter((r) => chartMode === "all" || r.mode === chartMode);
   if (!rows.length) {
-    inner.innerHTML = `<p class="lb-empty">No models benchmarked yet.</p>`;
+    inner.innerHTML = `<p class="lb-empty">No models match this mode filter.</p>`;
     return;
   }
 
@@ -459,6 +481,11 @@ function renderScatterChart() {
   const points = rows
     .map((r) => ({ row: r, x: xMeta.value(r), y: yMeta.value(r) }))
     .filter((p) => p.x != null && p.y != null);
+
+  if (!points.length) {
+    inner.innerHTML = `<p class="lb-empty">No plottable values for this axis pair.</p>`;
+    return;
+  }
 
   const width = 760;
   const height = 400;
@@ -484,11 +511,13 @@ function renderScatterChart() {
 
   for (const t of yTicks) {
     const y = yScale(t);
+    if (y < margin.top - 0.5 || y > height - margin.bottom + 0.5) continue; // skip stray lines outside plot
     svg += `<line class="lb-grid-line" x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" />`;
     svg += `<text class="lb-tick-label" x="${margin.left - 8}" y="${y + 3}" text-anchor="end">${fmtTick(t, yMeta)}</text>`;
   }
   for (const t of xTicks) {
     const x = xScale(t);
+    if (x < margin.left - 0.5 || x > width - margin.right + 0.5) continue; // skip stray lines outside plot
     svg += `<line class="lb-grid-line-v" x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" />`;
     svg += `<text class="lb-tick-label" x="${x}" y="${height - margin.bottom + 18}" text-anchor="middle">${fmtTick(t, xMeta)}</text>`;
   }
@@ -496,15 +525,45 @@ function renderScatterChart() {
   svg += `<text class="lb-axis-label" x="${margin.left + plotW / 2}" y="${height - 6}" text-anchor="middle">${xMeta.label}${xMeta.unit ? ` (${xMeta.unit})` : ""}</text>`;
   svg += `<text class="lb-axis-label" transform="translate(14 ${margin.top + plotH / 2}) rotate(-90)" text-anchor="middle">${yMeta.label}${yMeta.unit ? ` (${yMeta.unit})` : ""}</text>`;
 
-  points.forEach((p, i) => {
-    const cx = xScale(p.x);
-    const cy = yScale(p.y);
-    const color = CHART_COLORS[i % CHART_COLORS.length];
-    const name = escapeHtml(p.row.model);
-    const lw = labelWidth(p.row.model);
+  // --- Layout with collision avoidance ---
+  // Reserve right margin for labels so they never clip.
+  const reservedRight = margin.right + 130;
+  const plotW2 = width - margin.left - reservedRight;
+  const xScale2 = (v) => margin.left + ((v - (xMin - xPad)) / (xMax + xPad - (xMin - xPad))) * plotW2;
 
-    // Place the label to the right of the dot when there's room; otherwise to
-    // the left; and clamp so the label never leaves the plot area.
+  // 1) Position dots, nudging apart any that overlap.
+  const dotPos = [];
+  const nudgeOffsets = [
+    [0, 0], [16, 0], [-16, 0], [0, 16], [0, -16], [32, 0], [-32, 0],
+    [0, 32], [0, -32], [32, 32], [-32, -32], [32, -32], [-32, 32],
+  ];
+  for (let i = 0; i < points.length; i++) {
+    const baseX = xScale2(points[i].x);
+    const baseY = yScale(points[i].y);
+    let cx = baseX;
+    let cy = baseY;
+    for (const [dx, dy] of nudgeOffsets) {
+      const candX = baseX + dx;
+      const candY = baseY + dy;
+      if (candX < margin.left + 10 || candX > width - reservedRight - 10) continue;
+      if (candY < margin.top + 10 || candY > height - margin.bottom - 10) continue;
+      const clash = dotPos.some((p) => Math.hypot(candX - p.cx, candY - p.cy) < 26);
+      if (!clash) {
+        cx = candX;
+        cy = candY;
+        break;
+      }
+    }
+    dotPos.push({ cx, cy });
+  }
+
+  // 2) Lay out labels, nudging vertically apart when they overlap.
+  const placedLabels = [];
+  const layout = points.map((p, i) => {
+    const { cx, cy } = dotPos[i];
+    const color = CHART_COLORS[i % CHART_COLORS.length];
+    const name = p.row.model;
+    const lw = labelWidth(name);
     let labelX = cx + 14;
     let anchor = "start";
     if (cx + 14 + lw > width - margin.right) {
@@ -516,11 +575,28 @@ function renderScatterChart() {
         anchor = "end";
       }
     }
-
-    svg += `<circle class="lb-dot" cx="${cx}" cy="${cy}" r="8" fill="${color}" />`;
-    svg += `<text class="lb-dot-label" x="${labelX}" y="${cy + 4}" text-anchor="${anchor}" fill="${color}">${name}</text>`;
-    svg += `<circle class="lb-hit" cx="${cx}" cy="${cy}" r="15" tabindex="0" role="button" aria-label="${p.row.model}: ${xMeta.label} ${fmtVal(p.x, xMeta)}, ${yMeta.label} ${fmtVal(p.y, yMeta)}" data-model="${p.row.model}" data-x="${fmtVal(p.x, xMeta)}" data-y="${fmtVal(p.y, yMeta)}" data-xlabel="${xMeta.label}" data-ylabel="${yMeta.label}" />`;
+    let labelY = cy + 4;
+    // Avoid overlapping another label that is horizontally adjacent.
+    const x0 = anchor === "start" ? labelX : labelX - lw;
+    const x1 = anchor === "start" ? labelX + lw : labelX;
+    for (const dy of [0, 15, -15, 30, -30, 45]) {
+      const y = cy + 4 + dy;
+      const clash = placedLabels.some((L) => Math.abs(L.y - y) < 14 && !(x1 < L.x0 || x0 > L.x1));
+      if (!clash) {
+        labelY = y;
+        break;
+      }
+    }
+    placedLabels.push({ x0, x1, y: labelY });
+    return { p, cx, cy, color, name, labelX, labelY, anchor, lw };
   });
+
+  for (const L of layout) {
+    const escName = escapeHtml(L.name);
+    svg += `<circle class="lb-dot" cx="${L.cx}" cy="${L.cy}" r="8" fill="${L.color}" />`;
+    svg += `<text class="lb-dot-label" x="${L.labelX}" y="${L.labelY}" text-anchor="${L.anchor}" fill="${L.color}">${escName}</text>`;
+    svg += `<circle class="lb-hit" cx="${L.cx}" cy="${L.cy}" r="15" tabindex="0" role="button" aria-label="${L.name}: ${xMeta.label} ${fmtVal(L.p.x, xMeta)}, ${yMeta.label} ${fmtVal(L.p.y, yMeta)}" data-model="${L.name}" data-x="${fmtVal(L.p.x, xMeta)}" data-y="${fmtVal(L.p.y, yMeta)}" data-xlabel="${xMeta.label}" data-ylabel="${yMeta.label}" />`;
+  }
 
   svg += `</svg>`;
   inner.innerHTML = svg;
@@ -578,6 +654,10 @@ function renderLeaderboard() {
         <div class="select-wrap">
           <span class="filter-label">Y axis</span>
           <select id="chart-y" class="site-select" aria-label="Y axis metric"></select>
+        </div>
+        <div class="select-wrap">
+          <span class="filter-label">Mode</span>
+          <select id="chart-mode" class="site-select" aria-label="Filter chart by text or vision"></select>
         </div>
       </div>
       <div class="lb-chart-card-inner"></div>
