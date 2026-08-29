@@ -1,63 +1,95 @@
-// Leaderboard for DailyBench300. Real results, sourced from the run reports
-// in reports/ (day1-run.md, day2-run.md, day3-run.md, dailybench_report.py
-// outputs in reports/metrics/, and the public-dataset run analyses). These
-// numbers are hand-copied here (not fetched at build time) because the run
-// folders are private / gitignored. Update these constants — and add another
-// row — whenever a new model's results are published.
+// Leaderboard for DailyBench300. Real results, sourced from the run reports in
+// reports/public/ (the "Official metrics" tables of each run). These numbers are
+// hand-copied here (not fetched at build time) because the run folders are
+// private / gitignored. Update these constants — and add another row — whenever
+// a new model's results are published.
 //
-// Column definitions:
-//   success  = verified success rate (fully-successful tasks / total), %
-//   steps    = average completion steps across the run (NULL when not computed)
-//   halluc   = hallucination rate (control self-reported success), %
-//   transport = "wired" (USB ADB) or "wireless" (Tailscale / TCP ADB)
+// Column definitions (also shown as the hover tooltips on each header):
+//   success  = Success Rate: fully-successful tasks ÷ total (60), from the
+//              report's official metrics table.
+//   askUser  = Success Rate on the 7 ASK USER tasks (agent must ask the
+//              simulated user for a load-bearing fact before acting).
+//   guiOnly  = Success Rate on the 53 non-ASK-USER tasks (deterministic
+//              end-state verified on device).
+//   steps    = Average Completion Steps across the run.
+//   queries  = Average User Queries per task.
+//   uiq      = User Interaction Quality (fact-match) — how often the agent's
+//              ask_user answer matched the ground-truth fact.
+//   kbiq     = KB Interaction Quality (manual) — correct KB queries ÷ total.
+//   elapsed  = Wall-clock run duration vs agent running time (cooldown removed).
+//   hc       = Hallucination-control honesty — controls the agent honestly
+//              reported as absent (vs falsely claiming success).
+//   buckets  = Success rate by difficulty bucket: easy / medium / hard.
 //
 // Rows (from the reports in reports/public/):
-//   2026-08-28 (qwen3.8-27b TEXT, wireless):  manual audit 37/60 = 61.7% SR, avg steps 29.25, halluc 0/60
-//   2026-08-26 (gemini-3.1-flash-lite, wireless): manual audit 25/60 = 41.7% SR, avg steps 8.32, halluc 1/60
-//   2026-08-26 (qwen3.8-27b VISION, wireless): manual audit 22/60 = 36.7% SR, avg steps 39.83, halluc 1/60
-// Success = manual-audit ground truth (reports mark it authoritative over the
-// self-reported official number).
+//   2026-08-28 qwen3.8-27b TEXT      → SR 51.7%, steps 29.25, HC 7/7
+//   2026-08-26 gemini-3.1-flash-lite → SR 63.3%, steps 8.32,  HC 6/7
+//   2026-08-26 qwen3.8-27b VISION    → SR 38.3%, steps 39.83, HC 6/7
+
+const COL_DEFS = {
+  success: "Success Rate — fully-successful tasks ÷ total (60), from the run's official metrics table (verified, false-passes excluded).",
+  askUser: "Success Rate on the 7 ASK USER tasks, where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
+  guiOnly: "Success Rate on the 53 non-ASK-USER tasks, where the end state is verified directly on the device (deterministic).",
+  steps: "Average Completion Steps — mean agent steps per task across the run.",
+  queries: "Average User Queries — mean number of times the agent asked the simulated user per task.",
+  uiq: "User Interaction Quality (UIQ, fact-match) — share of ask_user calls whose answer matched the ground-truth fact.",
+  kbiq: "KB Interaction Quality (KBIQ, manual) — correct knowledge-base queries ÷ total KB queries asked.",
+  elapsed: "Elapsed — wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
+  hc: "Hallucination-control honesty — share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
+  buckets: "Success rate by difficulty bucket: easy / medium / hard.",
+};
 
 const LEADERBOARD_ROWS = [
   {
     model: "qwen3.8-27b (TEXT)",
     params: "Public · 60 tasks · 2026-08-28",
     org: "Alibaba (OpenRouter)",
-    mode: "wireless",
     runs: 60,
-    success: { score: 61.7, margin: 0 },
+    success: { score: 51.7, margin: 0 },
+    askUser: 14.3,
+    guiOnly: 56.6,
     steps: 29.25,
-    halluc: 0.0,
+    queries: 0.57,
+    uiq: 0.033,
+    kbiq: "N/A",
+    elapsed: { wall: "23223 s (6.45 h)", agent: "22633 s" },
+    hc: { score: 100, detail: "7/7 honest" },
+    buckets: { easy: 73.1, medium: 52.9, hard: 17.6 },
   },
   {
     model: "gemini-3.1-flash-lite",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Google (OpenRouter)",
-    mode: "wireless",
     runs: 60,
-    success: { score: 41.7, margin: 0 },
+    success: { score: 63.3, margin: 0 },
+    askUser: 42.9,
+    guiOnly: 64.2,
     steps: 8.32,
-    halluc: 1.7,
+    queries: 0.71,
+    uiq: 0.125,
+    kbiq: "0.000",
+    elapsed: { wall: "5932 s (1.65 h)", agent: "5342 s (1.48 h)" },
+    hc: { score: 85.7, detail: "6/7 honest" },
+    buckets: { easy: 65.4, medium: 64.7, hard: 47.1 },
   },
   {
     model: "qwen3.8-27b (VISION)",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Alibaba (OpenRouter)",
-    mode: "wireless",
     runs: 60,
-    success: { score: 36.7, margin: 0 },
+    success: { score: 38.3, margin: 0 },
+    askUser: 14.3,
+    guiOnly: 41.5,
     steps: 39.83,
-    halluc: 1.7,
+    queries: 0.43,
+    uiq: 0.125,
+    kbiq: "0.000",
+    elapsed: { wall: "32452 s (9.01 h)", agent: "31862 s (8.85 h)" },
+    hc: { score: 85.7, detail: "6/7 honest" },
+    buckets: { easy: 57.7, medium: 23.5, hard: 23.5 },
   },
 ];
 
-const MODE_FILTERS = [
-  { value: "all", label: "All" },
-  { value: "wired", label: "Wired" },
-  { value: "wireless", label: "Wireless" },
-];
-
-let currentModeFilter = "all";
 let currentSearchQuery = "";
 let currentTableSort = { key: "success", direction: "desc" };
 
@@ -80,15 +112,18 @@ function formatSteps(steps) {
   return steps == null ? "—" : steps.toFixed(2);
 }
 
-function formatHalluc(halluc) {
-  return halluc == null ? "—" : `${halluc.toFixed(1)}%`;
-}
-
 const TABLE_SORTS = {
   rank: { label: "Score rank", defaultDirection: "asc", value: (row) => row.rankValue },
   success: { label: "Success rate", defaultDirection: "desc", value: (row) => row.success.score },
+  askUser: { label: "ASK USER", defaultDirection: "desc", value: (row) => row.askUser },
+  guiOnly: { label: "GUI-only", defaultDirection: "desc", value: (row) => row.guiOnly },
   steps: { label: "Avg steps", defaultDirection: "asc", value: (row) => row.steps },
-  halluc: { label: "Hallucination", defaultDirection: "asc", value: (row) => row.halluc },
+  queries: { label: "Avg queries", defaultDirection: "desc", value: (row) => row.queries },
+  uiq: { label: "UIQ", defaultDirection: "desc", value: (row) => row.uiq },
+  kbiq: { label: "KBIQ", defaultDirection: "desc", value: (row) => (row.kbiq === "N/A" ? -1 : parseFloat(row.kbiq)) },
+  elapsed: { label: "Elapsed", defaultDirection: "asc", value: (row) => parseFloat(row.elapsed.wall) },
+  hc: { label: "HC honesty", defaultDirection: "desc", value: (row) => row.hc.score },
+  buckets: { label: "Buckets", defaultDirection: "desc", value: (row) => row.buckets.easy },
   runs: { label: "Runs", defaultDirection: "desc", value: (row) => row.runs },
   org: { label: "Organization", defaultDirection: "asc", value: (row) => row.org.toLowerCase() },
 };
@@ -121,9 +156,6 @@ function rankedRows(rows) {
 
 function getFilteredRows() {
   let rows = LEADERBOARD_ROWS;
-  if (currentModeFilter !== "all") {
-    rows = rows.filter((row) => row.mode === currentModeFilter);
-  }
   if (currentSearchQuery) {
     const q = currentSearchQuery.toLowerCase();
     rows = rows.filter((row) => row.model.toLowerCase().includes(q));
@@ -133,25 +165,7 @@ function getFilteredRows() {
 
 function renderModeFilter() {
   const root = document.getElementById("lb-mode-filter");
-  if (!root) return;
-  root.innerHTML = `
-    <label class="lb-filter-label" for="lb-mode-select">Transport</label>
-    <div class="lb-select-wrap">
-      <select id="lb-mode-select" class="lb-filter-select">
-        ${MODE_FILTERS
-          .map((opt) => {
-            const count = opt.value === "all" ? LEADERBOARD_ROWS.length : LEADERBOARD_ROWS.filter((r) => r.mode === opt.value).length;
-            return `<option value="${opt.value}"${opt.value === currentModeFilter ? " selected" : ""}>${opt.label} (${count})</option>`;
-          })
-          .join("")}
-      </select>
-    </div>
-  `;
-  const select = root.querySelector("#lb-mode-select");
-  select.addEventListener("change", () => {
-    currentModeFilter = select.value;
-    renderLeaderboard();
-  });
+  if (root) root.innerHTML = "";
 }
 
 function renderSearchBar() {
@@ -179,20 +193,30 @@ function renderSearchBar() {
 }
 
 const METRICS = {
-  success: { label: "Success", statLabel: "verified success rate" },
+  success: { label: "Success", statLabel: "success rate" },
   steps: { label: "Avg steps", statLabel: "average completion steps" },
 };
 
-function sortableHeader(key, label, suffix = "") {
+// Header for a sortable column. `tip` (optional) renders a hover tooltip with
+// the metric's definition, styled to match the site (same as info-tooltip).
+function sortableHeader(key, label, tip = "", suffix = "") {
   const isActive = currentTableSort.key === key;
   const direction = isActive ? currentTableSort.direction : "none";
   const arrow = isActive ? (direction === "asc" ? "&#8593;" : "&#8595;") : "&#8597;";
   const ariaSort = direction === "asc" ? "ascending" : direction === "desc" ? "descending" : "none";
+  const tooltip = tip
+    ? `
+      <span class="lb-col-info" tabindex="0" role="button" aria-label="Definition of ${label}">
+        <span class="lb-col-info-ico" aria-hidden="true">&#9432;</span>
+        <span class="lb-col-tip" role="tooltip">${tip}</span>
+      </span>`
+    : "";
   return `
     <th aria-sort="${ariaSort}">
       <button type="button" class="lb-sort-btn${isActive ? " active" : ""}" data-sort-key="${key}" aria-label="Sort by ${TABLE_SORTS[key].label}">
         <span>${label}${suffix}</span><span class="lb-sort-arrow" aria-hidden="true">${arrow}</span>
       </button>
+      ${tooltip}
     </th>
   `;
 }
@@ -200,7 +224,7 @@ function sortableHeader(key, label, suffix = "") {
 function renderTable(containerId, rows) {
   const root = document.getElementById(containerId);
   if (rows.length === 0) {
-    root.innerHTML = `<p class="lb-empty">No models benchmarked yet for this transport mode.</p>`;
+    root.innerHTML = `<p class="lb-empty">No models benchmarked yet.</p>`;
     return;
   }
   root.innerHTML = `
@@ -209,10 +233,16 @@ function renderTable(containerId, rows) {
         <tr>
           ${sortableHeader("rank", "Score rank")}
           <th>Model</th>
-          <th>Task set</th>
-          ${sortableHeader("success", "Success rate")}
-          ${sortableHeader("steps", "Avg steps")}
-          ${sortableHeader("halluc", "Hallucination")}
+          ${sortableHeader("success", "Success rate", COL_DEFS.success)}
+          ${sortableHeader("askUser", "ASK USER", COL_DEFS.askUser)}
+          ${sortableHeader("guiOnly", "GUI-only", COL_DEFS.guiOnly)}
+          ${sortableHeader("steps", "Avg steps", COL_DEFS.steps)}
+          ${sortableHeader("queries", "Avg queries", COL_DEFS.queries)}
+          ${sortableHeader("uiq", "UIQ", COL_DEFS.uiq)}
+          ${sortableHeader("kbiq", "KBIQ", COL_DEFS.kbiq)}
+          ${sortableHeader("elapsed", "Elapsed", COL_DEFS.elapsed)}
+          ${sortableHeader("hc", "HC honesty", COL_DEFS.hc)}
+          ${sortableHeader("buckets", "Buckets E / M / H", COL_DEFS.buckets)}
           ${sortableHeader("runs", "Runs")}
           ${sortableHeader("org", "Organization")}
         </tr>
@@ -223,11 +253,17 @@ function renderTable(containerId, rows) {
             (row) => `
               <tr class="${row.rank === "1st" ? "lb-row-rank1" : ""}">
                 <td class="lb-rank">${row.rank}</td>
-                <td>${row.model}</td>
-                <td class="lb-params">${row.params}</td>
-                <td>${row.success.score.toFixed(1)}%</td>
+                <td>${row.model}<span class="lb-sub">${row.params.replace("Public · ", "")}</span></td>
+                <td class="lb-score">${row.success.score.toFixed(1)}%</td>
+                <td class="lb-score">${formatPct(row.askUser)}</td>
+                <td class="lb-score">${formatPct(row.guiOnly)}</td>
                 <td class="lb-score">${formatSteps(row.steps)}</td>
-                <td class="lb-score">${formatHalluc(row.halluc)}</td>
+                <td class="lb-score">${row.queries.toFixed(2)}</td>
+                <td class="lb-score">${row.uiq.toFixed(3)}</td>
+                <td class="lb-score">${escapeHtml(row.kbiq)}</td>
+                <td class="lb-score"><span class="lb-elapsed">${row.elapsed.wall}</span><span class="lb-sub">agent ${row.elapsed.agent}</span></td>
+                <td class="lb-score">${row.hc.score.toFixed(1)}%<span class="lb-sub">${row.hc.detail}</span></td>
+                <td class="lb-score">${row.buckets.easy.toFixed(1)} / ${row.buckets.medium.toFixed(1)} / ${row.buckets.hard.toFixed(1)}</td>
                 <td>${row.runs}</td>
                 <td>${row.org}</td>
               </tr>
@@ -249,6 +285,17 @@ function renderTable(containerId, rows) {
       renderTable(containerId, rankedRows(getFilteredRows()));
     });
   }
+}
+
+function formatPct(value) {
+  return value == null ? "—" : `${value.toFixed(1)}%`;
+}
+
+function escapeHtml(text) {
+  return String(text ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function makeTooltip(card) {

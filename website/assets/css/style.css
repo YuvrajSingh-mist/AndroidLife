@@ -999,6 +999,80 @@ table.lb-table td.lb-params {
 .lb-tooltip strong { font-weight: 600; }
 .lb-tooltip span { display: block; opacity: 0.85; font-size: 0.76rem; margin-top: 0.2rem; }
 
+/* Column-header definition tooltips (leaderboard) — same look as info-tooltip */
+.lb-col-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+  cursor: help;
+  color: var(--text-ter);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.lb-col-info-ico {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.lb-col-info:hover,
+.lb-col-info:focus-visible {
+  color: var(--accent);
+}
+
+.lb-col-tip {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  z-index: 30;
+  width: min(26rem, 82vw);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  padding: 0.8rem 0.95rem;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-sec);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  pointer-events: none;
+}
+
+.lb-col-info:hover .lb-col-tip,
+.lb-col-info:focus-visible .lb-col-tip,
+.lb-col-info:focus-within .lb-col-tip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sub-lines under cells (task-set label, agent elapsed, HC detail) */
+table.lb-table td .lb-sub {
+  display: block;
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--text-ter);
+  margin-top: 0.12rem;
+  font-variant-numeric: tabular-nums;
+}
+
+table.lb-table td .lb-elapsed {
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .lb-col-tip { left: 0; width: min(20rem, 78vw); }
+}
+
 @media (max-width: 740px) {
   nav {
     height: auto;

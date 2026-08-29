@@ -139,21 +139,20 @@
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
         <strong>Early results.</strong> Each row is a 60-task public-dataset run (20 tasks &times; 3 days)
-        on a OnePlus CPH2423 (Android 15, non-rooted), wired or wireless ADB. Success rate is the
-        verified fully-successful share from the per-trajectory manual audit (ground truth, not the
-        agent's self-reported flag), excluding false-passes. Hallucination is the share of hallucination
-        controls the agent falsely claimed to complete. More rows will appear as more models are
-        benchmarked.
+        on a OnePlus CPH2423 (Android 15, non-rooted). Success rate is the verified fully-successful share
+        from the run's official metrics table, excluding false-passes. Hover any column header for the
+        metric definition. More rows will appear as more models are benchmarked.
         <br>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
           <span id="stats-tooltip" class="info-tooltip" role="tooltip">
             <ul>
               <li>Success = fully-successful tasks &divide; total tasks, verified against on-device state.</li>
-              <li>An honest failure on a hallucination control counts as a pass; a false self-reported success counts as a fail and raises the hallucination rate.</li>
-              <li>Avg steps = mean completion steps across the run, from each task's trajectory.</li>
+              <li>ASK USER = success rate on the 7 interaction tasks where the agent must ask the simulated user a load-bearing fact.</li>
+              <li>GUI-only = success rate on the 53 deterministic tasks, verified on device.</li>
+              <li>UIQ = User Interaction Quality (fact-match); KBIQ = KB Interaction Quality (manual).</li>
+              <li>Elapsed = wall-clock vs agent running time (cooldown between tasks subtracted).</li>
               <li>Battery/thermal/cost are captured per second per task and aggregated in <code>run_metrics.json</code>.</li>
-              <li>Cooldown time between tasks is subtracted so reported elapsed is true agent running time.</li>
             </ul>
           </span>
         </button>
@@ -161,7 +160,6 @@
 
       <div class="lb-controls-row">
         <div class="lb-controls-left">
-          <div id="lb-mode-filter" class="lb-mode-filter" role="tablist" aria-label="Filter by transport mode"></div>
           <div id="lb-search-bar" class="lb-search-bar"></div>
         </div>
 
