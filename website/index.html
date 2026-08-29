@@ -28,6 +28,7 @@
     <span aria-hidden="true"></span>
   </button>
   <div class="nav-links" id="primary-navigation">
+    <a href="./pages/how-it-was-formed.html">How it was formed</a>
     <a href="./pages/tasks.html">Tasks</a>
     <a href="#leaderboard">Leaderboard</a>
     <a href="#documentation">Documentation</a>
@@ -41,13 +42,13 @@
       <p class="hero-subtitle">28-Day Android Agent Benchmark</p>
       <p class="hero-desc">
         Evaluate whether a mobile agent can actually get things done on a real phone. DailyBench300 runs
-        533 everyday tasks across 21 apps over a fixed 28-day schedule, on a real Android device against a
+        530 everyday tasks across 31 apps over a fixed 28-day schedule, on a real Android device against a
         real LLM, and captures not just <em>did it succeed</em> but <em>what doing it cost the phone</em>:
         dollars, battery, heat, and steps.
       </p>
       <ul class="hero-note-list">
         <li>Fixed 28-day schedule</li>
-        <li>533 tasks · 21 apps</li>
+        <li>530 tasks · 31 apps</li>
         <li>Easy / Medium / Hard</li>
         <li>ASK USER + deterministic hard tasks</li>
         <li>On-device battery &amp; thermal capture</li>
@@ -104,7 +105,7 @@
       <h2 class="section-title" id="heading-overview">Overview</h2>
       <div class="prose">
         <p>
-          <strong>DailyBench300</strong> is a 28-day benchmark of 533 real-phone Android tasks. Instead of
+          <strong>DailyBench300</strong> is a 28-day benchmark of 530 real-phone Android tasks. Instead of
           grading a model on a static screenshot, it runs an agent (via the
           <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">mobilerun SDK</a>)
           against a real device over ADB and measures:
@@ -117,9 +118,9 @@
         </ul>
         <p>The benchmark covers three buckets of increasing difficulty:</p>
         <ul>
-          <li><strong>Easy (230)</strong>: single-app, 1 to 2 subgoal tasks worth 1 point each.</li>
-          <li><strong>Medium (231)</strong>: mostly cross-app (49%), 3 to 4 subgoals, worth 3 points.</li>
-          <li><strong>Hard (72)</strong>: 5+ subgoals, worth 5 points, split into <strong>36 ASK USER</strong> (the agent must request one load-bearing fact via the simulated user) and <strong>36 DETERMINISTIC</strong> (fully verifiable on-device state).</li>
+          <li><strong>Easy (216)</strong>: single-app, 1 to 2 subgoal tasks worth 1 point each.</li>
+          <li><strong>Medium (242)</strong>: mostly cross-app (47%), 3 to 4 subgoals, worth 3 points.</li>
+          <li><strong>Hard (72)</strong>: 5+ subgoals, worth 5 points, split into <strong>49 ASK USER</strong> (36 single-turn + 13 multi-turn KB, the agent must request load-bearing facts via the simulated user) and <strong>23 DETERMINISTIC</strong> (fully verifiable on-device state).</li>
         </ul>
         <p>
           Hard ASK USER tasks exercise the <code>ask_user</code> tool against a simulated user
@@ -182,21 +183,6 @@
     </div>
   </section>
 
-  <section id="categories" aria-labelledby="heading-categories">
-    <div class="container">
-      <h2 class="section-title" id="heading-categories">Apps Covered</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>App</th>
-            <th>Coverage</th>
-          </tr>
-        </thead>
-        <tbody id="category-table-body"></tbody>
-      </table>
-    </div>
-  </section>
-
   <section id="anatomy" aria-labelledby="heading-anatomy">
     <div class="container">
       <h2 class="section-title" id="heading-anatomy">Benchmark Anatomy</h2>
@@ -255,9 +241,9 @@
       <div class="prose">
         <ul>
           <li><strong>Fixed 28-day schedule</strong>: one-time shuffled, reused identically for every model for fair comparison.</li>
-          <li><strong>21 real apps</strong>: Telegram, Notes, Obsidian, Chrome, Calendar, Clock, Files, Gallery, Contacts, Maps, Drive, Gmail, YouTube, Settings, Calculator, Camera, Phone, Photos, Music, Messages, Google Search.</li>
-          <li><strong>178 cross-app tasks</strong> (33.4%): multi-app chains that actually exercise app switching and data transfer.</li>
-          <li><strong>112 placeholder instances</strong> (44 unique names): contact, topic, time, amount, note title, song, route, city, etc., resolved per day at run time.</li>
+          <li><strong>31 real apps</strong>: Telegram, Notes, Obsidian, Chrome, Calendar, Clock, Files, Gallery, Contacts, Maps, Drive, Gmail, YouTube, Settings, Calculator, Camera, Phone, Photos, Music, Messages, Google Search, Google Docs, Google Sheets, Google Slides, Google Meet, Weather, Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping.</li>
+          <li><strong>168 cross-app tasks</strong> (31.7%): multi-app chains that actually exercise app switching and data transfer.</li>
+          <li><strong>303 placeholder instances</strong> (119 distinct keys): contact, topic, time, amount, note title, song, route, city, etc., resolved per day at run time.</li>
         </ul>
       </div>
 
@@ -352,20 +338,19 @@
     <div class="container">
       <h2 class="section-title" id="heading-task-index">Benchmark Summary</h2>
       <div class="prose">
-        <p>A compact view of per-app coverage before the full task listing.</p>
+        <p>
+          The public benchmark is a <strong>60-task, 3-day preview</strong> drawn from the 530-task corpus
+          (every task keeps its real 530 <code>task_id</code>, exact prompt text, and placeholder slots) so
+          the pipeline, seeds, and grading can be exercised on a small, self-contained sample. Its bucket,
+          app, and difficulty distributions intentionally track the parent corpus. See
+          <a href="./pages/how-it-was-formed.html">How it was formed</a> for the full story, and
+          <a href="./pages/tasks.html">Tasks</a> for the 530-task corpus.
+        </p>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>App</th>
-            <th>Tasks</th>
-            <th>Difficulty Buckets</th>
-          </tr>
-        </thead>
-        <tbody id="benchmark-summary-body"></tbody>
-      </table>
+      <div id="benchmark-summary-body">Loading benchmark summary...</div>
       <div class="learn-more-wrap">
-        <a href="./pages/tasks.html" class="btn btn-outline">Learn more</a>
+        <a href="./pages/how-it-was-formed.html" class="btn btn-outline">How it was formed</a>
+        <a href="./pages/tasks.html" class="btn btn-outline">Browse all 530 tasks</a>
       </div>
     </div>
   </section>
@@ -441,6 +426,7 @@
 <footer>
   <div class="container">
     <div class="footer-links">
+      <a href="./pages/how-it-was-formed.html">How it was formed</a>
       <a href="./pages/tasks.html">Tasks</a>
       <a href="#leaderboard">Leaderboard</a>
       <a href="#documentation">Documentation</a>

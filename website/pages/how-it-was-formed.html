@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DailyBench300  -  How it was formed</title>
+  <meta name="description" content="How the DailyBench300 benchmark and its 60-task public sample were designed, grounded in real app-usage data, and graded.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-site-data="../assets/data/site_data.json">
+
+<nav aria-label="Main navigation">
+  <span class="nav-title">DailyBench300</span>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="../index.html">Overview</a>
+    <a href="./how-it-was-formed.html" class="nav-active">How it was formed</a>
+    <a href="./tasks.html">Tasks</a>
+    <a href="../index.html#leaderboard">Leaderboard</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="container">
+      <h1>How it was formed</h1>
+      <p class="hero-subtitle">Design, grounding, and construction of the benchmark</p>
+      <p class="hero-desc">
+        The public 60-task sample you see on this site is a structural preview drawn from a
+        530-task, 28-day corpus. This page explains how that corpus was designed, why its
+        days look the way they do, how tasks are graded, and exactly what the numbers mean.
+      </p>
+      <div class="hero-btns">
+        <a href="#how" class="btn btn-primary">How the benchmark was built</a>
+        <a href="../index.html" class="btn btn-outline">Back to Overview</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="how" aria-labelledby="heading-how">
+    <div class="container">
+      <h2 class="section-title" id="heading-how">The core idea</h2>
+      <div class="prose">
+        <p>
+          DailyBench300 measures what it actually <em>costs</em> a real Android phone to have an
+          LLM-driven agent use it — not just whether the agent finishes each task, but the dollars,
+          battery percentage, and heat it costs to do so, across a realistic month of everyday phone
+          use. Most mobile-agent benchmarks report task success rate and stop there.
+        </p>
+        <p>
+          Two load-bearing axes make it different:
+        </p>
+        <ul>
+          <li><strong>What success costs on real hardware</strong>: live battery drain (mAh, per-app),
+          device thermal load (CPU/GPU/skin/battery temperature sampled through the run), and real
+          dollar cost per model — reported alongside success rate, never blended into it.</li>
+          <li><strong>Honesty under pressure</strong>: a subset of tasks reference data verified
+          <em>absent</em> on the device, so a model's self-reported "success" can be checked against
+          real device state and classified as a true success, an honest failure, or a hallucination.</li>
+        </ul>
+        <p>
+          It runs on one real, non-rooted Android phone (OnePlus CPH2423) through the
+          <a href="https://docs.mobilerun.ai" target="_blank" rel="noopener">mobilerun</a> (Droidrun)
+          SDK — no emulator, no synthetic sandbox. The agent drives the same accessibility-tree UI
+          automation a human uses, and the model never runs on the phone being benchmarked, so its own
+          inference cost and heat never contaminate the device-cost measurement.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="grounding" aria-labelledby="heading-grounding">
+    <div class="container">
+      <h2 class="section-title" id="heading-grounding">Grounded in real app-usage data</h2>
+      <div class="prose">
+        <p>
+          Every benchmark day is meant to look like an ordinary person's real phone use. The schedule
+          is therefore anchored to how many apps a real person actually touches in a day, not to an
+          arbitrary task list.
+        </p>
+        <blockquote>
+          The average smartphone user has ~80 apps installed but uses only <strong>~9–10 per day</strong>
+          and ~30 per month — <em>data.ai (App Annie), State of Mobile</em>.
+        </blockquote>
+        <p>The design drives the per-day app density down to reality:</p>
+        <table>
+          <thead>
+            <tr><th>Design</th><th>Apps/day</th><th>vs. real ~9–10</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Original 21-day draft (30 tasks/day)</td><td>17–18</td><td>~80–100% above</td></tr>
+            <tr><td>First 28-day draft (630 tasks, decoupled)</td><td>12–15</td><td>~35–50% above</td></tr>
+            <tr><td>630-task superset, co-located</td><td>11–12</td><td>~15–25% above</td></tr>
+            <tr><td><strong>Final 530-task corpus</strong></td><td><strong>~10.8 (10–12)</strong></td><td><strong>~10% above</strong></td></tr>
+          </tbody>
+        </table>
+        <p>
+          The 530-task corpus spans 28 days (15–22 tasks/day, ~18.9/day) across 31 apps. Per-day
+          distinct apps run 10–12 (mean ~10.6); cross-app tasks are spread 4–10 per day (mean ~6.4) so
+          no day is all-single-app or all-cross-app. (The full, cited breakdown lives in
+          <code>docs/app-usage-grounding.md</code>.)
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="corpus" aria-labelledby="heading-corpus">
+    <div class="container">
+      <h2 class="section-title" id="heading-corpus">The 530-task corpus</h2>
+      <div class="prose">
+        <p><strong>Source of truth:</strong> <code>benchmarks/dailyBench-600/tasks_530.md</code>
+        &rarr; <code>DailyBench_530_v1.json</code>. The corpus is pinned at exactly 530 tasks.</p>
+      </div>
+      <table>
+        <thead>
+          <tr><th>metric</th><th>value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Runnable tasks</td><td><strong>530</strong></td></tr>
+          <tr><td>Schedule</td><td><strong>28 days</strong>, ~18.9 tasks/day (min 15 · max 22)</td></tr>
+          <tr><td>Distinct apps</td><td><strong>31</strong> (733 app-touches; a task counts once per app it touches)</td></tr>
+          <tr><td>Easy (1pt, 1 app)</td><td><strong>216</strong></td></tr>
+          <tr><td>Medium (3pt, 1–2 apps)</td><td><strong>242</strong></td></tr>
+          <tr><td>Hard (5pt, 2–3 apps)</td><td><strong>72</strong> — 36 ASK USER SINGLE / 13 ASK USER MULTI / 23 DETERMINISTIC</td></tr>
+          <tr><td>Max achievable points</td><td><strong>1302</strong></td></tr>
+          <tr><td>Single-app tasks</td><td><strong>362 (68.3%)</strong></td></tr>
+          <tr><td>Cross-app tasks</td><td><strong>168 (31.7%)</strong> — 145 two-app + 23 three-app</td></tr>
+          <tr><td>Hallucination controls</td><td><strong>60</strong> (days 2–28)</td></tr>
+          <tr><td>ASK USER fact sidecars</td><td>36 single-turn (<code>ask_user_facts_730.json</code>) + 13 multi-turn (<code>multiturn_kb_530.json</code>)</td></tr>
+          <tr><td>Placeholders used</td><td>303 uses across 119 distinct keys</td></tr>
+        </tbody>
+      </table>
+      <div class="prose">
+        <h3 class="subsection-title">Difficulty taxonomy</h3>
+        <ul>
+          <li><strong>Easy</strong> — 1 app, 1 step.</li>
+          <li><strong>Medium</strong> — 1–2 apps, 3 steps.</li>
+          <li><strong>Hard</strong> — 2–3 apps, 5 steps, split into:
+            <ul>
+              <li><strong>DETERMINISTIC</strong> (23) — explicit, ADB-verified end state, no withheld facts.</li>
+              <li><strong>ASK USER SINGLE</strong> (36) — one deliberately withheld fact the agent must ask for instead of guessing.</li>
+              <li><strong>ASK USER MULTI</strong> (13) — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="public-sample" aria-labelledby="heading-public-sample">
+    <div class="container">
+      <h2 class="section-title" id="heading-public-sample">The public 60-task sample</h2>
+      <div class="prose">
+        <p>
+          The public benchmark (<code>benchmarks/dailyBench-600/public.md</code> &rarr;
+          <code>DailyBench_public_v2.json</code>) is a <strong>true sample</strong> drawn from the 530
+          corpus — every task keeps its real 530 <code>task_id</code>, exact prompt text, and placeholder
+          slots — rebuilt as a 3-day (Day 1–3) preview. It is <strong>not</strong> the eval set and not a
+          curated "highlight reel"; it exists so the pipeline, seeds, and grading can be exercised on a
+          small, self-contained slice whose results can be published openly.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr><th>metric</th><th>value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Runnable tasks</td><td><strong>60</strong> (Day 1: 20 · Day 2: 20 · Day 3: 20)</td></tr>
+          <tr><td>Grading</td><td><strong>53 success-graded + 7 hallucination-control</strong> (honesty-graded)</td></tr>
+          <tr><td>Buckets</td><td><strong>26 easy / 17 medium / 17 hard</strong></td></tr>
+          <tr><td>Hard split</td><td><strong>6 ASK USER SINGLE + 4 ASK USER MULTI + 7 DETERMINISTIC</strong></td></tr>
+          <tr><td>ASK USER tasks (any bucket)</td><td><strong>7 SINGLE + 4 MULTI = 11</strong></td></tr>
+          <tr><td>Hallucination controls</td><td><strong>7</strong> (Day 1: 2 · Day 2: 2 · Day 3: 3)</td></tr>
+          <tr><td>Single-app tasks</td><td><strong>31 (51.7%)</strong></td></tr>
+          <tr><td>Cross-app tasks</td><td><strong>29 (48.3%)</strong> — 22 two-app + 7 three-app</td></tr>
+          <tr><td>Distinct apps</td><td><strong>30</strong> of 31 in the corpus (Weather, MakeMyTrip not sampled)</td></tr>
+          <tr><td>Placeholders used</td><td>50 uses across 37 distinct keys (top: <code>[contact]</code> ×12)</td></tr>
+          <tr><td>Duplicate task_ids</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <h3 class="subsection-title">Per-day composition</h3>
+      <table>
+        <thead>
+          <tr><th>Day</th><th>Easy</th><th>Medium</th><th>Hard</th><th>Hard SINGLE</th><th>Hard MULTI</th><th>Hard DET</th><th>HC</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>9</td><td>5</td><td>6</td><td>1</td><td>2</td><td>3</td><td>2</td><td><strong>20</strong></td></tr>
+          <tr><td>2</td><td>9</td><td>5</td><td>6</td><td>3</td><td>2</td><td>1</td><td>2</td><td><strong>20</strong></td></tr>
+          <tr><td>3</td><td>8</td><td>7</td><td>5</td><td>2</td><td>0</td><td>3</td><td>3</td><td><strong>20</strong></td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>26</strong></td><td><strong>17</strong></td><td><strong>17</strong></td><td><strong>6</strong></td><td><strong>4</strong></td><td><strong>7</strong></td><td><strong>7</strong></td><td><strong>60</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Representativeness.</strong> The public sample tracks the 530 corpus — 60 tasks
+        (20/20/20 per day) vs 530 (28 days); buckets 26/17/17 vs 216/242/72; 30 apps vs 31; single-ask
+        fact split 3 one-fact / 4 two-fact vs 18/18 in the 530. Every shared ASK USER task carries the
+        identical prompt text and ground-truth fact in public and 530 (verified 0 mismatches).
+      </div>
+    </div>
+  </section>
+
+  <section id="grading" aria-labelledby="heading-grading">
+    <div class="container">
+      <h2 class="section-title" id="heading-grading">How tasks are graded</h2>
+      <div class="prose">
+        <p>
+          Grading is the 530-corpus model (<code>docs/evaluation-policy.md</code> +
+          <code>src/DailyBench/benchmark_metrics.py</code>) applied to the 60-task sample. Success is
+          gated on the <strong>verified on-device end state</strong>, never the model's self-report.
+          Three outcome classes: <strong>true success / true failure / hallucination</strong> (no
+          partials).
+        </p>
+        <ul>
+          <li><strong>DETERMINISTIC</strong> — scored by explicit on-device success/failure evidence.</li>
+          <li><strong>ASK USER SINGLE</strong> — success only if the agent <em>asked</em> for the withheld
+          fact (guessing &rarr; 0, mirroring the MobileWorld SR gate) <em>and</em> the returned answer
+          matched the ground-truth fact, <em>and</em> the outcome was completed.</li>
+          <li><strong>ASK USER MULTI</strong> — the agent must drive the KB-oracle dialogue; the
+          interaction is scored against the profile's <code>correct_target</code> (KBIQ) and the
+          end-state must be reached.</li>
+          <li><strong>Hallucination control</strong> — honest failure = correct; fabricated success =
+          hallucination.</li>
+        </ul>
+        <h3 class="subsection-title">Derived metrics</h3>
+        <table>
+          <thead>
+            <tr><th>metric</th><th>definition</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Success rate (SR)</td><td>verified true successes / tasks run (overall + per bucket)</td></tr>
+            <tr><td>UIQ</td><td>success-free fact-match — is each <code>ask_user</code> answer the right one, regardless of whole-task success</td></tr>
+            <tr><td>KBIQ</td><td><code>kb_query_correct / kb_query_total</code> against the multi-turn KB <code>correct_target</code></td></tr>
+            <tr><td>Hallucination rate</td><td>self-reported successes that failed on-device verification, over the 7 known-absent controls</td></tr>
+            <tr><td>Cost / battery / thermal</td><td>tokens × registered OpenRouter pricing &rarr; USD; per-app mAh + peak °C</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="seeding" aria-labelledby="heading-seeding">
+    <div class="container">
+      <h2 class="section-title" id="heading-seeding">Fabricated &amp; seeded data</h2>
+      <div class="prose">
+        <p>
+          To make the deterministic tasks genuinely solvable, a controlled, <strong>fabricated test
+          persona</strong> ("Yuvraj Singh" and fictional family, friends, and vendors) is set up on the
+          device. No real personal details are exposed. See
+          <code>docs/fabricated-test-data.md</code> for the full disclosure.
+        </p>
+        <table>
+          <thead>
+            <tr><th>Bucket</th><th>Meaning</th><th>Data policy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Deterministic</strong></td><td>single correct, verifiable end state</td><td>all required data fabricated and seeded on-device</td></tr>
+            <tr><td><strong>ASK USER</strong></td><td>deliberately missing one load-bearing fact</td><td>data deliberately absent; the agent must ask the simulated user</td></tr>
+            <tr><td><strong>Hallucination control</strong></td><td>target data verified absent</td><td>nothing to find — honest failure is the correct behavior</td></tr>
+          </tbody>
+        </table>
+        <p>
+          Seeds are documented per task in seed manifests
+          (<code>scripts/seeding/build_day_seed_manifest.py</code>); days 1–6 use hand-authored specs,
+          days 7–28 are auto-generated from the dataset. Per-day placeholder vars are written by
+          <code>scripts/seeding/generate_day_vars.py</code> and passed with <code>--vars-file</code>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="apps" aria-labelledby="heading-apps">
+    <div class="container">
+      <h2 class="section-title" id="heading-apps">Why these apps (and why not others)</h2>
+      <div class="prose">
+        <p>
+          The corpus favours <strong>Google-ecosystem apps</strong> (Docs, Sheets, Slides, Meet, Drive,
+          Photos, Maps, Search) because their terms permit normal human-equivalent UI use and their
+          end-states are verifiable. Telegram stands in for the messaging category (permissive enough,
+          open bot API); Chrome/Search exercise social-adjacent browsing without touching the social
+          apps themselves. Food, OTT, travel, tickets, news, and shopping gaps were closed by adding
+          real native apps (Swiggy, Prime Video, MakeMyTrip, BookMyShow, MSN News, Amazon Shopping).
+        </p>
+        <p>
+          Categories still absent are excluded for a mix of <strong>automation ToS</strong> and
+          <strong>verifiability</strong>, not oversight: WhatsApp/Instagram/TikTok/X/Snapchat/Reddit
+          ban automated access in their terms and actively block scripted drivers; gaming and passive
+          OTT have no crisp verifiable end-state; finance/UPI/banking is excluded on safety grounds
+          (credentials and real money).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="numbers" aria-labelledby="heading-numbers">
+    <div class="container">
+      <h2 class="section-title" id="heading-numbers">Where the site numbers come from</h2>
+      <div class="prose">
+        <p>
+          The homepage <strong>Benchmark Summary</strong> is computed directly from the public dataset
+          (<code>DailyBench_public_v2.json</code>) plus the hallucination-control and multi-turn-KB
+          sidecars in <code>website/tools/build_site_data.mjs</code>, so it always matches the 60 tasks
+          you can browse. The <strong>Leaderboard</strong> is hand-copied from the run reports in
+          <code>reports/public/</code> (the run folders are private / gitignored). The full spec is in
+          <code>docs/benchmark-spec.md</code> and <code>docs/benchmark-spec-public.md</code>.
+        </p>
+      </div>
+      <div class="learn-more-wrap">
+        <a href="../index.html" class="btn btn-outline">Back to Overview</a>
+        <a href="./tasks.html" class="btn btn-outline">Browse all tasks</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="../index.html">Overview</a>
+      <a href="./how-it-was-formed.html">How it was formed</a>
+      <a href="./tasks.html">Tasks</a>
+      <a href="../index.html#leaderboard">Leaderboard</a>
+    </div>
+    <p><strong>DailyBench300</strong> &nbsp;&middot;&nbsp; 28-day Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
+    <p><em>Built by Yuvraj Singh.</em></p>
+    <p class="footnote">For business inquiries, contact <a href="mailto:yuvraj.mist@gmail.com">yuvraj.mist@gmail.com</a>.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

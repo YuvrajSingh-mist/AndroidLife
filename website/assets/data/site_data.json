@@ -701,6 +701,71 @@
       "apps": 8
     }
   ],
+  "public_stats": {
+    "task_count": 60,
+    "day_count": 3,
+    "success_graded": 53,
+    "hc_count": 7,
+    "buckets": {
+      "easy": 26,
+      "medium": 17,
+      "hard": 17
+    },
+    "hard_split": {
+      "single": 6,
+      "multi": 4,
+      "det": 7
+    },
+    "ask_user_single": 7,
+    "ask_user_multi": 4,
+    "ask_user_total": 11,
+    "single_app": 31,
+    "cross_app": 29,
+    "two_app": 22,
+    "three_app": 7,
+    "app_count": 30,
+    "placeholder_uses": 50,
+    "placeholder_keys": 37,
+    "top_placeholder": {
+      "key": "contact",
+      "uses": 12
+    },
+    "per_day": [
+      {
+        "day": 1,
+        "easy": 9,
+        "medium": 5,
+        "hard": 6,
+        "single": 1,
+        "multi": 2,
+        "det": 3,
+        "hc": 2,
+        "total": 20
+      },
+      {
+        "day": 2,
+        "easy": 9,
+        "medium": 5,
+        "hard": 6,
+        "single": 3,
+        "multi": 2,
+        "det": 1,
+        "hc": 2,
+        "total": 20
+      },
+      {
+        "day": 3,
+        "easy": 8,
+        "medium": 7,
+        "hard": 5,
+        "single": 2,
+        "multi": 0,
+        "det": 3,
+        "hc": 3,
+        "total": 20
+      }
+    ]
+  },
   "public_examples": [
     {
       "task_id": "easy__amazon-shopping__002",
@@ -1586,7 +1651,7 @@
       "task_id": "hard__music-obsidian__077",
       "difficulty": "hard",
       "category_name": "Music",
-      "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you look up to and I think I found something that works for me. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately?",
+      "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you look up to and I think I found something that works for me. I want you set it up so that once you start it yourself, it then stops by itself around my asleep time. Can you set that up for me in the music app I used the most lately to time my sleep and listen to music?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,

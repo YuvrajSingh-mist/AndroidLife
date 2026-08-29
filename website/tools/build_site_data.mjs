@@ -103,6 +103,98 @@ function main() {
     });
   }
 
+  // Public benchmark stats — the homepage "Benchmark Summary". Computed from the
+  // actual public dataset + sidecars so the numbers always match the 60 tasks
+  // shown on the site (cross-checked against docs/benchmark-spec-public.md).
+  let hcSidecar = {};
+  let kbSidecar = {};
+  try {
+    hcSidecar = readJson("benchmarks/dailyBench-600/hallucination_controls.json");
+  } catch {}
+  try {
+    kbSidecar = readJson("benchmarks/dailyBench-600/multiturn_kb_public.json");
+  } catch {}
+
+  const publicIdSet = new Set(publicTasks.map((t) => t.task_id));
+  const publicHc = Object.keys(hcSidecar).filter((id) => publicIdSet.has(id));
+  const publicMulti = Object.keys(kbSidecar).filter((id) => publicIdSet.has(id));
+  const publicMultiSet = new Set(publicMulti);
+
+  const pubBuckets = { easy: 0, medium: 0, hard: 0 };
+  const pubHardSplit = { single: 0, multi: 0, det: 0 };
+  const pubPerDay = new Map();
+  const pubApps = new Set();
+  const pubPlaceholders = [];
+  let pubSingle = 0;
+  let pubCross = 0;
+  let pubTwoApp = 0;
+  let pubThreeApp = 0;
+
+  for (const t of publicTasks) {
+    pubBuckets[t.bucket] = (pubBuckets[t.bucket] || 0) + 1;
+    const apps = t.apps && t.apps.length ? t.apps : [t.app];
+    for (const a of apps) pubApps.add(a);
+    if (apps.length > 1) {
+      pubCross++;
+      if (apps.length === 2) pubTwoApp++;
+      else pubThreeApp++;
+    } else {
+      pubSingle++;
+    }
+    for (const p of t.placeholders || []) pubPlaceholders.push(p);
+    if (t.bucket === "hard") {
+      if (t.is_ask_user) {
+        if (publicMultiSet.has(t.task_id)) pubHardSplit.multi++;
+        else pubHardSplit.single++;
+      } else {
+        pubHardSplit.det++;
+      }
+    }
+    const d = t.day || 0;
+    if (!pubPerDay.has(d)) {
+      pubPerDay.set(d, { day: d, easy: 0, medium: 0, hard: 0, single: 0, multi: 0, det: 0, hc: 0, total: 0 });
+    }
+    const row = pubPerDay.get(d);
+    row[t.bucket]++;
+    row.total++;
+    if (t.bucket === "hard") {
+      if (t.is_ask_user) {
+        if (publicMultiSet.has(t.task_id)) row.multi++;
+        else row.single++;
+      } else {
+        row.det++;
+      }
+    }
+    if (publicHc.includes(t.task_id)) row.hc++;
+  }
+
+  const phCounts = new Map();
+  for (const p of pubPlaceholders) phCounts.set(p, (phCounts.get(p) || 0) + 1);
+  const topPlaceholder = [...phCounts.entries()].sort((a, b) => b[1] - a[1])[0] || null;
+
+  const pubAskSingle = publicTasks.filter((t) => t.is_ask_user && !publicMultiSet.has(t.task_id)).length;
+
+  const public_stats = {
+    task_count: publicTasks.length,
+    day_count: 3,
+    success_graded: publicTasks.length - publicHc.length,
+    hc_count: publicHc.length,
+    buckets: pubBuckets,
+    hard_split: pubHardSplit,
+    ask_user_single: pubAskSingle,
+    ask_user_multi: pubHardSplit.multi,
+    ask_user_total: pubAskSingle + pubHardSplit.multi,
+    single_app: pubSingle,
+    cross_app: pubCross,
+    two_app: pubTwoApp,
+    three_app: pubThreeApp,
+    app_count: pubApps.size,
+    placeholder_uses: pubPlaceholders.length,
+    placeholder_keys: phCounts.size,
+    top_placeholder: topPlaceholder ? { key: topPlaceholder[0], uses: topPlaceholder[1] } : null,
+    per_day: [...pubPerDay.values()].sort((a, b) => a.day - b.day),
+  };
+
   // Public examples — the full public bench we have runs for. Cross-reference
   // the trajectory index (if already exported) so each example carries its
   // run + trajectory availability, and only tasks with a recorded run are shown
@@ -172,6 +264,7 @@ function main() {
     stats,
     categories,
     days,
+    public_stats,
     public_examples,
     tasks: task_list,
   };
@@ -180,6 +273,7 @@ function main() {
   console.log(`Wrote ${OUT}`);
   console.log(`  categories: ${categories.length} apps · days: ${days.length} · public examples: ${public_examples.length} · tasks: ${task_list.length}`);
   console.log(`  stats: ${JSON.stringify(stats)}`);
+  console.log(`  public_stats: ${JSON.stringify(public_stats)}`);
 }
 
 main();

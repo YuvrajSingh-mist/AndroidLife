@@ -36,23 +36,78 @@ function renderCategoryTable(categories) {
     .join("");
 }
 
-function renderBenchmarkSummary(categories) {
+// Renders the homepage "Benchmark Summary" from the public dataset stats
+// (computed in build_site_data.mjs, cross-checked against
+// docs/benchmark-spec-public.md). At-a-glance stat cards + per-day composition.
+function renderPublicBenchmarkSummary(stats) {
   const root = document.getElementById("benchmark-summary-body");
-  if (!root) {
+  if (!root || !stats) {
     return;
   }
-  root.innerHTML = categories
-    .map((category) => {
-      const counts = category.difficulty || { easy: 0, medium: 0, hard: 0 };
-      return `
-        <tr>
-          <td>${category.name}</td>
-          <td>${category.count}</td>
-          <td>Easy ${counts.easy}  -  Medium ${counts.medium}  -  Hard ${counts.hard}</td>
-        </tr>
-      `;
-    })
-    .join("");
+  const b = stats.buckets || { easy: 0, medium: 0, hard: 0 };
+  const hs = stats.hard_split || { single: 0, multi: 0, det: 0 };
+  const crossShare = stats.task_count ? Math.round((stats.cross_app / stats.task_count) * 1000) / 10 : 0;
+
+  const cards = [
+    { value: stats.task_count, label: "runnable tasks", sub: `${stats.day_count} days · ${stats.success_graded + stats.hc_count} graded (${stats.success_graded} runnable + ${stats.hc_count} hallucination-control)` },
+    { value: `${b.easy} / ${b.medium} / ${b.hard}`, label: "easy / medium / hard", sub: "difficulty buckets" },
+    { value: `${hs.single} / ${hs.multi} / ${hs.det}`, label: "hard: SINGLE / MULTI / DET", sub: "17 hard tasks split by grading mode" },
+    { value: stats.ask_user_total, label: "ASK USER tasks", sub: `${stats.ask_user_single} single-turn · ${stats.ask_user_multi} multi-turn (KB oracle)` },
+    { value: stats.hc_count, label: "hallucination controls", sub: "data genuinely absent — honest failure is correct" },
+    { value: `${stats.single_app} / ${stats.cross_app}`, label: "single-app / cross-app", sub: `${crossShare}% cross-app (${stats.two_app} two-app · ${stats.three_app} three-app)` },
+    { value: stats.app_count, label: "distinct apps", sub: "of 31 in the full corpus" },
+    { value: stats.placeholder_uses, label: "placeholder uses", sub: `${stats.placeholder_keys} distinct keys${stats.top_placeholder ? ` · top: [${stats.top_placeholder.key}] ×${stats.top_placeholder.uses}` : ""}` },
+  ];
+
+  root.innerHTML =
+    `<div class="bench-summary-cards">` +
+    cards
+      .map(
+        (c) => `
+          <div class="bench-card">
+            <div class="bench-card-value">${escapeHtml(c.value)}</div>
+            <div class="bench-card-label">${escapeHtml(c.label)}</div>
+            <div class="bench-card-sub">${c.sub}</div>
+          </div>`
+      )
+      .join("") +
+    `</div>` +
+    `<div class="bench-day-table-wrap">
+      <h3 class="subsection-title">Per-day composition</h3>
+      <table class="bench-day-table">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Easy</th>
+            <th>Medium</th>
+            <th>Hard</th>
+            <th>Hard SINGLE</th>
+            <th>Hard MULTI</th>
+            <th>Hard DET</th>
+            <th>HC</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(stats.per_day || [])
+            .map(
+              (d) => `
+                <tr>
+                  <td>${d.day}</td>
+                  <td>${d.easy}</td>
+                  <td>${d.medium}</td>
+                  <td>${d.hard}</td>
+                  <td>${d.single}</td>
+                  <td>${d.multi}</td>
+                  <td>${d.det}</td>
+                  <td>${d.hc}</td>
+                  <td><strong>${d.total}</strong></td>
+                </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>`;
 }
 
 function renderDayTable(days) {
@@ -392,8 +447,7 @@ loadData()
     loadTrajectoryIndex().then((trajIndex) => {
       TRAJECTORY_INDEX = trajIndex;
       renderStatsInline(data.stats);
-      renderCategoryTable(data.categories);
-      renderBenchmarkSummary(data.categories);
+      renderPublicBenchmarkSummary(data.public_stats);
       renderDayTable(data.days);
       // Homepage: show the FULL public bench we have runs for, in a 2-col grid.
       window.__publicExamples = data.public_examples || [];

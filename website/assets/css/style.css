@@ -75,6 +75,12 @@ nav {
 
 .nav-links a:hover { color: var(--accent); }
 
+.nav-links a.nav-active {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 2px;
+}
+
 .nav-toggle {
   display: none;
   width: 42px;
@@ -1348,6 +1354,77 @@ table.lb-table td .lb-elapsed {
   border-color: var(--accent);
 }
 .tag.tag-has-traj { color: var(--accent); border-color: var(--accent-lt); }
+
+/* --- Homepage "Benchmark Summary" cards + per-day table --- */
+.bench-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.25rem 0;
+}
+
+.bench-card {
+  border: 1px solid var(--border-lt);
+  border-radius: 8px;
+  background: var(--bg-subtle);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.bench-card-value {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.bench-card-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.bench-card-sub {
+  font-size: 0.78rem;
+  color: var(--text-sec);
+  line-height: 1.45;
+}
+
+.bench-day-table-wrap {
+  margin-top: 1.5rem;
+}
+
+.bench-day-table {
+  width: 100%;
+  max-width: 720px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.bench-day-table th,
+.bench-day-table td {
+  text-align: left;
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--border-lt);
+}
+
+.bench-day-table th {
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-ter);
+}
+
+@media (max-width: 900px) {
+  .bench-summary-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .bench-summary-cards { grid-template-columns: 1fr; }
+}
 
 /* Task detail page */
 
