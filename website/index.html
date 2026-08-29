@@ -138,12 +138,12 @@
     <div class="container">
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
-        <strong>Early results.</strong> Runs are per-day or per-dataset slices of the 533-task schedule
-        (see the task-set column), wired or wireless ADB on a OnePlus CPH2423 (Android 15, non-rooted).
-        Success rate is the verified fully-successful share, the number from
-        <code>dailybench_report.py</code>, excluding false-passes. Hallucination is the share of
-        hallucination controls the agent falsely claimed to complete. More rows will appear as more
-        models are benchmarked.
+        <strong>Early results.</strong> Each row is a 60-task public-dataset run (20 tasks &times; 3 days)
+        on a OnePlus CPH2423 (Android 15, non-rooted), wired or wireless ADB. Success rate is the
+        verified fully-successful share from the per-trajectory manual audit (ground truth, not the
+        agent's self-reported flag), excluding false-passes. Hallucination is the share of hallucination
+        controls the agent falsely claimed to complete. More rows will appear as more models are
+        benchmarked.
         <br>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>

@@ -11,63 +11,43 @@
 //   halluc   = hallucination rate (control self-reported success), %
 //   transport = "wired" (USB ADB) or "wireless" (Tailscale / TCP ADB)
 //
-// Rows (from the reports):
-//   Day 1 (2026-08-05, qwen3.6-plus):   21/22 pass, SR 90.9%, avg steps 36.05, halluc 0/0
-//   Day 2 (2026-08-06, qwen3.6-plus):   15/18 pass, SR 88.9%, avg steps 38.94, halluc 2/18 = 11.1%
-//   Day 3 (2026-08-06, deepseek-v4-flash): 20/21 pass, SR 90.5%, avg steps 69.57, halluc 0/21
-//   Public (2026-08-03, qwen3.6-plus, wireless): verified SR 54.0% (27/50), 4 false-passes
-//   Public 44 (2026-07-29, qwen3.5-4B local, wired): 13/44 success (29.5%), no hallucination eval
+// Rows (from the reports in reports/public/):
+//   2026-08-28 (qwen3.8-27b TEXT, wireless):  manual audit 37/60 = 61.7% SR, avg steps 29.25, halluc 0/60
+//   2026-08-26 (gemini-3.1-flash-lite, wireless): manual audit 25/60 = 41.7% SR, avg steps 8.32, halluc 1/60
+//   2026-08-26 (qwen3.8-27b VISION, wired):  manual audit 22/60 = 36.7% SR, avg steps 39.83, halluc 1/60
+// Success = manual-audit ground truth (reports mark it authoritative over the
+// self-reported official number).
 
 const LEADERBOARD_ROWS = [
   {
-    model: "deepseek-v4-flash",
-    params: "Day 3 · 21 tasks",
-    org: "DeepSeek (OpenRouter)",
-    mode: "wired",
-    runs: 21,
-    success: { score: 90.5, margin: 0 },
-    steps: 69.57,
-    halluc: 0.0,
-  },
-  {
-    model: "qwen3.6-plus",
-    params: "Day 1 · 22 tasks",
-    org: "Alibaba (OpenRouter)",
-    mode: "wired",
-    runs: 22,
-    success: { score: 90.9, margin: 0 },
-    steps: 36.05,
-    halluc: 0.0,
-  },
-  {
-    model: "qwen3.6-plus",
-    params: "Day 2 · 18 tasks",
-    org: "Alibaba (OpenRouter)",
-    mode: "wired",
-    runs: 18,
-    success: { score: 88.9, margin: 0 },
-    steps: 38.94,
-    halluc: 11.1,
-  },
-  {
-    model: "qwen3.6-plus",
-    params: "Public · 50 tasks",
+    model: "qwen3.8-27b (TEXT)",
+    params: "Public · 60 tasks · 2026-08-28",
     org: "Alibaba (OpenRouter)",
     mode: "wireless",
-    runs: 50,
-    success: { score: 54.0, margin: 0 },
-    steps: null,
-    halluc: 8.0,
+    runs: 60,
+    success: { score: 61.7, margin: 0 },
+    steps: 29.25,
+    halluc: 0.0,
   },
   {
-    model: "qwen3.5-4B (local)",
-    params: "Public · 44 tasks",
-    org: "Alibaba (mini2 GGUF)",
+    model: "gemini-3.1-flash-lite",
+    params: "Public · 60 tasks · 2026-08-26",
+    org: "Google (OpenRouter)",
+    mode: "wireless",
+    runs: 60,
+    success: { score: 41.7, margin: 0 },
+    steps: 8.32,
+    halluc: 1.7,
+  },
+  {
+    model: "qwen3.8-27b (VISION)",
+    params: "Public · 60 tasks · 2026-08-26",
+    org: "Alibaba (OpenRouter)",
     mode: "wired",
-    runs: 44,
-    success: { score: 29.5, margin: 0 },
-    steps: null,
-    halluc: null,
+    runs: 60,
+    success: { score: 36.7, margin: 0 },
+    steps: 39.83,
+    halluc: 1.7,
   },
 ];
 
