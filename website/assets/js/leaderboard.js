@@ -25,6 +25,13 @@
 //   hc       = Hallucination-control honesty — controls the agent honestly
 //              reported as absent (vs falsely claiming success).
 //   buckets  = Manual success rate by difficulty bucket: easy / medium / hard.
+//   cost      = Agent LLM cost (prompt + completion) + request count.
+//   askUserCost = Cost of the simulated-user (gpt-5.4-mini) ask_user calls.
+//   totalCost = Grand total run cost, with the ≈$/task figure.
+//   cpuTemp   = Max CPU/GPU/NPU temp (°C) sampled per second during the run.
+//   powerSkinTemp = Max power-amp / skin temp (°C).
+//   batteryTemp = Max battery temp (°C).
+//   batteryDrain = Total battery drain across the run (per-task Δ sum, %).
 //
 // Rows (manual audit, from the reports in reports/public/):
 //   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
@@ -42,6 +49,13 @@ const COL_DEFS = {
   elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
   hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
   buckets: "manual success rate by difficulty bucket: easy / medium / hard.",
+  cost: "agent LLM cost (prompt + completion) for the run, from llm_proxy_metrics.jsonl (per-request tokens & price), plus the request count.",
+  askUserCost: "cost of the simulated-user model (gpt-5.4-mini) ask_user calls, from ask_user_metrics.jsonl.",
+  totalCost: "grand total run cost (agent LLM + ask_user), with the ≈ per-task figure.",
+  cpuTemp: "max on-device CPU / GPU / NPU temperature (°C), sampled per second per task (samples.ndjson).",
+  powerSkinTemp: "max power-amp / skin temperature (°C), sampled per second per task.",
+  batteryTemp: "max battery temperature (°C), sampled per second per task.",
+  batteryDrain: "total battery drain across the run — sum of per-task battery deltas (%). A battery-death gap (task died at 0%) shows as a large negative.",
 };
 
 const LEADERBOARD_ROWS = [
@@ -61,6 +75,13 @@ const LEADERBOARD_ROWS = [
     elapsed: { wall: "23223 s (6.45 h)", agent: "22633 s" },
     hc: { score: 100, detail: "7/7 honest" },
     buckets: { easy: 88.5, medium: 52.9, hard: 29.4 },
+    cost: { total: 7.133, detail: "1,844 requests" },
+    askUserCost: { total: 0.0022, detail: "7 requests" },
+    totalCost: { total: 7.14, perTask: 0.119 },
+    cpuTemp: { max: 98.2, detail: "CPU / GPU — hot (many step-capped tasks burned heavy context)" },
+    powerSkinTemp: null,
+    batteryTemp: 37.9,
+    batteryDrain: -71,
   },
   {
     model: "gemini-3.1-flash-lite",
@@ -78,6 +99,13 @@ const LEADERBOARD_ROWS = [
     elapsed: { wall: "5932 s (1.65 h)", agent: "5342 s (1.48 h)" },
     hc: { score: 85.7, detail: "6/7 honest" },
     buckets: { easy: 69.2, medium: 29.4, hard: 11.8 },
+    cost: { total: 1.086, detail: "626 requests" },
+    askUserCost: { total: 0.0024, detail: "7 requests" },
+    totalCost: { total: 1.09, perTask: 0.018 },
+    cpuTemp: { max: 86.5, detail: "CPU 86.4 · GPU 86.4 · NPU 86.5 — no throttling" },
+    powerSkinTemp: { max: 47.4, detail: "power-amp 47.4 · skin 47.2" },
+    batteryTemp: 37.8,
+    batteryDrain: -21,
   },
   {
     model: "qwen3.8-27b (VISION)",
@@ -95,6 +123,13 @@ const LEADERBOARD_ROWS = [
     elapsed: { wall: "32452 s (9.01 h)", agent: "31862 s (8.85 h)" },
     hc: { score: 85.7, detail: "6/7 honest" },
     buckets: { easy: 57.7, medium: 23.5, hard: 17.6 },
+    cost: { total: 8.369, detail: "2,530 requests" },
+    askUserCost: { total: 0.0036, detail: "4 requests" },
+    totalCost: { total: 8.37, perTask: 0.140 },
+    cpuTemp: { max: 85.6, detail: "CPU 85.6 · GPU 85.6 · NPU 85.6" },
+    powerSkinTemp: { max: 45.8, detail: "power-amp 45.8 · skin 45.4" },
+    batteryTemp: 37.7,
+    batteryDrain: -99,
   },
 ];
 
@@ -132,6 +167,13 @@ const TABLE_SORTS = {
   elapsed: { label: "Elapsed", defaultDirection: "asc", value: (row) => parseFloat(row.elapsed.wall) },
   hc: { label: "HC honesty", defaultDirection: "desc", value: (row) => row.hc.score },
   buckets: { label: "Buckets", defaultDirection: "desc", value: (row) => row.buckets.easy },
+  cost: { label: "Agent LLM cost", defaultDirection: "asc", value: (row) => row.cost.total },
+  askUserCost: { label: "ask_user cost", defaultDirection: "asc", value: (row) => row.askUserCost.total },
+  totalCost: { label: "Total cost", defaultDirection: "asc", value: (row) => row.totalCost.total },
+  cpuTemp: { label: "CPU/GPU/NPU temp", defaultDirection: "desc", value: (row) => row.cpuTemp.max },
+  powerSkinTemp: { label: "Power-amp/skin temp", defaultDirection: "desc", value: (row) => (row.powerSkinTemp ? row.powerSkinTemp.max : -Infinity) },
+  batteryTemp: { label: "Battery temp", defaultDirection: "desc", value: (row) => row.batteryTemp },
+  batteryDrain: { label: "Battery drain", defaultDirection: "asc", value: (row) => row.batteryDrain },
   runs: { label: "Runs", defaultDirection: "desc", value: (row) => row.runs },
   org: { label: "Organization", defaultDirection: "asc", value: (row) => row.org.toLowerCase() },
 };
@@ -215,14 +257,27 @@ const COLUMNS = [
   { key: "elapsed", label: "Elapsed", def: COL_DEFS.elapsed, cell: (r) => `<td class="lb-score"><span class="lb-elapsed">${r.elapsed.wall}</span><span class="lb-sub">agent ${r.elapsed.agent}</span></td>` },
   { key: "hc", label: "HC honesty", def: COL_DEFS.hc, cell: (r) => `<td class="lb-score">${r.hc.score.toFixed(1)}%<span class="lb-sub">${r.hc.detail}</span></td>` },
   { key: "buckets", label: "Buckets E / M / H", def: COL_DEFS.buckets, cell: (r) => `<td class="lb-score">${r.buckets.easy.toFixed(1)} / ${r.buckets.medium.toFixed(1)} / ${r.buckets.hard.toFixed(1)}</td>` },
+  { key: "cost", label: "Agent LLM cost", def: COL_DEFS.cost, cell: (r) => `<td class="lb-score">$${r.cost.total.toFixed(2)}<span class="lb-sub">${r.cost.detail}</span></td>` },
+  { key: "askUserCost", label: "ask_user cost", def: COL_DEFS.askUserCost, cell: (r) => `<td class="lb-score">$${r.askUserCost.total.toFixed(4)}<span class="lb-sub">${r.askUserCost.detail}</span></td>` },
+  { key: "totalCost", label: "Total cost", def: COL_DEFS.totalCost, cell: (r) => `<td class="lb-score">$${r.totalCost.total.toFixed(2)}<span class="lb-sub">≈ $${r.totalCost.perTask.toFixed(3)} / task</span></td>` },
+  { key: "cpuTemp", label: "CPU/GPU/NPU temp", def: COL_DEFS.cpuTemp, cell: (r) => `<td class="lb-score">${r.cpuTemp.max.toFixed(1)} °C<span class="lb-sub">${r.cpuTemp.detail}</span></td>` },
+  { key: "powerSkinTemp", label: "Power-amp/skin temp", def: COL_DEFS.powerSkinTemp, cell: (r) => `<td class="lb-score">${r.powerSkinTemp ? r.powerSkinTemp.max.toFixed(1) + " °C" : "—"}<span class="lb-sub">${r.powerSkinTemp ? r.powerSkinTemp.detail : "not sampled"}</span></td>` },
+  { key: "batteryTemp", label: "Battery temp", def: COL_DEFS.batteryTemp, cell: (r) => `<td class="lb-score">${r.batteryTemp.toFixed(1)} °C</td>` },
+  { key: "batteryDrain", label: "Battery drain", def: COL_DEFS.batteryDrain, cell: (r) => `<td class="lb-score">${r.batteryDrain}%</td>` },
   { key: "runs", label: "Runs", cell: (r) => `<td>${r.runs}</td>` },
   { key: "org", label: "Organization", cell: (r) => `<td>${r.org}</td>` },
 ];
 
 // Which metric columns are visible in the table (toggled via the Columns
-// dropdown). rank + model are always shown. All metric columns are on by
-// default so the table looks exactly as before.
-const columnVisibility = Object.fromEntries(COLUMNS.filter((c) => !c.always).map((c) => [c.key, true]));
+// dropdown). rank + model are always shown. The original metric set stays on by
+// default; the cost / thermal / battery columns added later default to OFF so
+// the table doesn't get crowded (they're one checkbox away in the dropdown).
+const columnVisibility = Object.fromEntries(
+  COLUMNS.filter((c) => !c.always).map((c) => [c.key, true])
+);
+for (const off of ["cost", "askUserCost", "totalCost", "cpuTemp", "powerSkinTemp", "batteryTemp", "batteryDrain"]) {
+  columnVisibility[off] = false;
+}
 
 // Renders the "Columns" dropdown with a checkbox per metric column. Toggling a
 // checkbox immediately shows/hides that column in the table.
@@ -399,6 +454,8 @@ document.addEventListener("click", (event) => {
 
 // Chartable metrics — every leaderboard column that has a numeric value, so the
 // user can pick any X and Y axis freely. Default: X = success, Y = avg steps.
+// Each difficulty bucket is its own metric so you can chart easy vs medium vs
+// hard directly; cost / thermal / battery figures come from the run telemetry.
 const CHART_METRICS = {
   success: { label: "Success rate", unit: "%", value: (r) => r.success.score },
   askUser: { label: "ASK USER", unit: "%", value: (r) => r.askUser },
@@ -409,7 +466,16 @@ const CHART_METRICS = {
   kbiq: { label: "KBIQ", unit: "", value: (r) => (r.kbiq === "N/A" ? null : parseFloat(r.kbiq)) },
   elapsed: { label: "Elapsed", unit: "s", value: (r) => parseFloat(r.elapsed.wall) },
   hc: { label: "HC honesty", unit: "%", value: (r) => r.hc.score },
-  buckets: { label: "Easy bucket", unit: "%", value: (r) => r.buckets.easy },
+  bucketEasy: { label: "Easy bucket", unit: "%", value: (r) => r.buckets.easy },
+  bucketMedium: { label: "Medium bucket", unit: "%", value: (r) => r.buckets.medium },
+  bucketHard: { label: "Hard bucket", unit: "%", value: (r) => r.buckets.hard },
+  cost: { label: "Agent LLM cost", unit: "$", value: (r) => r.cost.total },
+  askUserCost: { label: "ask_user cost", unit: "$", value: (r) => r.askUserCost.total },
+  totalCost: { label: "Total cost", unit: "$", value: (r) => r.totalCost.total },
+  cpuTemp: { label: "CPU/GPU/NPU temp", unit: "°C", value: (r) => r.cpuTemp.max },
+  powerSkinTemp: { label: "Power-amp/skin temp", unit: "°C", value: (r) => (r.powerSkinTemp ? r.powerSkinTemp.max : null) },
+  batteryTemp: { label: "Battery temp", unit: "°C", value: (r) => r.batteryTemp },
+  batteryDrain: { label: "Battery drain", unit: "%", value: (r) => r.batteryDrain },
 };
 
 // Distinct bubble colours (one per model), so each model reads clearly.
@@ -629,6 +695,8 @@ function renderScatterChart() {
 
 function fmtTick(v, meta) {
   if (meta.unit === "%") return `${Math.round(v)}%`;
+  if (meta.unit === "°C") return `${Math.round(v)}°`;
+  if (meta.unit === "$") return v >= 1 ? `$${v.toFixed(1)}` : `$${v.toFixed(2)}`;
   if (v >= 1000) return `${Math.round(v / 100) / 10}k`;
   if (Number.isInteger(v)) return String(v);
   if (Math.abs(v) >= 1) return v.toFixed(1).replace(/\.0$/, "");
@@ -637,6 +705,8 @@ function fmtTick(v, meta) {
 
 function fmtVal(v, meta) {
   if (meta.unit === "%") return `${Math.round(v * 10) / 10}%`;
+  if (meta.unit === "°C") return `${Math.round(v * 10) / 10} °C`;
+  if (meta.unit === "$") return `$${v.toFixed(2)}`;
   if (meta.unit === "s") return `${Math.round(v)} s`;
   if (v >= 1) return String(Math.round(v * 100) / 100);
   return String(Math.round(v * 1000) / 1000);

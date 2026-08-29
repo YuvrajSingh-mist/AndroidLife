@@ -1033,7 +1033,11 @@ table.lb-table td.lb-params {
   top: calc(100% + 0.5rem);
   left: 0;
   z-index: 40;
-  min-width: 210px;
+  min-width: 230px;
+  max-height: min(70vh, 24rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -1041,6 +1045,8 @@ table.lb-table td.lb-params {
   padding: 0.6rem 0.75rem;
   display: grid;
   gap: 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
 .lb-metrics-panel[hidden] {
