@@ -14,7 +14,7 @@
 // Rows (from the reports in reports/public/):
 //   2026-08-28 (qwen3.8-27b TEXT, wireless):  manual audit 37/60 = 61.7% SR, avg steps 29.25, halluc 0/60
 //   2026-08-26 (gemini-3.1-flash-lite, wireless): manual audit 25/60 = 41.7% SR, avg steps 8.32, halluc 1/60
-//   2026-08-26 (qwen3.8-27b VISION, wired):  manual audit 22/60 = 36.7% SR, avg steps 39.83, halluc 1/60
+//   2026-08-26 (qwen3.8-27b VISION, wireless): manual audit 22/60 = 36.7% SR, avg steps 39.83, halluc 1/60
 // Success = manual-audit ground truth (reports mark it authoritative over the
 // self-reported official number).
 
@@ -43,7 +43,7 @@ const LEADERBOARD_ROWS = [
     model: "qwen3.8-27b (VISION)",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Alibaba (OpenRouter)",
-    mode: "wired",
+    mode: "wireless",
     runs: 60,
     success: { score: 36.7, margin: 0 },
     steps: 39.83,
