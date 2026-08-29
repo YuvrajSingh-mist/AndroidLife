@@ -1529,20 +1529,6 @@ table.lb-table td .lb-elapsed {
   flex-wrap: wrap;
 }
 
-.run-select-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-}
-
-.run-select-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-ter);
-}
-
 .trajectory-gif-wrap {
   flex: 1 1 380px;
   min-width: 0;

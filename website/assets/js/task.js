@@ -161,7 +161,7 @@ function stateRow(label, value) {
   `;
 }
 
-function renderTaskState(task, traj) {
+function renderTaskState(task, run) {
   const root = document.getElementById("task-state-body");
   if (!root) return;
 
@@ -172,10 +172,10 @@ function renderTaskState(task, traj) {
   let runModel = "No run recorded";
   let runResult = "—";
   let runDuration = "—";
-  if (traj) {
-    runModel = traj.model ? escapeHtml(traj.model) : "—";
-    runResult = traj.success === true ? '<span class="run-ok">Success</span>' : traj.success === false ? '<span class="run-fail">Failure</span>' : "—";
-    runDuration = fmtDuration(traj.started_at_utc, traj.ended_at_utc);
+  if (run) {
+    runModel = run.model ? escapeHtml(run.model) : "—";
+    runResult = run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "—";
+    runDuration = fmtDuration(run.started_at_utc, run.ended_at_utc);
   }
 
   root.innerHTML =
@@ -390,6 +390,20 @@ function runsForTask(traj) {
   return traj ? [traj] : [];
 }
 
+// Pick which run's trajectory to display: honour an explicit ?run= key (the
+// homepage model selector links with &run=<run_key>), else the primary run.
+// No dropdown — the task page always shows exactly one trajectory.
+function pickRun(traj) {
+  const runs = runsForTask(traj);
+  if (!runs.length) return null;
+  const requested = getParam("run");
+  if (requested) {
+    const match = runs.find((r) => r.run_key === requested);
+    if (match) return match;
+  }
+  return runs.find((r) => r.is_primary) || runs[0];
+}
+
 // Re-render the whole trajectory section for a single run entry.
 async function renderRun(task, run, stepsSection) {
   if (!run || !run.has_trajectory) return;
@@ -457,8 +471,8 @@ async function renderRun(task, run, stepsSection) {
 function renderTrajectory(task, traj) {
   const section = document.getElementById("task-trajectory");
   const stepsSection = document.getElementById("task-trajectory-steps");
-  const runs = runsForTask(traj);
-  const hasAny = runs.some((r) => r.has_trajectory);
+  const run = pickRun(traj);
+  const hasAny = !!run && run.has_trajectory;
 
   if (!hasAny) {
     const btn = document.getElementById("trajectory-btn");
@@ -481,27 +495,10 @@ function renderTrajectory(task, traj) {
 
   if (section) section.hidden = false;
 
-  // Multi-run selector — when several runs exist (e.g. two 26-Aug models +
-  // today's 28-Aug), let the viewer pick which trajectory to replay.
-  const runSelect = document.getElementById("trajectory-run-select");
-  const runWrap = document.getElementById("run-select-wrap");
-  const runnable = runs.filter((r) => r.has_trajectory);
-  if (runSelect && runWrap && runnable.length > 1) {
-    runSelect.innerHTML = runnable
-      .map((r, i) => `<option value="${i}">${escapeHtml(r.run_label || `Run ${i + 1} (${r.model || "?"})`)}</option>`)
-      .join("");
-    runWrap.hidden = false;
-    const primaryIdx = Math.max(0, runnable.findIndex((r) => r.is_primary));
-    runSelect.value = String(primaryIdx);
-    runSelect.onchange = () => {
-      const run = runnable[Number(runSelect.value)];
-      if (run) renderRun(task, run, stepsSection);
-    };
-    renderRun(task, runnable[primaryIdx], stepsSection);
-  } else {
-    if (runWrap) runWrap.hidden = true;
-    renderRun(task, runnable[0], stepsSection);
-  }
+  // Single-run view: render the trajectory for the ?run= key (or the primary
+  // run when none was requested). The run selector was removed — a task page
+  // shows exactly one trajectory, chosen by the link that opened it.
+  renderRun(task, run, stepsSection);
 }
 
 // ---------------------------------------------------------------------------
@@ -553,7 +550,8 @@ async function init() {
     document.title = `DailyBench500  -  ${task.task_id}`;
 
     const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
-    renderTaskState(task, traj);
+    const run = pickRun(traj);
+    renderTaskState(task, run);
 
     renderTrajectory(task, traj);
     attachLightbox();

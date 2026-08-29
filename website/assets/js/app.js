@@ -225,7 +225,7 @@ function publicExampleMarkup(example, run) {
       </div>
     `;
   }
-  const detailHref = detailPageHref(`set=public&task_id=${encodeURIComponent(example.task_id)}`);
+  const detailHref = detailPageHref(`set=public&task_id=${encodeURIComponent(example.task_id)}${run && run.run_key ? `&run=${encodeURIComponent(run.run_key)}` : ""}`);
   return `
     <article class="public-example" data-task-id="${escapeHtml(example.task_id)}">
       <div class="public-example-meta">
