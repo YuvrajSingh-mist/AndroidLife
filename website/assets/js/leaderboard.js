@@ -1,16 +1,21 @@
 // Leaderboard for DailyBench500. Real results, sourced from the run reports in
-// reports/public/ (the "Official metrics" tables of each run). These numbers are
-// hand-copied here (not fetched at build time) because the run folders are
-// private / gitignored. Update these constants — and add another row — whenever
-// a new model's results are published.
+// reports/public/ (the MANUAL AUDIT sections of each run). The reports state
+// explicitly that the manual audit is the ground truth — the "Official metrics"
+// tables are self-reported and inflated (e.g. gemini's official 63.3% hides 12
+// false passes; its manual headline is 41.7%). These numbers are hand-copied
+// here (not fetched at build time) because the run folders are private /
+// gitignored. Update these constants — and add another row — whenever a new
+// model's results are published.
 //
-// Column definitions (also shown as the hover tooltips on each header):
-//   success  = Success Rate: fully-successful tasks ÷ total (60), from the
-//              report's official metrics table.
-//   askUser  = Success Rate on the 7 ASK USER tasks (agent must ask the
-//              simulated user for a load-bearing fact before acting).
-//   guiOnly  = Success Rate on the 53 non-ASK-USER tasks (deterministic
-//              end-state verified on device).
+// Column definitions (also shown in the "How the metrics are computed" tooltip):
+//   success  = Manual-audit Success Rate: fully-successful tasks ÷ total (60),
+//              from the report's manual audit (honest-fail controls count as
+//              success; false passes downgraded to FAIL).
+//   askUser  = Manual interaction pass rate on the 10 ASK USER tasks (6 SINGLE
+//              + 4 MULTI) — agent must ask the simulated user for a
+//              load-bearing fact before acting.
+//   guiOnly  = Manual genuine pass rate on the 53 non-control tasks (honest-fail
+//              controls excluded).
 //   steps    = Average Completion Steps across the run.
 //   queries  = Average User Queries per task.
 //   uiq      = User Interaction Quality (fact-match) — how often the agent's
@@ -19,24 +24,24 @@
 //   elapsed  = Wall-clock run duration vs agent running time (cooldown removed).
 //   hc       = Hallucination-control honesty — controls the agent honestly
 //              reported as absent (vs falsely claiming success).
-//   buckets  = Success rate by difficulty bucket: easy / medium / hard.
+//   buckets  = Manual success rate by difficulty bucket: easy / medium / hard.
 //
-// Rows (from the reports in reports/public/):
-//   2026-08-28 qwen3.8-27b TEXT      → SR 51.7%, steps 29.25, HC 7/7
-//   2026-08-26 gemini-3.1-flash-lite → SR 63.3%, steps 8.32,  HC 6/7
-//   2026-08-26 qwen3.8-27b VISION    → SR 38.3%, steps 39.83, HC 6/7
+// Rows (manual audit, from the reports in reports/public/):
+//   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
+//   2026-08-26 gemini-3.1-flash-lite → SR 41.7%, steps 8.32,  HC 6/7
+//   2026-08-26 qwen3.8-27b VISION    → SR 36.7%, steps 39.83, HC 6/7
 
 const COL_DEFS = {
-  success: "fully-successful tasks ÷ total (60), from the run's official metrics table (verified, false-passes excluded).",
-  askUser: "success rate on the 7 ASK USER tasks, where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
-  guiOnly: "success rate on the 53 non-ASK-USER tasks, where the end state is verified directly on the device (deterministic).",
+  success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth — the official self-reported metric was inflated.",
+  askUser: "manual interaction pass rate on the 10 ASK USER tasks (6 SINGLE + 4 MULTI), where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
+  guiOnly: "manual genuine pass rate on the 53 non-control tasks (honest-fail hallucination controls excluded), where the end state is verified directly on the device.",
   steps: "mean agent steps per task across the run.",
   queries: "mean number of times the agent asked the simulated user per task.",
   uiq: "User Interaction Quality (UIQ, fact-match) — share of ask_user calls whose answer matched the ground-truth fact.",
   kbiq: "KB Interaction Quality (KBIQ, manual) — correct knowledge-base queries ÷ total KB queries asked.",
   elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
   hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
-  buckets: "success rate by difficulty bucket: easy / medium / hard.",
+  buckets: "manual success rate by difficulty bucket: easy / medium / hard.",
 };
 
 const LEADERBOARD_ROWS = [
@@ -46,8 +51,8 @@ const LEADERBOARD_ROWS = [
     org: "Alibaba (OpenRouter)",
     mode: "text",
     runs: 60,
-    success: { score: 51.7, margin: 0 },
-    askUser: 14.3,
+    success: { score: 61.7, margin: 0 },
+    askUser: 20.0,
     guiOnly: 56.6,
     steps: 29.25,
     queries: 0.57,
@@ -55,7 +60,7 @@ const LEADERBOARD_ROWS = [
     kbiq: "N/A",
     elapsed: { wall: "23223 s (6.45 h)", agent: "22633 s" },
     hc: { score: 100, detail: "7/7 honest" },
-    buckets: { easy: 73.1, medium: 52.9, hard: 17.6 },
+    buckets: { easy: 88.5, medium: 52.9, hard: 29.4 },
   },
   {
     model: "gemini-3.1-flash-lite",
@@ -63,16 +68,16 @@ const LEADERBOARD_ROWS = [
     org: "Google (OpenRouter)",
     mode: "text",
     runs: 60,
-    success: { score: 63.3, margin: 0 },
-    askUser: 42.9,
-    guiOnly: 64.2,
+    success: { score: 41.7, margin: 0 },
+    askUser: 10.0,
+    guiOnly: 37.7,
     steps: 8.32,
     queries: 0.71,
     uiq: 0.125,
     kbiq: "0.000",
     elapsed: { wall: "5932 s (1.65 h)", agent: "5342 s (1.48 h)" },
     hc: { score: 85.7, detail: "6/7 honest" },
-    buckets: { easy: 65.4, medium: 64.7, hard: 47.1 },
+    buckets: { easy: 69.2, medium: 29.4, hard: 11.8 },
   },
   {
     model: "qwen3.8-27b (VISION)",
@@ -80,16 +85,16 @@ const LEADERBOARD_ROWS = [
     org: "Alibaba (OpenRouter)",
     mode: "vision",
     runs: 60,
-    success: { score: 38.3, margin: 0 },
-    askUser: 14.3,
-    guiOnly: 41.5,
+    success: { score: 36.7, margin: 0 },
+    askUser: 20.0,
+    guiOnly: 39.6,
     steps: 39.83,
     queries: 0.43,
     uiq: 0.125,
     kbiq: "0.000",
     elapsed: { wall: "32452 s (9.01 h)", agent: "31862 s (8.85 h)" },
     hc: { score: 85.7, detail: "6/7 honest" },
-    buckets: { easy: 57.7, medium: 23.5, hard: 23.5 },
+    buckets: { easy: 57.7, medium: 23.5, hard: 17.6 },
   },
 ];
 

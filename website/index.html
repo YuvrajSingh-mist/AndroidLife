@@ -140,10 +140,11 @@
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
         <strong>Early results.</strong> Each row is a 60-task public-dataset run (20 tasks &times; 3 days)
-        on a OnePlus CPH2423 (Android 15, non-rooted). Success rate is the verified fully-successful share
-        from the run's official metrics table, excluding false-passes. See
-        <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as
-        more models are benchmarked.
+        on a OnePlus CPH2423 (Android 15, non-rooted). Success rate is the <strong>manual-audit ground
+        truth</strong> from each run's report in <code>reports/public/</code> &mdash; every task's verdict
+        was hand-verified on-device (false passes downgraded to FAIL, honest-fail hallucination controls
+        counted as success). See <em>How the metrics are computed</em> below for each metric's definition.
+        More rows will appear as more models are benchmarked.
         <br>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
