@@ -210,7 +210,6 @@ function publicExampleMarkup(example, run) {
     example.is_ask_user ? `<span class="tag tag-ask">ASK USER</span>` : "",
     example.cross_app ? `<span class="tag tag-cross">cross-app</span>` : "",
     example.placeholder_count ? `<span class="tag">${example.placeholder_count} placeholder${example.placeholder_count === 1 ? "" : "s"}</span>` : "",
-    example.run_count > 1 ? `<span class="tag tag-run">${example.run_count} runs</span>` : "",
     `<span class="tag">${example.points} pt</span>`,
   ]
     .filter(Boolean)
