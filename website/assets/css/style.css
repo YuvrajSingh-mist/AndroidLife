@@ -1646,15 +1646,21 @@ table.lb-table td .lb-elapsed {
   border-radius: 8px;
   background: var(--bg-subtle);
   padding: 1.1rem 1.2rem;
+}
+
+.step-view-card {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: min(240px, 30%) 1fr;
   gap: 1.4rem;
   align-items: start;
 }
 
-/* Phone-frame screenshot for the current step */
+/* Phone-frame screenshot for the current step — left column, sticks while
+   you scroll the step data on the right. */
 .step-shot-figure {
   margin: 0;
+  grid-column: 1;
+  grid-row: 1 / span 10;
   position: sticky;
   top: 70px;
   width: min(240px, 100%);
@@ -1670,6 +1676,16 @@ table.lb-table td .lb-elapsed {
   border: 1px solid var(--border);
   background: #fff;
   box-shadow: 0 6px 18px rgba(44, 40, 34, 0.12);
+}
+
+/* All step data (heading, thought, code, tools, output) lives in the right
+   column, next to the phone. */
+.step-heading,
+.step-thought,
+.step-code,
+.step-tools,
+.step-output {
+  grid-column: 2;
 }
 
 .step-heading {
@@ -1861,13 +1877,22 @@ table.lb-table td .lb-elapsed {
 @media (max-width: 640px) {
   .task-state-grid { grid-template-columns: 1fr; }
   .trajectory-viewer { flex-direction: column; }
-  .step-view {
+  .step-view-card {
     grid-template-columns: 1fr;
     gap: 0.9rem;
   }
   .step-shot-figure {
+    grid-column: 1;
+    grid-row: auto;
     position: static;
     max-width: 200px;
     margin: 0 auto;
+  }
+  .step-heading,
+  .step-thought,
+  .step-code,
+  .step-tools,
+  .step-output {
+    grid-column: 1;
   }
 }
