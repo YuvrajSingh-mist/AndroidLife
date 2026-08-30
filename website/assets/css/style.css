@@ -1554,6 +1554,7 @@ table.lb-table td .lb-elapsed {
   height: min(72vh, 620px);
   width: auto;
   max-width: 100%;
+  aspect-ratio: 1080 / 2412;
   object-fit: contain;
   background: #fff;
   border: 1px solid var(--border-lt);
@@ -1664,6 +1665,7 @@ table.lb-table td .lb-elapsed {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 1080 / 2412;
   border-radius: 14px;
   border: 1px solid var(--border);
   background: #fff;
