@@ -1656,11 +1656,13 @@ table.lb-table td .lb-elapsed {
 }
 
 /* Phone-frame screenshot for the current step — left column, sticks while
-   you scroll the step data on the right. */
+   you scroll the step data on the right. Vertically centred against the
+   taller data column so there's no dead space below the phone. */
 .step-shot-figure {
   margin: 0;
   grid-column: 1;
   grid-row: 1 / span 10;
+  align-self: center;
   position: sticky;
   top: 70px;
   width: min(240px, 100%);
