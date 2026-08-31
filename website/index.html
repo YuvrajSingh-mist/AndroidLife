@@ -139,23 +139,8 @@
     <div class="container">
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
-        <strong>Early results.</strong> Each row is a public-dataset run (60 tasks &mdash; 20 tasks &times; 3 days)
-        on a OnePlus CPH2423 (Android 15, non-rooted); the kimi-k2.6 VISION row is flagged
-        <em>interrupted</em> &mdash; its run died at 35/60 when the phone battery hit 0, so its numbers cover
-        only the 35 finished tasks. Success rate is the <strong>manual-audit ground truth</strong> from each
-        run's report in <code>reports/public/</code> &mdash; every task's verdict was hand-verified on-device
-        (false passes downgraded to FAIL, honest-fail hallucination controls counted as success). See
-        <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as
-        more models are benchmarked.
-        <br>
-        <strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> &mdash; it draws
-        a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is
-        <strong>no OCR element-grouping, no element IDs, and no marked touch boxes</strong>. The model
-        inspects the raw screenshot and eyeballs where to tap from pixels + grid, with no per-element
-        anchors to lean on (that marked-boxes approach is UI-TARS / mobile-vlm / Mobile-Agent-v2, not
-        mobilerun). So a vision run has to reconstruct every target from pixels alone &mdash; which is why
-        vision consistently lands below the text runs below.
-        <br>
+        <p><strong>Early results.</strong><sup class="fn-ref"><a href="#fn-lead-1" id="fnref-lead-1">[1]</a></sup></p>
+        <p><strong>Why vision mode trails.</strong><sup class="fn-ref"><a href="#fn-lead-2" id="fnref-lead-2">[2]</a></sup></p>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
           <span id="stats-tooltip" class="info-tooltip" role="tooltip">
@@ -428,6 +413,16 @@
       year={2026},
       howpublished={\url{https://github.com/YuvrajSingh-mist/DrainBench300}},
 }</code></pre>
+    </div>
+  </section>
+
+  <section id="footnotes" class="footnotes" aria-labelledby="heading-footnotes">
+    <div class="container">
+      <h2 class="section-title" id="heading-footnotes">Footnotes</h2>
+      <ol class="footnotes-list">
+        <li id="fn-lead-1"><strong>Early results.</strong> Each row is a public-dataset run (60 tasks - 20 tasks &times; 3 days) on a OnePlus CPH2423 (Android 15, non-rooted); the kimi-k2.6 VISION row is flagged <em>interrupted</em> - its run died at 35/60 when the phone battery hit 0, so its numbers cover only the 35 finished tasks. Success rate is the <strong>manual-audit ground truth</strong> from each run's report in <code>reports/public/</code> - every task's verdict was hand-verified on-device (false passes downgraded to FAIL, honest-fail hallucination controls counted as success). See <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as more models are benchmarked. <a href="#fnref-lead-1" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
+        <li id="fn-lead-2"><strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> - it draws a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is <strong>no OCR element-grouping, no element IDs, and no marked touch boxes</strong>. The model inspects the raw screenshot and eyeballs where to tap from pixels + grid, with no per-element anchors to lean on (that marked-boxes approach is UI-TARS / mobile-vlm / Mobile-Agent-v2, not mobilerun). So a vision run has to reconstruct every target from pixels alone - which is why vision consistently lands below the text runs below. <a href="#fnref-lead-2" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
+      </ol>
     </div>
   </section>
 </main>

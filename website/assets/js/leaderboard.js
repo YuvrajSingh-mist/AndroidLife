@@ -42,8 +42,8 @@ const COL_DEFS = {
   guiOnly: "manual genuine pass rate on the 53 non-control tasks (honest-fail hallucination controls excluded), where the end state is verified directly on the device.",
   steps: "mean agent steps per task across the run.",
   queries: "mean number of times the agent asked the simulated user per task.",
-  uiq: "User Interaction Quality (UIQ, fact-match) - share of ask_user calls whose answer matched the ground-truth fact."
-  kbiq: "KB Interaction Quality (KBIQ, manual) - correct knowledge-base queries ÷ total KB queries asked."
+  uiq: "User Interaction Quality (UIQ, fact-match) - share of ask_user calls whose answer matched the ground-truth fact.",
+  kbiq: "KB Interaction Quality (KBIQ, manual) - correct knowledge-base queries ÷ total KB queries asked.",
   elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
   hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
   buckets: "manual success rate by difficulty bucket: easy / medium / hard.",
@@ -53,7 +53,7 @@ const COL_DEFS = {
   cpuTemp: "max on-device CPU / GPU / NPU temperature (°C), sampled per second per task (samples.ndjson).",
   powerSkinTemp: "max power-amp / skin temperature (°C), sampled per second per task.",
   batteryTemp: "max battery temperature (°C), sampled per second per task.",
-  batteryDrain: "total battery drain across the run - sum of per-task battery deltas (%). A battery-death gap (task died at 0%) shows as a large negative."
+  batteryDrain: "total battery drain across the run - sum of per-task battery deltas (%). A battery-death gap (task died at 0%) shows as a large negative.",
 };
 
 const LEADERBOARD_ROWS = [

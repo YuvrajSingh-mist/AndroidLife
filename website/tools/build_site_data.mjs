@@ -39,6 +39,48 @@ function noEmDash(value) {
   return value;
 }
 
+// Parse a KEY=VALUE vars file (the .env style used by public_vars.local.env /
+// tasks_vars.local.env): lines are "key=value  # comment". Keys may contain
+// spaces; the value stops at the first " #" comment marker.
+function parseEnvFile(rel) {
+  const out = {};
+  try {
+    const text = readFileSync(joinPath(rel), "utf-8");
+    for (const line of text.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eq = trimmed.indexOf("=");
+      if (eq <= 0) continue;
+      const key = trimmed.slice(0, eq).trim();
+      let value = trimmed.slice(eq + 1).trim();
+      const hash = value.indexOf(" #");
+      if (hash !== -1) value = value.slice(0, hash).trim();
+      if (key) out[key] = value;
+    }
+  } catch {
+    // vars file missing (e.g. a build without the local vars) - leave empty
+  }
+  return out;
+}
+
+// Find the ordered, unique [placeholder] keys in a prompt and pair each with its
+// resolved value from the vars map. Unresolvable tokens are skipped (the site
+// keeps showing the raw token for those).
+function resolvePlaceholders(prompt, vars) {
+  const seen = new Map();
+  const placeholders = [];
+  const pattern = /'\[([^\]]+)\]'|\[([^\]]+)\]/g;
+  let m;
+  while ((m = pattern.exec(prompt)) !== null) {
+    const key = (m[1] || m[2]).trim();
+    const value = vars[key];
+    if (value == null || seen.has(key)) continue;
+    seen.set(key, value);
+    placeholders.push({ key, value });
+  }
+  return placeholders;
+}
+
 function primaryApp(task) {
   const apps = task.apps && task.apps.length ? task.apps : [task.app];
   return apps[0];
@@ -49,6 +91,8 @@ function main() {
   const pub = readJson("benchmarks/dailyBench-600/DailyBench_public_v2.json");
   const tasks = full.tasks;
   const publicTasks = pub.tasks;
+  const publicVars = parseEnvFile("benchmarks/dailyBench-600/public_vars.local.env");
+  const tasksVars = parseEnvFile("benchmarks/dailyBench-600/tasks_vars.local.env");
 
   const stats = {
     task_count: tasks.length,
@@ -240,6 +284,8 @@ function main() {
         cross_app: Boolean(t.is_cross_app || t.cross_app_required),
         is_ask_user: Boolean(t.is_ask_user),
         placeholder_count: t.placeholder_count || 0,
+        placeholders: resolvePlaceholders(t.prompt_text, publicVars),
+        vars_file: "public_vars.local.env",
         day: run.day || t.day || 0,
         model: run.model || "",
         success: run.success ?? null,
@@ -267,6 +313,8 @@ function main() {
       cross_app: Boolean(t.is_cross_app || t.cross_app_required),
       points: t.points || 1,
       placeholder_count: t.placeholder_count || 0,
+      placeholders: resolvePlaceholders(t.prompt_text, tasksVars),
+      vars_file: "tasks_vars.local.env",
       prompt: t.prompt_text,
       note: t.note || "",
     }));

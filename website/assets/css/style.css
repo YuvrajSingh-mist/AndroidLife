@@ -1898,3 +1898,39 @@ table.lb-table td .lb-elapsed {
     grid-column: 1;
   }
 }
+
+/* Footnote references + footnotes section (superscript links + bottom list) */
+.fn-ref {
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: super;
+  padding-left: 0.1em;
+}
+.fn-ref a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.fn-ref a:hover {
+  text-decoration: underline;
+}
+.footnotes {
+  margin-top: 2.5rem;
+}
+.footnotes-list {
+  font-size: 0.85rem;
+  color: var(--text-ter);
+  padding-left: 1.4rem;
+}
+.footnotes-list li {
+  margin-bottom: 0.55rem;
+}
+.footnotes-list code {
+  font-size: 0.85em;
+}
+.footnotes-list a {
+  color: var(--accent);
+}
+.fn-back {
+  margin-left: 0.25rem;
+  text-decoration: none;
+}

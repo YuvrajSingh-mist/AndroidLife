@@ -13,6 +13,15 @@ function pagePath(rootRel) {
   return rootRel.startsWith("../") || rootRel.startsWith("http") ? rootRel : `../${rootRel}`;
 }
 
+// GitHub URL for the published vars file (public_vars.local.env / tasks_vars.local.env)
+// that each task's placeholder values are resolved from. The repo publishes both so
+// the footnote links below actually resolve.
+const GITHUB_REPO = "https://github.com/YuvrajSingh-mist/DroidBench-530";
+const VARS_FILE_DIR = "blob/master/benchmarks/dailyBench-600/";
+function varsFileUrl(file) {
+  return `${GITHUB_REPO}/${VARS_FILE_DIR}${encodeURIComponent(file)}`;
+}
+
 function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
@@ -31,6 +40,48 @@ function formatPrompt(text) {
     const name = quoted || bare;
     return `<em class="placeholder">[${name}]</em>`;
   });
+}
+
+// Render a task prompt with its placeholder VALUES filled in (the value each run
+// actually used, resolved from the vars file at build time). Each resolved
+// placeholder keeps the placeholder styling and gains a [N] superscript linking
+// to the matching footnote, where N is the placeholder's 1-based position in the
+// task's `placeholders` list. Tokens with no resolved value keep the raw [key].
+function formatPromptResolved(prompt, placeholders) {
+  const byKey = new Map(placeholders.map((p, i) => [p.key, { value: p.value, n: i + 1 }]));
+  return escapeHtml(prompt).replace(/'\[([^\]]+)\]'|\[([^\]]+)\]/g, (m, quoted, bare) => {
+    const key = (quoted || bare).trim();
+    const ph = byKey.get(key);
+    if (!ph) return `<em class="placeholder">[${key}]</em>`;
+    return (
+      `<em class="placeholder">${escapeHtml(ph.value)}</em>` +
+      `<sup class="fn-ref"><a href="#task-fn-${ph.n}" id="task-fnref-${ph.n}">[${ph.n}]</a></sup>`
+    );
+  });
+}
+
+// Fill the page footnotes list: one entry per resolved placeholder, each linking
+// back to the placeholder's position in the prompt and to the published vars file.
+function renderPlaceholderFootnotes(task) {
+  const section = document.getElementById("task-footnotes");
+  const list = document.getElementById("task-footnotes-list");
+  if (!section || !list) return;
+  const placeholders = task.placeholders || [];
+  if (!placeholders.length) return;
+  const varsFile = task.vars_file || "public_vars.local.env";
+  list.innerHTML = placeholders
+    .map((p, i) => {
+      const n = i + 1;
+      return (
+        `<li id="task-fn-${n}">` +
+        `<strong><code>${escapeHtml(p.key)}</code></strong> = <code>${escapeHtml(p.value)}</code> - ` +
+        `a placeholder value resolved from the run's <a href="${varsFileUrl(varsFile)}" target="_blank" rel="noopener"><code>${escapeHtml(varsFile)}</code></a>. ` +
+        `<a href="#task-fnref-${n}" class="fn-back" aria-label="Back to reference">&#8617;</a>` +
+        `</li>`
+      );
+    })
+    .join("");
+  section.hidden = false;
 }
 
 // --- Lightweight syntax highlighting (muted colors, no external lib) ---
@@ -548,8 +599,9 @@ async function init() {
     if (subtitle) subtitle.textContent = `${capitalize(task.bucket || task.difficulty || "")} · ${appLabel}${task.day ? ` · Day ${task.day}` : ""}${isPublic ? " · public sample" : ""}`;
     if (descEl) descEl.textContent = "";
     if (promptEl) {
-      promptEl.innerHTML = `<code>${formatPrompt(task.prompt)}</code>`;
+      promptEl.innerHTML = `<code>${formatPromptResolved(task.prompt, task.placeholders || [])}</code>`;
     }
+    renderPlaceholderFootnotes(task);
     document.title = `DailyBench500  -  ${task.task_id}`;
 
     const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
