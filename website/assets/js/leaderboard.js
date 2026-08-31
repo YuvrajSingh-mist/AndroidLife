@@ -33,10 +33,8 @@
 //   batteryTemp = Max battery temp (°C).
 //   batteryDrain = Total battery drain across the run (per-task Δ sum, %).
 //
-// Rows (manual audit, from the reports in reports/public/):
-//   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
-//   2026-08-26 gemini-3.1-flash-lite → SR 41.7%, steps 8.32,  HC 6/7
-//   2026-08-26 qwen3.8-27b VISION    → SR 36.7%, steps 39.83, HC 6/7
+// See the "Rows (manual audit, ...)" comment below LEADERBOARD_ROWS for the
+// canonical row list.
 
 const COL_DEFS = {
   success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth — the official self-reported metric was inflated.",
@@ -84,6 +82,30 @@ const LEADERBOARD_ROWS = [
     batteryDrain: -71,
   },
   {
+    model: "kimi-k2.6 (TEXT)",
+    params: "Public · 60 tasks · 2026-08-29",
+    org: "Moonshot AI (OpenRouter)",
+    mode: "text",
+    runs: 60,
+    success: { score: 58.3, margin: 0 },
+    askUser: 20.0,
+    guiOnly: 54.7,
+    steps: 32.12,
+    queries: 1.0,
+    uiq: 0.125,
+    kbiq: "0.000",
+    elapsed: { wall: "23089 s (6.41 h)", agent: "22499 s (6.25 h)" },
+    hc: { score: 85.7, detail: "6/7 honest" },
+    buckets: { easy: 80.8, medium: 47.1, hard: 35.3 },
+    cost: { total: 9.834, detail: "2,065 requests" },
+    askUserCost: { total: 0.0027, detail: "9 requests" },
+    totalCost: { total: 9.84, perTask: 0.164 },
+    cpuTemp: { max: 94.4, detail: "CPU 94.4 · GPU 94.4 · NPU 94.1 — mild throttling on the long 6.4 h run" },
+    powerSkinTemp: { max: 46.9, detail: "power-amp 46.7 · skin 46.9" },
+    batteryTemp: 37.6,
+    batteryDrain: -90,
+  },
+  {
     model: "gemini-3.1-flash-lite",
     params: "Public · 60 tasks · 2026-08-26",
     org: "Google (OpenRouter)",
@@ -106,6 +128,30 @@ const LEADERBOARD_ROWS = [
     powerSkinTemp: { max: 47.4, detail: "power-amp 47.4 · skin 47.2" },
     batteryTemp: 37.8,
     batteryDrain: -21,
+  },
+  {
+    model: "seed-2.0-lite",
+    params: "Public · 60 tasks · 2026-08-30",
+    org: "ByteDance (OpenRouter)",
+    mode: "text",
+    runs: 60,
+    success: { score: 45.0, margin: 0 },
+    askUser: 10.0,
+    guiOnly: 43.4,
+    steps: 13.77,
+    queries: 0.67,
+    uiq: 0.182,
+    kbiq: "0.000",
+    elapsed: { wall: "10548 s (2.93 h)", agent: "9958 s (2.77 h)" },
+    hc: { score: 57.1, detail: "4/7 honest" },
+    buckets: { easy: 73.1, medium: 23.5, hard: 23.5 },
+    cost: { total: 2.028, detail: "913 requests" },
+    askUserCost: { total: 0.0089, detail: "10 requests" },
+    totalCost: { total: 2.04, perTask: 0.034 },
+    cpuTemp: { max: 83.9, detail: "CPU 83.9 · GPU 83.9 · NPU 83.9" },
+    powerSkinTemp: { max: 45.0, detail: "power-amp 44.8 · skin 45.0" },
+    batteryTemp: 37.3,
+    batteryDrain: -30,
   },
   {
     model: "qwen3.8-27b (VISION)",
@@ -131,7 +177,39 @@ const LEADERBOARD_ROWS = [
     batteryTemp: 37.7,
     batteryDrain: -99,
   },
+  {
+    model: "kimi-k2.6 (VISION)",
+    params: "Public · 35/60 · interrupted 2026-08-30",
+    org: "Moonshot AI (OpenRouter)",
+    mode: "vision",
+    runs: 35,
+    success: { score: 17.1, margin: 0 },
+    askUser: 0.0,
+    guiOnly: 12.1,
+    steps: 48.77,
+    queries: 0.67,
+    uiq: 0.0,
+    kbiq: "0.000",
+    elapsed: { wall: "22408 s (6.22 h)", agent: "22408 s (6.22 h)" },
+    hc: { score: 100, detail: "2/2 reached honest (5 never reached — interrupted)" },
+    buckets: { easy: 42.9, medium: 0.0, hard: 0.0 },
+    cost: { total: 7.136, detail: "1,844 requests" },
+    askUserCost: { total: 0.0006, detail: "2 requests" },
+    totalCost: { total: 7.14, perTask: 0.204 },
+    cpuTemp: { max: 85.9, detail: "CPU 85.9 · GPU 85.2 · NPU 85.2 — throttling; battery died mid-run" },
+    powerSkinTemp: { max: 49.2, detail: "power-amp 49.2 · skin 47.9" },
+    batteryTemp: 38.5,
+    batteryDrain: -94,
+  },
 ];
+
+// Rows (manual audit, from the reports in reports/public/):
+//   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
+//   2026-08-29 kimi-k2.6 TEXT        → SR 58.3%, steps 32.12, HC 6/7
+//   2026-08-30 seed-2.0-lite TEXT    → SR 45.0%, steps 13.77, HC 4/7
+//   2026-08-26 gemini-3.1-flash-lite → SR 41.7%, steps 8.32,  HC 6/7
+//   2026-08-26 qwen3.8-27b VISION    → SR 36.7%, steps 39.83, HC 6/7
+//   2026-08-30 kimi-k2.6 VISION      → SR 17.1% (35/60, interrupted), HC 2/2 reached
 
 let currentSearchQuery = "";
 let currentTableSort = { key: "success", direction: "desc" };

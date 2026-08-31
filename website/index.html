@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./assets/css/style.css?v=6">
+  <link rel="stylesheet" href="./assets/css/style.css?v=7">
 </head>
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 
@@ -139,12 +139,14 @@
     <div class="container">
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
-        <strong>Early results.</strong> Each row is a 60-task public-dataset run (20 tasks &times; 3 days)
-        on a OnePlus CPH2423 (Android 15, non-rooted). Success rate is the <strong>manual-audit ground
-        truth</strong> from each run's report in <code>reports/public/</code> &mdash; every task's verdict
-        was hand-verified on-device (false passes downgraded to FAIL, honest-fail hallucination controls
-        counted as success). See <em>How the metrics are computed</em> below for each metric's definition.
-        More rows will appear as more models are benchmarked.
+        <strong>Early results.</strong> Each row is a public-dataset run (60 tasks &mdash; 20 tasks &times; 3 days)
+        on a OnePlus CPH2423 (Android 15, non-rooted); the kimi-k2.6 VISION row is flagged
+        <em>interrupted</em> &mdash; its run died at 35/60 when the phone battery hit 0, so its numbers cover
+        only the 35 finished tasks. Success rate is the <strong>manual-audit ground truth</strong> from each
+        run's report in <code>reports/public/</code> &mdash; every task's verdict was hand-verified on-device
+        (false passes downgraded to FAIL, honest-fail hallucination controls counted as success). See
+        <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as
+        more models are benchmarked.
         <br>
         <strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> &mdash; it draws
         a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is
@@ -446,8 +448,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
-<script src="./assets/js/nav.js?v=6"></script>
-<script src="./assets/js/app.js?v=6"></script>
-<script src="./assets/js/leaderboard.js?v=6"></script>
+<script src="./assets/js/nav.js?v=7"></script>
+<script src="./assets/js/app.js?v=7"></script>
+<script src="./assets/js/leaderboard.js?v=7"></script>
 </body>
 </html>
