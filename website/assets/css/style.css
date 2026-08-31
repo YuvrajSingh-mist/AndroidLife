@@ -1899,6 +1899,54 @@ table.lb-table td .lb-elapsed {
   }
 }
 
+/* Tweet-style "New on the board" cards (homepage) */
+.tweet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.1rem;
+}
+.tweet-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.tweet-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.7rem;
+}
+.tweet-avatar {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+.tweet-name {
+  font-weight: 600;
+}
+.tweet-handle {
+  display: block;
+  color: var(--text-ter);
+  font-size: 0.8rem;
+}
+.tweet-body strong {
+  color: var(--accent);
+}
+.tweet-cta {
+  margin-top: 0.8rem;
+  font-weight: 600;
+}
+.tweet-cta a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.tweet-cta a:hover {
+  text-decoration: underline;
+}
+
 /* Footnote references + footnotes section (superscript links + bottom list) */
 .fn-ref {
   font-size: 0.72em;
