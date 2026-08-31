@@ -26,6 +26,19 @@ function readJson(rel) {
   return JSON.parse(readFileSync(joinPath(rel), "utf-8"));
 }
 
+// Replace every em dash (U+2014) with " - " across a JSON tree, so prompts
+// (and any other text that contains the character) never appear on the site.
+function noEmDash(value) {
+  if (typeof value === "string") return value.replace(/[ \t]*\u2014[ \t]*/g, " - ");
+  if (Array.isArray(value)) return value.map(noEmDash);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const k of Object.keys(value)) out[k] = noEmDash(value[k]);
+    return out;
+  }
+  return value;
+}
+
 function primaryApp(task) {
   const apps = task.apps && task.apps.length ? task.apps : [task.app];
   return apps[0];
@@ -103,7 +116,7 @@ function main() {
     });
   }
 
-  // Public benchmark stats — the homepage "Benchmark Summary". Computed from the
+  // Public benchmark stats - the homepage "Benchmark Summary". Computed from the
   // actual public dataset + sidecars so the numbers always match the 60 tasks
   // shown on the site (cross-checked against docs/benchmark-spec-public.md).
   let hcSidecar = {};
@@ -195,7 +208,7 @@ function main() {
     per_day: [...pubPerDay.values()].sort((a, b) => a.day - b.day),
   };
 
-  // Public examples — the full public bench we have runs for. Cross-reference
+  // Public examples - the full public bench we have runs for. Cross-reference
   // the trajectory index (if already exported) so each example carries its
   // run + trajectory availability, and only tasks with a recorded run are shown
   // on the homepage (matching the "we have these" public set).
@@ -269,7 +282,7 @@ function main() {
     tasks: task_list,
   };
 
-  writeFileSync(OUT, JSON.stringify(data, null, 2) + "\n", "utf-8");
+  writeFileSync(OUT, JSON.stringify(noEmDash(data), null, 2) + "\n", "utf-8");
   console.log(`Wrote ${OUT}`);
   console.log(`  categories: ${categories.length} apps · days: ${days.length} · public examples: ${public_examples.length} · tasks: ${task_list.length}`);
   console.log(`  stats: ${JSON.stringify(stats)}`);

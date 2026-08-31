@@ -532,7 +532,7 @@ footer .footnote { font-size: 0.78rem; margin-top: 0.35rem; }
 .tag.tag-run-ok { color: var(--accent); border-color: var(--accent-lt); }
 .tag.tag-run-fail { color: #a05656; border-color: #dcc2c2; }
 
-/* Placeholder tokens in task prompts — italic, no quotes */
+/* Placeholder tokens in task prompts - italic, no quotes */
 .placeholder {
   font-style: italic;
   color: var(--accent);
@@ -990,7 +990,7 @@ table.lb-table td.lb-params {
 .lb-tooltip span { display: block; opacity: 0.85; font-size: 0.76rem; margin-top: 0.2rem; }
 
 
-/* "Columns" dropdown — checkbox toggles for which metric columns to show */
+/* "Columns" dropdown - checkbox toggles for which metric columns to show */
 .lb-metrics-toggle {
   display: inline-flex;
 }
@@ -1074,7 +1074,7 @@ table.lb-table td.lb-params {
   cursor: pointer;
 }
 
-/* Charts tab — axis pickers + scatter */
+/* Charts tab - axis pickers + scatter */
 .lb-chart-controls {
   display: flex;
   flex-wrap: wrap;
@@ -1275,7 +1275,7 @@ table.lb-table td .lb-elapsed {
 }
 .filter-search input::placeholder { color: var(--text-ter); opacity: 0.8; }
 
-/* Custom selects — match the site's pill design (not native dark popups) */
+/* Custom selects - match the site's pill design (not native dark popups) */
 .select-wrap {
   position: relative;
   display: inline-block;
@@ -1655,7 +1655,7 @@ table.lb-table td .lb-elapsed {
   align-items: start;
 }
 
-/* Phone-frame screenshot for the current step — left column, sticks while
+/* Phone-frame screenshot for the current step - left column, sticks while
    you scroll the step data on the right. Vertically centred against the
    taller data column so there's no dead space below the phone. */
 .step-shot-figure {
@@ -1793,7 +1793,7 @@ table.lb-table td .lb-elapsed {
   line-height: 1.5;
 }
 
-/* Syntax highlight tokens — muted, fits the site palette */
+/* Syntax highlight tokens - muted, fits the site palette */
 .tok-key  { color: #8a5a3b; }        /* warm brown for JSON keys */
 .tok-str  { color: #3f6b57; }        /* soft green for strings */
 .tok-num  { color: #7a6a2f; }        /* muted olive for numbers */
@@ -1803,7 +1803,7 @@ table.lb-table td .lb-elapsed {
 
 .step-controls .btn[disabled] { opacity: 0.45; cursor: default; }
 
-/* Task-set picker (Tasks landing) — two square-ish choice cards */
+/* Task-set picker (Tasks landing) - two square-ish choice cards */
 .task-set-picker {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

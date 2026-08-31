@@ -114,7 +114,7 @@ function capitalize(word) {
 }
 
 function fmtUtc(iso) {
-  if (!iso) return "—";
+  if (!iso) return "-";
   try {
     return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
   } catch {
@@ -123,15 +123,15 @@ function fmtUtc(iso) {
 }
 
 function fmtDuration(startIso, endIso) {
-  if (!startIso || !endIso) return "—";
+  if (!startIso || !endIso) return "-";
   try {
     const ms = new Date(endIso) - new Date(startIso);
-    if (Number.isNaN(ms) || ms < 0) return "—";
+    if (Number.isNaN(ms) || ms < 0) return "-";
     const m = Math.floor(ms / 60000);
     const s = Math.round((ms % 60000) / 1000);
     return `${m}m ${s}s`;
   } catch {
-    return "—";
+    return "-";
   }
 }
 
@@ -165,19 +165,19 @@ function renderTaskState(task, run) {
   const root = document.getElementById("task-state-body");
   if (!root) return;
 
-  const diff = capitalize(task.bucket || task.difficulty || "—");
+  const diff = capitalize(task.bucket || task.difficulty || "-");
   // App(s): prefer the explicit app list, else the single app, else the
   // category name (public-sample tasks carry category_name but no app field).
   const rawApps = (task.apps && task.apps.length ? task.apps : task.app ? [task.app] : []);
-  const apps = (rawApps.length ? rawApps : [task.category_name || task.app_label]).filter(Boolean).map((a) => escapeHtml(a)).join(" · ") || "—";
+  const apps = (rawApps.length ? rawApps : [task.category_name || task.app_label]).filter(Boolean).map((a) => escapeHtml(a)).join(" · ") || "-";
   const type = task.is_ask_user ? "ASK USER" : task.bucket === "hard" ? "Deterministic" : "GUI-only";
 
   let runModel = "No run recorded";
-  let runResult = "—";
-  let runDuration = "—";
+  let runResult = "-";
+  let runDuration = "-";
   if (run) {
-    runModel = run.model ? escapeHtml(run.model) : "—";
-    runResult = run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "—";
+    runModel = run.model ? escapeHtml(run.model) : "-";
+    runResult = run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "-";
     runDuration = fmtDuration(run.started_at_utc, run.ended_at_utc);
   }
 
@@ -185,8 +185,8 @@ function renderTaskState(task, run) {
     stateRow("Difficulty", `<span class="tag tag-${escapeHtml(task.bucket || "easy")}">${escapeHtml(diff)}</span>`) +
     stateRow("Type", escapeHtml(type)) +
     stateRow("App(s)", apps) +
-    stateRow("Day", task.day ? `Day ${task.day}` : "—") +
-    stateRow("Points", String(task.points ?? "—")) +
+    stateRow("Day", task.day ? `Day ${task.day}` : "-") +
+    stateRow("Points", String(task.points ?? "-")) +
     stateRow("Cross-app", task.cross_app ? "Yes" : "No") +
     stateRow("Model", runModel) +
     stateRow("Run result", runResult) +
@@ -336,7 +336,7 @@ function play() {
   scheduleNext();
 }
 
-// Advance one step, then schedule the next one — keeps playing until the end or
+// Advance one step, then schedule the next one - keeps playing until the end or
 // until stopPlay() is called. (Must NOT go through play(), which toggles state.)
 function scheduleNext() {
   if (!VIEWER.playing) return;
@@ -395,7 +395,7 @@ function runsForTask(traj) {
 
 // Pick which run's trajectory to display: honour an explicit ?run= key (the
 // homepage model selector links with &run=<run_key>), else the primary run.
-// No dropdown — the task page always shows exactly one trajectory.
+// No dropdown - the task page always shows exactly one trajectory.
 function pickRun(traj) {
   const runs = runsForTask(traj);
   if (!runs.length) return null;
@@ -428,17 +428,17 @@ async function renderRun(task, run, stepsSection) {
   }
 
   const cap = document.getElementById("trajectory-gif-caption");
-  if (cap) cap.textContent = `${task.task_id} — replay of ${run.step_count ?? trajData?.steps_count ?? "—"} agent steps`;
+  if (cap) cap.textContent = `${task.task_id} - replay of ${run.step_count ?? trajData?.steps_count ?? "-"} agent steps`;
 
   const metaList = document.getElementById("trajectory-meta-list");
   if (metaList) {
     const items = [
-      ["Run", run.run_label ? escapeHtml(run.run_label) : "—"],
-      ["Model", run.model ? escapeHtml(run.model) : "—"],
-      ["Result", run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "—"],
-      ["Steps (output)", String(run.steps ?? "—")],
-      ["Steps (trajectory)", String(trajData?.steps_count ?? "—")],
-      ["Tool calls", String(trajData?.tool_call_count ?? "—")],
+      ["Run", run.run_label ? escapeHtml(run.run_label) : "-"],
+      ["Model", run.model ? escapeHtml(run.model) : "-"],
+      ["Result", run.success === true ? '<span class="run-ok">Success</span>' : run.success === false ? '<span class="run-fail">Failure</span>' : "-"],
+      ["Steps (output)", String(run.steps ?? "-")],
+      ["Steps (trajectory)", String(trajData?.steps_count ?? "-")],
+      ["Tool calls", String(trajData?.tool_call_count ?? "-")],
       ["Started", fmtUtc(run.started_at_utc)],
       ["Ended", fmtUtc(run.ended_at_utc)],
       ["Duration", fmtDuration(run.started_at_utc, run.ended_at_utc)],
@@ -446,7 +446,7 @@ async function renderRun(task, run, stepsSection) {
     metaList.innerHTML = items.map(([k, v]) => `<li><span class="tm-key">${k}</span><span class="tm-val">${v}</span></li>`).join("");
   }
 
-  // "Open in Phoenix" — deep-links to a local Phoenix instance's project page.
+  // "Open in Phoenix" - deep-links to a local Phoenix instance's project page.
   // A Phoenix backend only exists on the author's machine (localhost preview);
   // on the public GitHub Pages site there is no Phoenix, so the button stays
   // hidden. The step viewer below already IS the Phoenix-traced trajectory.
@@ -499,7 +499,7 @@ function renderTrajectory(task, traj) {
   if (section) section.hidden = false;
 
   // Single-run view: render the trajectory for the ?run= key (or the primary
-  // run when none was requested). The run selector was removed — a task page
+  // run when none was requested). The run selector was removed - a task page
   // shows exactly one trajectory, chosen by the link that opened it.
   renderRun(task, run, stepsSection);
 }
@@ -523,7 +523,7 @@ async function init() {
 
   if (!taskId) {
     if (title) title.textContent = "Task";
-    if (subtitle) subtitle.textContent = "No task selected — open one from the task browser.";
+    if (subtitle) subtitle.textContent = "No task selected - open one from the task browser.";
     return;
   }
 

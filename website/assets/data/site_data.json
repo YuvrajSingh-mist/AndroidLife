@@ -915,7 +915,7 @@
       "task_id": "easy__google-docs__004",
       "difficulty": "easy",
       "category_name": "Google Docs",
-      "prompt": "I've got a document I need a fresh copy of to edit — could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document?",
+      "prompt": "I've got a document I need a fresh copy of to edit - could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document?",
       "points": 1,
       "cross_app": false,
       "is_ask_user": false,
@@ -1107,7 +1107,7 @@
       "task_id": "easy__shopping-delivery-browser__001",
       "difficulty": "easy",
       "category_name": "Chrome",
-      "prompt": "I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice",
+      "prompt": "I'm about to order food but worried about surcharges - open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice",
       "points": 1,
       "cross_app": false,
       "is_ask_user": false,
@@ -1459,7 +1459,7 @@
       "task_id": "hard__bookmyshow__005",
       "difficulty": "hard",
       "category_name": "BookMyShow",
-      "prompt": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
+      "prompt": "We're doing a movie night this weekend - me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book - but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
       "points": 5,
       "cross_app": true,
       "is_ask_user": false,
@@ -1587,7 +1587,7 @@
       "task_id": "hard__google-meet-files__070",
       "difficulty": "hard",
       "category_name": "Google Meet",
-      "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
+      "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting - I think it's the Monday [weekly meeting] at 10 AM - and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
       "points": 5,
       "cross_app": true,
       "is_ask_user": false,
@@ -1683,7 +1683,7 @@
       "task_id": "hard__swiggy__005",
       "difficulty": "hard",
       "category_name": "Swiggy",
-      "prompt": "Ugh, I'm craving the food I ate on [date] — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+      "prompt": "Ugh, I'm craving the food I ate on [date] - can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -1699,7 +1699,7 @@
       "task_id": "hard__telegram-calendar__016",
       "difficulty": "hard",
       "category_name": "Telegram",
-      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what the last thing we settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never actually locked anything down - it just floated options and left the plan open. I've lost track of what the last thing we settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time - the exact day, the time, the place, and the reminder - before you put it on my calendar so I don't miss it?",
       "points": 5,
       "cross_app": true,
       "is_ask_user": true,
@@ -2491,7 +2491,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 0,
-      "prompt": "I haven't checked my mail in a bit — can you open Gmail and tell me who sent the most recent unread email?",
+      "prompt": "I haven't checked my mail in a bit - can you open Gmail and tell me who sent the most recent unread email?",
       "note": ""
     },
     {
@@ -2508,7 +2508,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 1,
-      "prompt": "Make me a copy of [X] in Google Drive, please — I want a duplicate I can edit without touching the original.",
+      "prompt": "Make me a copy of [X] in Google Drive, please - I want a duplicate I can edit without touching the original.",
       "note": ""
     },
     {
@@ -2542,7 +2542,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 1,
-      "prompt": "I want to clear out my most recent conversation with [contact] in Messages — please delete that specific thread for me.",
+      "prompt": "I want to clear out my most recent conversation with [contact] in Messages - please delete that specific thread for me.",
       "note": ""
     },
     {
@@ -2576,7 +2576,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 1,
-      "prompt": "I'm about to order food but worried about surcharges — open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice",
+      "prompt": "I'm about to order food but worried about surcharges - open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice",
       "note": ""
     },
     {
@@ -2855,7 +2855,7 @@
       "cross_app": false,
       "points": 1,
       "placeholder_count": 0,
-      "prompt": "I've got a document I need a fresh copy of to edit — could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document?",
+      "prompt": "I've got a document I need a fresh copy of to edit - could you open Google Docs and rename one of my existing documents for me to an apt name based on the contents of the document?",
       "note": ""
     },
     {
@@ -5578,7 +5578,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 0,
-      "prompt": "Ugh, I'm craving the food I ate in the past week — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+      "prompt": "Ugh, I'm craving the food I ate in the past week - can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
       "note": ""
     },
     {
@@ -5596,7 +5596,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 0,
-      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down — it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time — the exact day, the time, the place, and the reminder — before you put it on my calendar so I don't miss it?",
+      "prompt": "I've got a get-together with my friends coming up and we've been planning it in our Telegram group, but honestly we kept going back and forth and the thread never actually locked anything down - it just floated options and left the plan open. I've lost track of what we truly settled on: the date, the time, where, even whether I asked for a reminder. Can you check our group, then confirm each detail with me one at a time - the exact day, the time, the place, and the reminder - before you put it on my calendar so I don't miss it?",
       "note": ""
     },
     {
@@ -6205,7 +6205,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 2,
-      "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
+      "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting - I think it's the Monday [weekly meeting] at 10 AM - and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
       "note": ""
     },
     {
@@ -6867,7 +6867,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 0,
-      "prompt": "Order my usual from my go-to place — my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm?",
+      "prompt": "Order my usual from my go-to place - my favourite food. Can you get that for me and message that guy on Telegram the total so I can confirm?",
       "note": ""
     },
     {
@@ -8488,7 +8488,7 @@
       "cross_app": true,
       "points": 5,
       "placeholder_count": 3,
-      "prompt": "We're doing a movie night this weekend — me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book — but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
+      "prompt": "We're doing a movie night this weekend - me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime that fits our group of 4, and note the movie, showtime, and per-ticket price ([ticket price])? Then message [contact] on Telegram with the plan so they can book - but don't book anything yourself. Reply with only the cinema name, movie, and showtime, no other text.",
       "note": ""
     },
     {

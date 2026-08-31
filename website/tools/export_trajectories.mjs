@@ -5,7 +5,7 @@
 // Usage (from the repo root):
 //   node website/tools/export_trajectories.mjs
 //
-// Reads (canonical runs — the same events that were traced into Phoenix):
+// Reads (canonical runs - the same events that were traced into Phoenix):
 //   set "530" (the private corpus, exposed on the Tasks page):
 //     day1 -> assets/runs/full-bench/2026-08-09-153930/day1
 //     day2 -> assets/runs/full-bench/2026-08-10-234158/day2
@@ -32,7 +32,7 @@ import { execFileSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 
 // Runs live on a synced/mounted volume where copyFileSync can hit transient
-// ETIMEDOUT/EIO errors — retry a few times before giving up.
+// ETIMEDOUT/EIO errors - retry a few times before giving up.
 function copyFileResilient(src, dest, attempts = 4) {
   for (let i = 1; i <= attempts; i++) {
     try {
@@ -41,7 +41,7 @@ function copyFileResilient(src, dest, attempts = 4) {
     } catch (err) {
       if (i === attempts) throw err;
       const delay = i * 500;
-      console.warn(`  (retry ${i}/${attempts - 1}) copy ${src.split("/").slice(-3).join("/")} after ${delay}ms — ${err.code}`);
+      console.warn(`  (retry ${i}/${attempts - 1}) copy ${src.split("/").slice(-3).join("/")} after ${delay}ms - ${err.code}`);
       // busy-wait instead of sleep() so we don't need Atomics/worker imports
       const end = Date.now() + delay;
       while (Date.now() < end) { /* spin */ }
@@ -107,6 +107,19 @@ function readJson(rel) {
   } catch {
     return null;
   }
+}
+
+// Replace every em dash (U+2014) with " - " across a JSON tree, so agent
+// thoughts/reasons that contain the character never appear on the site.
+function noEmDash(value) {
+  if (typeof value === "string") return value.replace(/[ \t]*\u2014[ \t]*/g, " - ");
+  if (Array.isArray(value)) return value.map(noEmDash);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const k of Object.keys(value)) out[k] = noEmDash(value[k]);
+    return out;
+  }
+  return value;
 }
 
 function isDir(p) {
@@ -277,7 +290,7 @@ function processRunRoot(indexMap, daySummaries, set, day, relRoot, ns = "") {
         writeFileSync(
           dataAbs,
           JSON.stringify(
-            {
+            noEmDash({
               task_id: taskId,
               set,
               day,
@@ -292,7 +305,7 @@ function processRunRoot(indexMap, daySummaries, set, day, relRoot, ns = "") {
               started_at_utc: startedAt,
               ended_at_utc: endedAt,
               steps,
-            },
+            }),
             null,
             2
           ) + "\n",
@@ -340,7 +353,7 @@ function main() {
   const daySummaries = {};
 
   // In public-only mode we keep the already-exported 530 set (unchanged, already
-  // published to HF) and only regenerate the public run set — much faster than
+  // published to HF) and only regenerate the public run set - much faster than
   // re-downscaling every 530 screenshot.
   if (PUBLIC_ONLY) {
     const existing = readJson("website/assets/data/trajectories/index.json");
@@ -349,13 +362,13 @@ function main() {
       if (existing.days && existing.days["530"]) daySummaries["530"] = existing.days["530"];
     }
   } else {
-    // 530 set — the private corpus shown on the Tasks page (days 1-5).
+    // 530 set - the private corpus shown on the Tasks page (days 1-5).
     for (const [dayStr, relRoot] of Object.entries(DAY_RUN_ROOTS)) {
       processRunRoot(index.tasks, daySummaries, "530", Number(dayStr), relRoot, "");
     }
   }
 
-  // Public set — homepage example tasks. Process every run root (day1..day3),
+  // Public set - homepage example tasks. Process every run root (day1..day3),
   // namespacing each run under public/<runKey>/... so multiple runs per task
   // coexist. Collect per-task entries, then pick the latest run as primary and
   // attach a `runs` array for the run selector on the task page.
@@ -394,13 +407,13 @@ function main() {
   writeFileSync(
     joinPath(indexRel),
     JSON.stringify(
-      {
+      noEmDash({
         generated: new Date().toISOString(),
         note: "Per-task agent trajectories (the FastAgent step stream traced into Phoenix) + trajectory.gif replays, exported from the canonical day-1..5 run folders and the public-sample run. Namespaced by set: index.tasks = 530 corpus, index.public = public sample.",
         days: daySummaries,
         tasks: index.tasks,
         public: index.public,
-      },
+      }),
       null,
       2
     ) + "\n",

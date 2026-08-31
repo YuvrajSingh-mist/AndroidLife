@@ -1,10 +1,10 @@
 // Leaderboard for DailyBench500. Real results, sourced from the run reports in
 // reports/public/ (the MANUAL AUDIT sections of each run). The reports state
-// explicitly that the manual audit is the ground truth — the "Official metrics"
+// explicitly that the manual audit is the ground truth - the "Official metrics"
 // tables are self-reported and inflated (e.g. gemini's official 63.3% hides 12
 // false passes; its manual headline is 41.7%). These numbers are hand-copied
 // here (not fetched at build time) because the run folders are private /
-// gitignored. Update these constants — and add another row — whenever a new
+// gitignored. Update these constants - and add another row - whenever a new
 // model's results are published.
 //
 // Column definitions (also shown in the "How the metrics are computed" tooltip):
@@ -12,17 +12,17 @@
 //              from the report's manual audit (honest-fail controls count as
 //              success; false passes downgraded to FAIL).
 //   askUser  = Manual interaction pass rate on the 10 ASK USER tasks (6 SINGLE
-//              + 4 MULTI) — agent must ask the simulated user for a
+//              + 4 MULTI) - agent must ask the simulated user for a
 //              load-bearing fact before acting.
 //   guiOnly  = Manual genuine pass rate on the 53 non-control tasks (honest-fail
 //              controls excluded).
 //   steps    = Average Completion Steps across the run.
 //   queries  = Average User Queries per task.
-//   uiq      = User Interaction Quality (fact-match) — how often the agent's
+//   uiq      = User Interaction Quality (fact-match) - how often the agent's
 //              ask_user answer matched the ground-truth fact.
-//   kbiq     = KB Interaction Quality (manual) — correct KB queries ÷ total.
+//   kbiq     = KB Interaction Quality (manual) - correct KB queries ÷ total.
 //   elapsed  = Wall-clock run duration vs agent running time (cooldown removed).
-//   hc       = Hallucination-control honesty — controls the agent honestly
+//   hc       = Hallucination-control honesty - controls the agent honestly
 //              reported as absent (vs falsely claiming success).
 //   buckets  = Manual success rate by difficulty bucket: easy / medium / hard.
 //   cost      = Agent LLM cost (prompt + completion) + request count.
@@ -37,13 +37,13 @@
 // canonical row list.
 
 const COL_DEFS = {
-  success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth — the official self-reported metric was inflated.",
+  success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth - the official self-reported metric was inflated.",
   askUser: "manual interaction pass rate on the 10 ASK USER tasks (6 SINGLE + 4 MULTI), where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
   guiOnly: "manual genuine pass rate on the 53 non-control tasks (honest-fail hallucination controls excluded), where the end state is verified directly on the device.",
   steps: "mean agent steps per task across the run.",
   queries: "mean number of times the agent asked the simulated user per task.",
-  uiq: "User Interaction Quality (UIQ, fact-match) — share of ask_user calls whose answer matched the ground-truth fact.",
-  kbiq: "KB Interaction Quality (KBIQ, manual) — correct knowledge-base queries ÷ total KB queries asked.",
+  uiq: "User Interaction Quality (UIQ, fact-match) - share of ask_user calls whose answer matched the ground-truth fact."
+  kbiq: "KB Interaction Quality (KBIQ, manual) - correct knowledge-base queries ÷ total KB queries asked."
   elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
   hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
   buckets: "manual success rate by difficulty bucket: easy / medium / hard.",
@@ -53,7 +53,7 @@ const COL_DEFS = {
   cpuTemp: "max on-device CPU / GPU / NPU temperature (°C), sampled per second per task (samples.ndjson).",
   powerSkinTemp: "max power-amp / skin temperature (°C), sampled per second per task.",
   batteryTemp: "max battery temperature (°C), sampled per second per task.",
-  batteryDrain: "total battery drain across the run — sum of per-task battery deltas (%). A battery-death gap (task died at 0%) shows as a large negative.",
+  batteryDrain: "total battery drain across the run - sum of per-task battery deltas (%). A battery-death gap (task died at 0%) shows as a large negative."
 };
 
 const LEADERBOARD_ROWS = [
@@ -76,7 +76,7 @@ const LEADERBOARD_ROWS = [
     cost: { total: 7.133, detail: "1,844 requests" },
     askUserCost: { total: 0.0022, detail: "7 requests" },
     totalCost: { total: 7.14, perTask: 0.119 },
-    cpuTemp: { max: 98.2, detail: "CPU / GPU — hot (many step-capped tasks burned heavy context)" },
+    cpuTemp: { max: 98.2, detail: "CPU / GPU - hot (many step-capped tasks burned heavy context)" },
     powerSkinTemp: null,
     batteryTemp: 37.9,
     batteryDrain: -71,
@@ -100,7 +100,7 @@ const LEADERBOARD_ROWS = [
     cost: { total: 9.834, detail: "2,065 requests" },
     askUserCost: { total: 0.0027, detail: "9 requests" },
     totalCost: { total: 9.84, perTask: 0.164 },
-    cpuTemp: { max: 94.4, detail: "CPU 94.4 · GPU 94.4 · NPU 94.1 — mild throttling on the long 6.4 h run" },
+    cpuTemp: { max: 94.4, detail: "CPU 94.4 · GPU 94.4 · NPU 94.1 - mild throttling on the long 6.4 h run" },
     powerSkinTemp: { max: 46.9, detail: "power-amp 46.7 · skin 46.9" },
     batteryTemp: 37.6,
     batteryDrain: -90,
@@ -124,7 +124,7 @@ const LEADERBOARD_ROWS = [
     cost: { total: 1.086, detail: "626 requests" },
     askUserCost: { total: 0.0024, detail: "7 requests" },
     totalCost: { total: 1.09, perTask: 0.018 },
-    cpuTemp: { max: 86.5, detail: "CPU 86.4 · GPU 86.4 · NPU 86.5 — no throttling" },
+    cpuTemp: { max: 86.5, detail: "CPU 86.4 · GPU 86.4 · NPU 86.5 - no throttling" },
     powerSkinTemp: { max: 47.4, detail: "power-amp 47.4 · skin 47.2" },
     batteryTemp: 37.8,
     batteryDrain: -21,
@@ -191,12 +191,12 @@ const LEADERBOARD_ROWS = [
     uiq: 0.0,
     kbiq: "0.000",
     elapsed: { wall: "22408 s (6.22 h)", agent: "22408 s (6.22 h)" },
-    hc: { score: 100, detail: "2/2 reached honest (5 never reached — interrupted)" },
+    hc: { score: 100, detail: "2/2 reached honest (5 never reached - interrupted)" },
     buckets: { easy: 42.9, medium: 0.0, hard: 0.0 },
     cost: { total: 7.136, detail: "1,844 requests" },
     askUserCost: { total: 0.0006, detail: "2 requests" },
     totalCost: { total: 7.14, perTask: 0.204 },
-    cpuTemp: { max: 85.9, detail: "CPU 85.9 · GPU 85.2 · NPU 85.2 — throttling; battery died mid-run" },
+    cpuTemp: { max: 85.9, detail: "CPU 85.9 · GPU 85.2 · NPU 85.2 - throttling; battery died mid-run" },
     powerSkinTemp: { max: 49.2, detail: "power-amp 49.2 · skin 47.9" },
     batteryTemp: 38.5,
     batteryDrain: -94,
@@ -230,7 +230,7 @@ function ordinal(n) {
 }
 
 function formatSteps(steps) {
-  return steps == null ? "—" : steps.toFixed(2);
+  return steps == null ? "-" : steps.toFixed(2);
 }
 
 const TABLE_SORTS = {
@@ -339,7 +339,7 @@ const COLUMNS = [
   { key: "askUserCost", label: "ask_user cost", def: COL_DEFS.askUserCost, cell: (r) => `<td class="lb-score">$${r.askUserCost.total.toFixed(4)}<span class="lb-sub">${r.askUserCost.detail}</span></td>` },
   { key: "totalCost", label: "Total cost", def: COL_DEFS.totalCost, cell: (r) => `<td class="lb-score">$${r.totalCost.total.toFixed(2)}<span class="lb-sub">≈ $${r.totalCost.perTask.toFixed(3)} / task</span></td>` },
   { key: "cpuTemp", label: "CPU/GPU/NPU temp", def: COL_DEFS.cpuTemp, cell: (r) => `<td class="lb-score">${r.cpuTemp.max.toFixed(1)} °C<span class="lb-sub">${r.cpuTemp.detail}</span></td>` },
-  { key: "powerSkinTemp", label: "Power-amp/skin temp", def: COL_DEFS.powerSkinTemp, cell: (r) => `<td class="lb-score">${r.powerSkinTemp ? r.powerSkinTemp.max.toFixed(1) + " °C" : "—"}<span class="lb-sub">${r.powerSkinTemp ? r.powerSkinTemp.detail : "not sampled"}</span></td>` },
+  { key: "powerSkinTemp", label: "Power-amp/skin temp", def: COL_DEFS.powerSkinTemp, cell: (r) => `<td class="lb-score">${r.powerSkinTemp ? r.powerSkinTemp.max.toFixed(1) + " °C" : "-"}<span class="lb-sub">${r.powerSkinTemp ? r.powerSkinTemp.detail : "not sampled"}</span></td>` },
   { key: "batteryTemp", label: "Battery temp", def: COL_DEFS.batteryTemp, cell: (r) => `<td class="lb-score">${r.batteryTemp.toFixed(1)} °C</td>` },
   { key: "batteryDrain", label: "Battery drain", def: COL_DEFS.batteryDrain, cell: (r) => `<td class="lb-score">${r.batteryDrain}%</td>` },
   { key: "runs", label: "Runs", cell: (r) => `<td>${r.runs}</td>` },
@@ -459,7 +459,7 @@ function renderTable(containerId, rows) {
 }
 
 function formatPct(value) {
-  return value == null ? "—" : `${value.toFixed(1)}%`;
+  return value == null ? "-" : `${value.toFixed(1)}%`;
 }
 
 // Fills the "How the metrics are computed" tooltip (the info button under the
@@ -470,7 +470,7 @@ function renderMetricsInfo() {
   if (!list) return;
   const items = COLUMNS
     .filter((c) => c.def)
-    .map((c) => `<li><strong>${escapeHtml(c.label)}</strong> — ${c.def}</li>`)
+    .map((c) => `<li><strong>${escapeHtml(c.label)}</strong> - ${c.def}</li>`)
     .join("");
   list.innerHTML = items;
 }
@@ -530,7 +530,7 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// Chartable metrics — every leaderboard column that has a numeric value, so the
+// Chartable metrics - every leaderboard column that has a numeric value, so the
 // user can pick any X and Y axis freely. Default: X = success, Y = avg steps.
 // Each difficulty bucket is its own metric so you can chart easy vs medium vs
 // hard directly; cost / thermal / battery figures come from the run telemetry.
@@ -592,7 +592,7 @@ function renderChartControls() {
   xSel.addEventListener("change", () => { chartX = xSel.value; renderScatterChart(); });
   ySel.addEventListener("change", () => { chartY = ySel.value; renderScatterChart(); });
 
-  // Text vs vision filter — only chart runs of the chosen mode.
+  // Text vs vision filter - only chart runs of the chosen mode.
   if (modeSel) {
     const counts = { text: 0, vision: 0 };
     for (const r of LEADERBOARD_ROWS) if (r.mode) counts[r.mode] = (counts[r.mode] || 0) + 1;

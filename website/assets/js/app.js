@@ -53,7 +53,7 @@ function renderPublicBenchmarkSummary(stats) {
     { value: `${b.easy} / ${b.medium} / ${b.hard}`, label: "easy / medium / hard", sub: "difficulty buckets" },
     { value: `${hs.single} / ${hs.multi} / ${hs.det}`, label: "hard: SINGLE / MULTI / DET", sub: "17 hard tasks split by grading mode" },
     { value: stats.ask_user_total, label: "ASK USER tasks", sub: `${stats.ask_user_single} single-turn · ${stats.ask_user_multi} multi-turn (KB oracle)` },
-    { value: stats.hc_count, label: "hallucination controls", sub: "data genuinely absent — honest failure is correct" },
+    { value: stats.hc_count, label: "hallucination controls", sub: "data genuinely absent - honest failure is correct" },
     { value: `${stats.single_app} / ${stats.cross_app}`, label: "single-app / cross-app", sub: `${crossShare}% cross-app (${stats.two_app} two-app · ${stats.three_app} three-app)` },
     { value: stats.app_count, label: "distinct apps", sub: "of 31 in the full corpus" },
     { value: stats.placeholder_uses, label: "placeholder uses", sub: `${stats.placeholder_keys} distinct keys${stats.top_placeholder ? ` · top: [${stats.top_placeholder.key}] ×${stats.top_placeholder.uses}` : ""}` },
@@ -131,7 +131,7 @@ function renderDayTable(days) {
 }
 
 function escapeHtml(text) {
-  return text
+  return String(text ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
@@ -319,7 +319,7 @@ function initPublicRunSelect() {
 }
 
 // ---------------------------------------------------------------------------
-// Task browser (all 530 tasks + filters) — used by pages/tasks.html
+// Task browser (all 530 tasks + filters) - used by pages/tasks.html
 // ---------------------------------------------------------------------------
 
 const FILTER_STATE = { difficulty: "", type: "", day: "", app: "", search: "" };

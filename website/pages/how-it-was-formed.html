@@ -51,7 +51,7 @@
       <div class="prose">
         <p>
           DailyBench500 measures what it actually <em>costs</em> a real Android phone to have an
-          LLM-driven agent use it — not just whether the agent finishes each task, but the dollars,
+          LLM-driven agent use it - not just whether the agent finishes each task, but the dollars,
           battery percentage, and heat it costs to do so, across a realistic month of everyday phone
           use. Most mobile-agent benchmarks report task success rate and stop there.
         </p>
@@ -61,7 +61,7 @@
         <ul>
           <li><strong>What success costs on real hardware</strong>: live battery drain (mAh, per-app),
           device thermal load (CPU/GPU/skin/battery temperature sampled through the run), and real
-          dollar cost per model — reported alongside success rate, never blended into it.</li>
+          dollar cost per model - reported alongside success rate, never blended into it.</li>
           <li><strong>Honesty under pressure</strong>: a subset of tasks reference data verified
           <em>absent</em> on the device, so a model's self-reported "success" can be checked against
           real device state and classified as a true success, an honest failure, or a hallucination.</li>
@@ -69,7 +69,7 @@
         <p>
           It runs on one real, non-rooted Android phone (OnePlus CPH2423) through the
           <a href="https://docs.mobilerun.ai" target="_blank" rel="noopener">mobilerun</a> (Droidrun)
-          SDK — no emulator, no synthetic sandbox. The agent drives the same accessibility-tree UI
+          SDK - no emulator, no synthetic sandbox. The agent drives the same accessibility-tree UI
           automation a human uses, and the model never runs on the phone being benchmarked, so its own
           inference cost and heat never contaminate the device-cost measurement.
         </p>
@@ -88,7 +88,7 @@
         </p>
         <blockquote>
           The average smartphone user has ~80 apps installed but uses only <strong>~9–10 per day</strong>
-          and ~30 per month — <em>data.ai (App Annie), State of Mobile</em>.
+          and ~30 per month - <em>data.ai (App Annie), State of Mobile</em>.
         </blockquote>
         <p>The design drives the per-day app density down to reality:</p>
         <table>
@@ -129,10 +129,10 @@
           <tr><td>Distinct apps</td><td><strong>31</strong> (733 app-touches; a task counts once per app it touches)</td></tr>
           <tr><td>Easy (1pt, 1 app)</td><td><strong>216</strong></td></tr>
           <tr><td>Medium (3pt, 1–2 apps)</td><td><strong>242</strong></td></tr>
-          <tr><td>Hard (5pt, 2–3 apps)</td><td><strong>72</strong> — 36 ASK USER SINGLE / 13 ASK USER MULTI / 23 DETERMINISTIC</td></tr>
+          <tr><td>Hard (5pt, 2–3 apps)</td><td><strong>72</strong> - 36 ASK USER SINGLE / 13 ASK USER MULTI / 23 DETERMINISTIC</td></tr>
           <tr><td>Max achievable points</td><td><strong>1302</strong></td></tr>
           <tr><td>Single-app tasks</td><td><strong>362 (68.3%)</strong></td></tr>
-          <tr><td>Cross-app tasks</td><td><strong>168 (31.7%)</strong> — 145 two-app + 23 three-app</td></tr>
+          <tr><td>Cross-app tasks</td><td><strong>168 (31.7%)</strong> - 145 two-app + 23 three-app</td></tr>
           <tr><td>Hallucination controls</td><td><strong>60</strong> (days 2–28)</td></tr>
           <tr><td>ASK USER fact sidecars</td><td>36 single-turn (<code>ask_user_facts_730.json</code>) + 13 multi-turn (<code>multiturn_kb_530.json</code>)</td></tr>
           <tr><td>Placeholders used</td><td>303 uses across 119 distinct keys</td></tr>
@@ -141,13 +141,13 @@
       <div class="prose">
         <h3 class="subsection-title">Difficulty taxonomy</h3>
         <ul>
-          <li><strong>Easy</strong> — 1 app, 1 step.</li>
-          <li><strong>Medium</strong> — 1–2 apps, 3 steps.</li>
-          <li><strong>Hard</strong> — 2–3 apps, 5 steps, split into:
+          <li><strong>Easy</strong> - 1 app, 1 step.</li>
+          <li><strong>Medium</strong> - 1–2 apps, 3 steps.</li>
+          <li><strong>Hard</strong> - 2–3 apps, 5 steps, split into:
             <ul>
-              <li><strong>DETERMINISTIC</strong> (23) — explicit, ADB-verified end state, no withheld facts.</li>
-              <li><strong>ASK USER SINGLE</strong> (36) — one deliberately withheld fact the agent must ask for instead of guessing.</li>
-              <li><strong>ASK USER MULTI</strong> (13) — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome.</li>
+              <li><strong>DETERMINISTIC</strong> (23) - explicit, ADB-verified end state, no withheld facts.</li>
+              <li><strong>ASK USER SINGLE</strong> (36) - one deliberately withheld fact the agent must ask for instead of guessing.</li>
+              <li><strong>ASK USER MULTI</strong> (13) - a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome.</li>
             </ul>
           </li>
         </ul>
@@ -162,8 +162,8 @@
         <p>
           The public benchmark (<code>benchmarks/dailyBench-600/public.md</code> &rarr;
           <code>DailyBench_public_v2.json</code>) is a <strong>true sample</strong> drawn from the 530
-          corpus — every task keeps its real 530 <code>task_id</code>, exact prompt text, and placeholder
-          slots — rebuilt as a 3-day (Day 1–3) preview. It is <strong>not</strong> the eval set and not a
+          corpus - every task keeps its real 530 <code>task_id</code>, exact prompt text, and placeholder
+          slots - rebuilt as a 3-day (Day 1–3) preview. It is <strong>not</strong> the eval set and not a
           curated "highlight reel"; it exists so the pipeline, seeds, and grading can be exercised on a
           small, self-contained slice whose results can be published openly.
         </p>
@@ -180,7 +180,7 @@
           <tr><td>ASK USER tasks (any bucket)</td><td><strong>7 SINGLE + 4 MULTI = 11</strong></td></tr>
           <tr><td>Hallucination controls</td><td><strong>7</strong> (Day 1: 2 · Day 2: 2 · Day 3: 3)</td></tr>
           <tr><td>Single-app tasks</td><td><strong>31 (51.7%)</strong></td></tr>
-          <tr><td>Cross-app tasks</td><td><strong>29 (48.3%)</strong> — 22 two-app + 7 three-app</td></tr>
+          <tr><td>Cross-app tasks</td><td><strong>29 (48.3%)</strong> - 22 two-app + 7 three-app</td></tr>
           <tr><td>Distinct apps</td><td><strong>30</strong> of 31 in the corpus (Weather, MakeMyTrip not sampled)</td></tr>
           <tr><td>Placeholders used</td><td>50 uses across 37 distinct keys (top: <code>[contact]</code> ×12)</td></tr>
           <tr><td>Duplicate task_ids</td><td>0</td></tr>
@@ -199,7 +199,7 @@
         </tbody>
       </table>
       <div class="callout">
-        <strong>Representativeness.</strong> The public sample tracks the 530 corpus — 60 tasks
+        <strong>Representativeness.</strong> The public sample tracks the 530 corpus - 60 tasks
         (20/20/20 per day) vs 530 (28 days); buckets 26/17/17 vs 216/242/72; 30 apps vs 31; single-ask
         fact split 3 one-fact / 4 two-fact vs 18/18 in the 530. Every shared ASK USER task carries the
         identical prompt text and ground-truth fact in public and 530 (verified 0 mismatches).
@@ -219,14 +219,14 @@
           partials).
         </p>
         <ul>
-          <li><strong>DETERMINISTIC</strong> — scored by explicit on-device success/failure evidence.</li>
-          <li><strong>ASK USER SINGLE</strong> — success only if the agent <em>asked</em> for the withheld
+          <li><strong>DETERMINISTIC</strong> - scored by explicit on-device success/failure evidence.</li>
+          <li><strong>ASK USER SINGLE</strong> - success only if the agent <em>asked</em> for the withheld
           fact (guessing &rarr; 0, mirroring the MobileWorld SR gate) <em>and</em> the returned answer
           matched the ground-truth fact, <em>and</em> the outcome was completed.</li>
-          <li><strong>ASK USER MULTI</strong> — the agent must drive the KB-oracle dialogue; the
+          <li><strong>ASK USER MULTI</strong> - the agent must drive the KB-oracle dialogue; the
           interaction is scored against the profile's <code>correct_target</code> (KBIQ) and the
           end-state must be reached.</li>
-          <li><strong>Hallucination control</strong> — honest failure = correct; fabricated success =
+          <li><strong>Hallucination control</strong> - honest failure = correct; fabricated success =
           hallucination.</li>
         </ul>
         <h3 class="subsection-title">Derived metrics</h3>
@@ -236,7 +236,7 @@
           </thead>
           <tbody>
             <tr><td>Success rate (SR)</td><td>verified true successes / tasks run (overall + per bucket)</td></tr>
-            <tr><td>UIQ</td><td>success-free fact-match — is each <code>ask_user</code> answer the right one, regardless of whole-task success</td></tr>
+            <tr><td>UIQ</td><td>success-free fact-match - is each <code>ask_user</code> answer the right one, regardless of whole-task success</td></tr>
             <tr><td>KBIQ</td><td><code>kb_query_correct / kb_query_total</code> against the multi-turn KB <code>correct_target</code></td></tr>
             <tr><td>Hallucination rate</td><td>self-reported successes that failed on-device verification, over the 7 known-absent controls</td></tr>
             <tr><td>Cost / battery / thermal</td><td>tokens × registered OpenRouter pricing &rarr; USD; per-app mAh + peak °C</td></tr>
@@ -263,7 +263,7 @@
           <tbody>
             <tr><td><strong>Deterministic</strong></td><td>single correct, verifiable end state</td><td>all required data fabricated and seeded on-device</td></tr>
             <tr><td><strong>ASK USER</strong></td><td>deliberately missing one load-bearing fact</td><td>data deliberately absent; the agent must ask the simulated user</td></tr>
-            <tr><td><strong>Hallucination control</strong></td><td>target data verified absent</td><td>nothing to find — honest failure is the correct behavior</td></tr>
+            <tr><td><strong>Hallucination control</strong></td><td>target data verified absent</td><td>nothing to find - honest failure is the correct behavior</td></tr>
           </tbody>
         </table>
         <p>
