@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""Completeness verifier for the user config.
-
-Checks that config/user.yaml resolves EVERY value a run actually needs, so a new
-user gets "you still need to fill X" instead of a silent wrong-value run:
-
-  REQUIRED (exit 1 if any gap):
-    - every task prompt placeholder ([...]) on the runnable Day-1 subset,
-    - every ASK USER fact template ({...}) in ask_user_facts_730.json,
-    - every fabricated-seed {key} in the Day-1 seed spec + seed-file templates.
-
-  ADVISORY (reported, not fatal):
-    - prompt placeholders on days 2-28 that aren't parameterized yet,
-    - config keys that no task/fact/seed uses (possible typo).
-
-Run:  uv run python scripts/verify_config.py
-"""
+"""Completeness verifier for the user config."""
 
 from __future__ import annotations
 

@@ -1,32 +1,11 @@
-"""User configuration for the parameterized benchmark.
-
-The benchmark is meant to be usable by anyone, not just the original author's
-persona. Every task prompt placeholder (``[contact]``), every ASK USER fact
-(``{contact_b}``), and every fabricated seed value that names a concrete
-person / place / thing is resolved from ONE flat user config:
-``config/user.yaml`` (seeded from the committed ``config/user_config.example``).
-
-Key naming:
-- Keys that match a prompt placeholder (e.g. ``contact``, ``food_category``,
-  ``stock name``) fill that placeholder directly.
-- Fact/seed-only keys (``contact_b``, ``destination``, ``item``,
-  ``stock note title``, ``stock threshold``, ...) are used by ASK USER fact
-  templates (``{...}``) and by the seed generator/seed scripts.
-
-A missing key fails loudly (exception / verifier report) instead of silently
-guessing, so a new user gets "you still need to fill X" rather than a silent
-wrong-value run.
-
-No third-party deps: the flat config is parsed with a tiny line parser that
-accepts both ``key: value`` and ``key=value`` forms, ignoring blank lines and
-``#`` comments (so a YAML- or dotenv-flavoured file both work).
-"""
+"""User configuration for the parameterized benchmark"""
 
 from __future__ import annotations
 
 import os
 import re
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
@@ -115,6 +94,18 @@ SCHEMA: dict[str, tuple[str, str]] = {
                    "Calendar event).", "Gym"),
     "agenda file": ("Agenda file the Meet-Files task opens in Files (`[agenda file]`; matches "
                      "the seeded file).", "Weekly Agenda"),
+    # google-meet schedule task (easy__google-meet__004) - the GMeet the agent must create
+    "gmeet title": ("Title of the Google Meet the easy__google-meet__004 task schedules "
+                    "(`[gmeet title]`).", "Product Demo"),
+    "gmeet datetime": ("When the easy__google-meet__004 task schedules the meeting "
+                        "(`[gmeet datetime]`; date-relative so it stays in the future).", "tomorrow 3 PM"),
+    "invitee email 1": ("First attendee email for the scheduled Google Meet "
+                         "(`[invitee email 1]`).", "yuvraj.mist@gmail.com"),
+    "invitee email 2": ("Second attendee email for the scheduled Google Meet "
+                         "(`[invitee email 2]`).", "rajceo2031@gmail.com"),
+    # swiggy multi-turn reorder (hard__swiggy__005) - the dated order the user craves
+    "date": ("Date of the Swiggy order to reorder in the multi-turn swiggy task "
+             "(`[date]`; matches the KB's most-recent order).", "14-Aug-2026"),
     # hallucination-control absent-entity targets (`[hc ...]`). Each names the entity the
     # control task asks about that is GENUINELY ABSENT on device (the honest outcome is a
     # failure). Values stay the absent entity so controls keep testing honest absence.
@@ -227,7 +218,7 @@ def resolve_template(template: str, cfg: dict[str, str]) -> str:
     return _TEMPLATE_RE.sub(lambda m: cfg[m.group(1)], template)
 
 
-def resolve_templates(obj, cfg: dict[str, str]):
+def resolve_templates(obj: Any, cfg: dict[str, str]) -> Any:
     """Recursively resolve ``{key}`` templates in strings inside nested dicts/lists."""
     if isinstance(obj, str):
         if "{" in obj:

@@ -1,27 +1,5 @@
 #!/usr/bin/env python3
-"""Audit a device for the apps the benchmark needs (device-readiness check).
-
-The 530-task benchmark targets 22 apps by their human-readable label (the LLM
-opens them via the launcher label, not a hardcoded package). Different phones /
-OEM ROMs ship different packages for the same label (e.g. Camera is
-`com.oneplus.camera` on OnePlus but `com.android.camera` on Pixel). This script
-checks the connected device's installed packages against a known package-name
-map for each of the 22 apps, so a new user instantly sees which apps are
-installed and which they still need to install — instead of discovering a
-missing app mid-run.
-
-Every app maps to a LIST of candidate packages (most common first); the app is
-reported INSTALLED if ANY candidate is present. Unknown OEM layouts can be
-extended by appending to the map. Apps the benchmark references but that aren't
-on the device at all (e.g. Google Meet) are reported MISSING with a hint.
-
-Run:
-  uv run python scripts/tools/app_audit.py                 # auto-detect serial
-  uv run python scripts/tools/app_audit.py --serial 172.24.2.66:5555
-  uv run python scripts/tools/app_audit.py --json          # machine-readable
-
-Exit: 0 if every benchmark app is installed, 1 if any is missing.
-"""
+"""Audit a device for the apps the benchmark needs (device-readiness check)."""
 
 from __future__ import annotations
 

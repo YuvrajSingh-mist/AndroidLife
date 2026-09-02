@@ -1,27 +1,5 @@
 #!/usr/bin/env python3
-"""Recover per-task result JSONs for tasks whose run-folder files were overwritten.
-
-The public run `assets/runs/public/2026-08-20-003030` used a dataset where two task pairs
-shared the same `task_number_within_app` (the bug fixed in scripts/data/
-export_public_dataset.py). Because the batch runner names each run folder from
-that field, the later task of each pair overwrote the earlier task's top-level
-result files (output.json / meta.json / run_metrics.json) inside the same folder.
-The earlier tasks' full trajectories survived in the folder's `trajectories/`
-subdirs, so their results are recoverable.
-
-This script rebuilds a proper standalone run folder for each overwritten task
-under `recovered/<task_id>/`, reading the final outcome (success/reason/steps)
-from the surviving trajectory's FastAgentEndEvent and the timing from the
-trajectory folder name + macro.json timestamp. The recovered folders carry the
-same result-file layout (output.json / meta.json / run_metrics.json) so the
-report generator discovers them alongside the 59 intact run folders -> 61 total.
-
-Overwritten tasks:
-  - medium__google-maps__002  (traj 20260820_003854_159b478e; folder was reused
-    by medium__google-maps__003)
-  - medium__clock__009         (traj 20260820_032626_b83d8636; folder was reused
-    by medium__clock__011)
-"""
+"""Recover per-task result JSONs for tasks whose run-folder files were overwritten."""
 
 from __future__ import annotations
 

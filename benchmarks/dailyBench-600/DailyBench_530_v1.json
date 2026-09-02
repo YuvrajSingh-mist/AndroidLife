@@ -9532,10 +9532,12 @@
       "is_ask_user": false,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 7,
-      "prompt_text": "Words aren't enough for this reply. Can you send a GIF in a conversation in Messages?",
-      "prompt_template": "Words aren't enough for this reply. Can you send a GIF in a conversation in Messages?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Words aren't enough for this reply. Can you send a GIF to [contact] in Messages?",
+      "prompt_template": "Words aren't enough for this reply. Can you send a GIF to {{ contact }} in Messages?",
+      "placeholders": [
+        "contact"
+      ],
+      "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"
@@ -14723,10 +14725,15 @@
       "is_ask_user": false,
       "task_number_within_app": 4,
       "task_number_within_dataset_app": 5,
-      "prompt_text": "I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one?",
-      "prompt_template": "I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one?",
-      "placeholders": [],
-      "placeholder_count": 0,
+      "prompt_text": "Can you schedule a Google Meet for me? Set the title to [gmeet title], schedule it for [gmeet datetime], and add [invitee email 1] and [invitee email 2] to the invite so they get the meeting link.",
+      "prompt_template": "Can you schedule a Google Meet for me? Set the title to {{ gmeet title }}, schedule it for {{ gmeet datetime }}, and add {{ invitee email 1 }} and {{ invitee email 2 }} to the invite so they get the meeting link.",
+      "placeholders": [
+        "gmeet title",
+        "gmeet datetime",
+        "invitee email 1",
+        "invitee email 2"
+      ],
+      "placeholder_count": 4,
       "is_cross_app": false,
       "cross_app_label": null,
       "source_path": "/Users/yuvrajsingh9886/Desktop/DrainBench300/benchmarks/dailyBench-600/tasks_530.md"

@@ -1,19 +1,4 @@
-"""REAL end-to-end check: a real ask_user call (real OpenAI API) must emit an OpenInference
-LLM span into Phoenix.
-
-Runs the full production path — build_ask_user_tool -> ask_user -> AsyncOpenAI -> REAL
-api.openai.com -> _get_ask_user_phoenix_tracer -> _emit_ask_user_span -> OTLP -> Phoenix —
-then verifies the span (span_kind=LLM, real model, real token counts) is queryable in the
-Phoenix DB. No stubs: this makes a genuine OpenAI call and costs a few tokens.
-
-REQUIRES:
-  - `phoenix serve` on :6006 (or set phoenix_url)
-  - OPENAI_API_KEY in the environment or .env
-  - network access to api.openai.com
-
-Usage:
-  OPENAI_API_KEY=sk-... .venv/bin/python scripts/e2e_askuser_phoenix.py
-"""
+"""Real end-to-end check that an ask_user call emits an OpenInference LLM span into Phoenix."""
 from __future__ import annotations
 
 import asyncio

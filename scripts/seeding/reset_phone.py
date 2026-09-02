@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
-"""Reset the DrainBench benchmark phone to its pre-run baseline (non-rooted).
-
-Undoes agent-created run artifacts (settings, blocked numbers, calendar events,
-contact edits, run downloads) and verifies the fabricated seed baseline is still
-present. Does NOT wipe the seed data.
-
-SAFETY: dry-run by default. Pass --apply to actually make changes. Only run on
-the dedicated benchmark device (fabricated persona data), never a personal phone.
-
-Usage:
-  uv run python scripts/reset_phone.py --serial 100.108.15.119:5555 --profile public_v2            # dry-run
-  uv run python scripts/reset_phone.py --serial 100.108.15.119:5555 --profile public_v2 --apply    # reset
-  uv run python scripts/reset_phone.py --serial 100.108.15.119:5555 --profile public_v2 --verify-only
-"""
+"""Reset the DrainBench benchmark phone to its pre-run baseline (non-rooted)."""
 
 from __future__ import annotations
 

@@ -226,8 +226,8 @@ part of what the agent must resolve or ask about.
 Start a per-run Phoenix DB (dedicated date-time folder — same convention as the run itself):
 
 ```bash
-uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"   # e.g. 2026-08-22-195244
-# → assets/db/public/2026-08-22-195244/phoenix.db, project dailybench-public
+uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"   # e.g. 20260826-105200
+# → assets/db/public/20260826-105200/phoenix.db, project dailybench-public
 ```
 
 Run all 60 tasks:
@@ -274,51 +274,11 @@ fact, and the full question → answer dialogue.
 
 ## Known results
 
-### Run `2026-08-22-195244` (model `qwen/qwen3.6-plus` via OpenRouter, steps 60, temp 0.0)
-
-> ⚠️ This run predates the **68 → 60 trim** (the run used 24/24/20 tasks/day). Its metrics
-> below reflect the **pre-trim 68-task set**; the current set is 60 (20/20/20). The ask-user,
-> hallucination-control, and app coverage is unchanged by the trim, but SR/points will shift
-> on the next run.
-
-**Manual per-day audit** (`reports/public/public-2026-08-22-195244.md`):
-
-| day | correct | FAIL | halluc | total |
-|---|---|---|---|---|
-| 1 | 16 | 7 | 1 | 24 |
-| 2 | 18 | 6 | 0 | 24 |
-| 3 | 15 | 5 | 0 | 20 |
-| **Total** | **49** | **18** | **1** | **68** |
-
-**Official metrics** (`reports/metrics/public/public-20260822-195244-report.json`):
-
-| metric | value |
-|---|---|
-| Success rate (SR) | **66.2%** (45 true success / 21 true failure / 2 hallucination) |
-| SR by bucket | easy 76.9% · medium 68.0% · hard 47.1% |
-| ASK USER SR | 33.3% |
-| GUI-only SR | 69.4% |
-| Avg steps | 21.13 · avg user queries 0.67 |
-| KB interaction quality (KBIQ) | **1.000** (7/7, manual `kb_audit.json`) |
-| UIQ (fact-match) | 0.045 |
-| Hallucination | official DeepEval flags 2/7 controls; manual audit confirms **1 true hallucination** (`easy__calendar__008`; `obsidian-009` was a false positive) |
-
-**Model cost (measured, agent model `qwen/qwen3.6-plus` @ $0.325/$1.95 per M, live OpenRouter catalog):**
-
-| metric | value |
-|---|---|
-| Total tokens | 15,278,993 (15.04M prompt + 0.24M completion) |
-| Total cost | **$5.36** |
-| Avg per task | **$0.079** |
-| By bucket (avg/task) | easy $0.030 · medium $0.089 · hard $0.139 |
-| By day (total) | Day 1 $1.91 · Day 2 $1.90 · Day 3 $1.55 |
-| Most expensive task | `hard__clock-calendar__023` $0.56 |
-| ask_user calls | 13 (ask_user model `gpt-5.4-mini` adds negligible cost) |
-
-Known issues from this run: `medium__google-maps-003` was a false PASS (Telegram message never
-sent — verified empty on-device); `contacts-009` is a model issue (should scroll-and-count);
-`swiggy-001` was reworded; `google-search-008` was promoted to ASK USER. See the run report for
-the full per-task audit, on-device verification, and privacy scan.
+Per-run results live in `reports/public/public-<RUN_TS>.md` (manual audit),
+`reports/metrics/public/public-<RUN_TS>-report.{json,md}` (official metrics), and the
+turn-based ASK USER audits under `reports/turn-based/`. See the per-run reports for the
+full per-task audit, on-device verification, and privacy scan. (Runs 2026-08-20/22/23 were
+removed as stale on 2026-09-02; results start from the 2026-08-26 runs.)
 
 ## Relationship to the full corpus
 

@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""Seed the Day-1 fabricated data onto the device (sanity-check run, 2026-08-05).
-
-For every seedable-by-ADB task the script:
-  1. materialises the literal fabricated files into
-     seeds/day_<N>/  (flat folder of real artifacts: photos/pdf/notes),
-     and
-  2. pushes them to the device with the correct mtime (so Gallery/Messages sort them
-     as "today", "~1h ago", ">1 month old" respectively).
-
-Things that cannot be seeded via ADB (app-private / blocked content-insert) are
-attempted and their result reported honestly:
-  - SMS insert (content://sms)  - usually blocked on non-rooted
-  - call-log insert (content://call_log/calls) - usually allowed
-
-Generalized with `--day` (default 1). Day 2 seeds the ADB-seedable invoice PDF for
-hard__files-notes__011 and the fabricated {contact} email address for
-hard__photos-gmail-obsidian__012 (everything else on Day 2 is web / real state /
-app-private / operator-ensured).
-
-Run:  uv run python scripts/seed_data.py --serial RS7XKZDI8HTOJNYL --day 2
-"""
+"""Seed the Day-1 fabricated data onto the device (sanity-check run, 2026-08-05)."""
 
 from __future__ import annotations
 
@@ -691,7 +671,7 @@ def _bedtime_note_template(bedtime: str) -> str:
     """Render the 7-day Obsidian 'Bedtime' sleep-routine record (day-3 seed).
 
     A proper human sleep log: varied bedtimes + artists/genres across 7 nights
-    (lo-fi most frequent - that is the answer the agent must read out). The
+    (lo-fi appears most; the note does NOT pin the favorite app - ASK USER task). The
     bedtime line comes from the config var so it stays consistent with the
     sleep-timer target.
     """
@@ -735,14 +715,6 @@ what's working and when I'm actually getting to bed. Last 7 nights.
 - Bedtime: {bedtime}, asleep by ~11:00 PM
 - Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) — lo-fi beats
 - Note: consistent — lo-fi beats help me sleep most nights
-
-## What's been working
-- Lo-fi beats get me to sleep fastest (used most of the last 7 nights)
-- Bedtime settled at {bedtime}
-- Favorite app for this lately: YouTube Music
-
-## Habit
-- Start a Chillhop lo-fi track, set a sleep timer so it stops by itself at bedtime
 """
 
 

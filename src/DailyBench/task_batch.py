@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 from dotenv import load_dotenv
 
@@ -73,8 +74,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--task-timeout", type=int, default=None, help="Wall-clock timeout in seconds for every task run (0 = no wall-clock cap, step budget only). Default: per-bucket 2400s (40 min).")
     parser.add_argument("--repeats", type=int, default=1, help="Run each selected task this many times (opt-in; runs are already deterministic at temperature=0).")
     parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
-    parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
+    vision_group = parser.add_mutually_exclusive_group()
+    vision_group.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent: the agent sees the accessibility UI tree PLUS a screenshot on every step. Off by default for this harness.")
+    vision_group.add_argument("--vision-only", action="store_true", help="Screenshots ONLY: drop the accessibility tree and drive the device from screenshots alone (mobilerun vision_only). The framework auto-enables the coordinate tools this mode requires. Implies --vision but without the UI tree.")
     parser.add_argument("--reasoning", action="store_true", help="Use mobilerun's manager/executor planning workflow instead of the fast-agent loop.")
+    parser.add_argument("--thinking", action="store_true", help="Leave the model's reasoning/thinking mode ON (forwarded to the runner; sends NO reasoning-off switches). Required for models where reasoning is mandatory (e.g. stepfun/step-3.7-flash), which otherwise 400 on the reasoning-off extra_body.")
     parser.add_argument("--no-debug", action="store_true", help="Disable mobilerun's verbose debug logging (on by default).")
     parser.add_argument("--no-tracing", action="store_true", help="Disable Arize Phoenix tracing (ON by default; needs `phoenix serve` running locally, see docs.mobilerun.ai/framework/features/tracing).")
     parser.add_argument("--phoenix-url", default=None, help="Phoenix collector endpoint, e.g. http://localhost:6006 (sets the `phoenix_url` env var for the mobilerun process).")
@@ -136,11 +140,13 @@ def task_timeout_seconds(task: dict[str, object]) -> int | None:
     return MEDIUM_TASK_TIMEOUT_SECONDS
 
 
-def load_ask_user_facts(path: str) -> dict[str, str]:
-    """Load the {task_id: relevant_information} mapping for Hard/ASK USER tasks' ask_user tool.
+def load_json_object(path: str | Path) -> dict[str, Any]:
+    """Load a `{task_id: ...}` JSON sidecar (facts, controls, or multi-turn KB).
 
-    A missing file just means no facts are configured yet (fine for DETERMINISTIC-only
-    selections) - it's gitignored on purpose, see .gitignore's comment above the entry.
+    Returns {} when the file is missing (fine for DETERMINISTIC-only selections —
+    the facts file is gitignored on purpose). The name is generic because the same
+    loader backs the ask_user-facts sidecar, the hallucination-controls sidecar,
+    and the multiturn-KB profile, whose values are heterogeneous dicts.
     """
     facts_path = Path(path)
     if not facts_path.exists():
@@ -186,10 +192,14 @@ def build_run_command(
     command.extend(["--task-timeout", "0" if timeout is None else str(timeout)])
     if args.screen_record:
         command.append("--screen-record")
-    if args.vision:
+    if args.vision_only:
+        command.append("--vision-only")
+    elif args.vision:
         command.append("--vision")
     if args.reasoning:
         command.append("--reasoning")
+    if getattr(args, "thinking", False):
+        command.append("--thinking")
     if args.no_debug:
         command.append("--no-debug")
     if args.no_tracing:
@@ -294,8 +304,8 @@ def main() -> int:
             batch_dir.mkdir(parents=True, exist_ok=True)
             args.run_root = str(batch_dir)
             write_initial_device_sample(args.serial, batch_dir)
-    ask_user_facts = load_ask_user_facts(ask_user_facts_path(args.source))
-    ask_user_kb = load_ask_user_facts(args.ask_user_kb) if args.ask_user_kb else None
+    ask_user_facts = load_json_object(ask_user_facts_path(args.source))
+    ask_user_kb = load_json_object(args.ask_user_kb) if args.ask_user_kb else None
     unresolved_failures: list[str] = []
     retry_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id)
     invocation = 0

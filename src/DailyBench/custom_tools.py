@@ -1,15 +1,4 @@
-"""Custom mobilerun tools exposing ground-truth device date/time and approximate location.
-
-mobilerun's FastAgent loop has no built-in way to learn the real current date/time: the
-underlying AndroidDriver.get_date() exists but is never registered as a callable tool, and
-`phone_state` only ever carries packageName/currentApp (see reports/qwen35-4b-public-wired-run-
-analysis.md, finding A3). No location tool exists at all. Both are read directly via ADB rather
-than by swiping open Quick Settings and reading the status bar off a UI dump - that's slower,
-fragile against OEM UI variation, and for location doesn't even surface coordinates there in the
-first place. `dumpsys location` is the standard ADB-level way to read a device's last known fix
-and is already privacy-redacted by Android itself (coarse ~2-decimal precision), which is exactly
-the right level of precision for these benchmark tasks.
-"""
+"""Custom mobilerun tools exposing ground-truth device date/time and approximate location"""
 
 from __future__ import annotations
 
@@ -63,7 +52,7 @@ You must answer the mobile GUI agent's questions about the task. Rules:
 
 The current real date and time is: {current_datetime}.
 
-Conversation so far:
+Conversation so far (JSON, oldest first — "user" = the agent's question, "assistant" = your earlier answer):
 {history}
 The mobile GUI agent's latest question is below."""
 
@@ -225,10 +214,7 @@ def build_ask_user_tool(
         current_datetime = await ctx.driver.get_date()
         turn_count += 1
         if kb is not None:
-            history_str = "\n".join(
-                f"{'You' if e['role']=='assistant' else 'Agent'}: {e['content']}"
-                for e in history
-            ) or "(no prior conversation)"
+            history_str = json.dumps(history, ensure_ascii=False)
             system_prompt = ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE.format(
                 goal=ctx.shared_state.instruction,
                 knowledge_base=json.dumps(kb, ensure_ascii=False, indent=2),
@@ -295,8 +281,8 @@ def build_ask_user_tool(
                 "NOT available anywhere on the device (for example a particular contact's name, a date or "
                 "time, a file, or an amount etc.). First search the device thoroughly for it — only if you genuinely "
                 "cannot find or infer it should you ask. Use this INSTEAD of guessing or inventing the specific fact "
-                "you think is missing to complete the task. Never ask about things you can look up yourself. Ask "
-                "one specific question at a time. You may ask multiple questions over multiple turns to "
+                "you think is missing to complete the task. Never ask about things you can look up yourself. "
+                "You may ask multiple questions over multiple turns to "
                 "disambiguate a vague request."
             ),
         }

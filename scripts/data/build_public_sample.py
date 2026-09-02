@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild the public 3-day preview as a TRUE sample of the 530-task corpus.
-
-Selects tasks directly from DailyBench_530_v1.json — real task_ids, exact prompt
-text, placeholder slots preserved — remaps them to Days 1-3, and writes:
-  - public.md                     (530-style md with <!--task_id--> comments)
-  - DailyBench_public_v2.json/.jsonl (real 530 ids, day remapped to 1-3)
-  - ask_user_facts.json           (public ASK USER sidecar, from the 730 facts)
-
-The 4 multi-turn KB tasks are kept in the sample; their profiles live in
-multiturn_kb_public.json keyed by the REAL 530 ids (same as multiturn_kb_530.json).
-
-Placeholders are preserved as [slots] and resolved at run time from
-public_vars.local.env + config/user.yaml.
-
-Usage: uv run python scripts/data/build_public_sample.py [--seed N]
-"""
+"""Rebuild the public 3-day preview as a TRUE sample of the 530-task corpus."""
 from __future__ import annotations
 
 import argparse
@@ -62,11 +47,15 @@ DAY_SPLIT = {"easy": [7, 7, 7], "medium": [7, 7, 6], "hard": [6, 6, 4]}
 
 
 def load_placeholder_keys() -> set[str]:
+    """Resolvable placeholder keys for the public sample.
+
+    Sole source of truth = public_vars.local.env (NOT config/user.yaml). A public
+    task is only selected if EVERY one of its placeholders is listed here, so a
+    placeholder that lives only in user.yaml never silently qualifies a task.
+    """
     keys: set[str] = set()
     if PUBLIC_VARS.exists():
-        keys |= set(re.findall(r"^([a-z0-9\- ]+)\s*=", PUBLIC_VARS.read_text(), re.M))
-    if USER_YAML.exists():
-        keys |= set(re.findall(r"^([a-z0-9\-_ ]+):", USER_YAML.read_text(), re.M))
+        keys |= set(re.findall(r"^([a-z0-9\-_ ]+)\s*=", PUBLIC_VARS.read_text(), re.M))
     return keys
 
 

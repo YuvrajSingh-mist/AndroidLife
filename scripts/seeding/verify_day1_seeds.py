@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the Day-1 runnable seeds are good to go on the real phone.
-
-Two halves, printed as shared CHECK lines (parsed like device_health_check.py):
-
-  (1) CONFIG: every Day-1 prompt placeholder, ASK USER fact, and seed-spec
-      {key} on the runnable 530 Day-1 set resolves from config/user.yaml
-      (the same REQUIRED set verify_config.py checks).
-  (2) DEVICE: every fabricated Day-1 seed that should be on-device is actually
-      there, via ADB:
-        - calendar events (Lunch with Maa / Weekly_Standup / Old_Gym_Class / meeting)
-        - Obsidian 'stock note title' note in the vault
-        - Camera seed photos (pizza1-5, today_1-5, hide_me)
-        - Screenshot seeds (old_shot_1-4)
-        - persona contacts (Maa / Airtel / Jio) + birthday contacts
-        - the seeded SMS ticket message
-        - Day 2 additionally: the invoice PDF, the fabricated {contact} email (so
-          the photo-email branch can trigger), and the operator caption check
-
-Run:  uv run python scripts/verify_day1_seeds.py [--serial SERIAL]
-Exit: 0 if all PASS/WARN, 1 if any FAIL.
-"""
+"""Verify the Day-1 runnable seeds are good to go on the real phone."""
 
 from __future__ import annotations
 

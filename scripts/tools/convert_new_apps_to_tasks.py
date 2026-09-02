@@ -1,29 +1,5 @@
 #!/usr/bin/env python3
-"""Diversify the 530-task corpus with 7 newly-installed apps by REPLACING easy tasks.
-
-User directive: "installed zomato, prime, make my trip, book my show and msn for
-news ... use this in the existing tasks and diversify pls not changing the dist"
-+ "we have pdf opening tasks too right? since its something that people use a lot".
-
-Note: the installed food-delivery app is SWIGGY (in.swiggy.android), not Zomato —
-no com.application.zomato package exists on the device, so Swiggy is used.
-
-New apps (7) -> app_slug (task_id middle segment = app_slug, so ids change):
-  Swiggy          -> swiggy
-  Prime Video     -> prime-video
-  MakeMyTrip      -> makemytrip
-  BookMyShow      -> bookmyshow
-  MSN News        -> msn-news
-  Amazon Shopping -> amazon-shopping
-  Adobe Scan      -> adobe-scan   (PDF open + scan -> first-class PDF tasks)
-
-Each swap replaces an EASY single-app task on a 10-app "slack" day whose app still
-has >=2 touches that day, so the destination day goes 10->11 apps (within the
-days-4-28 <=11 cap) and the source app stays in the union. Buckets stay 216/242/72,
-HC stays 55, AU/DET stay 36/36, total stays 530 — nothing is added, only swapped.
-
-Usage: python3 scripts/tools/convert_new_apps_to_tasks.py
-"""
+"""Diversify the 530-task corpus with 7 newly-installed apps by REPLACING easy tasks."""
 from __future__ import annotations
 
 import re

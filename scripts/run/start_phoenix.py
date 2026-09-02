@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""Start `phoenix serve` for a specific benchmark day (or the shared project).
-
-One-command way to bring up the Phoenix trace collector pointed at the per-day
-SQLite DB, so the run never silently drops traces. Mirrors the README/HANDOFF
-command but also creates the day's DB directory and refuses to start twice.
-
-Usage:
-  uv run python scripts/run/start_phoenix.py --day 4          # assets/db/day4/phoenix.db, project dailybench-day4
-  uv run python scripts/run/start_phoenix.py --public          # assets/db/public/phoenix.db, project dailybench-public
-  uv run python scripts/run/start_phoenix.py --project myproj  # shared project, default assets/db/misc/phoenix.db
-  uv run python scripts/run/start_phoenix.py --day 4 --port 6006 --host localhost
-
-After it is up, run the day as usual (`run_day.py --day 4`). The runner's
-pre-flight guard (DailyBench.cli.check_phoenix_ready) verifies the collector is
-reachable and aborts if it isn't, so you can't silently run untraced again.
-"""
+"""Start `phoenix serve` for a specific benchmark day (or the shared project)."""
 
 from __future__ import annotations
 

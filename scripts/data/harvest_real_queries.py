@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""Harvest real-world Android user queries to source benchmark tasks.
-
-Pulls genuine user questions from the Android Enthusiasts Stack Exchange API
-(free, no auth, 300 req/day quota) and maps them to DrainBench's 32 apps so a
-task author can write tasks grounded in REAL user intents instead of inventing
-them from scratch.
-
-Why Stack Exchange over Reddit: Reddit's public JSON endpoint and Pullpush.io
-both rate-limit/block anonymous agents; Stack Exchange's API is explicitly
-public, JSON, and free (300/day quota), and its Android site is literally a
-Q&A of real people asking "how do I do X on my phone".
-
-Usage:
-  uv run python scripts/data/harvest_real_queries.py --out reports/real-user-queries.md
-  uv run python scripts/data/harvest_real_queries.py --app Gmail,Sheets --limit 5   # specific apps
-  uv run python scripts/data/harvest_real_queries.py --tag "google-photos"          # any StackExchange tag
-
-Output: a markdown doc grouped by app, each entry = the real question title +
-body snippet + link, so the author can paraphrase into a task with the
-benchmark's fabricated persona + device vars.
-"""
+"""Harvest real-world Android user queries to source benchmark tasks."""
 
 from __future__ import annotations
 

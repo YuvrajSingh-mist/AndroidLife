@@ -24,7 +24,7 @@ checked against real device state and classified as a true success, an honest fa
 hallucination — the difference between a model that admits it couldn't find something and one
 that fabricates a plausible-sounding answer.
 
-## Benchmark at a glance (as of 2026-08-23)
+## Benchmark at a glance (as of 2026-08-14)
 
 **Corpus (source of truth: `benchmarks/dailyBench-600/tasks_530.md`):**
 
@@ -32,49 +32,26 @@ that fabricates a plausible-sounding answer.
 |---|---|
 | Runnable tasks | **530** (dataset `DailyBench_530_v1.json`/`.jsonl`) |
 | Schedule | **28 days** (day 1..28), ~18.9 tasks/day (min 15 · max 22) |
-| Distinct apps | **31** (721 app-touches; 530 tasks count once per app they touch) |
+| Distinct apps | **32** (733 app-touches; 530 tasks count once per app they touch) |
 | Easy (1pt, 1 app) | **216** |
 | Medium (3pt, 1-2 apps) | **242** |
 | Hard (5pt, 2-3 apps) | **72** — **36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC** |
 | Max achievable points | **1302** (easy 216 + medium 726 + hard 360) |
-| Single-app tasks | **362 (68.3%)** |
-| Cross-app tasks | **168 (31.7%)** — 145 two-app + 23 three-app |
+| Single-app tasks | **352 (66.4%)** |
+| Cross-app tasks | **178 (33.6%)** — 153 two-app + 25 three-app |
 | Hallucination controls | **60** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
 | ASK USER fact sidecars | 36 single-turn (`ask_user_facts_730.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
-| ASK USER SINGLE fact split | **18 one-fact / 18 two-fact** (50/50; two-fact on days 6-28, with 2 early exceptions for public parity) |
-| Placeholders used | 298 uses across **115 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
-| Model cost (projected, qwen3.6-plus) | **~$38** for all 530 — measured public-run per-bucket averages applied to the 530 mix (easy ~$0.03 / medium ~$0.09 / hard ~$0.14 per task); see the cost note in the public spec |
-| Public preview | **60-task sample** (53 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
-
-**ASK USER SINGLE (single-query ask) — the model must ask the user agent.**
-
-These are the **36 single-query ask tasks** where the 1–2 facts the task needs (recipient, place,
-item, route, threshold, …) are deliberately withheld from the model and given to the simulated
-user agent. The model **must call the `ask_user` tool and ask the user agent** for them —
-guessing instead of asking scores **0** under the MobileWorld-style interaction gate, and the
-returned answers must match the ground-truth facts (`ask_user_facts_730.json`). The 13 ASK USER
-MULTI tasks instead drive a KB-oracle multi-turn dialogue; the 23 DETERMINISTIC hard tasks need
-no ask at all.
-
-**50/50: half the SINGLE tasks withhold 1 fact, half withhold 2.** Each SINGLE task withholds
-**1 or 2 facts (never more)** and the agent asks **once per withheld fact** (1–2 questions);
-guessing without asking → 0. The 36 tasks split **18 one-fact / 18 two-fact**. Two-fact tasks sit
-**after day 5** (days 6–28) — the harder, later days — except two
-(`photos-gmail-obsidian-012` day 2, `drive-notes-telegram-010` day 5) that stay two-fact so the
-public sample can mirror the same split with identical task_ids. The `ask_user` tool is
-**stateless** in this mode: **no chat memory**, each question is answered independently from the
-withheld fact(s). The 13 ASK USER MULTI tasks are the opposite — an **open dialogue with rolling
-memory** (the simulated user remembers the whole conversation and stays consistent), where the
-agent asks as many clarifying questions as it needs to converge to the KB `correct_target`.
+| Placeholders used | 238 uses across **87 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
+| Public preview | **68-task sample** (61 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
 
 **Single-app vs. cross-app (a task is cross-app when its `apps` array has >1 app):**
 
 | bucket | single | cross | cross share |
 |---|---|---|---|
 | Easy (1pt) | 216 | 0 | 0% — easy is single-app by design |
-| Medium (3pt) | 135 | 107 | **44.2%** |
-| Hard (5pt) | 11 | 61 | **84.7%** (DET 23/23 = 100%, ASK USER SINGLE 28/36 = 78%, ASK USER - MULTI 10/13 = 77%) |
-| **Total** | **362** | **168** | **31.7%** |
+| Medium (3pt) | 128 | 114 | **47%** |
+| Hard (5pt) | 11 | 61 | **85%** (DET 23/23 = 100%, ASK USER SINGLE 28/36 = 78%, ASK USER - MULTI 10/13 = 77%) |
+| **Total** | **355** | **175** | **33.0%** |
 
 > 📌 **Corpus pinned at 530 (2026-08-12).** The Google Workspace task sets
 > (Docs/Sheets/Slides/Meet) were authored as **replacements** for repetitive
@@ -202,31 +179,29 @@ to "Meet"); it appears in the launcher as **Meet** and opens into its HomeActivi
 `benchmarks/dailyBench-600/public.md` (`DailyBench_public_v2.json`/`.jsonl`) is a **true sample** drawn from
 the 530 corpus — every task keeps its real 530 `task_id`, exact prompt text, and placeholder slots — rebuilt
 as a 3-day (Day 1-3) preview. It is **not** the eval set; it exists so the pipeline, seeds, and grading can be
-exercised on a small, self-contained slice before full-corpus runs. Full, maintained details (composition,
-hard split, hallucination controls, grading, run command, artifact organization, known results) live in
-**[`docs/benchmark-spec-public.md`](benchmark-spec-public.md)**.
+exercised on a small, self-contained slice before full-corpus runs.
 
-**Composition (as of 2026-08-23):**
+**Composition (as of 2026-08-19):**
 
 | metric | value |
 |---|---|
-| Tasks | **60** (Day 1: 20 · Day 2: 20 · Day 3: 20 — at the 530 corpus's ~19 tasks/day norm) |
-| Buckets | **26 easy / 17 medium / 17 hard** |
-| Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 7 DETERMINISTIC** |
-| Hallucination controls | **7** (Day 1: 2 · Day 2: 2 · Day 3: 3) |
-| Apps covered | **30** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
-| Placeholders used | **44 uses across 32 distinct keys** (most-used: `[contact]`, 11 uses) |
+| Tasks | **57** (Day 1: 20 · Day 2: 20 · Day 3: 17) |
+| Buckets | **21 easy / 20 medium / 16 hard** |
+| Hard split | **6 ASK USER SINGLE / 4 ASK USER - MULTI / 6 DETERMINISTIC** |
+| Apps covered | **29** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
+| Placeholders used | **21 distinct keys** (most-used: `[contact]`, 15 uses) |
+| App-distribution fidelity | **\|dev\| = 17** vs. the 530's proportional per-app target (Σ \|public_i − round(530_i·57/530)\|) |
 | Duplicate task_ids | 0 |
 
 **Distribution (per day):**
 
 | day | easy | medium | hard | hard split (SINGLE / MULTI / DET) | total |
 |---|---|---|---|---|---|
-| 1 | 9 | 5 | 6 | 1 / 2 / 3 | 20 |
-| 2 | 9 | 5 | 6 | 3 / 2 / 1 | 20 |
-| 3 | 8 | 7 | 5 | 2 / 0 / 3 | 20 |
+| 1 | 7 | 7 | 6 | 1 / 2 / 3 | 20 |
+| 2 | 7 | 7 | 6 | 3 / 2 / 1 | 20 |
+| 3 | 7 | 6 | 4 | 2 / 0 / 2 | 17 |
 
-Single-app vs cross-app: **31 single / 29 cross** (all 17 hard tasks are cross-app).
+Single-app vs cross-app: **26 single / 31 cross** (all 16 hard tasks are cross-app).
 
 Every public task is drawn from the 530 with the same text, so the public set is a **structural preview**, not a
 curated subset: bucket, app, and difficulty distributions intentionally track the parent corpus. The 4 public
@@ -241,7 +216,7 @@ per-day vars, and fabricated-data records are generated for the public sample se
 - **Control mode**: accessibility-tree/state-driven UI automation, no vision by default (screenshots are opt-in) — the agent reads the same UI hierarchy a screen reader would, not pixels.
 - **Model serving**: any OpenAI-compatible endpoint external to the device (a local model host, or a hosted provider such as OpenRouter) — the model never runs on the phone being benchmarked, so its own inference cost and heat never contaminate the device-cost measurement.
 - **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 31 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
-- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — 1-2 deliberately withheld facts the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
+- **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — one deliberately withheld fact the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
 - **Measurement axes**:
   - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
   - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)

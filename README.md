@@ -50,6 +50,34 @@ uv run dailybench_tasks.py --serial "$DAILYBENCH_SERIAL" \
 or `--list` first to inspect. A full CLI + flag reference is in
 [docs/cli-reference.md](docs/cli-reference.md).
 
+### Public 3-day sample (60 tasks) — detached launch + resume
+
+The public sample (`benchmarks/dailyBench-600/DailyBench_public_v2.json` + `public.md` +
+`public_vars.local.env` + `multiturn_kb_public.json`) is the current benchmark. Launch it
+**detached** — a plain `nohup ... &` dies with `init_sys_streams: Bad file descriptor` when the
+launching terminal closes, so **always redirect stdin from `/dev/null`**:
+
+```bash
+RUN_TS=$(date +%Y%m%d-%H%M%S)
+nohup uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS" > "assets/db/public/phoenix-$RUN_TS.log" 2>&1 &   # start phoenix FIRST
+# wait for :6006, then:
+nohup uv run dailybench_tasks.py --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
+  --source public.md --all --serial 100.108.15.119:5555 \
+  --llm-upstream-base https://openrouter.ai/api --model <model> \
+  --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --save-trajectory action --vars-file benchmarks/dailyBench-600/public_vars.local.env \
+  --ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json \
+  --phoenix-url http://localhost:6006 --phoenix-project dailybench-public \
+  --run-root "assets/runs/public/$RUN_TS" \
+  < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
+```
+
+If it dies mid-run, **resume in place** with `--run-root <same> --resume-from <next-task-id>`
+(no re-runs of completed tasks). Wireless ADB is via **Tailscale** (`100.108.15.119:5555`) —
+the phone roams subnets, so the Tailscale IP is the stable serial. Model compatibility notes
+(mandatory-reasoning models, malformed-complete-XML gotcha) live in
+[docs/cli-reference.md](docs/cli-reference.md#model-compatibility-notes-2026-09-01).
+
 ### Inspect results
 
 ```bash

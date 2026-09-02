@@ -1,28 +1,10 @@
 #!/usr/bin/env python3
-"""Auto-organize public-run artifacts into their per-run (date-time) folders.
-
-Creates the folders and files every public-run artifact so NO manual filing is
-needed. Conventions (all keyed on <RUN_TS> = run root basename, e.g. 2026-08-22-195244):
-
-  reports/public/public-<RUN_TS>.md                 run report
-  reports/metrics/public/public-<RUN_TS>-report.{json,md}
-  reports/metrics/hallucination/public-<RUN_TS>.{json,md}
-  reports/turn-based/ask-query-single/<RUN_TS>/<task>.md    (generated)
-  reports/turn-based/ask-query-multi/<RUN_TS>/<task>.md     (generated)
-  reports/turn-based/README.md                      (index, regenerated)
-  assets/db/public/<RUN_TS>/phoenix.db              (archived DB)
-
-Usage:
-  uv run python scripts/tools/organize_public_artifacts.py --run-root assets/runs/public/2026-08-22-195244
-  uv run python scripts/tools/organize_public_artifacts.py --run-ts 2026-08-22-195244
-  uv run python scripts/tools/organize_public_artifacts.py --sweep     # every run under assets/runs/public/
-"""
+"""Auto-organize public-run artifacts into their per-run (date-time) folders."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import shutil
 import sqlite3
@@ -30,6 +12,10 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "src"))
+
+from DailyBench.jsonutils import read_json  # noqa: E402
+
 RUNS = REPO / "assets" / "runs" / "public"
 DB = REPO / "assets" / "db" / "public"
 REPORTS = REPO / "reports"
@@ -44,18 +30,33 @@ FACTS = BENCH / "ask_user_facts.json"
 KB = BENCH / "multiturn_kb_public.json"
 DATASET = BENCH / "DailyBench_public_v2.json"
 
-_TS_RE = re.compile(r"\d{4}-\d{2}-\d{2}-\d{6}")
+# The mobile GUI agent's `ask_user` tool description — exactly what the RUN AGENT
+# sees registered for its ask_user tool (both single-fact and multi-turn/KB modes
+# register the same tool). Source of truth: src/DailyBench/custom_tools.py
+# build_ask_user_tool() "description". Included in the turn-based audits so the
+# reader can see the prompt the mobile agent was given for its ask_user tool.
+ASK_USER_TOOL_DESCRIPTION = (
+    "Ask the human user a clarifying question when the task needs a specific fact that is "
+    "NOT available anywhere on the device (for example a particular contact's name, a date or "
+    "time, a file, or an amount etc.). First search the device thoroughly for it — only if you genuinely "
+    "cannot find or infer it should you ask. Use this INSTEAD of guessing or inventing the specific fact "
+    "you think is missing to complete the task. Never ask about things you can look up yourself. Ask "
+    "one specific question at a time. You may ask multiple questions over multiple turns to "
+    "disambiguate a vague request."
+)
+
+# Run-timestamp matcher. Accepts the conventional dashed form (2026-08-22-195244)
+# AND the compact form (20260826-105200, produced by `date +%Y%m%d-%H%M%S`) so runs
+# launched with either naming convention get filed by --sweep.
+_TS_RE = re.compile(r"\d{4}(?:-\d{2}-\d{2}|\d{4})-\d{6}")
 
 
 def _ts_from_run_root(root: Path) -> str:
     return root.name
 
 
-def _load_json(p: Path):
-    try:
-        return json.loads(p.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
+def _load_json(p: Path) -> dict:
+    return read_json(p) or {}
 
 
 def _fact_maps():
@@ -117,7 +118,7 @@ def _phoenix_ask_user_prompts(run_ts: str, goal: str) -> dict[str, str]:
     return out
 
 
-def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict, rendered: str = None, run_ts: str = None, oracle: dict | None = None) -> str:
+def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict, rendered: str | None = None, run_ts: str | None = None, oracle: dict | None = None) -> str:
     bucket = meta.get("bucket") or meta.get("difficulty") or ""
     apps = ", ".join(meta.get("apps") or [meta.get("app", "")])
     prompt = (rendered or meta.get("prompt_text") or meta.get("prompt_template") or "").strip()
@@ -126,7 +127,9 @@ def _audit_text(tid: str, kind: str, day: str, fact: str, rows: list, meta: dict
          f"**Run day:** {day} · **Run root:** `{root}{tid.replace('__','-')}/`", "",
          f"**Difficulty:** {bucket} · **Apps:** {apps}", "",
          "**Task (what the user asked):**", "", f"> {prompt}", "",
-         f"**Ground-truth fact:** {fact}", f"**ask_user turns:** {len(rows)}", ""]
+         f"**Ground-truth fact:** {fact}", f"**ask_user turns:** {len(rows)}", "",
+         "**The mobile GUI agent's `ask_user` tool (as the run agent sees it):**", "",
+         "```text", ASK_USER_TOOL_DESCRIPTION, "```", ""]
     if not rows:
         L.append("> ⚠️ **No ask_user calls recorded** — the agent never asked the user "
                  "(guesses a target instead → FAIL under the MobileWorld gate).")

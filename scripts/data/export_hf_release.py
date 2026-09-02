@@ -1,31 +1,4 @@
-"""Assemble Hugging Face release packages for DrainBench (two repos).
-
-Two separate HF repos are produced (the public 530 eval corpus, and the private
-public-sample package that carries personal/device-specific data):
-
-1. 530-PUBLIC  (public visibility)
-   - DailyBench_530_v1.json/.jsonl (the 530-task corpus)
-   - tasks_530.md / tasks.md (source markdown)
-   - multiturn_kb_530.json, ask_user_facts.json, hallucination_controls.json
-   - vars: tasks_vars.local.env / tasks_vars.local.json / tasks_vars/
-   - config/user_config.example (documented defaults, NOT the personal user.yaml)
-   - fabrication disclosure (fabricated_test_data.json + fabricated-test-data.md)
-
-2. PUBLIC-SAMPLE  (PRIVATE visibility — contains personal/device data)
-   - DailyBench_public_v2.json/.jsonl (the 68-task public 3-day sample: 61 runnable + 7 hallucination-control)
-   - public.md (source), multiturn_kb_public.json
-   - vars: public_vars.local.env + config/user.yaml (personal values)
-   - fabrication/seeds (the fabricated PDFs + enriched Obsidian notes)
-   - fabrication disclosure
-
-Usage:
-    python scripts/data/export_hf_release.py [--out <dir>] [--force]
-
-Then push each staged dir to its HF repo:
-    hf auth login                              # one-time
-    huggingface-cli upload <public-repo>  hf_release/530-public
-    huggingface-cli upload <private-repo> hf_release/public-sample
-"""
+"""Assemble Hugging Face release packages for DrainBench (two repos)"""
 
 from __future__ import annotations
 

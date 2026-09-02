@@ -1,35 +1,5 @@
 #!/usr/bin/env python3
-"""One-command setup / onboarding for DrainBench on a new machine + phone.
-
-The benchmark has a lot of moving parts (uv env, API keys, user config, per-day
-seed manifests, per-day vars, on-device seeding, device reset, verification).
-This script turns that into a single guided flow so a new user can go from a
-fresh clone + a brand-new phone to a seeded, verified, ready-to-run device with
-one command per stage.
-
-Stages (each is idempotent and safe to re-run):
-
-  prerequisites   check system tools (adb, scrcpy, uv, python 3.11-3.13)
-  deps            uv sync --extra dev --extra tracing --extra hf
-  env             scaffold .env from .env.example (never overwrites)
-  config          scaffold config/user.yaml from config/user_config.example
-  device          pick/verify an ADB serial + audit the 22 required apps
-  manifests       build per-day seed manifests (assets/seeds/manifests/day_N)
-  day-vars        generate per-day vars (benchmarks/dailyBench-600/tasks_vars/)
-  seed            push fabricated seeds to the device (--day N)
-  verify          verify seeds are on-device (--day N)
-
-Run everything with defaults:
-  uv run python scripts/setup.py                      # full guided flow
-  uv run python scripts/setup.py --day 2              # for day 2 (seeds+verify)
-Target just a stage:
-  uv run python scripts/setup.py prerequisites deps env config device
-  uv run python scripts/setup.py manifests day-vars   # no device needed
-  uv run python scripts/setup.py seed --day 3
-  uv run python scripts/setup.py verify --day 1
-Non-interactive (best for CI / scripting):
-  uv run python scripts/setup.py --yes --serial RS7XKZDI8HTOJNYL all
-"""
+"""One-command setup / onboarding for DrainBench on a new machine + phone."""
 
 from __future__ import annotations
 

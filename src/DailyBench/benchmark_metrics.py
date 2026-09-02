@@ -1,32 +1,4 @@
-"""MobileWorld-style benchmark metrics (arXiv:2512.19432, MCP metric excluded).
-
-Implements the Success Rate, Average Completion Steps, Average User Queries, and
-User Interaction Quality (UIQ) metrics from MobileWorld Section 4.2, operating on
-per-run records produced by the DailyBench harness. The paper's Average MCP Tool
-Calls metric is deliberately excluded.
-
-A "record" is a dict with at least these fields (produced by
-``scripts/eval/dailybench_report.py``):
-
-    success: bool          # s_i in the paper: 1 if the task fully completed
-    steps: int             # t_i: number of action steps in the trajectory
-    ask_user_calls: int    # c_i: number of ask_user invocations
-    is_interaction: bool   # True for ASK USER (agent-user interaction) tasks
-
-Formulas (Section 4.2):
-
-    SR            = (1/N) * sum(s_i)
-    Ave. Steps    = (1/N) * sum(t_i)
-    Ave. Queries  = (1/|I_interact|) * sum_{i in I_interact}(c_i)
-
-User Interaction Quality (UIQ) is the **success-free fact-match** formula
-(``user_interaction_quality_factmatch``): each interaction task contributes its
-own ``c_i / q_i`` correctness ratio (fraction of its ``ask_user`` answers that
-were the right question; 0 if it never asked), averaged over interaction tasks
-plus GUI-only tasks that asked unnecessarily — so every interaction task is
-weighted equally regardless of how many times it asked, and whole-task success
-is deliberately ignored.
-"""
+"""MobileWorld-style benchmark metrics (arXiv:2512.19432, MCP metric excluded)"""
 
 from __future__ import annotations
 
@@ -113,21 +85,26 @@ def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
 
 
 def kb_interaction_quality(records: Iterable[Record]) -> float:
-    """KB Interaction Quality (KBIQ): the fraction of KB/multi-turn ask_user
-    queries that returned the RIGHT answer according to the KB profile.
+    """KB Interaction Quality (KBIQ): the fraction of KB/multi-turn TASKS where
+    the agent engaged the KB and got a RIGHT answer according to the profile.
 
     A run's ``ask_user_metrics.jsonl`` records every KB query (question + oracle
     answer). Whether each answer was *right* is a manual judgement (the KB oracle
-    is the source of truth, so "right" = the answer matches what the profile
-    actually holds), audited after the run — each record carries ``kb_queries``
-    (total KB queries asked) and ``kb_queries_correct`` (the audited count).
+    is the source of truth), audited after the run — each record carries
+    ``kb_queries`` (total KB queries asked) and ``kb_queries_correct`` (the
+    audited count).
 
-        KBIQ = sum_i(kb_queries_correct_i) / sum_i(kb_queries_i)   over KB tasks
+        KBIQ = #(KB tasks with >=1 correct KB query) / #(KB tasks)
 
-    A task that never asked contributes 0 to the numerator but its queries are
-    already 0, so it drops out; until a run is audited ``kb_queries_correct`` is
-    0 and KBIQ reads 0 (not-audited).
+    A KB task that NEVER asked the user (0 ask_user, MobileWorld gate violation)
+    is a FAILURE and counts against KBIQ — it cannot be a "correct" interaction.
+    This is task-based (not query-based): a run where only 1 of 4 KB tasks
+    engaged correctly scores 1/4 = 0.25, not 1.000. A task with at least one
+    correct audited query is counted as correct; until a run is audited
+    ``kb_queries_correct`` is 0 and KBIQ reads 0 (not-audited).
     """
-    total = sum(record.get("kb_queries") or 0 for record in records)
-    correct = sum(record.get("kb_queries_correct") or 0 for record in records)
-    return (correct / total) if total else 0.0
+    kb = [r for r in records if r.get("is_kb")]
+    if not kb:
+        return 0.0
+    correct_tasks = sum(1 for r in kb if (r.get("kb_queries_correct") or 0) > 0)
+    return correct_tasks / len(kb)

@@ -1,27 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the runnable 530-task JSON/JSONL from tasks_530.md (the source of truth).
-
-This is the reverse of scripts/export_530_markdown.py. It reads `tasks_530.md` —
-the canonical runnable schedule — and writes `DailyBench_530_v1.json` +
-`DailyBench_530_v1.jsonl` ("530" in the filenames is the corpus size; the current
-corpus is exactly 530 tasks: Google Workspace sets replaced repetitive tasks).
-Each task line carries its `task_id` in an HTML comment
-(`<!--task_id-->`), so the ids survive edits and are preserved exactly here (gaps
-included). ASK USER facts are merged from the `ask_user_facts_730.json` sidecar
-(keyed by task_id).
-
-Field notes (md-driven by design):
-- `app_slug` is taken from the task_id's middle segment (the id is the authority),
-  so ids stay consistent with app_slug even for the 730 lineage's display-name
-  quirks (e.g. slug `shopping-delivery-browser`, `drive`).
-- `app` is the display label shown in the md section/header, which for those quirk
-  tasks is the canonical name (`Chrome` / `Google Drive`) rather than the 730
-  display name (`Shopping & Delivery (browser)` / `Drive`). To change it, edit the
-  md and re-run.
-
-Usage:
-    uv run python scripts/export_530_dataset.py [--verify]
-"""
+"""Generate the runnable 530-task JSON/JSONL from tasks_530.md (the source of truth)."""
 from __future__ import annotations
 
 import argparse
@@ -233,8 +211,8 @@ def merge_hallucination_controls(tasks: list[dict]) -> None:
 
     These tasks deliberately reference data guaranteed absent on the device; the
     correct behavior is an honest "no such data present" (failure), not a fabricated
-    answer. The sidecar records the absence + expected outcome; grading (honest-
-    success / honest-failure / hallucinated) is done live, not written into the md.
+    answer. The sidecar records the absence; grading (honest-success / honest-
+    failure / hallucinated) is done live, not written into the md.
     """
     if not HALLUCINATIONS.exists():
         print(f"warning: no hallucination controls file at {HALLUCINATIONS}")

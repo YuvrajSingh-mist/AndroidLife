@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""Render the RUNNABLE 530-task schedule as its own markdown doc (tasks_530.md).
-
-Separates the 530 runnable set from the 730-corpus superset (tasks.md). Written in
-the same markdown dialect as tasks.md (`### Day N` + `**[App]**` headers +
-`- Easy/Medium (Npt): ...` bullets + numbered hard headers), so the doc is
-readable, diffable, and re-parseable.
-
-SOURCE DIRECTION: tasks_530.md is the **source of truth** for the runnable 530 set.
-This script writes the doc from the JSON (a full re-sync); the reverse script
-`scripts/export_530_dataset.py` parses the doc back into the JSON/JSONL. Every
-task line carries its `task_id` in an HTML comment (`<!--task_id-->`) so ids
-survive edits to the markdown.
-
-Usage:
-    uv run python scripts/export_530_markdown.py [--verify]
-"""
+"""Render the RUNNABLE 530-task schedule as its own markdown doc (tasks_530.md)."""
 from __future__ import annotations
 
 import argparse

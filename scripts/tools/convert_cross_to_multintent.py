@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Convert 36 note-anchored cross-app tasks (day 5+) into UNRELATED multi-intent composites.
-
-The user's design goal: composite tasks should bundle *independent* real-user intents
-(e.g. "message John I'll be late" + "find food nearby"), not the monotone
-"do X then write it into a note" pattern. This swaps each task's note app
-(Notes/Obsidian) for a communication app already present in that day's union
-(Telegram/Messages/Gmail/Phone) — so per-day app density is unchanged (>=10, <=11),
-app_slug (from task_id middle segment = the primary/non-note app) stays valid, and no
-task_id changes. Each new prompt has TWO unrelated halves, each with a verifiable
-end-state (message sent / email sent / call made / price computed / event created).
-
-Usage: python3 scripts/tools/convert_cross_to_multintent.py
-"""
+"""Convert 36 note-anchored cross-app tasks (day 5+) into UNRELATED multi-intent composites."""
 from __future__ import annotations
 
 from pathlib import Path

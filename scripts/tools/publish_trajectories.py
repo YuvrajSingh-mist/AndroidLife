@@ -1,32 +1,9 @@
 #!/usr/bin/env python3
-"""Publish website trajectory assets to a public HuggingFace repo.
-
-Moves all trajectory media (GIFs + per-step screenshots + per-task condensed
-step JSON) out of the git repo and onto HF, so the git tree stays small while
-the published site keeps full trajectory replay by loading from HF resolve URLs.
-
-What it does:
-  1. Rewrites website/assets/data/trajectories/index.json so every `gif` and
-     `data` path becomes an absolute HF resolve URL.
-  2. Rewrites each per-task data JSON's `screenshot_base` to the HF resolve URL.
-  3. Uploads to the HF repo:
-       index.json
-       data/trajectories/<set>/<day>/<task>.json      (rewritten)
-       trajectories/<set>/<day>/<task>/trajectory.gif  (media, LFS)
-       trajectories/<set>/<day>/<task>/screenshots/*   (media, LFS)
-  4. Writes the rewritten index.json back to the local tree (it's the small
-     metadata manifest the site + build_site_data.mjs read; the heavy media is
-     no longer tracked).
-
-Usage (from the repo root):
-    uv run python scripts/tools/publish_trajectories.py
-    uv run python scripts/tools/publish_trajectories.py --repo Other/Name
-
-Requires huggingface_hub (dev extra) + a logged-in HF token.
-"""
+"""Publish website trajectory assets to a public HuggingFace repo."""
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import shutil
 import tempfile
@@ -67,7 +44,7 @@ def rewrite_index(index: dict, base: str) -> dict:
     prefix is stripped here. Multi-run public entries carry a nested `runs`
     array that is rewritten too.
     """
-    out = json.loads(json.dumps(index))  # deep copy
+    out = copy.deepcopy(index)
     for section in ("tasks", "public"):
         for entry in out.get(section, {}).values():
             _rewrite_entry(entry, base)
@@ -75,7 +52,7 @@ def rewrite_index(index: dict, base: str) -> dict:
 
 
 def rewrite_screenshot_base(data: dict, base: str) -> dict:
-    out = json.loads(json.dumps(data))
+    out = copy.deepcopy(data)
     sb = out.get("screenshot_base")
     if sb and sb.startswith("assets/"):
         out["screenshot_base"] = f"{base}/{sb[len('assets/'):]}"

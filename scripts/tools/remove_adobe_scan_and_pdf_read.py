@@ -1,26 +1,5 @@
 #!/usr/bin/env python3
-"""Remove Adobe Scan and strengthen PDF open+read coverage (REPLACE-only, dist unchanged).
-
-User directive: "rm adobe scans pls no need of that since its mostly human and also
-make sure there are pdf tasks of opening files and reading data too (not editing
-since its premium feature)".
-
-1. Remove the 2 Adobe Scan tasks and restore the originals they replaced:
-     easy__adobe-scan__001 (day 24) -> easy__google-search__012
-     easy__adobe-scan__002 (day 25) -> easy__shopping-delivery-browser__013
-   Both restored tasks land back under their original app sections in the SAME day,
-   so total stays 530, bucket counts stay 216/242/72, and both days drop back to
-   10 apps (Adobe leaves the union; the restored app was already in the union).
-
-2. Strengthen PDF open+read at the easy tier: convert the weak conditional day-27
-   `easy__files__014` ("check available storage on an SD card if one is present")
-   into an easy Files PDF open+read task referencing the seeded invoice PDF
-   (invoice_seed.pdf, verified present in /sdcard/Download). Same app (Files), same
-   day (27), same bucket (easy) -> distribution identical. PDFs are opened + data
-   read only; no editing/annotating (a premium feature).
-
-Usage: python3 scripts/tools/remove_adobe_scan_and_pdf_read.py
-"""
+"""Remove Adobe Scan and strengthen PDF open+read coverage (REPLACE-only, dist unchanged)."""
 from __future__ import annotations
 
 import re

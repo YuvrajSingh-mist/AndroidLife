@@ -1,27 +1,4 @@
-"""Fabricate the public sample's PDF documents as realistic, text-heavy files.
-
-The public sample's two Files+PDF tasks need documents that look like real
-life (a real invoice / rent receipt carries a LOT more than one line), so the
-answer value is buried in dense, realistic document content instead of being
-the only text on the page:
-
-- medium__files-pdf__001 -> "Invoice INV-2026-071.pdf" in /sdcard/Download/
-    (Amount Due Rs. 1,240.00, Due Date 2026-07-25) — the same invoice identity
-    (INV-2026-071 / Rs. 1,240.00 / due 2026-07-25) as the corpus's Day-2
-    hard__files-notes__011 seed, but written out as a full vendor invoice.
-- medium__files-pdf__002 -> "Rent Receipt.pdf" in /sdcard/Download/
-    (Rs. 9,000.00, Due Date 2026-08-05, PAID IN FULL) — a full property-
-    management rent receipt.
-
-Pure-python PDF writer (no external deps), same approach as seed_data.py's
-write_invoice_pdf / write_boarding_pass_pdf but multi-section with
-Helvetica-Bold and thin rules for a table look.
-
-Usage:
-    python scripts/seeding/fabricate_public_pdfs.py [--serial 100.108.15.119:5555] [--no-push]
-
-Fabrication is disclosed in docs/fabricated-test-data.md (section 8).
-"""
+"""Fabricate the public sample's PDF documents as realistic, text-heavy files"""
 
 from __future__ import annotations
 

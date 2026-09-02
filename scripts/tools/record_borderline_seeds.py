@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Record the 2026-08-18 borderline-solvability seeds (files__012, clock__001,
-gmail-notes__045) in the disclosure files:
-
-* .fabricated_test_data.json  (gitignored, authoritative device-side record)
-* assets/seeds/manifests/day_XX/<task>/manifest.json
-* assets/seeds/manifests/day_XX/day_XX_fabricated_data.jsonl
-"""
+"""Record the 2026-08-18 borderline-solvability seeds in the disclosure files."""
 import json
 import os
 

@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
-"""Run one day's tasks (or the whole corpus) straight from tasks_530.md in ONE command.
-
-Reads the runnable 530-task schedule — benchmarks/dailyBench-600/tasks_530.md, the
-source of truth — extracts a day's task_ids (--day N) or every task (--all), and
-hands them to the dataset-backed runner (dailybench_tasks.py) as a single batch.
-
-Fixes the common invocation errors:
-  * builds the --task-id argv in Python (no shell word-splitting),
-  * loads .env so OPENROUTER_API_KEY / LLM config is available,
-  * defaults serial / llm-upstream-base / model from env (or known past values),
-    instead of erroring with "Need --serial, --llm-upstream-base, and --model".
-
-Usage:
-  uv run python scripts/run_day.py --day 1             # Day-1 tasks (22)
-  uv run python scripts/run_day.py --day 3 --dry-run   # preview the commands
-  uv run python scripts/run_day.py --all               # the whole 530-task set
-"""
+"""Run one day's tasks (or the whole corpus) straight from tasks_530.md in ONE command."""
 
 from __future__ import annotations
 

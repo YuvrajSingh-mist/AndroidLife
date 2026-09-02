@@ -1,38 +1,4 @@
-"""Enrich the public sample's Obsidian notes into realistic, text-heavy docs.
-
-The public sample's file-reading tasks read terse 3-6 line notes where the
-answer value is the only content on the page. Real Obsidian notes carry far
-more context, so each note is regenerated as a fuller, realistic document with
-the key answer value preserved but no longer the only text visible.
-
-Notes enriched (answer value kept EXACTLY):
-- Budget Deadline.md   -> finalised by 2026-08-10, Last reviewed 2026-07-10
-                          (hard__drive-notes-telegram__010 / -obsidian-telegram__049)
-- Exam Scores.md       -> Midterm 82/100@30%, Final 91/100@50%, Quiz 74/100@20%,
-                          passing threshold 60 (medium__calculator__001)
-- Monthly Budget.md    -> income 25,000; Rent 8,000/Food 6,000/Transport 2,500/
-                          Shopping 2,000/Bills 1,500; total 20,000 (medium__calculator__002)
-- Shared Bill.md       -> bill 9,000 INR; units 120/80/60/40 (medium__calculator__005)
-- Stock Watch.md       -> Reliance Industries, threshold 1,400 INR, last 1,320.50
-                          on 2026-08-13 (hard__google-search-obsidian-telegram__057)
-- Recipe.md            -> Oven 375 F, Prep 20 / Bake 50 / Rest 10 min
-                          (medium__clock__001)
-- Food Favourites.md   -> keeps ## Pancakes / ## Pizza / ## Veggie Bowl headings
-                          (medium__gallery__007)
-- Contact Updates.md   -> Dad Evalueserve +91 00030 30301, Yuvraj Singh Jio
-                          +91 00030 30302 (hard__contacts-obsidian__029)
-- Bedtime.md           -> 7-day sleep-journey record: varied bedtimes + artists/
-                          genres (jazz, classic rock, lo-fi) with lo-fi most
-                          frequent; bedtime 10:30 PM; the sole source of truth
-                          for hard__music-obsidian__077 (KB holds only the note
-                          name/path, no answer-leaking fields)
-
-Pure-python; pushes to the device vault and media-scans. Writes templates to
-assets/seeds/public/notes/ so the enrichment is reproducible.
-
-Usage:
-    python scripts/seeding/enrich_public_notes.py [--serial 100.108.15.119:5555] [--no-push]
-"""
+"""Enrich the public sample's Obsidian notes into realistic, text-heavy docs"""
 
 from __future__ import annotations
 
@@ -242,14 +208,6 @@ what's working and when I'm actually getting to bed. Last 7 nights.
 - Bedtime: 10:30 PM, asleep by ~11:00 PM
 - Wind-down: Chillhop Lofi Beats - Sleep Mix (YouTube Music) - lo-fi beats
 - Note: consistent - lo-fi beats help me sleep most nights
-
-## What's been working
-- Lo-fi beats get me to sleep fastest (used most of the last 7 nights)
-- Bedtime settled at 10:30 PM
-- Favorite app for this lately: YouTube Music
-
-## Habit
-- Start a Chillhop lo-fi track, set a sleep timer so it stops by itself at bedtime.
 """,
 }
 

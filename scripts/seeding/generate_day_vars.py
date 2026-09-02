@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
-"""Generate per-day vars files (benchmarks/dailyBench-600/tasks_vars/day_N.env)
-directly from the dataset + config + the all-days tasks_vars.local.env reference.
-
-For each requested day this computes the EXACT set of [placeholders] its tasks use
-(from the dataset), then emits tasks_vars/day_N.env with a value for each
-(priority: tasks_vars.local.env, then config/user.yaml) and a comment naming every
-task that uses it. Any placeholder with no value anywhere is listed as OPEN in a
-comment and reported, so nothing is silently missed.
-
-Deterministic, idempotent, and it fails loudly (non-zero exit) if a requested day's
-placeholder is missing under --strict (Day-1 has none missing).
-
-Usage:
-    uv run python scripts/generate_day_vars.py --day 1
-    uv run python scripts/generate_day_vars.py --all
-    uv run python scripts/generate_day_vars.py --day 1 --strict
-"""
+"""Generate per-day vars files (benchmarks/dailyBench-600/tasks_vars/day_N.env) directly from the dataset + config + the all-days tasks_vars.local.env reference."""
 from __future__ import annotations
 
 import argparse

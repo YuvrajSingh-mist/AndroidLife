@@ -1,24 +1,4 @@
-"""Runtime per-model USD pricing, fetched from the provider's published catalog.
-
-The whole point of this module is that rates are **never hardcoded**. Instead the per-1M-token
-price for a model is read live from a provider pricing catalog (default: OpenRouter's public
-``GET /v1/models``, which lists every model's standard prompt/completion rate in USD per token).
-Because the lookup is keyed by the exact model id the user chose (``--model`` for the agent,
-``--ask-user-model`` for the simulated user), costs automatically track whatever model is
-selected and any price changes the provider makes — no code changes needed.
-
-Design notes:
-
-- Catalog is fetched at most once per ``ttl`` (default 1 hour) and cached process-wide, so a
-  long benchmark run pays for one HTTP request, not one per LLM call.
-- The fetch is best-effort: if the catalog is unreachable we keep the last known prices (or
-  empty) and record ``last_error``; callers surface that as ``cost: null`` rather than guessing.
-- A bare model name (e.g. ``gpt-5.4-mini``) is also tried as ``openai/<name>`` so direct-OpenAI
-  models resolve against the same catalog namespace used for the agent.
-- Providers that already return a dollar figure in the response (OpenRouter gateways return
-  ``usage.cost``) take priority in ``custom_tools._log_ask_user_call``; this module is the
-  fallback for direct calls (like ask_user -> api.openai.com) where the API returns only tokens.
-"""
+"""Runtime per-model USD pricing, fetched from the provider's published catalog"""
 
 from __future__ import annotations
 

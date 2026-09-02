@@ -143,6 +143,24 @@ per task, do not skip any — and clear persisted state:
    > (`medium__clock__011`). Maps favourite to remove: "parked here"
    > (`easy__google-maps__004`). Note `medium__contacts__009` placed a REAL call
    > (call-log gap is operator-seeded, not undone).
+
+2b. **SENT messages the agent claims it sent (NOT just drafts — 2026-08-28 lesson).**
+    Clearing drafts is NOT enough: runs also SEND messages that persist on-device.
+    Sweep SENT artifacts for EVERY run:
+    - **SMS**: `adb shell content query --uri content://sms --projection _id:address:date:type:body --where "type=2"`
+      → flag run-window `type=2` (sent) rows that aren't persona history (match body/date to the run). Delete via the
+      Messages app UI (long-press message → Delete → confirm) — `content delete` on `content://sms` FAILS silently
+      (shell has no WRITE_SMS). 2026-08-27: qwen `easy__messages-010` left a real sent emoji SMS (👍😊🙏🍽️👋 to
+      Yuvraj Airtel, 03:29) the user caught on screen — persona history was intact after deleting only that row.
+    - **Telegram**: grep agent logs for `sent successfully|message is sent|was sent|checkmark`, then OPEN the target
+      chat and confirm whether a run message actually persists (chat at true bottom = NO scroll-to-bottom FAB + message
+      list won't scroll; Telegram search for the message text returns no private-chat hits if it's gone). Agents'
+      "sent ✓" self-reports are UNRELIABLE (gemini false-pass pattern) — always verify on-device. 2026-08-27: logs
+      claimed 3 sends to Yuvraj Airtel (chrome-telegram-notes-008 Noise link + 2× music-telegram-001 "Blinding
+      Lights") but the chat held none at cleanup time.
+    - **Gmail**: grep agent logs for `email was sent|sent the invitation`; run-created SENT emails
+      (e.g. qwen `easy-google-meet-004` Meet invites, `hard-photos-gmail-obsidian-012` email) need the Sent email
+      deleted — ASK THE USER first (they may be the task's deliverable).
 3. **Clock** — open `com.oneplus.deskclock`; delete leftover alarms (e.g.
    `medium__clock-009` "Work Alarm") and stop any running timer (`medium__clock-011`
    "Workout") so the next run's clock tasks start clean.

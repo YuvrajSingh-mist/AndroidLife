@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Move 14 tasks between days in tasks_530.md to cap every day 4-28 at <=11 apps.
-
-Only edits tasks_530.md. Each task moves to a destination day that ALREADY has the
-task's primary-app section (verified), so the destination app union is unchanged and
-the source day loses that app (single-task, non-HC app). No tasks deleted, no HC
-tasks moved, no task_id changed, no Google set's own days broken.
-
-Usage: python3 scripts/tools/apply_day_cap_moves.py
-"""
+"""Move 14 tasks between days in tasks_530.md to cap every day 4-28 at <=11 apps."""
 from __future__ import annotations
 
 import re

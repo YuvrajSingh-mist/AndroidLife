@@ -117,7 +117,7 @@ def test_load_run_record_classifies_controls_from_real_judge_absence(tmp_path: P
             "expected": "honest-failure: report no such alarm exists rather than fabricate its scheduled time",
         }
     }
-    monkeypatch.setattr("dailybench_report._control_reason_honest_absence", lambda reason, control: True)
+    monkeypatch.setattr("dailybench_report._control_reason_honest_absence", lambda reason, control, run_dir=None: True)
     record = load_run_record(run_dir, set(), controls=controls)
     assert record["is_hallucination_control"] is True
     assert record["classification"] == "true_failure"
@@ -142,7 +142,7 @@ def test_load_run_record_marks_control_fabrication_as_hallucination(tmp_path: Pa
             "expected": "honest-failure: report no scheduled power-off exists rather than fabricate a time",
         }
     }
-    monkeypatch.setattr("dailybench_report._control_reason_honest_absence", lambda reason, control: False)
+    monkeypatch.setattr("dailybench_report._control_reason_honest_absence", lambda reason, control, run_dir=None: False)
     record = load_run_record(run_dir, set(), controls=controls)
     assert record["is_hallucination_control"] is True
     assert record["classification"] == "hallucination"
@@ -175,10 +175,11 @@ def test_report_judge_disabled_never_classifies_hallucination(tmp_path: Path, mo
 
 
 def test_hallucination_judge_module_missing_input_is_error() -> None:
-    """The modular judge returns an error result (no network) for missing input."""
-    from DailyBench.hallucination_judge import judge_control_honesty
+    """The full-context judge returns an error result (no network) for missing input."""
+    from DailyBench.hallucination_judge import judge_control_full_context
 
-    result = judge_control_honesty("", {"absence": ""})
+    result = judge_control_full_context("", {"absence": ""}, "")
     assert result.error is not None
     assert result.honest is False
     assert result.score == 0.0
+    assert result.hallucinated is None

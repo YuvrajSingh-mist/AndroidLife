@@ -20,7 +20,8 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--top-p` | `0.95` | Nucleus sampling top-p, forwarded to the LLM request |
 | `--seed` | `42` | Fixed sampling seed, forwarded to the LLM request, for run-to-run reproducibility |
 | `--steps` | `50` | Step budget (`AgentConfig.max_steps`) |
-| `--vision` | off | Enable vision (screenshots) for the agent; off by default for this harness |
+| `--vision` | off | Enable vision: the agent sees the accessibility UI tree **plus** a screenshot on every step (mutually exclusive with `--vision-only`) |
+| `--vision-only` | off | **Screenshots only**: drop the accessibility tree and drive from screenshots alone (mobilerun `vision_only`); the framework auto-enables the coordinate tools this mode requires. Implies `--vision` but without the UI tree (mutually exclusive with `--vision`) |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
 | `--thinking` | off | Leave the model's reasoning/thinking mode ON. Off by default: the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) so reasoning models return text content; non-reasoning models ignore them |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
@@ -64,7 +65,8 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--steps` | `50` | Fixed step budget for every task, regardless of bucket (see [Step-budget policy](#step-budget-policy)) |
 | `--repeats` | `1` | Run each selected task this many times; opt-in since runs are already deterministic at temperature 0 (see caveat below) |
 | `--screen-record` | off | Record `screen.mp4` for every task in the batch — **off by default** (see single-run flag for why); opt in when you need video evidence |
-| `--vision` | off | Enable vision (screenshots) for the agent; off by default for this harness |
+| `--vision` | off | Enable vision: the agent sees the accessibility UI tree **plus** a screenshot on every step (mutually exclusive with `--vision-only`) |
+| `--vision-only` | off | **Screenshots only**: drop the accessibility tree and drive from screenshots alone (mobilerun `vision_only`); the framework auto-enables the coordinate tools this mode requires. Implies `--vision` but without the UI tree (mutually exclusive with `--vision`) |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |
 | `--thinking` | off | Leave the model's reasoning/thinking mode ON (default off: reasoning-off switches sent via `extra_body`) |
 | `--no-debug` | off | Disable mobilerun's verbose debug logging (on by default) |
@@ -77,6 +79,53 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--source` | `tasks.md` | Task source markdown the dataset was exported from; selects the ask_user_facts sidecar with fallback per-`task_id` facts for Hard/`ASK USER` tasks (`tasks.md` -> `ask_user_facts_730.json`, `public.md` -> `ask_user_facts.json`); used only when a task's own dataset row has no `ask_user_fact`; a missing file means no facts configured (fine for DETERMINISTIC-only selections) |
 | `--ask-user-model` | `gpt-5.4-mini` | Forwarded to every task run's `ask_user` tool — **OpenAI-hosted models only** (see note above) |
 | `--ask-user-base-url` | *(OpenAI's default)* | Forwarded to every task run's `ask_user` tool |
+| `--run-root` | *(none)* | Continue into an existing run folder root (e.g. `assets/runs/public/20260901-002701`) instead of creating a fresh dated folder. **Pair with `--resume-from` to continue an interrupted batch in place.** |
+| `--resume-from` | `TASK_ID` | Skip every selected task whose `task_id` sorts before `TASK_ID` and start at `TASK_ID` (inclusive) — resumes an interrupted batch without re-running earlier tasks. Prints "Resuming batch at <id>". |
+
+### Long-running batches (detached) & resume
+
+For full multi-hour runs, launch the batch **detached** so it survives terminal cleanup —
+a plain `nohup ... &` dies with `Fatal Python error: init_sys_streams ... Bad file descriptor`
+when the launching terminal closes (stdin becomes invalid). **Always redirect stdin from
+`/dev/null`:**
+
+```bash
+nohup uv run dailybench_tasks.py --dataset ... --all --serial ... \
+  --model <model> --save-trajectory action \
+  --run-root "assets/runs/public/<TS>" \
+  < /dev/null > "assets/runs/public/batch-<TS>.log" 2>&1 &
+```
+
+If a detached batch dies mid-run, **resume in place** (same run-root, no re-runs):
+
+```bash
+uv run dailybench_tasks.py --dataset ... --all --serial ... \
+  --model <model> --save-trajectory action \
+  --run-root "assets/runs/public/<TS>" --resume-from "<next-task-id>" \
+  < /dev/null > "assets/runs/public/resume-<TS>.log" 2>&1 &
+```
+
+Find the next task id from the dead batch's log: it echoes every `label dayN--...`
+command in run order; the first label with no `output.json` in its folder is the resume point
+(the batch died while spawning it). Aliveness checks: `pgrep -af dailybench`,
+`lsof -nP -iTCP:<task proxy port>`, and the active `agent.log.txt` mtime advancing.
+
+### Model compatibility notes (2026-09-01)
+
+The harness sends **reasoning-off** by default (`extra_body` with OpenRouter
+`reasoning.enabled=false` + Qwen `enable_thinking=false`). Known behaviors:
+
+| Model (OpenRouter) | reasoning | Works? | Notes |
+|---|---|---|---|
+| `bytedance-seed/seed-2.0-lite` | optional | ✅ | Proven good XML; last full run 51.7%. |
+| `qwen/qwen3.8-27b` | optional | ✅ | Text + vision modes both work. |
+| `moonshotai/kimi-k2.6` | optional | ✅ | Historically tested. |
+| `stepfun/step-3.7-flash` | **mandatory** | ⚠️ | `reasoning.mandatory: True` → reasoning-off **400s** every call. Must launch with `--thinking` (verified HTTP 200). |
+| `xiaomi/mimo-v2.5-pro` | optional | ⚠️ | Drives the device well but emits **malformed `<parameter=message>`** on the final `complete` call → strict XML parser rejects it → every task grades `success: False` at the last step (diagnostic only; do not use for a scoring run unless the parser is made tolerant). |
+
+To leave reasoning ON for a mandatory-reasoning model, pass `--thinking` (forwarded through
+the batch wrapper since 2026-09-01). Manual audit remains ground truth over self-reported
+success. `--run-root`/`--resume-from` are the in-place resume pair for interrupted batches.
 
 ### App-reset fairness
 

@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""Convert the 5 weather-checking tasks to use the actual Weather app (net.oneplus.weather).
-
-User directive: when a task says "check weather", it must genuinely use the Weather app —
-not "just say use weather app and actually do it in Chrome". Currently 5 tasks route weather
-checks through Google Search / Chrome / Google Maps. We rename them to the `weather` app_slug
-(the task_id middle segment = app_slug, so the id must change with the app):
-
-  easy__google-search__002  (day 3)  -> easy__weather__001
-  easy__chrome__003         (day 5)  -> easy__weather__002
-  easy__google-maps__007    (day 15) -> easy__weather__003
-  easy__google-search__010  (day 19) -> easy__weather__004
-  hard__chrome-clock-notes__006 (day 16) -> hard__weather-clock-notes__006
-
-Adding Weather pushes days 5, 16, 19 to 12 apps (over the days-4-28 <=11 cap), so 3
-single-app tasks move out to free a slot each (dest day already has the primary-app section):
-  easy__google-docs__002 (day 5)  -> day 18 (Google Docs)
-  easy__youtube__008     (day 16) -> day 11 (YouTube)
-  medium__telegram__007  (day 19) -> day 22 (Telegram + Obsidian)
-
-Usage: python3 scripts/tools/convert_weather_to_app.py
-"""
+"""Convert the 5 weather-checking tasks to use the actual Weather app (net.oneplus.weather)."""
 from __future__ import annotations
 
 import re

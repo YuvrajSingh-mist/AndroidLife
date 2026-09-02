@@ -47,7 +47,7 @@ really went through the trajectories and ADB-verified device facts.
   The agent often claims a Telegram/SMS message "now appears in chat history" when it did NOT
   send. Check: the message text is GONE from the compose `EditText` AND a sent bubble is present
   in the history in the `ui_state` captured AFTER the Send tap. Caught false PASSes this way:
-  `medium__google-maps-003` (public 2026-08-22-195244) and rerun `medium__music-telegram-001`.
+  `medium__google-maps-003` (early public run) and rerun `medium__music-telegram-001`.
 - **Recurring Telegram Send-button failure** (qwen3.6-plus): tapping Send leaves the text in the
   input, no bubble. Affected: `hard__swiggy-005`, `medium__google-maps-003`,
   `medium__music-telegram-001`. A task whose deliverable is "message X on Telegram" FAILS even

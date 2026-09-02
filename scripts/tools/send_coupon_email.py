@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Send a realistic Myntra-style coupon email on the test device via the Gmail GUI.
-
-Compose must already be open with To=rajceo2031@gmail.com accepted as a chip.
-Fields (from a11y dump): Subject [48,1250][1032,1419], body [48,1469][1032,1532].
-Types subject + multi-line body, then taps Send (top-right ~[864,192]).
-
-adb `input text` encoding: '%s' == space; any other '%' is literal. We encode
-spaces as %s and keep '%' literal (double it is NOT needed - a lone % passes).
-"""
+"""Send a realistic Myntra-style coupon email on the test device via the Gmail GUI."""
 import subprocess
 import sys
 import time

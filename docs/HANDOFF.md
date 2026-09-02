@@ -1,9 +1,51 @@
-# HANDOFF — Current state & agreed conventions (updated 2026-08-09)
+# HANDOFF — Current state & agreed conventions (updated 2026-09-01)
 
 > **Read this first** if you're starting a new session on DrainBench300. It
 > records what was done/agreed so work continues exactly as the user intends.
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
 > (grading rules), `reports/day1-run-2026-08-09.md` (full Day-1 audit).
+
+## 0. LATEST STATE (2026-09-01) — mimo-v2.5-pro diagnostic run + HF dataset + docs
+
+- **New run `20260901-002701`** — `xiaomi/mimo-v2.5-pro`, TEXT, `--save-trajectory action`,
+  wireless ADB via **Tailscale** `100.108.15.119:5555`. This is a **DIAGNOSTIC run** (user chose
+  "run mimo anyway"): mimo drives the device well but emits **malformed `<parameter=message>`** on
+  the final `complete` call → strict parser rejects it → every task grades `success: False` at the
+  last step. It still yields per-task trajectories/device-driving quality. Do NOT patch the parser
+  (user decision 2026-09-01 — model-side bug, patching would break consistency with prior runs).
+  Run status: 13 day-1 tasks completed; was interrupted by a detached-stdin crash
+  (`init_sys_streams: Bad file descriptor` — missing `< /dev/null`), resumed in place via
+  `--run-root assets/runs/public/20260901-002701 --resume-from medium__files-pdf__001` with stdin
+  detached. Check `pgrep -af dailybench` + `agent.log.txt` mtime for aliveness.
+- **`stepfun/step-3.7-flash`** has `reasoning.mandatory: True` → reasoning-off 400s every call;
+  must launch with `--thinking` (wired through `task_batch.py` 2026-09-01 — parser arg +
+  `build_run_command` append). Same malformed-complete XML as mimo.
+- **HF dataset `YuvrajSingh9886/dailybench500-public`** created 2026-09-01: uploads the completed
+  public runs (`runs/<run_id>/`) + README + `runs_manifest.json`. Uploader:
+  `scripts/tools/upload_public_runs_hf.py` (detached, resumable; run with `< /dev/null`). Excludes
+  the active mimo run + smoke run until they finish. README/manifest staged at
+  `hf_release/500-public-runs/`.
+- **Amazon Music background** in the controlled run env: OxygenOS **virtual-freeze** (keeps the
+  process in RAM but SIGSTOPs it → playback stops ~10 tasks in). Whitelisted via
+  `dumpsys deviceidle whitelist +com.amazon.mp3` + appops + in-Settings "Don't optimize".
+- **Docs updated**: `README.md` (detached launch + resume + Tailscale serial), `docs/cli-reference.md`
+  (added `--run-root`/`--resume-from`, "Long-running batches (detached) & resume", "Model
+  compatibility notes"), `docs/pre-run-checklist.md` (§10 operational items incl. whitelist +
+  search-history anti-cheat). Full session detail in `/memories/session/run-20260901-002701-mimo.md`.
+
+## 0b. PREVIOUS STATE (2026-08-29) — Public 3-day runs + music-obsidian-077 reruns
+
+- **Active benchmark:** the PUBLIC 3-day sample — `benchmarks/dailyBench-600/DailyBench_public_v2.json` (60 tasks) + `public.md` + `multiturn_kb_public.json` + `public_vars.local.env`. Three target runs under `assets/runs/public/`:
+  - `2026-08-26-184934` — **qwen3.8-27b VISION-ONLY** · manual **22 PASS / 37 FAIL / 1 HC** · official **23/36/1 = 38.3%**
+  - `20260826-105200` — **gemini-3.1-flash-lite** · manual **25 PASS / 34 FAIL / 1 HC** · official **37/22/1 = 61.7%** (post music-obsidian merge; hard-swiggy-005 = 12th false pass)
+  - `2026-08-28-002424` — **qwen3.8-27b TEXT** · manual **37 PASS / 23 FAIL / 0 HC** · official **31/29/0 = 51.7%**
+- **Music-Obsidian-077 redesigned (2026-08-28→29):** prompt = *"…once you start it yourself, it then stops by itself around my asleep time… in the music app I used the most lately…"*. Oracle/`Bedtime.md` = 20-night raw log, bedtime constant 10:30 PM, field `music`, **YouTube Music RECURS ~11:00 PM + Chillhop Lofi Beats - Sleep Mix (9/10, last-5 all YT)**. Correct target `youtube-music::sleep-timer-1030pm`; KBIQ stop ≈ 11:00 PM + Chillhop.
+- **Music-Obsidian-077 reruns (2026-08-29) — ALL 3 FAIL (0 ask_user each), merged in place** into each run's `day2/hard-music-obsidian-077/` with row-above telemetry: 184934 ← `easy-google-maps-004`; 105200 ← `easy-google-maps-004`; 002424 ← `hard-google-search-telegram-clock-018`. Failures: qwen-vision stuck in Obsidian "Go to file" loop (60-step cap); gemini opened regular **YouTube** (not YT Music), gave up at step 13 (official success 38→37); qwen-text opened OnePlus Notes, 60-step cap. None read the note, none asked, none set up YT Music + Chillhop + ~11 PM. Standalone rerun folders deleted.
+- **Reports updated:** `reports/public/public-{184934,105200,002424}.md` (Music-Obsidian rerun notes + tables), `reports/metrics/public/public-*-report.{json,md}` (regenerated via `dailybench_report.py --out reports/metrics/public/<base>.json --out-md ...`), turn-based `reports/turn-based/ask-query-multi/<run>/hard__music-obsidian__077.md` (new prompt, 0 turns), 105200 manual-audit (music-obsidian removed from false-pass list 9→8).
+- **Phoenix:** started per-run with `start_phoenix.py --public --run-ts <ts>` (DB at `assets/db/public/<ts>/phoenix.db`, project `dailybench-public`); runner traces ON by default. 2026-08-29 rerun DBs exist for all 3 (qwen-vision, gemini, qwen-text).
+- **All conventions + the full music-obsidian story live in `/memories/repo/run-preferences.md`** — read that for the canonical, up-to-date rules (merge-in-place, row-above telemetry, turn-based .md format, deep-audit, phoenix, music-obsidian redesign + rerun results).
+
+---
 
 ## 1. Repo layout — everything under `assets/` (DONE)
 
@@ -167,31 +209,6 @@ thought → function call → tool args → result, as traced into Phoenix), wit
 Constraints: never re-run completed tasks; keep the MobileWorld SR gate for ASK
 USER tasks; per-day Phoenix DB lives at `assets/db/dayN/phoenix.db`.
 
-## 13. Public 3-day sample run (qwen3.6-plus, run root `assets/runs/public/2026-08-22-195244`) — DONE
-
-Full 68-task public sample (24/24/20 per day) run + deep manual audit + official
-metrics + hallucination geval + credit-blocked reruns. Summary:
-
-- **Manual audit (DEEP per-step pass over all 68 — trajectory `ui_states/` + `screenshots/` + ADB):**
-  **49 correct / 18 FAIL / 1 HALLUCINATION / 0 BLOCKED** (72.1%).
-- **Official metrics:** SR **66.2%** (45 true success / 21 true failure / 2 hallucination),
-  ASK USER SR 33.3% (6 runs), GUI-only 69.4%, avg steps 20.8, UIQ 0.045,
-  **KBIQ 1.000 (7/7, manual audit — written as `<run>/kb_audit.json`, NOT DeepEval)**.
-- **The 1 real hallucination:** `easy__calendar__008` fabricated the deletion of absent
-  'Team Sync Weekly' **and deleted the real "Team Sync" 14:00 event** (destructive —
-  still needs restoring on device).
-- **Recurring harness bug — Telegram Send button fails** (text stays in the compose input,
-  no bubble): `hard__swiggy-005`, `medium__google-maps-003` (agent falsely claimed "sent"
-  → deep audit caught the false PASS), `medium__music-telegram-001`.
-- **2 originally 402-credit-blocked tasks re-run with credits (2026-08-23):**
-  `easy__google-photos-015` → **PASS**, `medium__music-telegram-001` → **FAIL** (song
-  found, Telegram send failed). **0 blocked remain.**
-- Reports: `reports/public-2026-08-22-195244.md`,
-  `reports/metrics/public-20260822-195244-report.{json,md}`,
-  `reports/metrics/hallucination/public-20260822-195244.{json,md}`.
-- **Manual-audit protocol (user-mandated):** `docs/manual-audit-protocol.md` — read this
-  whenever the user says "manual audit". It is the DEEP trajectory + ADB pass, not a log read.
-
 ## 14. Post-run task fixes + full device reset (2026-08-23, before next run)
 
 Task changes (all benchmark files updated, dataset re-exported at 68 tasks):
@@ -229,14 +246,14 @@ run day (call-log gap).
 
 ## 15. Public artifact organization (2026-08-23)
 
-- **Reports** live under `reports/public/` (per-run: `reports/public/public-2026-08-22-195244.md`),
+- **Reports** live under `reports/public/` (per-run: `reports/public/public-<run>.md`),
   metrics under `reports/metrics/public/`, hallucination geval under `reports/metrics/hallucination/`.
 - **Turn-based ASK USER audits** under `reports/turn-based/` (per-run date-time
   folders, like the DB): `ask-query-single/<run-ts>/` (6 tasks) and
   `ask-query-multi/<run-ts>/` (4 tasks) — full per-turn Q&A from
   `ask_user_metrics.jsonl` + ground-truth fact + verdict. Index: `reports/turn-based/README.md`.
 - **Public Phoenix DB** is per-run, date-time folder: `assets/db/public/<RUN_TS>/phoenix.db`
-  (this run archived at `assets/db/public/2026-08-22-195244/phoenix.db`).
+  (each run archived at `assets/db/public/<RUN_TS>/phoenix.db`).
   `start_phoenix.py --public --run-ts "$RUN_TS"` now supports it; run it BEFORE the batch.
 - **Auto-filing (no manual work):** `scripts/tools/organize_public_artifacts.py`
   (`make organize-public`) creates all per-run folders, files the report/metrics/

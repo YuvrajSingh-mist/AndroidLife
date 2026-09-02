@@ -312,6 +312,15 @@ def test_build_mobile_config_maps_cli_flags(tmp_path: Path) -> None:
     assert config.tracing.enabled is True
 
 
+def test_build_mobile_config_vision_only_sets_vision_only_and_fast_agent_vision(tmp_path: Path) -> None:
+    """--vision-only maps to AgentConfig.vision_only (screenshots without the a11y tree) and still enables fast_agent vision."""
+    parser = cli.build_parser()
+    args = parser.parse_args(["--serial", "device-1", "--label", "x", "--goal", "g", "--model", "m", "--vision-only"])
+    config = cli.build_mobile_config(args, tmp_path / "run-1")
+    assert config.agent.vision_only is True
+    assert config.agent.fast_agent.vision is True
+
+
 def test_build_mobile_config_defaults_are_fast_agent_no_vision_tracing_on_action_trajectory(tmp_path: Path) -> None:
     """Defaults: fast-agent loop, vision off, debug on, Phoenix tracing ON, action trajectories saved."""
     parser = cli.build_parser()

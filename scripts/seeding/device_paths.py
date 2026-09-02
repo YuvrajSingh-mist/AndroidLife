@@ -1,21 +1,5 @@
 #!/usr/bin/env python3
-"""Device-specific path/ID auto-detection for seeding + verification.
-
-The seed scripts used to hardcode this phone's layout (Obsidian vault path with
-a trailing space, the Google-synced calendar id "16", the fabricated persona
-email). That made the benchmark single-device: a different phone with a
-differently-named vault, a different calendar account, or a different persona
-would silently seed into the wrong place.
-
-This module centralises those values and resolves them in priority order:
-
-  1. an explicit config/user.yaml override (keys below),
-  2. auto-detection from the live device (best-effort ADB query),
-  3. the historical default (so the current device keeps working untouched).
-
-Resolution is cached per process. Every function takes a ``serial`` and shells
-out to ``adb`` only when needed (no device -> falls straight back to default).
-"""
+"""Device-specific path/ID auto-detection for seeding + verification."""
 
 from __future__ import annotations
 
@@ -33,7 +17,7 @@ CFG_KEY_CONTACT_EMAIL = "contact email"
 # persona "Yuvraj Singh"). Kept as the final fallback so nothing breaks.
 DEFAULT_VAULT = "/sdcard/Obsidian/Papers vault oneplus "  # NB: trailing space is real
 DEFAULT_CALENDAR_ID = "16"
-DEFAULT_CONTACT_EMAIL = "yuvraj.mist@gmail.com"
+DEFAULT_CONTACT_EMAIL = "yuvraj.mist@gmail.com"  # user wants this as the persona contact's only email (kept on-device 2026-08-27)
 
 # Camera / Screenshots are stable Android paths (no trailing-space quirk).
 CAMERA = "/sdcard/DCIM/Camera"

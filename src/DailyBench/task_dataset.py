@@ -1,21 +1,4 @@
-"""Markdown task parsing and dataset export helpers.
-
-Three dialects are auto-detected line by line:
-
-1. The original `## Bucket` / `**App**` / numbered-list format (docs/tasks.md).
-2. The "21-Day Schedule" format (older benchmarks/dailyBench-600/tasks.md revisions): each
-   easy/medium task is its own `- *Easy (1pt):* ...` bullet naming its app inline, with no
-   separate **App** heading, under `### Day N` headings; hard/open-ended tasks sit under
-   `### Hard — ...` / `### Open-Ended ...` H3 headings.
-3. The current "3-Day Sample" format (benchmarks/dailyBench-600/public.md, and the format
-   docs/tasks.md is migrating to): `### Day N` headings, `**[AppName]**` bold-bracket app
-   section headers, plain `- Easy (1pt): ...` / `- Medium (3pt): ...` bullets (optionally with
-   an inline `**[App1+App2]**` cross-app tag before the colon), and a single shuffled
-   `## Hard (N tasks, shuffled order)` section whose tasks are each introduced by a
-   `**N. [App1+App2] — DETERMINISTIC|ASK USER**` header followed by one bullet - natural
-   first-person text, with ASK USER tasks carrying a trailing `(deliberately ...)` methodology
-   note that must never leak into the agent-facing prompt.
-"""
+"""Markdown task parsing and dataset export helpers"""
 
 from __future__ import annotations
 

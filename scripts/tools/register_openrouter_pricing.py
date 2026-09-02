@@ -1,32 +1,5 @@
 #!/usr/bin/env python3
-"""Register OpenRouter model pricing with the local Phoenix database.
-
-Phoenix computes per-span LLM cost by matching the span's ``llm.model_name``
-against rows in ``generative_models`` and applying each model's ``token_prices``
-(USD per token). Its bundled manifest only covers OpenAI/Anthropic/Gemini/...,
-so OpenRouter models (e.g. ``qwen/qwen3.6-plus``) get ``total_cost = NULL`` —
-shown as $0.00 in the Phoenix UI.
-
-This script upserts real OpenRouter pricing into the live Phoenix DB (per-day
-``assets/db/dayN/phoenix.db``; override with ``--db``) as user-defined models
-(``is_built_in = 0``). Phoenix's ``GenerativeModelStore`` daemon refreshes every
-~5 seconds, so newly registered models start costing new spans almost immediately.
-
-Pricing source:
-  * live from https://openrouter.ai/api/v1/models using ``OPENROUTER_API_KEY``
-    (default), or
-  * explicit ``--prompt-price-per-m`` / ``--completion-price-per-m``.
-
-OpenRouter's ``pricing.prompt``/``pricing.completion`` fields are USD per single
-token; the CLI's ``--*-per-m`` flags are USD per 1M tokens and are converted to
-per-token before being stored.
-
-Examples:
-  uv run scripts/register_openrouter_pricing.py --model qwen/qwen3.6-plus
-  uv run scripts/register_openrouter_pricing.py --model qwen/qwen3.6-plus \\
-      --prompt-price-per-m 0.15 --completion-price-per-m 0.60
-  uv run scripts/register_openrouter_pricing.py --all
-"""
+"""Register OpenRouter model pricing with the local Phoenix database."""
 
 from __future__ import annotations
 

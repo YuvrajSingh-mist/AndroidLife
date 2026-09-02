@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import re
@@ -49,7 +50,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--steps", type=int, default=60)
     parser.add_argument("--task-timeout", type=int, default=2400, help="Wall-clock seconds before mobilerun's own MobileAgent(timeout=...) aborts the task. 2400 (default) = 40-minute cap; 0 = no wall-clock limit (the --steps step budget is the real bound).")
-    parser.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent; off by default for this harness.")
+    vision_group = parser.add_mutually_exclusive_group()
+    vision_group.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent: the agent sees the accessibility UI tree PLUS a screenshot on every step. Off by default for this harness.")
+    vision_group.add_argument("--vision-only", action="store_true", help="Screenshots ONLY: drop the accessibility tree and drive the device from screenshots alone (mobilerun vision_only). The framework auto-enables the coordinate tools this mode requires. Implies --vision but without the UI tree.")
     parser.add_argument("--reasoning", action="store_true", help="Use mobilerun's manager/executor planning workflow instead of the fast-agent loop.")
     parser.add_argument("--thinking", action="store_true", help="Leave the model's reasoning/thinking mode ON. OFF by default (the fast-agent loop needs immediate text content, and hidden reasoning burns tokens + breaks determinism): when off, the harness sends reasoning-off switches (OpenRouter `reasoning.enabled=false` + Qwen `chat_template_kwargs.enable_thinking=false`) for whichever the model/host honors.")
     parser.add_argument("--no-debug", action="store_true", help="Disable mobilerun's verbose debug logging (on by default).")
@@ -81,7 +84,17 @@ def build_mobile_config(args: argparse.Namespace, run_dir: Path) -> MobileConfig
     """Translate DailyBench CLI flags into one MobileConfig, with trajectories pinned inside run_dir."""
     return MobileConfig(
         device=DeviceConfig(serial=args.serial),
-        agent=AgentConfig(max_steps=args.steps, reasoning=args.reasoning, fast_agent=FastAgentConfig(vision=args.vision)),
+        agent=AgentConfig(
+            max_steps=args.steps,
+            reasoning=args.reasoning,
+            # Screenshots-only mode: drops the a11y tree (ScreenshotOnlyStateProvider) and
+            # requires the coordinate tools, which mobilerun auto-enables.
+            vision_only=args.vision_only,
+            # mobilerun force-sets every agent's vision when vision_only=True
+            # (droid_agent._force_screenshot_only_vision), but set fast_agent here too so
+            # the config is self-describing for non-droid flows.
+            fast_agent=FastAgentConfig(vision=args.vision or args.vision_only),
+        ),
         logging=LoggingConfig(debug=not args.no_debug, save_trajectory=args.save_trajectory, trajectory_path=str(run_dir / "trajectories")),
         tracing=TracingConfig(enabled=not args.no_tracing),
     )
@@ -149,21 +162,12 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
         additional_kwargs={
             "top_p": args.top_p,
             "seed": args.seed,
-            # ONE reasoning-off mechanism for model swap: the `--thinking` flag
-            # (off by default). When off, extra_body carries both switches so it
-            # works on any host the model runs through:
-            #  (1) "reasoning": {"enabled": false} — OpenRouter's NATIVE param
-            #      (confirmed live on qwen/qwen3.7-flash: clean content, no
-            #      reasoning tokens). Self-hosted servers ignore it.
-            #  (2) "chat_template_kwargs.enable_thinking" — the model's OWN
-            #      chat-template switch for self-hosted Qwen3-family thinking
-            #      models (e.g. mini2's local Qwen3-4B), where OpenRouter's
-            #      `reasoning` param isn't in play. Confirmed live: 226 reasoning
-            #      tokens dropped to 0, output reproducible with a fixed seed.
-            # Both are sent together because the OpenAI SDK only forwards unknown
-            # params via extra_body (a top-level `reasoning` kwarg raises
-            # "got an unexpected keyword argument"). Non-reasoning models ignore
-            # both fields. Pass --thinking to leave reasoning ON (no switches).
+            # Reasoning-off (--thinking off by default): extra_body carries BOTH
+            # switches so it works on any host — "reasoning.enabled" (OpenRouter's
+            # native param) and "chat_template_kwargs.enable_thinking" (self-hosted
+            # Qwen3-family chat-template switch). Both go via extra_body because the
+            # OpenAI SDK only forwards unknown params there; non-reasoning models
+            # ignore both. Pass --thinking to send no switches.
             "extra_body": (
                 {} if args.thinking else {
                     "reasoning": {"enabled": False},
@@ -184,8 +188,7 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
     # the simulated user becomes an honest oracle over it with rolling memory.
     kb: dict | None = None
     if args.ask_user_kb:
-        import json as _json
-        kb = _json.loads(open(args.ask_user_kb).read())
+        kb = json.loads(Path(args.ask_user_kb).read_text(encoding="utf-8"))
         # Multi-turn KB mode: hand the simulated user ONLY this task's profile
         # (the file may hold many tasks' data), so the oracle knows just what it
         # needs for this run - never the grader's correct_target.

@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""SDK-only device health check: connects to one ADB serial via mobilerun's AndroidDriver
-and exercises a few real device operations. Used by scripts/smoke_test.sh in place of the
-`mobilerun ping`/`mobilerun doctor` CLI commands, since this harness drives mobilerun purely
-through its Python SDK (see https://docs.mobilerun.ai/framework/sdk/adb-tools).
-
-Prints one `CHECK <name> <PASS|WARN|FAIL> <message>` line per check plus a final
-`RESULT <PASS|WARN|FAIL>` line, and exits 0 for PASS/WARN, 1 for FAIL.
-"""
+"""SDK-only device health check via mobilerun's AndroidDriver (used by smoke_test.sh)."""
 
 from __future__ import annotations
 

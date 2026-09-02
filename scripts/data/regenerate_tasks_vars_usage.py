@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate benchmarks/dailyBench-600/tasks_vars_usage.json from the 530 dataset
-(DailyBench_530_v1.json) and tasks_vars.local.env.
-
-The file is a "Global var->tasks index": for each placeholder in the dataset and
-each key in tasks_vars.local.env, the exact tasks (and days) that use it. Kept
-accurate whenever tasks/placeholders change (e.g. the Google Workspace task sets).
-
-Usage: uv run python scripts/data/regenerate_tasks_vars_usage.py
-"""
+"""Regenerate benchmarks/dailyBench-600/tasks_vars_usage.json from the 530 dataset (DailyBench_530_v1.json) and tasks_vars.local.env."""
 from __future__ import annotations
 
 import json

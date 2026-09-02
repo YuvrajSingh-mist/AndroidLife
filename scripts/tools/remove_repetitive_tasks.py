@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""Remove 25 repetitive easy tasks from tasks_530.md to land the corpus at 530.
-
-The Google Workspace task sets (Docs/Sheets/Slides/Meet) were intended as REPLACEMENTS
-for repetitive tasks, not net additions — so the corpus must stay at 530 tasks.
-
-This removes the 25 most-repetitive non-Google, non-HC easy tasks (single-line blocks,
-verified: every removed task is `bucket==easy`, `app_slug` not in the Google set, and
-NOT a hallucination control). Resulting corpus: 530 tasks, 216 easy / 242 medium /
-72 hard, 36 ASK USER / 36 DETERMINISTIC, 55 hallucination controls, all 26 apps still
-present, per-day distinct apps still 10-12.
-
-Usage: python3 scripts/tools/remove_repetitive_tasks.py
-"""
+"""Remove 25 repetitive easy tasks from tasks_530.md to land the corpus at 530."""
 from __future__ import annotations
 
 from pathlib import Path

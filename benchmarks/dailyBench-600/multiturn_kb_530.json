@@ -186,24 +186,6 @@
           "favourite": false
         }
       ],
-      "preferences": {
-        "recipient": "Yuvraj Airtel",
-        "favourite_restaurants": [
-          "Downtown Delight",
-          "Jugaad Jn",
-          "Biryani Blues"
-        ],
-        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
-        "spice_preference": "medium",
-        "typical_budget": "₹300-₹600 per order",
-        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram). I order on BOTH Swiggy and Zomato - if the agent asks which platform's order, answer from the right app's list."
-      },
-      "contacts": {
-        "Maa": "family",
-        "Dad": "family",
-        "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
-        "Yuvraj Singh Jio": "family / alternate number"
-      },
       "zomato": {
         "account": {
           "name": "Yuvraj",
@@ -445,6 +427,24 @@
             "favourite": false
           }
         ]
+      },
+      "preferences": {
+        "recipient": "Yuvraj Airtel",
+        "favourite_restaurants": [
+          "Downtown Delight",
+          "Jugaad Jn",
+          "Biryani Blues"
+        ],
+        "dietary": "non-vegetarian - eats chicken and mutton, likes biryani and North Indian",
+        "spice_preference": "medium",
+        "typical_budget": "₹300-₹600 per order",
+        "recipient_note": "the friend I share my order confirmations with; if asked who 'him' is, this is him (Yuvraj Airtel on Telegram). I order on BOTH Swiggy and Zomato - if the agent asks which platform's order, answer from the right app's list."
+      },
+      "contacts": {
+        "Maa": "family",
+        "Dad": "family",
+        "Yuvraj Airtel": "the friend I share order confirmations with (gets the order totals); 'him' on Telegram is Yuvraj Airtel",
+        "Yuvraj Singh Jio": "family / alternate number"
       }
     }
   },
@@ -707,9 +707,9 @@
         "event_name": "Meetup",
         "reminder_chat": "Forever 21",
         "get_together_plan": {
-          "date": "Saturday the 22nd - we first floated the 20th but moved it because someone was busy",
+          "date": "Saturday the 19th (next month) - we first floated the 17th but moved it because someone was busy",
           "time": "7 PM",
-          "venue": "The Terrace, Patia",
+          "venue": "Hill View Cafe And Restro (real cafe near Patia, Bhubaneswar - findable in Google Maps)",
           "reminder": "a day before at 8 PM"
         }
       }

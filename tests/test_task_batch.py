@@ -274,16 +274,16 @@ def test_build_run_command_always_adds_task_timeout_flag() -> None:
     assert medium_command[medium_command.index("--task-timeout") + 1] == "2400"
 
 
-def test_load_ask_user_facts_returns_empty_dict_for_missing_file(tmp_path) -> None:
+def test_load_json_object_returns_empty_dict_for_missing_file(tmp_path) -> None:
     """A missing --ask-user-facts file is fine (e.g. a DETERMINISTIC-only selection) - no crash."""
-    assert task_batch.load_ask_user_facts(str(tmp_path / "does-not-exist.json")) == {}
+    assert task_batch.load_json_object(str(tmp_path / "does-not-exist.json")) == {}
 
 
-def test_load_ask_user_facts_reads_the_task_id_keyed_mapping(tmp_path) -> None:
+def test_load_json_object_reads_the_task_id_keyed_mapping(tmp_path) -> None:
     """The facts file is a plain {task_id: relevant_information} JSON mapping."""
     facts_path = tmp_path / "ask_user_facts.json"
     facts_path.write_text(json.dumps({"hard__calendar__003": "The appointment is on 2026-08-05 at 3:30 PM."}))
-    assert task_batch.load_ask_user_facts(str(facts_path)) == {"hard__calendar__003": "The appointment is on 2026-08-05 at 3:30 PM."}
+    assert task_batch.load_json_object(str(facts_path)) == {"hard__calendar__003": "The appointment is on 2026-08-05 at 3:30 PM."}
 
 
 def test_build_run_command_injects_ask_user_context_for_ask_user_tasks_only() -> None:

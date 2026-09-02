@@ -78,14 +78,26 @@ def test_factmatch_uiq_wrong_answers_and_empty() -> None:
     assert user_interaction_quality_factmatch([]) == 0.0
 
 
-def test_kbiq_pooled_correct_over_total_kb_queries() -> None:
-    # KB queries: 2 of 3 audited right across two KB tasks -> 2/3.
+def test_kbiq_task_based_correct_over_kb_tasks() -> None:
+    # Task-based: both KB tasks have >=1 correct query -> 2/2 = 1.0 (a task that
+    # never asked, or asked but got nothing right, would FAIL and lower the score).
     records = [
         _rec(False, is_kb=True, kb_queries=2, kb_queries_correct=1),
         _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),
         _rec(True, is_kb=False, kb_queries=0, kb_queries_correct=0),  # non-KB ignored
     ]
-    assert kb_interaction_quality(records) == pytest.approx(2 / 3)
+    assert kb_interaction_quality(records) == pytest.approx(2 / 2)
+
+
+def test_kbiq_task_that_never_asked_counts_against() -> None:
+    # 4 KB tasks, only 1 engaged correctly -> 1/4 = 0.25 (not 1.000).
+    records = [
+        _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),  # engaged + correct
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
+    ]
+    assert kb_interaction_quality(records) == pytest.approx(1 / 4)
 
 
 def test_kbiq_unaudited_and_empty() -> None:

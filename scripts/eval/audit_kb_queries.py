@@ -1,30 +1,5 @@
 #!/usr/bin/env python3
-"""Manual KBIQ audit helper — walk a run batch's KB (multi-turn) ask_user queries.
-
-KBIQ (KB Interaction Quality) grades each KB/multi-turn ask_user query: did the
-oracle's answer match what the task's KB profile actually holds ("right")? That
-judgement is done by a human after the run (not auto-scored), because the oracle
-answer is only "right" relative to the profile — the same reason the report reads
-the per-run ``kb_audit.json`` sidecar instead of computing it.
-
-Usage:
-  # 1. List every KB query in a run batch (question + oracle answer + turn) so a
-  #    human can judge each one against multiturn_kb_public.json:
-  uv run python scripts/eval/audit_kb_queries.py --runs 'assets/runs/public/<date>/*' \\
-      --source public.md --list
-
-  # 2. Mark correctness interactively (one prompt per query; y/n/enter=correct):
-  uv run python scripts/eval/audit_kb_queries.py --runs 'assets/runs/public/<date>/*' \\
-      --source public.md --interactive
-
-  # 3. Point the report at the audited runs; it reads each <run>/kb_audit.json
-  uv run scripts/eval/dailybench_report.py --runs 'assets/runs/public/<date>/*' \\
-      --source public.md --out /tmp/report.json --out-md /tmp/report.md
-
-Each run's audit is written to <run>/kb_audit.json as
-{"queries": [{"question": ..., "answer": ..., "correct": true|false}, ...]},
-which is exactly what dailybench_report.py's KBIQ row consumes.
-"""
+"""Manual KBIQ audit helper — walk a run batch's KB (multi-turn) ask_user queries."""
 
 from __future__ import annotations
 
@@ -36,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from DailyBench.task_batch import load_ask_user_facts
+from DailyBench.task_batch import load_json_object
 from DailyBench.task_dataset import multiturn_kb_path
 
 
@@ -87,7 +62,7 @@ def main() -> int:
     args = parser.parse_args()
 
     kb_path = args.kb or multiturn_kb_path(args.source)
-    kb_ids = set(load_ask_user_facts(kb_path))
+    kb_ids = set(load_json_object(kb_path))
     run_dirs = discover_run_dirs(args.runs)
     if not run_dirs:
         print(f"No run folders matched {args.runs!r}")

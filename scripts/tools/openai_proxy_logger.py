@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 import urllib.error
 import urllib.request
@@ -92,6 +93,35 @@ def parse_response_payload(body: bytes) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def _truncate_payload_debug(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a copy of a request payload with huge embedded media truncated for debug logs.
+
+    Base64 image/file data can be megabytes; keep the structure (types, roles, order)
+    but cut the raw data so a debug dump stays readable.
+    """
+    import copy
+
+    out = copy.deepcopy(payload)
+
+    def walk(node: Any) -> Any:
+        if isinstance(node, dict):
+            result: dict[str, Any] = {}
+            for key, value in node.items():
+                if key in ("url", "file_data", "image", "data"):
+                    if isinstance(value, str) and len(value) > 120:
+                        result[key] = value[:120] + f"...<{len(value)} chars truncated>"
+                    else:
+                        result[key] = walk(value)
+                else:
+                    result[key] = walk(value)
+            return result
+        if isinstance(node, list):
+            return [walk(item) for item in node]
+        return node
+
+    return walk(out)
+
+
 class ProxyHandler(BaseHTTPRequestHandler):
     """Forward OpenAI-style requests while logging completion metrics."""
 
@@ -161,9 +191,21 @@ class ProxyHandler(BaseHTTPRequestHandler):
             ),
         }
         # Include a preview of unparseable response bodies for debugging
-        if raw_body is not None:
+        if raw_body is not None and not response_payload:
             preview = raw_body.decode(errors="replace")[:500]
             entry["response_body_preview"] = preview
+        # Opt-in full request/response dump (LLM_PROXY_DEBUG_DUMP=<path>): captures the
+        # exact upstream payload (media truncated) and raw response for diagnosing
+        # upstream-side errors like finish_reason=error or empty content.
+        debug_dump = getattr(self.server, "debug_dump", None)
+        if debug_dump is not None:
+            debug_entry = {
+                "timestamp_utc": utc_now(),
+                "request": _truncate_payload_debug(request_payload),
+                "response_body": raw_body.decode(errors="replace")[:4000] if raw_body is not None else None,
+            }
+            with debug_dump.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(debug_entry, sort_keys=True) + "\n")
         with self.server.log_path.open("a", encoding="utf-8") as handle:  # type: ignore[attr-defined]
             handle.write(json.dumps(entry, sort_keys=True) + "\n")
 
@@ -203,7 +245,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             return
         elapsed_ms = (time.monotonic() - start) * 1000.0
         response_payload = parse_response_payload(resp_body)
-        self._log_completion(request_payload, response_payload, elapsed_ms, raw_body=resp_body if not response_payload else None)
+        self._log_completion(request_payload, response_payload, elapsed_ms, raw_body=resp_body)
         self._write_response(status, headers, resp_body)
 
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A003
@@ -241,6 +283,8 @@ def main() -> int:
     server.upstream_base = args.upstream_base.rstrip("/") + "/"  # type: ignore[attr-defined]
     server.log_path = log_path  # type: ignore[attr-defined]
     server.timeout_seconds = args.timeout_seconds  # type: ignore[attr-defined]
+    debug_dump = os.environ.get("LLM_PROXY_DEBUG_DUMP")
+    server.debug_dump = Path(debug_dump).expanduser() if debug_dump else None  # type: ignore[attr-defined]
     try:
         server.serve_forever()
     except KeyboardInterrupt:

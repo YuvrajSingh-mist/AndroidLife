@@ -66,7 +66,7 @@ aren't grouped or predictable by position.**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->
 
 **5. [Swiggy+Zomato+Telegram] — ASK USER - MULTI**
-- Ugh, I'm craving the food I ate last Friday — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
+- Ugh, I'm craving the food I ate on [date] — can you get me that again? Also, message him on Telegram the order total so I can confirm before paying. <!--hard__swiggy__005-->
 
 **6. [Contacts+Gmail] — DETERMINISTIC**
 - I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and tell me their saved email address and phone number. Then open Gmail and check whether that email address shows up anywhere (inbox, sent, or search). If the address is confirmed in Gmail, star the contact; otherwise just tell me what you found. Reply with `Name | Email | Phone | Confirmed?` format. <!--hard__contacts-gmail__026-->
@@ -109,18 +109,18 @@ aren't grouped or predictable by position.**
 - I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidian; otherwise save it to a general album. Star it either way (deliberately no photo or recipient email is named, so the agent must ask which photo to send and the recipient's email) <!--hard__photos-gmail-obsidian__012-->
 
 **[Google Maps]**
-- Easy (1pt): I just parked and I'm worried I'll forget where. Could you save my current location in Google Maps as 'parked here'? <!--easy__google-maps__004-->
+- Easy (1pt): I just parked and I'm worried I'll forget where. There's no 'Save parking' option in this Google Maps build, so could you save my current location as 'parked here' as a note in the Notes app, then add that note to my home screen so I can find my way back? <!--easy__google-maps__004-->
 
 **5. [Music+Obsidian] — ASK USER - MULTI**
-- I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep in a note in Obsidian which you look up to. I want you set it up so that it stops by itself around my bedtime. Can you set that up for me in my favorite music app lately? <!--hard__music-obsidian__077-->
+- I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you look up to and I think I found something that works for me. I want you set it up so that once you start it yourself, it then stops by itself around my asleep time. Can you set that up for me in the music app I used the most lately to time my sleep and listen to music? <!--hard__music-obsidian__077-->
 
 **[Swiggy]**
-- Easy (1pt): Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings last month on foods please? <!--easy__swiggy__001-->
+- Easy (1pt): Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings over the last three months on foods please? <!--easy__swiggy__001-->
 
 - Medium (3pt) **[Clock + Calendar]**: Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock? <!--medium__clock__009-->
 
 **[Google Meet]**
-- Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
+- Easy (1pt): Can you schedule a Google Meet for me? Set the title to [gmeet title], schedule it for [gmeet datetime], and add [invitee email 1] and [invitee email 2] to the invite so they get the meeting link. <!--easy__google-meet__004-->
 
 **[Telegram]**
 <!-- 🔮 HALLUCINATION CONTROL (easy__telegram__004, absent-entity): data genuinely absent (No Telegram group named '{hc group name}' exists.). Correct = honest failure; do NOT fabricate. -->
@@ -179,7 +179,7 @@ aren't grouped or predictable by position.**
 - Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Messages]**
-- Easy (1pt): Words aren't enough for this reply. Can you send a GIF in a conversation in Messages? <!--easy__messages__010-->
+- Easy (1pt): Words aren't enough for this reply. Can you send an appropriate string of emojis to [contact] in Messages? Don't be too snarky or cheeky! <!--easy__messages__010-->
 
 **4. [Chrome+YouTube+Notes] — ASK USER SINGLE**
 - I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though! (deliberately no task or note title is specified, so the agent must ask what they want to learn and what to title the note) <!--hard__chrome-youtube-notes__088-->

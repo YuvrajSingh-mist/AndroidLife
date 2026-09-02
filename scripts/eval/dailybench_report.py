@@ -1,30 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregate a batch of DailyBench run folders into MobileWorld-style metrics.
-
-Computes Success Rate (overall + per bucket + interaction vs GUI-only), Average
-Completion Steps, Average User Queries, and User Interaction Quality (QIS) from
-arXiv:2512.19432 (MobileWorld), excluding the MCP metric by design.
-
-User Interaction Quality uses the success-free fact-match formula: it grades the
-quality of each ask_user call by whether the LLM user's answer matched the task's
-ground-truth fact, regardless of whether the task succeeded.
-
-Each run folder contributes:
-  output.json          -> success, steps
-  run_metrics.json     -> ask_user_call_count (falls back to counting the lines
-                          in ask_user_metrics.jsonl for older runs)
-  meta.json            -> model, label, task_id (task_id may be absent on older
-                          runs; it is then reconstructed from --label)
-
-Interaction (ASK USER) tasks are identified by task_id membership in the ask_user_facts
-sidecar for the runs' source: `--source tasks.md` (default) selects
-benchmarks/dailyBench-600/ask_user_facts_730.json, `--source public.md` selects
-benchmarks/dailyBench-600/ask_user_facts.json (overridable via --ask-user-facts).
-
-Usage:
-  uv run scripts/dailybench_report.py --runs assets/runs/2026-08-01-001234
-  uv run scripts/dailybench_report.py --model qwen/qwen3.6-plus
-"""
+"""Aggregate a batch of DailyBench run folders into MobileWorld-style metrics."""
 
 from __future__ import annotations
 
@@ -50,11 +25,13 @@ from DailyBench.benchmark_metrics import (
     success_rate,
     user_interaction_quality_factmatch,
 )
-from DailyBench.hallucination_judge import judge_control_honesty
-from DailyBench.task_batch import load_ask_user_facts
+from DailyBench.hallucination_judge import judge_control_full_context, read_agent_log, resolve_control
+from DailyBench.jsonutils import read_json
+from DailyBench.task_batch import load_json_object
 from DailyBench.task_dataset import ask_user_facts_path, multiturn_kb_path
+from DailyBench.user_config import load_user_config, parse_flat_config
 
-# Hallucination-control sidecar: {task_id: {data_absent, type, absence, expected}}.
+# Hallucination-control sidecar: {task_id: {data_absent, type, absence, non_obvious}}.
 # Tasks tagged here have data that is GENUINELY ABSENT on device, so the correct outcome is an
 # honest failure; a control that self-reports success has fabricated data (= hallucination).
 DEFAULT_CONTROLS = "benchmarks/dailyBench-600/hallucination_controls.json"
@@ -66,19 +43,13 @@ DEFAULT_SOURCE = "tasks.md"
 REP_SUFFIX_RE = re.compile(r"-rep\d+$")
 
 
-def _read_json(path: Path) -> dict[str, Any] | None:
-    """Read a JSON file, returning None for missing/corrupt files."""
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return None
 
 
-# Judge model override for the DeepEval hallucination judge (set via --hallucination-judge-model).
+# Judge model override for the full-context hallucination judge (set via --hallucination-judge-model).
 _HALLUCINATION_JUDGE_MODEL: str | None = None
 _HALLUCINATION_JUDGE_ENABLED = True
-# Sampling config for the DeepEval judge (forwarded to the OpenAI call so verdicts
-# are reproducible, matching the main agent's config).
+# Sampling config for the full-context judge (forwarded to the OpenAI call so
+# verdicts are reproducible, matching the main agent's config).
 _HALLUCINATION_JUDGE_TEMPERATURE = 0.0
 _HALLUCINATION_JUDGE_TOP_P = 0.95
 _HALLUCINATION_JUDGE_SEED = 42
@@ -91,7 +62,7 @@ def set_hallucination_judge_model(model: str | None) -> None:
 
 
 def set_hallucination_judge_sampling(temperature: float, top_p: float, seed: int) -> None:
-    """Set temperature/top_p/seed for the DeepEval hallucination judge."""
+    """Set temperature/top_p/seed for the full-context hallucination judge."""
     global _HALLUCINATION_JUDGE_TEMPERATURE, _HALLUCINATION_JUDGE_TOP_P, _HALLUCINATION_JUDGE_SEED
     _HALLUCINATION_JUDGE_TEMPERATURE = temperature
     _HALLUCINATION_JUDGE_TOP_P = top_p
@@ -99,7 +70,7 @@ def set_hallucination_judge_sampling(temperature: float, top_p: float, seed: int
 
 
 def set_hallucination_judge_enabled(enabled: bool) -> None:
-    """Enable/disable the DeepEval hallucination judge.
+    """Enable/disable the full-context hallucination judge.
 
     When disabled, no control is ever classified as a hallucination (all controls
     are treated as true failures) - useful for offline report generation.
@@ -108,30 +79,39 @@ def set_hallucination_judge_enabled(enabled: bool) -> None:
     _HALLUCINATION_JUDGE_ENABLED = enabled
 
 
-def _control_reason_honest_absence(reason: str, control: dict[str, Any]) -> bool:
-    """Return True when DeepEval judges the reason as faithful to the absence.
+def _control_reason_honest_absence(reason: str, control: dict[str, Any], run_dir: Path | None = None) -> bool:
+    """Return True when the full-context judge finds the control run honest.
 
-    Delegates to :func:`DailyBench.hallucination_judge.judge_control_honesty`,
-    which uses DeepEval's HallucinationMetric to compare the run's reason against
-    the control's absence text. On any judge error we treat the control as NOT
-    honest (safer for a benchmark) and log a warning.
+    Uses :func:`DailyBench.hallucination_judge.judge_control_full_context`, which
+    reads the run's full agent.log.txt so it can catch hallucinations the
+    one-line reason hides (deleting a lookalike event, fabricating an absent
+    folder). On any judge error we treat the control as NOT honest (safer for a
+    benchmark) and log a warning.
     """
     if not _HALLUCINATION_JUDGE_ENABLED:
         return True
     if not reason:
         return False
-    result = judge_control_honesty(
+    agent_log = read_agent_log(run_dir)
+    if not agent_log.strip():
+        print(
+            f"warning: no agent.log.txt for {control.get('task_id') or '?'}; treating control as NOT honest",
+            file=sys.stderr,
+        )
+        return False
+    result = judge_control_full_context(
         reason,
         control,
+        agent_log,
+        success=None,
         model=_HALLUCINATION_JUDGE_MODEL,
-        include_reason=False,
         temperature=_HALLUCINATION_JUDGE_TEMPERATURE,
         top_p=_HALLUCINATION_JUDGE_TOP_P,
         seed=_HALLUCINATION_JUDGE_SEED,
     )
-    if result.error:
+    if result.hallucinated is None:
         print(
-            f"warning: hallucination judge failed for {result.task_id or '?'}: {result.error}",
+            f"warning: full-context hallucination judge failed for {result.task_id or '?'}: {result.error}",
             file=sys.stderr,
         )
         return False
@@ -205,12 +185,8 @@ def _count_kb_audit_correct(run_dir: Path) -> int:
     audit): either ``{"queries": [{"correct": bool, ...}, ...]}`` or the raw
     ``{"correct": int}``. Absent / unparsed -> 0 (run not audited yet).
     """
-    audit_path = run_dir / "kb_audit.json"
-    if not audit_path.exists():
-        return 0
-    try:
-        audit = json.loads(audit_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    audit = read_json(run_dir / "kb_audit.json")
+    if not isinstance(audit, dict):
         return 0
     queries = audit.get("queries")
     if isinstance(queries, list):
@@ -292,9 +268,9 @@ def load_run_record(
     when its data is genuinely absent is a HALLUCINATION (fabricated); a control
     that honestly fails is a TRUE FAILURE (correct behavior).
     """
-    output = _read_json(run_dir / "output.json") or {}
-    meta = _read_json(run_dir / "meta.json") or {}
-    run_metrics = _read_json(run_dir / "run_metrics.json") or {}
+    output = read_json(run_dir / "output.json") or {}
+    meta = read_json(run_dir / "meta.json") or {}
+    run_metrics = read_json(run_dir / "run_metrics.json") or {}
 
     ask_user_calls = run_metrics.get("ask_user_call_count")
     if ask_user_calls is None:
@@ -330,7 +306,7 @@ def load_run_record(
     # fabricating it.
     is_control = bool(task_id in (controls or {})) if task_id else False
     if is_control:
-        if success and not _control_reason_honest_absence(output.get("reason") or "", (controls or {}).get(task_id, {})):
+        if success and not _control_reason_honest_absence(output.get("reason") or "", (controls or {}).get(task_id, {}), run_dir):
             classification = "hallucination"
         else:
             classification = "true_failure"
@@ -397,6 +373,9 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
     kb_tasks = [r for r in records if r.get("is_kb")]
     kb_query_total = sum(r.get("kb_queries") or 0 for r in kb_tasks)
     kb_query_correct = sum(r.get("kb_queries_correct") or 0 for r in kb_tasks)
+    # Task-based KBIQ: a KB task is correct only if it engaged the KB and got a
+    # right answer; a task that never asked (0 ask_user, MobileWorld gate) FAILS.
+    kb_task_correct = sum(1 for r in kb_tasks if (r.get("kb_queries_correct") or 0) > 0)
 
     return {
         "run_count": len(records),
@@ -408,11 +387,16 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
         "average_steps": avg_steps(records),
         "average_user_queries": avg_user_queries(records),
         "user_interaction_quality_factmatch": user_interaction_quality_factmatch(records),
-        # KBIQ (KB Interaction Quality): fraction of KB/multi-turn ask_user queries
-        # answered right per the KB profile (manually audited post-run via kb_audit.json).
-        "kb_interaction_quality": kb_interaction_quality(records),
+        # KBIQ (KB Interaction Quality): fraction of KB/multi-turn TASKS where the
+        # agent engaged the KB and got a right answer per the KB profile (manually
+        # audited post-run via kb_audit.json). Task-based: a KB task that never
+        # asked (0 ask_user, MobileWorld gate) is a FAILURE and counts against
+        # KBIQ. N/A (null) when NO KB query was ever asked — nothing to grade
+        # (user rule 2026-08-27).
+        "kb_interaction_quality": None if kb_query_total == 0 else kb_interaction_quality(records),
         "kb_query_total": kb_query_total,
         "kb_query_correct": kb_query_correct,
+        "kb_task_correct": kb_task_correct,
         "kb_task_count": len(kb_tasks),
         "interaction_run_count": len(interaction),
         "gui_only_run_count": len(gui_only),
@@ -438,6 +422,8 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
 
 def render_markdown(report: dict[str, Any]) -> str:
     """Render the report as a compact Markdown table."""
+    _kbiq = report.get("kb_interaction_quality")
+    _kbiq_str = "N/A" if _kbiq is None else f"{_kbiq:.3f}"
     lines = [
         "# DailyBench batch report (MobileWorld metrics, no MCP)",
         "",
@@ -454,7 +440,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         # quality of each ask_user call by whether the LLM user's answer matched the
         # ground-truth fact, regardless of whether the overall task succeeded.
         f"| User Interaction Quality (UIQ, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
-        f"| KB Interaction Quality (KBIQ, manual audit) | {report['kb_interaction_quality']:.3f} ({report['kb_query_correct']}/{report['kb_query_total']} KB queries right, {report['kb_task_count']} KB tasks) |",
+        f"| KB Interaction Quality (KBIQ, manual audit) | {_kbiq_str} ({report['kb_task_correct']}/{report['kb_task_count']} KB tasks with a correct KB answer) |",
         "",
         "### Outcome split (true success / true failure / hallucination)",
         "",
@@ -492,11 +478,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ask-user-facts", default=None, help="task_id -> fact mapping marking interaction tasks (default: derived from --source via ask_user_facts_path, e.g. tasks.md -> benchmarks/dailyBench-600/ask_user_facts_730.json).")
     parser.add_argument("--multiturn-kb", default=None, help="task_id -> {correct_target, profile} mapping of ASK USER - MULTI (KB/oracle) tasks; marks which runs are KB/multi-turn for the KBIQ metric (default: derived from --source via multiturn_kb_path, e.g. tasks.md -> benchmarks/dailyBench-600/multiturn_kb_530.json).")
     parser.add_argument("--hallucination-controls", default=DEFAULT_CONTROLS, help=f"task_id -> hallucination-control meta sidecar (default: {DEFAULT_CONTROLS}); controls whose data is verified absent. A control that self-reports success counts as a hallucination, an honest failure as a true failure.")
-    parser.add_argument("--hallucination-judge-model", default=None, help="Judge model for the DeepEval hallucination-control check (default: DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME env, else gpt-5.4-mini).")
-    parser.add_argument("--hallucination-judge-temperature", type=float, default=0.0, help="Temperature for the DeepEval hallucination judge (default 0.0).")
-    parser.add_argument("--hallucination-judge-top-p", type=float, default=0.95, help="Top-p for the DeepEval hallucination judge (default 0.95).")
-    parser.add_argument("--hallucination-judge-seed", type=int, default=42, help="Seed for the DeepEval hallucination judge (default 42).")
-    parser.add_argument("--no-hallucination-judge", action="store_true", help="Skip the DeepEval judge and never classify a control as hallucination (all controls become true failures).")
+    parser.add_argument("--config", default=None, help="User config file (flat key: value), default config/user.yaml; used to resolve {hc ...} placeholders in the control absence text before judging.")
+    parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/dailyBench-600/public_vars.local.env).")
+    parser.add_argument("--hallucination-judge-model", default=None, help="Judge model for the full-context hallucination-control check (default: DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME env, else gpt-5.4-mini).")
+    parser.add_argument("--hallucination-judge-temperature", type=float, default=0.0, help="Temperature for the full-context hallucination judge (default 0.0).")
+    parser.add_argument("--hallucination-judge-top-p", type=float, default=0.95, help="Top-p for the full-context hallucination judge (default 0.95).")
+    parser.add_argument("--hallucination-judge-seed", type=int, default=42, help="Seed for the full-context hallucination judge (default 42).")
+    parser.add_argument("--no-hallucination-judge", action="store_true", help="Skip the full-context judge and never classify a control as hallucination (all controls become true failures).")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed inter-task pause the batch runner applies (dailybench_tasks.py --cooldown-seconds); subtracted from raw wall-clock so the reported elapsed is the TRUE agent running time. Set 0 to report raw per-run elapsed only.")
     parser.add_argument("--model", default=None, help="Restrict the report to runs whose meta.json model equals this.")
     parser.add_argument("--out", default="report.json", help="JSON report output path.")
@@ -515,11 +503,20 @@ def main() -> int:
         print(f"No run folders found under {args.runs or DEFAULT_RUNS}.")
         return 1
     facts_path = args.ask_user_facts or ask_user_facts_path(args.source)
-    facts = load_ask_user_facts(facts_path)
+    facts = load_json_object(facts_path)
     interaction_ids = set(facts)
-    controls = load_ask_user_facts(args.hallucination_controls)
+    cfg = load_user_config(args.config)
+    if args.vars_file:
+        try:
+            cfg.update(parse_flat_config(Path(args.vars_file).read_text(encoding="utf-8")))
+        except OSError as exc:
+            print(f"warning: could not read --vars-file {args.vars_file}: {exc}", file=sys.stderr)
+    controls = {
+        tid: resolve_control(c, cfg)
+        for tid, c in load_json_object(args.hallucination_controls).items()
+    }
     kb_path = args.multiturn_kb or multiturn_kb_path(args.source)
-    kb_ids = set(load_ask_user_facts(kb_path))
+    kb_ids = set(load_json_object(kb_path))
     records = [load_run_record(run_dir, interaction_ids, facts, controls, kb_ids) for run_dir in run_dirs]
     report = build_report(records, model=args.model, cooldown_seconds=args.cooldown_seconds)
     Path(args.out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")

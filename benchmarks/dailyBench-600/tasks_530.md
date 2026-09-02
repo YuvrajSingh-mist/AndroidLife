@@ -990,7 +990,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm cooking and need a timer so I don't overcook these. Can you set a timer for boiling eggs in Clock? <!--easy__clock__007-->
 
 **[Messages]**
-- Easy (1pt): Words aren't enough for this reply. Can you send a GIF in a conversation in Messages? <!--easy__messages__010-->
+- Easy (1pt): Words aren't enough for this reply. Can you send a GIF to [contact] in Messages? <!--easy__messages__010-->
 
 - Medium (3pt) **[Notes+Calendar]**: Could you filter notes to only ones edited in the last week, open the most recent, check whether it's still unfinished, and set a Calendar reminder to finish it in Notes? <!--medium__notes__003-->
 
@@ -1513,7 +1513,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Medium (3pt) **[Calculator+Calendar]**: Could you open the '[savings goal note title]' note in Obsidian, compute a monthly savings plan to hit the goal amount in 6 months, log the monthly figure in a note, and set a calendar reminder to check progress in Calculator? <!--medium__calculator-calendar__001-->
 
 **[Google Meet]**
-- Easy (1pt): I want to know which meeting I need to be ready for first. Can you check today's list of scheduled meetings in Google Meet and tell me the earliest one? <!--easy__google-meet__004-->
+- Easy (1pt): Can you schedule a Google Meet for me? Set the title to [gmeet title], schedule it for [gmeet datetime], and add [invitee email 1] and [invitee email 2] to the invite so they get the meeting link. <!--easy__google-meet__004-->
 
 ### Day 27
 

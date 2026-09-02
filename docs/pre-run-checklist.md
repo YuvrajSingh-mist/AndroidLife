@@ -122,6 +122,33 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
 
 ---
 
+## §10 — Long-run / launch-time operational items (2026-09-01)
+
+- ☑ **Wireless ADB = Tailscale serial** `100.108.15.119:5555` (phone roams subnets; the LAN IP
+  is unreliable). Reconnect: `adb kill-server` (if "No route to host" persists despite ping
+  working), then `adb connect 100.108.15.119:5555`. Phone has `com.tailscale.ipn` on `tun0`.
+- ☐ **Launch detached with stdin from `/dev/null`** — `nohup uv run dailybench_tasks.py ... < /dev/null > log 2>&1 &`.
+  Without `< /dev/null` the batch dies with `Fatal Python error: init_sys_streams ... Bad file
+  descriptor` when the launching terminal closes (this killed the 2026-09-01 mimo run mid-day1).
+- ☐ **Start phoenix BEFORE the batch** (`start_phoenix.py --public --run-ts <TS>`, wait for :6006),
+  else every task aborts with `PHOENIX_NOT_READY`. `nohup` both.
+- ☐ **Resume-in-place**: `--run-root <same> --resume-from <next-task-id>` — find the next task id
+  from the dead batch log's echoed `label dayN--...` lines (first label without `output.json`).
+- ☑ **Model check**: `xiaomi/mimo-v2.5-pro` emits malformed `<parameter=message>` on the final
+  `complete` call → every task grades FAIL at the last step (diagnostic only). `stepfun/step-3.7-flash`
+  has `reasoning.mandatory: True` → must pass `--thinking`. Known-good: `bytedance-seed/seed-2.0-lite`,
+  `qwen/qwen3.8-27b`, `moonshotai/kimi-k2.6`.
+- ☑ **Amazon Music background playback** (controlled run env): whitelist it from OxygenOS
+  virtual-freeze — `adb shell dumpsys deviceidle whitelist +com.amazon.mp3` +
+  `cmd appops set com.amazon.mp3 RUN_ANY_IN_BACKGROUND allow` (+ in-Settings "Don't optimize" /
+  allow background activity). OxygenOS freezes background apps (keeps them in RAM, SIGSTOPs them)
+  → playback stops while the process survives.
+- ☐ **Clear app search history/suggestions on every reset** (anti-cheat) — esp. YouTube search
+  history + any saved-search rows, so the agent can't tap a pre-existing suggestion instead of
+  typing the query.
+
+---
+
 ## Which tasks are fully ADB-verified (won't surprise you)
 
 Calendar (`easy__calendar__002`, `hard__clock-calendar__023`, `easy__calendar__008`),

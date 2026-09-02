@@ -95,18 +95,21 @@ def test_get_current_datetime_and_location_against_the_real_device() -> None:
 
 
 def test_ask_user_kb_template_injects_kb_and_history() -> None:
-    """The multi-turn KB system prompt carries the profile AND the rolling history."""
+    """The multi-turn KB system prompt carries the profile AND the rolling history (as JSON)."""
+    import json as _json
     from DailyBench.custom_tools import ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE
     kb = {"orders": [{"app": "Swiggy", "eta": "18:40"}]}
-    history = "Agent: which app?\nYou: Swiggy"
+    history = _json.dumps(
+        [{"role": "user", "content": "which app?"}, {"role": "assistant", "content": "Swiggy"}]
+    )
     prompt = ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE.format(
         goal="check my order", knowledge_base='{"orders": [{"app": "Swiggy"}]}',
         current_datetime="2026-08-17 12:00:00", history=history,
     )
     assert "check my order" in prompt
     assert "Swiggy" in prompt
-    assert "Agent: which app?" in prompt
-    assert "You: Swiggy" in prompt
+    assert '"role": "user"' in prompt and '"content": "which app?"' in prompt
+    assert '"role": "assistant"' in prompt and '"content": "Swiggy"' in prompt
 
 
 def test_build_ask_user_tool_kb_mode_spec_unchanged() -> None:
