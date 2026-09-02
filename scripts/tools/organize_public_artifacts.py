@@ -22,7 +22,7 @@ REPORTS = REPO / "reports"
 PUB = REPORTS / "public"
 MET = REPORTS / "metrics" / "public"
 HALL = REPORTS / "metrics" / "hallucination"
-TB = REPORTS / "turn-based"
+TB = REPORTS / "turn-based" / "public"
 SINGLE = TB / "ask-query-single"
 MULTI = TB / "ask-query-multi"
 BENCH = REPO / "benchmarks" / "dailyBench-600"
@@ -275,7 +275,7 @@ Full per-turn audits of every ASK USER interaction (question → answer), one
 date-time folder per run — same convention as `assets/db/public/<run-ts>/`:
 
 ```
-reports/turn-based/
+reports/turn-based/public/
 ├── README.md
 ├── ask-query-single/<run-ts>/<task>.md
 └── ask-query-multi/<run-ts>/<task>.md

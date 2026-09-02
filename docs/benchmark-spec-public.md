@@ -262,9 +262,9 @@ All public-run artifacts are filed automatically by
 reports/public/public-<RUN_TS>.md                          run report
 reports/metrics/public/public-<RUN_TS>-report.{json,md}    official metrics
 reports/metrics/hallucination/public-<RUN_TS>.{json,md}    HC / DeepEval grading
-reports/turn-based/ask-query-single/<RUN_TS>/<task>.md     ASK USER SINGLE audits (full task text + turns)
-reports/turn-based/ask-query-multi/<RUN_TS>/<task>.md      ASK USER MULTI audits (full task text + turns)
-reports/turn-based/README.md                               index (regenerated)
+reports/turn-based/public/ask-query-single/<RUN_TS>/<task>.md  ASK USER SINGLE audits
+reports/turn-based/public/ask-query-multi/<RUN_TS>/<task>.md   ASK USER MULTI audits
+reports/turn-based/public/README.md                            index (regenerated)
 assets/db/public/<RUN_TS>/phoenix.db                       archived per-run Phoenix DB
 ```
 
@@ -276,7 +276,7 @@ fact, and the full question → answer dialogue.
 
 Per-run results live in `reports/public/public-<RUN_TS>.md` (manual audit),
 `reports/metrics/public/public-<RUN_TS>-report.{json,md}` (official metrics), and the
-turn-based ASK USER audits under `reports/turn-based/`. See the per-run reports for the
+turn-based ASK USER audits under `reports/turn-based/public/`. See the per-run reports for the
 full per-task audit, on-device verification, and privacy scan. (Runs 2026-08-20/22/23 were
 removed as stale on 2026-09-02; results start from the 2026-08-26 runs.)
 

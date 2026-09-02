@@ -41,7 +41,7 @@
   - `2026-08-28-002424` — **qwen3.8-27b TEXT** · manual **37 PASS / 23 FAIL / 0 HC** · official **31/29/0 = 51.7%**
 - **Music-Obsidian-077 redesigned (2026-08-28→29):** prompt = *"…once you start it yourself, it then stops by itself around my asleep time… in the music app I used the most lately…"*. Oracle/`Bedtime.md` = 20-night raw log, bedtime constant 10:30 PM, field `music`, **YouTube Music RECURS ~11:00 PM + Chillhop Lofi Beats - Sleep Mix (9/10, last-5 all YT)**. Correct target `youtube-music::sleep-timer-1030pm`; KBIQ stop ≈ 11:00 PM + Chillhop.
 - **Music-Obsidian-077 reruns (2026-08-29) — ALL 3 FAIL (0 ask_user each), merged in place** into each run's `day2/hard-music-obsidian-077/` with row-above telemetry: 184934 ← `easy-google-maps-004`; 105200 ← `easy-google-maps-004`; 002424 ← `hard-google-search-telegram-clock-018`. Failures: qwen-vision stuck in Obsidian "Go to file" loop (60-step cap); gemini opened regular **YouTube** (not YT Music), gave up at step 13 (official success 38→37); qwen-text opened OnePlus Notes, 60-step cap. None read the note, none asked, none set up YT Music + Chillhop + ~11 PM. Standalone rerun folders deleted.
-- **Reports updated:** `reports/public/public-{184934,105200,002424}.md` (Music-Obsidian rerun notes + tables), `reports/metrics/public/public-*-report.{json,md}` (regenerated via `dailybench_report.py --out reports/metrics/public/<base>.json --out-md ...`), turn-based `reports/turn-based/ask-query-multi/<run>/hard__music-obsidian__077.md` (new prompt, 0 turns), 105200 manual-audit (music-obsidian removed from false-pass list 9→8).
+- **Reports updated:** `reports/public/public-{184934,105200,002424}.md` (Music-Obsidian rerun notes + tables), `reports/metrics/public/public-*-report.{json,md}` (regenerated via `dailybench_report.py --out reports/metrics/public/<base>.json --out-md ...`), turn-based `reports/turn-based/public/ask-query-multi/<run>/hard__music-obsidian__077.md` (new prompt, 0 turns), 105200 manual-audit (music-obsidian removed from false-pass list 9→8).
 - **Phoenix:** started per-run with `start_phoenix.py --public --run-ts <ts>` (DB at `assets/db/public/<ts>/phoenix.db`, project `dailybench-public`); runner traces ON by default. 2026-08-29 rerun DBs exist for all 3 (qwen-vision, gemini, qwen-text).
 - **All conventions + the full music-obsidian story live in `/memories/repo/run-preferences.md`** — read that for the canonical, up-to-date rules (merge-in-place, row-above telemetry, turn-based .md format, deep-audit, phoenix, music-obsidian redesign + rerun results).
 
@@ -248,10 +248,11 @@ run day (call-log gap).
 
 - **Reports** live under `reports/public/` (per-run: `reports/public/public-<run>.md`),
   metrics under `reports/metrics/public/`, hallucination geval under `reports/metrics/hallucination/`.
-- **Turn-based ASK USER audits** under `reports/turn-based/` (per-run date-time
-  folders, like the DB): `ask-query-single/<run-ts>/` (6 tasks) and
-  `ask-query-multi/<run-ts>/` (4 tasks) — full per-turn Q&A from
-  `ask_user_metrics.jsonl` + ground-truth fact + verdict. Index: `reports/turn-based/README.md`.
+- **Turn-based ASK USER audits** under `reports/turn-based/public/` (per-run
+  date-time folders, like the DB): `ask-query-single/<run-ts>/` and
+  `ask-query-multi/<run-ts>/` — full per-turn Q&A from
+  `ask_user_metrics.jsonl` + ground-truth fact + verdict. Index:
+  `reports/turn-based/public/README.md`.
 - **Public Phoenix DB** is per-run, date-time folder: `assets/db/public/<RUN_TS>/phoenix.db`
   (each run archived at `assets/db/public/<RUN_TS>/phoenix.db`).
   `start_phoenix.py --public --run-ts "$RUN_TS"` now supports it; run it BEFORE the batch.
