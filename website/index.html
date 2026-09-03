@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DailyBench500  -  28-Day Android Agent Benchmark</title>
+  <title>DailyBench500  -  Real-Phone Android Agent Benchmark</title>
   <meta name="description" content="DailyBench500 is a 60-task public Android agent benchmark plus a 530-task dataset that measures success, cost, battery drain, and thermal drift on a real phone across everyday apps.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="DailyBench500  -  28-Day Android Agent Benchmark">
+  <meta property="og:title" content="DailyBench500  -  Real-Phone Android Agent Benchmark">
   <meta property="og:description" content="Measure not just can a mobile agent do the task, but what doing it costs a real phone: dollars, battery, and heat.">
   <meta property="og:url" content="https://yuvrajsingh-mist.github.io/DrainBench300/">
   <meta property="og:site_name" content="DailyBench500">
@@ -39,18 +39,20 @@
   <div class="hero">
     <div class="container">
       <h1>DailyBench500</h1>
-      <p class="hero-subtitle">28-Day Android Agent Benchmark</p>
+      <p class="hero-subtitle">Real-phone Android agent benchmark for everyday tasks</p>
       <p class="hero-desc">
-        Evaluate whether a mobile agent can actually get things done on a real phone. DailyBench500 has two
-        tiers: a <strong>60-task public benchmark</strong> - every task fully run on a real Android device,
-        each with its own step-by-step agent trajectory, screen replay, and cost/battery/heat telemetry - and
-        the <strong>complete 530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">[1]</a></sup> (28 days, 31 apps) that public set is drawn from.
-        Every run captures not just <em>did it succeed</em> but <em>what doing it cost the phone</em>:
-        dollars, battery, heat, and steps.
+        Evaluate whether a mobile agent can actually get things done on a real phone - and what it costs
+        the phone when it does. DailyBench500 runs real agents on a real Android device over everyday
+        tasks and reports success alongside the real dollars, battery, heat, and steps. It has two tiers:
+        a <strong>60-task public benchmark</strong> - every task fully run on-device, each with its own
+        step-by-step agent trajectory, screen replay, and telemetry - and the <strong>complete 530-task
+        dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">[1]</a></sup> it's drawn from,
+        a 28-day / 31-app schedule that models one simulated month of everyday use. Runs themselves are
+        short, bounded sessions on a live phone - never a 28-day marathon.
       </p>
       <ul class="hero-note-list">
         <li>60-task public benchmark</li>
-        <li>530-task full dataset · 28 days · 31 apps</li>
+        <li>530-task dataset · 1 simulated month (28 days) · 31 apps</li>
         <li>Full agent trajectories per task</li>
         <li>Easy / Medium / Hard</li>
         <li>ASK USER + deterministic hard tasks</li>
@@ -115,10 +117,22 @@
           executed on a real phone (OnePlus CPH2423) by real LLMs, and each carries its full agent
           trajectory (model thoughts, tool calls, per-step screenshots, screen-replay GIF), run
           telemetry, and a manual-audit leaderboard.</li>
-          <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">[1]</a></sup> - the complete benchmark corpus across 28 days and 31
-          apps (easy/medium/hard, ASK USER + deterministic + hallucination controls); the public 60 are
-          sampled from it, and trajectories are included for every day that has been run.</li>
+          <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">[1]</a></sup> - the complete benchmark corpus: 530 tasks on a fixed
+          28-day schedule across 31 apps (easy/medium/hard, ASK USER + deterministic + hallucination
+          controls). The 28 days model one month of real daily use (a person touches ~10 apps a day, not
+          all 31), so the corpus spreads coverage across a simulated month; the public 60 are sampled from
+          it, and trajectories are included for every day that has been run.</li>
         </ul>
+
+        <div class="callout">
+          <strong>Why runs are short - and why the corpus is 28 days.</strong> The 28-day schedule is the
+          <em>dataset's</em> shape, not a run's: it exists so everyday use across all 31 apps can be
+          covered at real-world density (~10 apps a day, like a real person). Actual runs are bounded
+          sessions on a live phone - a full 60-task run takes roughly 2-9 hours, and longer runs have ended
+          when the phone's battery died mid-run (the run reports record these interruptions). So "28 days"
+          describes a simulated month of use, never a continuous month-long benchmark.
+        </div>
+
         <p>
           Instead of grading a model on a static screenshot, the harness runs an agent (via the
           <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">mobilerun SDK</a>)
@@ -487,7 +501,7 @@
       <a href="#leaderboard">Leaderboard</a>
       <a href="#documentation">Documentation</a>
     </div>
-    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; 28-day Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
+    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; real-phone Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
     <p><em>Built by Yuvraj Singh.</em></p>
     <p class="footnote">For business inquiries, contact <a href="mailto:yuvraj.mist@gmail.com">yuvraj.mist@gmail.com</a>.</p>
   </div>

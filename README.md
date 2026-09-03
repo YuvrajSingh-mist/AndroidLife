@@ -1,4 +1,4 @@
-# DailyBench300
+# DailyBench500
 
 A benchmark harness that runs **Android agent tasks** against a real phone and a real LLM, capturing
 success, cost, battery, thermal, and per-step trajectory traces for every run. It uses the
@@ -14,11 +14,14 @@ OpenAI-compatible model endpoint (OpenRouter, or a local host) over HTTP.
   and per-task pages. Source: `benchmarks/dailyBench-600/DailyBench_public_v2.json` (with `public.md`,
   `public_vars.local.env`, `multiturn_kb_public.json`).
 
-- **530-task dataset** - the complete benchmark corpus: a fixed 28-day schedule of **530 runnable
-  tasks** (216 easy / 242 medium / 72 hard; 49 ASK USER = 36 single-turn + 13 multi-turn KB, 23
-  deterministic) across **31 apps**, from which the public 60 are sampled. Still being benchmarked -
-  more days' runs and their trajectories are added as they complete. Source:
-  `benchmarks/dailyBench-600/DailyBench_530_v1.json` (with `tasks_530.md`).
+- **530-task dataset** - the complete benchmark corpus: **530 runnable tasks** (216 easy / 242
+  medium / 72 hard; 49 ASK USER = 36 single-turn + 13 multi-turn KB, 23 deterministic) on a fixed
+  28-day schedule across **31 apps**, from which the public 60 are sampled. The 28 days model one
+  simulated month of everyday use (~10 apps/day - a real person never touches all 31 in a day); they
+  are the dataset's structure, *not* a run length - actual runs are short, bounded sessions
+  (the 60-task public run takes ~2-9 h and can even be cut short by the phone's battery dying, as the
+  run reports record). Still being benchmarked - more days' runs and their trajectories are added as
+  they complete. Source: `benchmarks/dailyBench-600/DailyBench_530_v1.json` (with `tasks_530.md`).
 
 The live site is at
 [https://yuvrajsingh-mist.github.io/DrainBench300/](https://yuvrajsingh-mist.github.io/DrainBench300/).
