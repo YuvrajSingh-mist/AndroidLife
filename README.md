@@ -5,9 +5,22 @@ success, cost, battery, thermal, and per-step trajectory traces for every run. I
 [mobilerun SDK](https://docs.mobilerun.ai/framework/sdk) to drive the phone over ADB and an
 OpenAI-compatible model endpoint (OpenRouter, or a local host) over HTTP.
 
-**Corpus:** a fixed 28-day schedule of **530 runnable tasks** (216 easy / 242 medium / 72 hard,
-incl. 36 ASK USER + 36 deterministic) across 31 apps, plus a **61-task public sample** that the
-website publishes with trajectory replays. The live site is at
+**Two tiers**, as presented on the website:
+
+- **60-task public benchmark** - the fully-run preview. Every one of the 60 tasks has been executed
+  on a real Android phone (OnePlus CPH2423) by real LLMs; each carries its **full agent trajectory**
+  (model thoughts, tool calls, per-step screenshots, screen-replay GIF), run telemetry (cost /
+  battery / thermal / steps), and a manual-audit verdict, all browsable on the site's leaderboard
+  and per-task pages. Source: `benchmarks/dailyBench-600/DailyBench_public_v2.json` (with `public.md`,
+  `public_vars.local.env`, `multiturn_kb_public.json`).
+
+- **530-task dataset** - the complete benchmark corpus: a fixed 28-day schedule of **530 runnable
+  tasks** (216 easy / 242 medium / 72 hard; 49 ASK USER = 36 single-turn + 13 multi-turn KB, 23
+  deterministic) across **31 apps**, from which the public 60 are sampled. Still being benchmarked -
+  more days' runs and their trajectories are added as they complete. Source:
+  `benchmarks/dailyBench-600/DailyBench_530_v1.json` (with `tasks_530.md`).
+
+The live site is at
 [https://yuvrajsingh-mist.github.io/DrainBench300/](https://yuvrajsingh-mist.github.io/DrainBench300/).
 
 ---
@@ -99,8 +112,9 @@ node website/tools/export_trajectories.mjs
 
 - `dailybench_runner.py` / `dailybench_tasks.py` — CLI entry points
 - `src/DailyBench/` — harness package (metrics, dataset, task batch, custom tools)
-- `benchmarks/dailyBench-600/` — `tasks_530.md` (source of truth) + `DailyBench_530_v1.json/.jsonl`,
-  `public.md` + `DailyBench_public_v2.json`, per-day vars (`tasks_vars/`)
+- `benchmarks/dailyBench-600/` — task data: the **530-task dataset** (`tasks_530.md`,
+  `DailyBench_530_v1.json/.jsonl`, per-day `tasks_vars/`) and the **60-task public benchmark**
+  (`public.md`, `DailyBench_public_v2.json`, `public_vars.local.env`, `multiturn_kb_public.json`)
 - `config/` — `user_config.example` → copy to `user.yaml` (persona placeholders, gitignored)
 - `scripts/` — setup, seeding, run helpers, eval, tools
 - `assets/` — generated data: `runs/` (artifacts), `seeds/`, `db/dayN/phoenix.db`
