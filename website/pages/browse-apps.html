@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Apps - DailyBench500</title>
+  <meta name="description" content="Browse the Android apps used in the DailyBench500 public benchmark and open per-app agent trajectories filtered by model and date.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=12">
+</head>
+<body data-site-data="../assets/data/site_data.json" data-trajectory-index="../assets/data/trajectories/index.json" data-apps="../assets/data/apps.json">
+<nav>
+  <a href="../index.html" class="nav-title">DailyBench500</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="./how-it-was-formed.html">How it was formed</a>
+    <a href="./tasks.html">Tasks</a>
+    <a href="./browse-apps.html" class="nav-active">Browse Apps</a>
+    <a href="../index.html#leaderboard">Leaderboard</a>
+    <a href="https://yuvrajsingh-mist.github.io/DrainBench300/" rel="noopener">Documentation</a>
+  </div>
+</nav>
+
+<main>
+  <div class="app-page-header app-page-header-list">
+    <div class="container container-wide">
+      <p class="app-kicker">Public benchmark</p>
+      <h1 class="app-page-title app-page-title-lg">Browse Apps</h1>
+      <p class="app-page-meta app-page-lead">
+        Every Android app exercised in the 60-task public sample. Click an app to open its
+        recorded agent trajectories, filterable by <strong>model · date</strong> run.
+      </p>
+    </div>
+  </div>
+
+  <section aria-labelledby="heading-apps">
+    <div class="container container-wide">
+      <div class="apps-toolbar">
+        <p class="task-count" id="apps-count">Loading apps…</p>
+        <label class="filter-search apps-search">
+          <span class="visually-hidden">Search apps</span>
+          <input type="search" id="apps-search" name="db500-apps-filter" placeholder="Search apps…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+        </label>
+      </div>
+      <div class="apps-grid" id="apps-grid"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="../index.html">Overview</a>
+      <a href="./how-it-was-formed.html">How it was formed</a>
+      <a href="./tasks.html">Tasks</a>
+      <a href="./browse-apps.html">Browse Apps</a>
+      <a href="../index.html#leaderboard">Leaderboard</a>
+    </div>
+    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; Public apps · trajectory browser</p>
+  </div>
+</footer>
+
+<script src="../assets/js/nav.js?v=12"></script>
+<script src="../assets/js/browse-apps.js?v=12"></script>
+</body>
+</html>

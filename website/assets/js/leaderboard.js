@@ -178,6 +178,30 @@ const LEADERBOARD_ROWS = [
     batteryDrain: -99,
   },
   {
+    model: "seed-2.0-lite (VISION)",
+    params: "Public · 60 tasks · 2026-09-05",
+    org: "ByteDance (OpenRouter)",
+    mode: "vision",
+    runs: 60,
+    success: { score: 53.3, margin: 0 },
+    askUser: 18.2,
+    guiOnly: 58.5,
+    steps: 19.72,
+    queries: 0.71,
+    uiq: 0.200,
+    kbiq: "0.500",
+    elapsed: { wall: "16810 s (4.67 h)", agent: "16220 s (4.51 h)" },
+    hc: { score: 85.7, detail: "6/7 honest" },
+    buckets: { easy: 84.6, medium: 41.2, hard: 17.6 },
+    cost: { total: 3.754, detail: "1,265 requests" },
+    askUserCost: { total: 0.0034, detail: "9 requests" },
+    totalCost: { total: 3.76, perTask: 0.063 },
+    cpuTemp: { max: 82.6, detail: "CPU 82.6 · GPU 82.6 · NPU 82.6" },
+    powerSkinTemp: { max: 46.0, detail: "power-amp 46.0 · skin 45.5" },
+    batteryTemp: 37.8,
+    batteryDrain: -51,
+  },
+  {
     model: "kimi-k2.6 (VISION)",
     params: "Public · 35/60 · interrupted 2026-08-30",
     org: "Moonshot AI (OpenRouter)",
@@ -206,6 +230,7 @@ const LEADERBOARD_ROWS = [
 // Rows (manual audit, from the reports in reports/public/):
 //   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
 //   2026-08-29 kimi-k2.6 TEXT        → SR 58.3%, steps 32.12, HC 6/7
+//   2026-09-05 seed-2.0-lite VISION  → SR 53.3%, steps 19.72, HC 6/7
 //   2026-08-30 seed-2.0-lite TEXT    → SR 45.0%, steps 13.77, HC 4/7
 //   2026-08-26 gemini-3.1-flash-lite → SR 41.7%, steps 8.32,  HC 6/7
 //   2026-08-26 qwen3.8-27b VISION    → SR 36.7%, steps 39.83, HC 6/7

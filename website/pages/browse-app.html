@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App trajectories - DailyBench500</title>
+  <meta name="description" content="Agent trajectories for one DailyBench500 public-benchmark app, filterable by model and date.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=12">
+</head>
+<body data-site-data="../assets/data/site_data.json" data-trajectory-index="../assets/data/trajectories/index.json" data-apps="../assets/data/apps.json">
+<nav>
+  <a href="../index.html" class="nav-title">DailyBench500</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+    <span class="nav-toggle-bar" aria-hidden="true"></span>
+  </button>
+  <div class="nav-links" id="primary-navigation">
+    <a href="./how-it-was-formed.html">How it was formed</a>
+    <a href="./tasks.html">Tasks</a>
+    <a href="./browse-apps.html" class="nav-active">Browse Apps</a>
+    <a href="../index.html#leaderboard">Leaderboard</a>
+    <a href="https://yuvrajsingh-mist.github.io/DrainBench300/" rel="noopener">Documentation</a>
+  </div>
+</nav>
+
+<main>
+  <div class="app-page-header">
+    <div class="container container-wide">
+      <a class="app-back-link" href="./browse-apps.html">← Browse Apps</a>
+      <div class="app-hero-row">
+        <div class="app-icon app-icon-lg" id="app-icon" aria-hidden="true"></div>
+        <div class="app-hero-text">
+          <div class="app-title-row">
+            <h1 class="app-page-title" id="app-title">App</h1>
+            <span class="app-platform-pill" id="app-platform">Android</span>
+          </div>
+          <p class="app-page-meta" id="app-meta">Loading…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section aria-labelledby="heading-app-traj">
+    <div class="container container-wide">
+      <h2 class="section-title" id="heading-app-traj">Trajectories</h2>
+      <p class="section-lead">
+        Pick a <strong>model · date</strong> run to filter this app's public tasks to that
+        exact session's pass/fail and steps. Open any task for the step-by-step replay.
+      </p>
+      <div class="public-runs-bar">
+        <span class="filter-label">Run</span>
+        <div class="select-wrap public-run-combo">
+          <select id="app-run-select" class="site-select" aria-label="Filter trajectories by model and date run">
+            <option value="">All runs</option>
+          </select>
+        </div>
+        <p class="task-count" id="app-task-count"></p>
+      </div>
+      <div class="public-example-list" id="app-task-list"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="../index.html">Overview</a>
+      <a href="./browse-apps.html">Browse Apps</a>
+      <a href="./tasks.html">Tasks</a>
+      <a href="../index.html#leaderboard">Leaderboard</a>
+    </div>
+    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; App trajectory browser</p>
+  </div>
+</footer>
+
+<script src="../assets/js/nav.js?v=12"></script>
+<script src="../assets/js/app.js?v=12"></script>
+<script src="../assets/js/browse-apps.js?v=12"></script>
+</body>
+</html>

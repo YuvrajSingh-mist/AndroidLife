@@ -1,0 +1,1261 @@
+{
+  "generated": "2026-09-05T13:46:58.987035Z",
+  "source": "DailyBench_public_v2.json",
+  "app_count": 30,
+  "apps": [
+    {
+      "name": "Amazon Shopping",
+      "slug": "amazon-shopping",
+      "publisher": "Amazon Mobile LLC",
+      "initial": "A",
+      "color": "#FF9900",
+      "domain": "amazon.com",
+      "icon": "https://logo.clearbit.com/amazon.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=amazon.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "hard__google-sheets-amazon-shopping__074",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most vie",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__amazon-shopping__002",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "I thought I added something earlier and want to confirm. Can you open Amazon Shopping and check whether '[product]' is currently in my cart?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "BookMyShow",
+      "slug": "bookmyshow",
+      "publisher": "Bigtree Entertainment",
+      "initial": "B",
+      "color": "#C4242B",
+      "domain": "bookmyshow.com",
+      "icon": "https://logo.clearbit.com/bookmyshow.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=bookmyshow.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "hard__bookmyshow__005",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "We're doing a movie night this weekend \u2014 me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime th",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__bookmyshow__004",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I'm free tonight and want to catch a movie nearby. Open BookMyShow and tell me which movies are playing at the nearest cinema.",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Calculator",
+      "slug": "calculator",
+      "publisher": "OnePlus",
+      "initial": "C",
+      "color": "#EB0029",
+      "domain": "oneplus.com",
+      "icon": "https://logo.clearbit.com/oneplus.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=oneplus.com&sz=256",
+      "task_count": 3,
+      "tasks": [
+        {
+          "task_id": "easy__calculator__006",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "A recipe uses a temperature I'm not used to. Convert [temperature] between Celsius and Fahrenheit in Calculator?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "medium__calculator__002",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Could you open the '[budget note title]' note in Obsidian, add up the 5 expense categories into a monthly budget, and compare it to my income in Calculator? Rep",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "medium__calculator__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Calendar",
+      "slug": "calendar",
+      "publisher": "Google LLC",
+      "initial": "C",
+      "color": "#4285F4",
+      "domain": "calendar.google.com",
+      "icon": "https://logo.clearbit.com/calendar.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=calendar.google.com&sz=256",
+      "task_count": 7,
+      "tasks": [
+        {
+          "task_id": "hard__telegram-calendar__016",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never a",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__calendar__002",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "I've got a packed day tomorrow and want to make sure nothing overlaps. Could you check my Calendar for any scheduling conflicts tomorrow afternoon?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "easy__calendar__008",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "That recurring meeting is no longer happening. Can you delete the calendar event [hc event name] in Calendar?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "hard__gmail-calendar__003",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm need details about my next trip quickly. Find my flight confirmation email for that trip, extract the details like flight name, departure time and terminal ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__clock__009",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock?",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__clock-calendar__023",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM o",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__google-photos-calendar__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I want to see my photo habits this year. Can you summarize how many photos I took each month this year? Note down the busiest month for me, and set a calendar r",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Camera",
+      "slug": "camera",
+      "publisher": "OnePlus",
+      "initial": "C",
+      "color": "#EB0029",
+      "domain": "oneplus.com",
+      "icon": "https://logo.clearbit.com/oneplus.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=oneplus.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "easy__camera__006",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "I'm about to record something and want to be ready. Can you open Camera and switch to video mode?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Chrome",
+      "slug": "chrome",
+      "publisher": "Google LLC",
+      "initial": "C",
+      "color": "#4285F4",
+      "domain": "google.com",
+      "icon": "https://logo.clearbit.com/google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=google.com&sz=256",
+      "task_count": 4,
+      "tasks": [
+        {
+          "task_id": "easy__shopping-delivery-browser__001",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "I'm about to order food but worried about surcharges \u2014 open the [food delivery site] in Chrome and check if there's any weather-related surcharge notice",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "hard__chrome-telegram-notes__008",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the differenc",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__chrome__003",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's been looking for ",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__chrome-youtube-notes__088",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though!",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Clock",
+      "slug": "clock",
+      "publisher": "OnePlus",
+      "initial": "C",
+      "color": "#EB0029",
+      "domain": "oneplus.com",
+      "icon": "https://logo.clearbit.com/oneplus.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=oneplus.com&sz=256",
+      "task_count": 3,
+      "tasks": [
+        {
+          "task_id": "medium__clock__009",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Could you set a recurring alarm, confirm it doesn't clash with an existing Calendar event, and label it accordingly in Clock?",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__google-search-telegram-clock__018",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm g",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__clock-calendar__023",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I need to start a new habit with a weekday alarm, but I've got some early meetings to dodge. Can you open Calendar and check whether I have any events at 7 AM o",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "slug": "contacts",
+      "publisher": "Google LLC",
+      "initial": "C",
+      "color": "#4285F4",
+      "domain": "contacts.google.com",
+      "icon": "https://logo.clearbit.com/contacts.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=contacts.google.com&sz=256",
+      "task_count": 4,
+      "tasks": [
+        {
+          "task_id": "medium__contacts__009",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "Could you find all contacts missing a phone number, list them, and tell me how many there are in Contacts? Also, call [contact] to confirm their number. Reply w",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__contacts-gmail__026",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and tell me their saved",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__contacts__008",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "He's someone I call all the time. Can you star [hc contact name] as a favorite in Contacts?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "medium__contacts__012",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the ",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "slug": "files",
+      "publisher": "Google LLC",
+      "initial": "F",
+      "color": "#4285F4",
+      "domain": "google.com",
+      "icon": "https://logo.clearbit.com/google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=google.com&sz=256",
+      "task_count": 5,
+      "tasks": [
+        {
+          "task_id": "easy__files__002",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "That scans folder is taking up space I don't want to waste. Can you empty the [hc scans folder] folder in Files for me?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "medium__files-pdf__001",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I need to know exactly what I owe for that hosting plan. Open the file '[invoice file]' in Files, read out the amount due, and check whether the due date has al",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "medium__files__009",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Could you find all my screenshots across folders, delete the oldest 10, and check the folder's new total size in Files?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 3
+        },
+        {
+          "task_id": "hard__google-meet-files__070",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting \u2014 I think it's the Monday [weekly meeting]",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__files-notes__069",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "Free up space safely. Compress several Files into an archive and note its size, then find the storage limit in my Notes to check the archive against. Delete the",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Gallery",
+      "slug": "gallery",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#34A853",
+      "domain": "google.com",
+      "icon": "https://logo.clearbit.com/google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=google.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "medium__google-photos__008",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '[video n",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Gmail",
+      "slug": "gmail",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#EA4335",
+      "domain": "gmail.com",
+      "icon": "https://logo.clearbit.com/gmail.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=gmail.com&sz=256",
+      "task_count": 3,
+      "tasks": [
+        {
+          "task_id": "hard__contacts-gmail__026",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I'm going to email someone important and want to be sure I have the right address. Open Contacts, find the contact named [contact name], and tell me their saved",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__gmail-calendar__003",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm need details about my next trip quickly. Find my flight confirmation email for that trip, extract the details like flight name, departure time and terminal ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__photos-gmail-obsidian__012",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidia",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Google Docs",
+      "slug": "google-docs",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#4285F4",
+      "domain": "docs.google.com",
+      "icon": "https://logo.clearbit.com/docs.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=docs.google.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "easy__google-docs__004",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I've got a document I need a fresh copy of to edit \u2014 could you open Google Docs and rename one of my existing documents for me to an apt name based on the conte",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Google Drive",
+      "slug": "google-drive",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#0F9D58",
+      "domain": "drive.google.com",
+      "icon": "https://logo.clearbit.com/drive.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=drive.google.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "medium__google-drive__001",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the fi",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 3
+        },
+        {
+          "task_id": "hard__drive-notes-telegram__010",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Google Maps",
+      "slug": "google-maps",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#EA4335",
+      "domain": "maps.google.com",
+      "icon": "https://logo.clearbit.com/maps.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=maps.google.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "medium__google-maps__002",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "easy__google-maps__004",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "I just parked and I'm worried I'll forget where. There's no 'Save parking' option in this Google Maps build, so could you save my current location as 'parked he",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Google Meet",
+      "slug": "google-meet",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#00897B",
+      "domain": "meet.google.com",
+      "icon": "https://logo.clearbit.com/meet.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=meet.google.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "easy__google-meet__004",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "Can you schedule a Google Meet for me? Set the title to [gmeet title], schedule it for [gmeet datetime], and add [invitee email 1] and [invitee email 2] to the ",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "hard__google-meet-files__070",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting \u2014 I think it's the Monday [weekly meeting]",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Google Photos",
+      "slug": "google-photos",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#FABC05",
+      "domain": "photos.google.com",
+      "icon": "https://logo.clearbit.com/photos.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=photos.google.com&sz=256",
+      "task_count": 5,
+      "tasks": [
+        {
+          "task_id": "easy__gallery__012",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "I want to make sure my screenshots are all saved. Can you open Google Photos, go to my Screenshots album, and tell me how many photos are in it? Reply with only",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "medium__gallery__007",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you ope",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__photos-gmail-obsidian__012",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidia",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__google-photos-calendar__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I want to see my photo habits this year. Can you summarize how many photos I took each month this year? Note down the busiest month for me, and set a calendar r",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "easy__google-photos__015",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I'm trying to recall where I took my most recent photo. Can you open Google Photos, tell me the location of that photo? Actually, along with that, also please l",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Google Search",
+      "slug": "google-search",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#4285F4",
+      "domain": "google.com",
+      "icon": "https://logo.clearbit.com/google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=google.com&sz=256",
+      "task_count": 3,
+      "tasks": [
+        {
+          "task_id": "hard__google-search-telegram-clock__018",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm g",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__google-search__008",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route fo",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__google-search-obsidian-telegram__057",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note tit",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Google Sheets",
+      "slug": "google-sheets",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#0F9D58",
+      "domain": "sheets.google.com",
+      "icon": "https://logo.clearbit.com/sheets.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=sheets.google.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "hard__google-sheets-amazon-shopping__074",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most vie",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Google Slides",
+      "slug": "google-slides",
+      "publisher": "Google LLC",
+      "initial": "G",
+      "color": "#F4B400",
+      "domain": "slides.google.com",
+      "icon": "https://logo.clearbit.com/slides.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=slides.google.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "easy__google-slides__001",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "I've lost track of how long this deck is. Can you open the '[presentation name]' presentation in Google Slides and tell me how many slides it has? Reply with on",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "slug": "messages",
+      "publisher": "Google LLC",
+      "initial": "M",
+      "color": "#1A73E8",
+      "domain": "messages.google.com",
+      "icon": "https://logo.clearbit.com/messages.google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=messages.google.com&sz=256",
+      "task_count": 3,
+      "tasks": [
+        {
+          "task_id": "medium__chrome__003",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Can you send my buddy, [contact], links to the shopping websites about some earbuds I was looking at today from my Chrome history please? He's been looking for ",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "medium__calculator__002",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "Could you open the '[budget note title]' note in Obsidian, add up the 5 expense categories into a monthly budget, and compare it to my income in Calculator? Rep",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "easy__messages__010",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "Words aren't enough for this reply. Can you send an appropriate string of emojis to [contact] in Messages? Don't be too snarky or cheeky!",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "MSN News",
+      "slug": "msn-news",
+      "publisher": "Microsoft",
+      "initial": "M",
+      "color": "#0078D4",
+      "domain": "msn.com",
+      "icon": "https://logo.clearbit.com/msn.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=msn.com&sz=256",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "easy__msn-news__002",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I want to know what's big in [topic] right now. Can you open MSN News and read me the headline of the top story in the '[topic]' section? Reply with only the to",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Music",
+      "slug": "music",
+      "publisher": "Google LLC",
+      "initial": "M",
+      "color": "#FF0000",
+      "domain": "youtube.com",
+      "icon": "https://logo.clearbit.com/youtube.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=youtube.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "hard__music-obsidian__077",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__music-telegram__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Mu",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "slug": "notes",
+      "publisher": "OnePlus",
+      "initial": "N",
+      "color": "#EB0029",
+      "domain": "oneplus.com",
+      "icon": "https://logo.clearbit.com/oneplus.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=oneplus.com&sz=256",
+      "task_count": 7,
+      "tasks": [
+        {
+          "task_id": "medium__google-maps__002",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I need to get to [place] and can't decide how to travel. Can you open Google Maps and just compare the driving ETA? Wait no, hold on. Compare the ETA by driving",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__drive-notes-telegram__010",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__chrome-telegram-notes__008",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the differenc",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__calculator__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "medium__notes__004",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "Could you open Notes, list my notes and check which haven't been opened in over a month, then find the note [hc draft note] and delete it, and check whether the",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 3
+        },
+        {
+          "task_id": "hard__chrome-youtube-notes__088",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though!",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__files-notes__069",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "Free up space safely. Compress several Files into an archive and note its size, then find the storage limit in my Notes to check the archive against. Delete the",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    },
+    {
+      "name": "Obsidian",
+      "slug": "obsidian",
+      "publisher": "Dynalist Inc.",
+      "initial": "O",
+      "color": "#7C3AED",
+      "domain": "obsidian.md",
+      "icon": "https://logo.clearbit.com/obsidian.md",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=obsidian.md&sz=256",
+      "task_count": 6,
+      "tasks": [
+        {
+          "task_id": "medium__gallery__007",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "I'm putting together a food favourites note in Obsidian. I've created a 'Food Favourites' note with headings for Pancakes, Pizza, and Veggie Bowl. Could you ope",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__photos-gmail-obsidian__012",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'd like to send [contact] a photo from the event. Find the specific photo I mean in Google Photos and email it to them, recording the send in a note in Obsidia",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__music-obsidian__077",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I have been maintaining a routine of listening to music to fall asleep and been keeping a record of it lately with time and what music helps me sleep which you ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__google-search-obsidian-telegram__057",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note tit",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__calculator__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I'm stressing about my grades. Can you open the '[exam scores note title]' note in Obsidian, read my exam scores and how much each one is weighted, then compute",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "easy__obsidian__009",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I'm wondering how cluttered that folder got. Can you check how many notes are in the [hc projects folder] folder in Obsidian?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Phone",
+      "slug": "phone",
+      "publisher": "Google LLC",
+      "initial": "P",
+      "color": "#34A853",
+      "domain": "google.com",
+      "icon": "https://logo.clearbit.com/google.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=google.com&sz=256",
+      "task_count": 5,
+      "tasks": [
+        {
+          "task_id": "medium__contacts__009",
+          "difficulty": "medium",
+          "day": 1,
+          "prompt": "Could you find all contacts missing a phone number, list them, and tell me how many there are in Contacts? Also, call [contact] to confirm their number. Reply w",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "easy__phone__002",
+          "difficulty": "easy",
+          "day": 1,
+          "prompt": "Can you open the Phone app and call [contact] for me pls?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "easy__phone__005",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "I want to see how much I've been on the phone today. Can you tell me how many calls I've made today in Phone? Reply with only the total call time, no other text",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "medium__google-photos__008",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I recorded a video recently and want to check it saved right. Can you open the Photos app (not the Google Photos the other one!), search for the video '[video n",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "medium__contacts__012",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I want to reach out to an old contact but want to know if the number is still reachable. Open Contacts, find the contact named [contact name], and read out the ",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "Prime Video",
+      "slug": "prime-video",
+      "publisher": "Amazon Mobile LLC",
+      "initial": "P",
+      "color": "#00A8E1",
+      "domain": "primevideo.com",
+      "icon": "https://logo.clearbit.com/primevideo.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=primevideo.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "medium__prime-video__003",
+          "difficulty": "medium",
+          "day": 2,
+          "prompt": "I want to pick up where I left off. Open Prime Video, find what's in my \"Continue Watching\", and give me a quick summary of the most recent one.",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 3
+        },
+        {
+          "task_id": "easy__prime-video__002",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I've been saving shows and lost track of how many. Can you open Prime Video and tell me how many titles are in my Watchlist sorted by TV Shows? Reply with only ",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "slug": "settings",
+      "publisher": "OnePlus",
+      "initial": "S",
+      "color": "#737373",
+      "domain": "oneplus.com",
+      "icon": "https://logo.clearbit.com/oneplus.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=oneplus.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "hard__youtube-settings__052",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__settings__014",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "I want to know if my phone's up to date. Can you check the device's current software version in Settings? Reply with only yes or no, no other text.",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Swiggy",
+      "slug": "swiggy",
+      "publisher": "Bundl Technologies",
+      "initial": "S",
+      "color": "#FC8019",
+      "domain": "swiggy.com",
+      "icon": "https://logo.clearbit.com/swiggy.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=swiggy.com&sz=256",
+      "task_count": 2,
+      "tasks": [
+        {
+          "task_id": "hard__swiggy__005",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "Ugh, I'm craving the food I ate on [date] \u2014 can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__swiggy__001",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "Been eating a lot lately and its emptying my bank balance faster tha I imagined. Can you open Swiggy and calculate the total spendings over the last three month",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        }
+      ]
+    },
+    {
+      "name": "Telegram",
+      "slug": "telegram",
+      "publisher": "Telegram FZ-LLC",
+      "initial": "T",
+      "color": "#2AABEE",
+      "domain": "telegram.org",
+      "icon": "https://logo.clearbit.com/telegram.org",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=telegram.org&sz=256",
+      "task_count": 10,
+      "tasks": [
+        {
+          "task_id": "hard__telegram-calendar__016",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I've got a get-together with my friends coming up and we've been planning it in our chat group, but honestly we kept going back and forth and the thread never a",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__drive-notes-telegram__010",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the ",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__swiggy__005",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "Ugh, I'm craving the food I ate on [date] \u2014 can you get me that again? Also, message him on Telegram the order total so I can confirm before paying.",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__chrome-telegram-notes__008",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm shopping for something specific and want the best price. Compare prices across two sites: [shopping_website_1] and [shopping_website_2], check the differenc",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "hard__bookmyshow__005",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "We're doing a movie night this weekend \u2014 me and 3 friends. Can you open BookMyShow, check what's showing at [cinema] this weekend, pick the earliest showtime th",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__telegram__004",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "That group is way too noisy for me now. Can you leave the group [hc group name] on Telegram for me?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "hard__google-search-telegram-clock__018",
+          "difficulty": "hard",
+          "day": 2,
+          "prompt": "I'm going to grab something from the place I'm going to. Look up its hours via Google Search, note whether it's open now, and if it is, message the person I'm g",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__google-search__008",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "Could you compare public transit options for a specific route and tell me the fastest in Google Search? Also, message [contact] on Telegram the fastest route fo",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 3
+        },
+        {
+          "task_id": "hard__google-search-obsidian-telegram__057",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm tracking [stock name] and only want to hear about it when it matters. Check its current value via Google Search against the threshold in my '[stock note tit",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "medium__music-telegram__001",
+          "difficulty": "medium",
+          "day": 3,
+          "prompt": "I've had a song stuck in my head all day but can't remember what it's called. The lyrics I keep humming go something like: '[lyrics]'. Can you search YouTube Mu",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 3
+        }
+      ]
+    },
+    {
+      "name": "YouTube",
+      "slug": "youtube",
+      "publisher": "Google LLC",
+      "initial": "Y",
+      "color": "#FF0000",
+      "domain": "youtube.com",
+      "icon": "https://logo.clearbit.com/youtube.com",
+      "icon_fallback": "https://www.google.com/s2/favicons?domain=youtube.com&sz=256",
+      "task_count": 4,
+      "tasks": [
+        {
+          "task_id": "hard__youtube-settings__052",
+          "difficulty": "hard",
+          "day": 1,
+          "prompt": "Notifications from [notifying channel] keep pinging me at night and waking me up. Can you open YouTube, turn off its notifications so I stop getting alerts from",
+          "is_ask_user": false,
+          "cross_app": true,
+          "points": 5
+        },
+        {
+          "task_id": "easy__youtube__011",
+          "difficulty": "easy",
+          "day": 2,
+          "prompt": "I want to see what people are saying about this video. Can you check the comments on the current video in YouTube?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "easy__youtube__009",
+          "difficulty": "easy",
+          "day": 3,
+          "prompt": "I paused mid-video and want to pick up where I stopped. Can you resume a recently watched video in YouTube from where it left off?",
+          "is_ask_user": false,
+          "cross_app": false,
+          "points": 1
+        },
+        {
+          "task_id": "hard__chrome-youtube-notes__088",
+          "difficulty": "hard",
+          "day": 3,
+          "prompt": "I'm trying to learn a new skill. Find a how-to guide or tutorial for it, extract the key steps, and save them as a note in Notes. Ask me about the title though!",
+          "is_ask_user": true,
+          "cross_app": true,
+          "points": 5
+        }
+      ]
+    }
+  ]
+}

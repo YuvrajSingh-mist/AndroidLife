@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./assets/css/style.css?v=7">
+  <link rel="stylesheet" href="./assets/css/style.css?v=10">
 </head>
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 
@@ -30,6 +30,7 @@
   <div class="nav-links" id="primary-navigation">
     <a href="./pages/how-it-was-formed.html">How it was formed</a>
     <a href="./pages/tasks.html">Tasks</a>
+    <a href="./pages/browse-apps.html">Browse Apps</a>
     <a href="#leaderboard">Leaderboard</a>
     <a href="#documentation">Documentation</a>
   </div>
@@ -204,31 +205,6 @@
     </div>
   </section>
 
-  <section id="new-runs" aria-labelledby="heading-new-runs">
-    <div class="container">
-      <h2 class="section-title" id="heading-new-runs">New on the board</h2>
-      <p class="section-desc">The latest models benchmarked on the 60-task public set - real phone, real runs, manual-audit verdicts.</p>
-      <div class="tweet-grid">
-        <article class="tweet-card">
-          <div class="tweet-head">
-            <span class="tweet-avatar" aria-hidden="true">🚀</span>
-            <div>
-              <span class="tweet-name">DailyBench500</span>
-              <span class="tweet-handle">@dailybench500</span>
-            </div>
-          </div>
-          <div class="tweet-body">
-            How much does a month of everyday phone tasks cost an AI agent? $1? $10? $100?<br><br>
-            🚀 Two new models on DailyBench500: <strong>seed-2.0-lite</strong> (ByteDance) and <strong>kimi-k2.6</strong> (Moonshot AI) - 60 real tasks on a real Android phone, verdicts hand-verified on-device.<br><br>
-            <strong>seed-2.0-lite:</strong> $2.04 total - 45.0% success (~$0.034 per task, 13.8 steps avg, under 3 hours)<br>
-            <strong>kimi-k2.6:</strong> $9.84 total - 58.3% success (#2 on the board, 6/7 hallucination traps reported honestly)<br><br>
-            A $2 budget model clears gemini-3.1-flash-lite (41.7%) - and the $10 one trails only qwen3.8-27b (61.7%).
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <section id="anatomy" aria-labelledby="heading-anatomy">
     <div class="container">
       <h2 class="section-title" id="heading-anatomy">Benchmark Anatomy</h2>
@@ -331,19 +307,18 @@
         <p>
           The full public benchmark sample (<code>DailyBench_public_v2.json</code>, exported from
           <code>public.md</code>) - every task we've run, each with its recorded agent trajectory.
-          Type a model in the box below to filter the cards to that run's pass/fail and steps per
-          task (or leave it empty for all). Click any task to open its detail page with the
-          step-by-step model trace and screen replay. The private 530-task corpus lives on the
-          <a href="./pages/tasks-full.html">Full tasks</a> page.
+          Pick a <strong>model · date</strong> run below to filter cards to that exact
+          benchmark session's pass/fail and steps (same model can appear on multiple dates).
+          Click any task for the step-by-step trace and screen replay. The full 530-task
+          corpus lives on the <a href="./pages/tasks-full.html">Full tasks</a> page.
         </p>
       </div>
       <div class="public-runs-bar">
-        <span class="filter-label">Model run</span>
+        <span class="filter-label">Run</span>
         <div class="select-wrap public-run-combo">
-          <input id="public-run-select" class="site-select public-run-input" type="text"
-            list="public-run-datalist" placeholder="All models - type to filter"
-            autocomplete="off" spellcheck="false" aria-label="Filter public tasks by model run">
-          <datalist id="public-run-datalist"></datalist>
+          <select id="public-run-select" class="site-select" aria-label="Filter public tasks by model and date run">
+            <option value="">All runs</option>
+          </select>
         </div>
       </div>
       <div class="public-example-list" id="featured-examples-list"></div>
@@ -446,7 +421,7 @@
         </li>
         <li>
           <a href="./pages/tasks.html">Tasks</a>
-          <span> -  full public example task listing in the same format as the private benchmark</span>
+          <span> -  full public example task listing in the same format as the 530-task corpus</span>
         </li>
         <li>
           <a href="#technical">Technical Details</a>
@@ -498,6 +473,7 @@
     <div class="footer-links">
       <a href="./pages/how-it-was-formed.html">How it was formed</a>
       <a href="./pages/tasks.html">Tasks</a>
+      <a href="./pages/browse-apps.html">Browse Apps</a>
       <a href="#leaderboard">Leaderboard</a>
       <a href="#documentation">Documentation</a>
     </div>
@@ -509,8 +485,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
-<script src="./assets/js/nav.js?v=7"></script>
-<script src="./assets/js/app.js?v=7"></script>
-<script src="./assets/js/leaderboard.js?v=7"></script>
+<script src="./assets/js/nav.js?v=10"></script>
+<script src="./assets/js/app.js?v=11"></script>
+<script src="./assets/js/leaderboard.js?v=11"></script>
 </body>
 </html>

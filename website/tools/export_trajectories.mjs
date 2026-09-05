@@ -64,10 +64,17 @@ const DAY_RUN_ROOTS = {
 // runs are published (e.g. both 26-Aug models + today's 28-Aug); each run is
 // namespaced under public/<key>/... so the same task_id can carry several
 // trajectories. Order matters: later entries are preferred as the primary run.
+// Prefer website/tools/build_public_traj_from_hf.py for public runs — it points
+// gif/screenshots at HF raw runs (no local media). Keep this list in sync for
+// any local-only re-export of a mirrored assets/runs/public/<id> tree.
 const PUBLIC_RUNS = [
-  { key: "qwen-26", label: "qwen3.8-27b · 26 Aug (vision)", root: "assets/runs/public/2026-08-26-184934" },
   { key: "gemini-26", label: "gemini-3.1-flash-lite · 26 Aug", root: "assets/runs/public/20260826-105200" },
+  { key: "qwen-26", label: "qwen3.8-27b · 26 Aug (vision)", root: "assets/runs/public/2026-08-26-184934" },
   { key: "qwen-28", label: "qwen3.8-27b · 28 Aug (text)", root: "assets/runs/public/2026-08-28-002424" },
+  { key: "kimi-29", label: "kimi-k2.6 · 29 Aug (text)", root: "assets/runs/public/2026-08-29-153657" },
+  { key: "kimi-30v", label: "kimi-k2.6 · 30 Aug (vision)", root: "assets/runs/public/2026-08-30-021852" },
+  { key: "seed-30", label: "seed-2.0-lite · 30 Aug", root: "assets/runs/public/2026-08-30-143554" },
+  { key: "mimo-0901", label: "mimo-v2.5-pro · 1 Sep (text)", root: "assets/runs/public/20260901-002701" },
 ];
 
 const OUT_DATA = "website/assets/data/trajectories";
