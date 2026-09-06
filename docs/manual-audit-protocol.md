@@ -34,7 +34,8 @@ really went through the trajectories and ADB-verified device facts.
    (e.g. DeepEval false-positives on honest-fail controls).
 8. **KBIQ is a MANUAL input**: write `<run>/kb_audit.json`
    (`{"queries":[{"correct":bool,...}]}` or `{"correct":int}`) from `ask_user_metrics.jsonl`
-   vs the KB profile, then re-run the report. KBIQ is NOT DeepEval-computed.
+   vs the KB profile, then re-run the report. KBIQ is NOT DeepEval-computed. Headline
+   score = UIQ-style mean of per-task \(c_k/q_k\) (never-asked → 0); not “≥1 correct = full task”.
 
 ## Gotchas learned
 

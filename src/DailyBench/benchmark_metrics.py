@@ -85,8 +85,8 @@ def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
 
 
 def kb_interaction_quality(records: Iterable[Record]) -> float:
-    """KB Interaction Quality (KBIQ): the fraction of KB/multi-turn TASKS where
-    the agent engaged the KB and got a RIGHT answer according to the profile.
+    """KB Interaction Quality (KBIQ): UIQ-style mean of per-task correct/ask ratios
+    over multi-turn KB tasks only.
 
     A run's ``ask_user_metrics.jsonl`` records every KB query (question + oracle
     answer). Whether each answer was *right* is a manual judgement (the KB oracle
@@ -94,17 +94,23 @@ def kb_interaction_quality(records: Iterable[Record]) -> float:
     ``kb_queries`` (total KB queries asked) and ``kb_queries_correct`` (the
     audited count).
 
-        KBIQ = #(KB tasks with >=1 correct KB query) / #(KB tasks)
+    Each KB task contributes its own correctness ratio ``c_k / q_k`` (0 when it
+    never asked), so every KB task is weighted equally regardless of how many
+    clarifying turns it took. Partial credit is preserved: a task with 1 of 5
+    audited answers right contributes 0.2, not a full win.
+
+        KBIQ = sum_{k in K} (c_k / q_k) / |K|    # c_k/q_k := 0 if q_k = 0
 
     A KB task that NEVER asked the user (0 ask_user, MobileWorld gate violation)
-    is a FAILURE and counts against KBIQ — it cannot be a "correct" interaction.
-    This is task-based (not query-based): a run where only 1 of 4 KB tasks
-    engaged correctly scores 1/4 = 0.25, not 1.000. A task with at least one
-    correct audited query is counted as correct; until a run is audited
+    contributes 0 and stays in the denominator. Until a run is audited
     ``kb_queries_correct`` is 0 and KBIQ reads 0 (not-audited).
     """
     kb = [r for r in records if r.get("is_kb")]
     if not kb:
         return 0.0
-    correct_tasks = sum(1 for r in kb if (r.get("kb_queries_correct") or 0) > 0)
-    return correct_tasks / len(kb)
+    numerator = 0.0
+    for record in kb:
+        queries = record.get("kb_queries") or 0
+        if queries > 0:
+            numerator += (record.get("kb_queries_correct") or 0) / queries
+    return numerator / len(kb)

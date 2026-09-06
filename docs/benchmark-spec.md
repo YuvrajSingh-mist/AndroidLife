@@ -534,6 +534,7 @@ only in those files — that is why this spec did not list them. The full set:
 | Avg steps | mean agent action-steps per task (efficiency) | `benchmark_metrics.avg_steps` |
 | Avg user queries | mean turns to the simulated user (interaction efficiency) | `benchmark_metrics.avg_user_queries` |
 | Interaction quality (UIQ) | success-free fact-match: is each `ask_user` answer the right one, regardless of whole-task success | `benchmark_metrics.user_interaction_quality_factmatch` |
+| KB interaction quality (KBIQ) | UIQ-style mean of per-task \(c_k/q_k\) over multi-turn KB tasks (manual `kb_audit.json`); never-asked → 0 | `benchmark_metrics.kb_interaction_quality` |
 | Hallucination rate | self-reported success vs. verified end-state on known-absent targets | `hallucination_controls.json` + per-run audit |
 | Cost per task / day | prompt+completion tokens × registered OpenRouter pricing → USD | `run_metrics.json` / `llm_metrics` |
 | Battery / thermal | per-app mAh + peak CPU/GPU/skin/battery °C per run | `run_metrics.json` |
@@ -555,6 +556,11 @@ $$\text{SR} = \frac{1}{N}\sum_{i=1}^{N} s_i$$
 $$\text{AvgSteps} = \frac{1}{N}\sum_{i=1}^{N} n_i \qquad \text{AvgUserQueries} = \frac{1}{|I|}\sum_{i \in I} q_i$$
 
 $$\text{UIQ (fact-match)} = \frac{\sum_{i \in I} \frac{c_i}{q_i}}{|I| + |T|}, \qquad \tfrac{c_i}{q_i} := 0 \ \text{if} \ q_i = 0$$
+
+Let $K$ = multi-turn KB tasks, $q_k$ = KB `ask_user` calls on task $k$, $c_k$ = audited
+correct KB answers (`kb_audit.json`).
+
+$$\text{KBIQ} = \frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k}, \qquad \tfrac{c_k}{q_k} := 0 \ \text{if} \ q_k = 0$$
 
 - **Hallucination rate** = self-reported successes that failed on-device verification, over tasks
   with a known-absent target (`hallucination_controls.json`).

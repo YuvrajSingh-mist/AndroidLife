@@ -106,8 +106,9 @@ as it needs to disambiguate the (intentionally vague) task and converge to the
 `correct_target` (in the reference run `telegram-calendar-016` took 5 turns; the others
 converged in 1). Unlike SINGLE, this mode is **stateful**: the `ask_user` tool keeps
 **rolling memory** of the whole conversation — every Q&A is fed back into the simulated user's
-prompt — so answers stay consistent across follow-ups. KBIQ = correct KB answers ÷ total KB
-queries, plus the verified end-state.
+prompt — so answers stay consistent across follow-ups. KBIQ uses the same shape as UIQ:
+mean of per-task \(c_k/q_k\) over the 4 KB tasks (0 if never asked); task success is
+separate (verified end-state).
 
 | task | day | KB profile |
 |---|---|---|
@@ -169,7 +170,7 @@ the model's self-report. Three outcome classes: **true success / true failure / 
 |---|---|
 | Success rate (SR) | verified true successes / tasks run (overall + per bucket) |
 | Interaction quality (UIQ) | success-free fact-match: is each `ask_user` answer the right one, regardless of whole-task success |
-| KB interaction quality (KBIQ) | `kb_query_correct / kb_query_total` against the multi-turn KB `correct_target` (manual audit via `<run>/kb_audit.json` sidecars) |
+| KB interaction quality (KBIQ) | UIQ-style mean of per-task \(c_k/q_k\) over multi-turn KB tasks (manual audit via `<run>/kb_audit.json` sidecars); never-asked → 0 |
 | Hallucination rate | self-reported successes that failed on-device verification, over the 7 known-absent controls |
 | Cost / battery / thermal | tokens × registered OpenRouter pricing → USD; per-app mAh + peak °C |
 

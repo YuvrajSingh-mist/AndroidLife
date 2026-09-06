@@ -70,29 +70,36 @@ or `--list` first to inspect. A full CLI + flag reference is in
 
 The public sample (`benchmarks/dailyBench-600/DailyBench_public_v2.json` + `public.md` +
 `public_vars.local.env` + `multiturn_kb_public.json`) is the current benchmark. Launch it
-**detached** — a plain `nohup ... &` dies with `init_sys_streams: Bad file descriptor` when the
-launching terminal closes, so **always redirect stdin from `/dev/null`**:
+**detached**. Prefer a double-fork-style detach (`subprocess.Popen(..., start_new_session=True,
+stdin=DEVNULL)`) so the batch survives Cursor/terminal exit. A plain `nohup ... &` without
+redirecting stdin can die with `init_sys_streams: Bad file descriptor` when the launching
+terminal closes — if you use `nohup`, **always** add `< /dev/null`:
 
 ```bash
 RUN_TS=$(date +%Y%m%d-%H%M%S)
-nohup uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS" > "assets/db/public/phoenix-$RUN_TS.log" 2>&1 &   # start phoenix FIRST
-# wait for :6006, then:
+# Phoenix first (wait until http://127.0.0.1:6006 returns 200)
+uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"
 nohup uv run dailybench_tasks.py --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
   --source public.md --all --serial 100.108.15.119:5555 \
   --llm-upstream-base https://openrouter.ai/api --model <model> \
   --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
   --save-trajectory action --vars-file benchmarks/dailyBench-600/public_vars.local.env \
   --ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json \
-  --phoenix-url http://localhost:6006 --phoenix-project dailybench-public \
+  --phoenix-url http://127.0.0.1:6006 --phoenix-project dailybench-public \
   --run-root "assets/runs/public/$RUN_TS" \
   < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
+# Add --vision for screenshot-driven runs (TEXT is the default).
 ```
 
-If it dies mid-run, **resume in place** with `--run-root <same> --resume-from <next-task-id>`
+If it dies mid-run, **resume in place** with `--run-root <same>` and either
+`--resume-from <next-task-id>` or an explicit remaining `--task-id` list
 (no re-runs of completed tasks). Wireless ADB is via **Tailscale** (`100.108.15.119:5555`) —
 the phone roams subnets, so the Tailscale IP is the stable serial. Model compatibility notes
 (mandatory-reasoning models, malformed-complete-XML gotcha) live in
 [docs/cli-reference.md](docs/cli-reference.md#model-compatibility-notes-2026-09-01).
+
+Full operator reset/reseed: [`.agents/skills/reset-phone/SKILL.md`](.agents/skills/reset-phone/SKILL.md).
+Newcomer study path: [docs/getting-started.md](docs/getting-started.md).
 
 ### Inspect results
 
@@ -127,14 +134,32 @@ node website/tools/export_trajectories.mjs
 
 ## Documentation
 
-- [docs/cli-reference.md](docs/cli-reference.md) — flags, app-reset fairness, step-budget policy
-- [docs/benchmark-spec.md](docs/benchmark-spec.md) — task corpus design, apps, schedule
-- [docs/evaluation-policy.md](docs/evaluation-policy.md) — success/hallucination/partial rules, metrics
-- [docs/multiturn-public-flow.md](docs/multiturn-public-flow.md) — multi-turn KB dialogues, rolling memory, KBIQ
+**Start here:** [docs/getting-started.md](docs/getting-started.md) — study path for the repo.
+
+- [docs/cli-reference.md](docs/cli-reference.md) — flags, detach/resume, model compatibility
+- [docs/benchmark-spec-public.md](docs/benchmark-spec-public.md) — **60-task public** sample
+- [docs/benchmark-spec.md](docs/benchmark-spec.md) — full 530-task corpus design
+- [docs/evaluation-policy.md](docs/evaluation-policy.md) — success / hallucination / metrics
+- [docs/manual-audit-protocol.md](docs/manual-audit-protocol.md) — how public reports are audited
+- [docs/pre-run-checklist.md](docs/pre-run-checklist.md) — operator GUI checks before a run
 - [docs/app-usage-grounding.md](docs/app-usage-grounding.md) — how tasks map to real app usage
 - [docs/fabricated-test-data.md](docs/fabricated-test-data.md) — seed data philosophy + controls
 - [docs/future-directions.md](docs/future-directions.md) — planned task areas
-- [docs/HANDOFF.md](docs/HANDOFF.md) — internal run workflow + conventions (per-day reset, metrics)
+- [docs/HANDOFF.md](docs/HANDOFF.md) — live run state + maintainer conventions
+- [`.agents/skills/reset-phone/SKILL.md`](.agents/skills/reset-phone/SKILL.md) — reset / reseed runbook
+- [scripts/README.md](scripts/README.md) — script index (prefer listed entrypoints)
+
+### Website / leaderboard after a public run
+
+```bash
+# trajectories (HF media URLs) + site_data
+uv run python website/tools/build_public_traj_from_hf.py --runs <run-key>   # e.g. luna-0906
+node website/tools/build_site_data.mjs
+# then add a row to website/assets/js/leaderboard.js from the manual-audit report
+```
+
+Public run keys live in `website/tools/build_public_traj_from_hf.py` (`PUBLIC_RUNS`).
+
 
 ## Testing
 

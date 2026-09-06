@@ -1,8 +1,12 @@
-# Pre-run GUI checklist — public 68-task rerun (2026-08-22)
+# Pre-run GUI checklist — public **60-task** rerun
 
 Purpose: tick every item that **only a human in the app UI can verify** (app-private DBs,
 cloud/server-side state — NOT ADB-checkable on this non-rooted device). The ADB-verifiable
-baseline is already confirmed PASS (see §0); do **not** re-do those.
+baseline is confirmed via `reset_phone.py --verify-only` + `verify_day1_seeds.py --day {1,2,3}`;
+do **not** re-do those here.
+
+Canonical operator runbook (ADB reset + manual seeds table):
+[`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
 
 ✅ = verified already via ADB (leave alone) · ☐ = needs YOUR GUI check · 🔴 = run-day only
 
@@ -12,15 +16,15 @@ baseline is already confirmed PASS (see §0); do **not** re-do those.
 
 - ☑ Reset baseline `--verify-only` → **PASS**
 - ☑ Day-1 / Day-2 / Day-3 seed verify → **PASS** (all three)
-- ☑ Tomorrow-conflict events re-seeded → **Sun Aug 23** (Team Sync 14:00 + Mentor 1 on 1 14:30)
-- ☑ Weekly Sync → **Mon Aug 24** 07:00 + 10:00 · Gym → **Tue Aug 25** 06:30
+- ☑ Tomorrow-conflict events re-seeded (`Team Sync` + `Mentor 1 on 1`) for **tomorrow**
+- ☑ Weekly Sync + Gym date-relative seeds (next Mon / Tue)
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
-  Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, Concert Highlights.mp4, Physics Lecture)
+  Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)
 - ☑ All public Obsidian notes present (Bedtime, Budget Deadline, Exam Scores, Monthly Budget,
   Shared Bill, Stock Watch, Recipe, Food Favourites, Contact Updates, Weekly Agenda.txt)
 - ☑ Contacts (incl. Akash Kumar + fabricated email `yuvraj.mist@gmail.com`)
-- ☑ Camera 11/11 + Screenshots 4/4 · screen_off_timeout=1800000 · blocked numbers cleared
-- ☑ Public dataset = **68 tasks** · full test suite **173 passed** · repo clean (git)
+- ☑ Camera seeds + Screenshots · `screen_off_timeout=1800000` · blocked numbers cleared
+- ☑ Public dataset = **60 tasks** (`DailyBench_public_v2.json`)
 
 ---
 

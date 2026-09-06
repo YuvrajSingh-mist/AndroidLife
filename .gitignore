@@ -34,15 +34,20 @@ src/*.egg-info/
 # generated report artifacts (dailybench_report.py writes into CWD)
 report.json
 report.md
-metrics/
+/metrics/
 coverage.xml
 htmlcov/
 
 # website build output
 website/node_modules/
 
-# dev scratch scripts (underscore-prefixed)
+# dev scratch scripts (underscore-prefixed at scripts/ root only)
 scripts/_*.py
+scripts/run/wait_day1_check.py
+
+# local drain / list caches (never commit)
+.drain_*
+.drain_list_cache/
 
 # public-sample benchmark run artifacts (generated; not committed) — now live
 # under assets/runs/public/ (covered by the assets/runs/ rule above)

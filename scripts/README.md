@@ -79,4 +79,25 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 | `device_health_check.py` | Battery/thermal/CPU device health snapshot over ADB. |
 | `app_audit.py` | **Device-readiness check**: verifies the connected phone has the 22 apps the benchmark targets (label → candidate packages map, OEM-tolerant). `--json` for machine output. |
 | `mobilerun_provider_guard.py` | Guard/validation for the mobilerun provider configuration. |
-| `register_openrouter_pricing.py` | Register real OpenRouter pricing into the live per-day Phoenix DB (`assets/db/dayN/phoenix.db`) so Phoenix costs LLM spans (README's Tracing section). |
+| `register_openrouter_pricing.py` | Register real OpenRouter pricing into the live per-day Phoenix DB (`assets/db/dayN/phoenix.db`) so Phoenix costs LLM spans. |
+| `organize_public_artifacts.py` | **Post-run filing.** Sweep/move public reports, metrics, hallucination evals, turn-based ASK audits into the canonical layout (`make organize-public`). |
+| `upload_public_runs_hf.py` | Upload finished `assets/runs/public/<id>/` trees (+ reports) to `YuvrajSingh9886/dailybench500-public`. |
+| `publish_trajectories.py` | Publish trajectory media to HF and rewrite site URLs (paired with `website/tools/export_trajectories.mjs`). |
+| `compact_phoenix_db.py` | Shrink a Phoenix SQLite DB after a run. |
+
+### Website helpers (not under `scripts/`)
+
+| Script | What it does |
+|---|---|
+| `website/tools/build_public_traj_from_hf.py` | Build/merge `website/assets/data/trajectories/index.json` for public runs (condensed steps local; GIFs on HF). |
+| `website/tools/build_site_data.mjs` | Rebuild `website/assets/data/site_data.json` from the datasets + traj index. |
+| `website/tools/export_trajectories.mjs` | Local/full-bench trajectory export (also lists public run roots for parity). |
+
+### Legacy / one-shot tools (not required for a normal run)
+
+These are **migration or one-off helpers**. They are not on the public-run path; use only if you
+know you need that specific cleanup/upload. Prefer deleting unused copies rather than adding more:
+
+`convert_*`, `remove_*`, `apply_day_cap_moves.py`, `recover_overwritten_results.py`,
+`record_borderline_seeds.py`, `send_coupon_email.py`, `watch_and_upload_public.py` (hard-coded
+old run lists — prefer `upload_public_runs_hf.py`).

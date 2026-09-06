@@ -127,15 +127,16 @@ def main() -> int:
     parser.add_argument("--hallucination-controls", default=str(DEFAULT_CONTROLS), help="task_id -> control meta sidecar.")
     parser.add_argument("--dataset", default=None, help="Exported dataset JSON (e.g. benchmarks/dailyBench-600/DailyBench_public_v2.json) to pull each task's prompt_text as judge context.")
     parser.add_argument("--model", default=None, help=f"Judge model (default: env DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME, else {DEFAULT_JUDGE_MODEL}).")
-    parser.add_argument("--sub", default="full-bench", choices=("full-bench", "public"),
-                        help="Which metrics/hallucination subfolder to write into (full-bench or public). Default: full-bench.")
+    parser.add_argument("--sub", default="public", choices=("full-bench", "public"),
+                        help="Legacy label only — outputs always land flat in reports/metrics/hallucination/ (no nested public/ or full-bench/ folders).")
     parser.add_argument("--config", default=None, help="User config file (flat key: value), default config/user.yaml; resolved over shipped defaults.")
     parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/dailyBench-600/public_vars.local.env).")
-    parser.add_argument("--out", default=None, help="JSON output path (default: reports/metrics/hallucination/<sub>/hallucination-eval.json).")
-    parser.add_argument("--out-md", default=None, help="Markdown output path (default: reports/metrics/hallucination/<sub>/hallucination-eval.md).")
+    parser.add_argument("--out", default=None, help="JSON output path (default: reports/metrics/hallucination/hallucination-eval.json).")
+    parser.add_argument("--out-md", default=None, help="Markdown output path (default: reports/metrics/hallucination/hallucination-eval.md).")
     args = parser.parse_args()
 
-    sub_dir = Path("reports/metrics/hallucination") / args.sub
+    # Flat layout only: never nest under hallucination/public or hallucination/full-bench.
+    sub_dir = Path("reports/metrics/hallucination")
     out = Path(args.out) if args.out else sub_dir / "hallucination-eval.json"
     out_md = Path(args.out_md) if args.out_md else sub_dir / "hallucination-eval.md"
 

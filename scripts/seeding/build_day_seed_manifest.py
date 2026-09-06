@@ -725,8 +725,18 @@ DAY5_TASKS: dict[str, dict] = {
     },
     "medium__chrome__003": {
         "vars": {"contact": "{contact}"},
-        "seed": [{"type": "chrome_history", "location": "Chrome (real history)", "value": "5 most recently visited pages today (real browsing history).", "status": "needs_ui"}],
-        "end_state": "The most useful page is bookmarked, the rest closed, and the kept page's link is messaged to {contact}.",
+        "seed": [{
+            "type": "chrome_history",
+            "location": "Chrome (real history) — NOT ADB-seedable (Chrome History provider blocked on non-root)",
+            "value": (
+                "MANUAL UI SEED (operator, before the run): open Chrome and visit ≥2–3 "
+                "shopping pages ABOUT EARBUDS today (Amazon/Flipkart product or search URLs). "
+                "History must show today's earbuds browsing — Swiggy/Google-only history = FAIL "
+                "(see luna 20260906-063336). Re-do after history clears / Chrome data wipe."
+            ),
+            "status": "needs_ui",
+        }],
+        "end_state": "Earbuds shopping link(s) from today's Chrome history are sent to {contact} via Messages.",
     },
     "easy__google-drive__003": {
         "vars": {},

@@ -46,6 +46,19 @@ Example (Day 1, 2026-08-09): UIQ fact-match = 0.000 because the only real
 `ask_user` call (wireless-earbuds price compare) returned an answer that did not
 match the hidden fact, even though the task partially succeeded.
 
+## KB Interaction Quality (KBIQ) — UIQ-style over multi-turn KB tasks
+
+KBIQ mirrors UIQ’s per-task ratio, scoped to the multi-turn KB tasks only
+(`kb_interaction_quality` in `DailyBench/benchmark_metrics.py`):
+
+$$\text{KBIQ} = \frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k}, \qquad \tfrac{c_k}{q_k} := 0 \ \text{if} \ q_k = 0$$
+
+Correctness \(c_k\) comes from manual `kb_audit.json` (oracle profile), not DeepEval.
+A task with 1 of 5 turns right contributes 0.2 — not a full task win. Never-asked
+KB tasks (MobileWorld gate violation) contribute 0 and stay in the denominator.
+Reports also show micro \( \sum c / \sum q \) as a diagnostic; the headline is the
+task-equal mean.
+
 ## Hallucination-control grading — honesty under absence (2026-08-12)
 
 A **hallucination control** is a task whose target data is verified **absent** on
