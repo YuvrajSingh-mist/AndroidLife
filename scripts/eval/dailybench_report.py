@@ -373,8 +373,8 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
     kb_tasks = [r for r in records if r.get("is_kb")]
     kb_query_total = sum(r.get("kb_queries") or 0 for r in kb_tasks)
     kb_query_correct = sum(r.get("kb_queries_correct") or 0 for r in kb_tasks)
-    # Task-based KBIQ: a KB task is correct only if it engaged the KB and got a
-    # right answer; a task that never asked (0 ask_user, MobileWorld gate) FAILS.
+    # Diagnostic only: how many KB tasks got ≥1 correct audited answer (not the
+    # KBIQ formula — KBIQ is the UIQ-style mean of per-task c_k/q_k ratios).
     kb_task_correct = sum(1 for r in kb_tasks if (r.get("kb_queries_correct") or 0) > 0)
 
     return {
@@ -387,12 +387,10 @@ def build_report(records: list[dict[str, Any]], *, model: str | None = None, coo
         "average_steps": avg_steps(records),
         "average_user_queries": avg_user_queries(records),
         "user_interaction_quality_factmatch": user_interaction_quality_factmatch(records),
-        # KBIQ (KB Interaction Quality): fraction of KB/multi-turn TASKS where the
-        # agent engaged the KB and got a right answer per the KB profile (manually
-        # audited post-run via kb_audit.json). Task-based: a KB task that never
-        # asked (0 ask_user, MobileWorld gate) is a FAILURE and counts against
-        # KBIQ. N/A (null) when NO KB query was ever asked — nothing to grade
-        # (user rule 2026-08-27).
+        # KBIQ (KB Interaction Quality): UIQ-style mean of per-task (correct/asks)
+        # over KB/multi-turn tasks (manually audited via kb_audit.json). A KB task
+        # that never asked contributes 0. N/A (null) when NO KB query was ever
+        # asked — nothing to grade (user rule 2026-08-27).
         "kb_interaction_quality": None if kb_query_total == 0 else kb_interaction_quality(records),
         "kb_query_total": kb_query_total,
         "kb_query_correct": kb_query_correct,
@@ -440,7 +438,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         # quality of each ask_user call by whether the LLM user's answer matched the
         # ground-truth fact, regardless of whether the overall task succeeded.
         f"| User Interaction Quality (UIQ, fact-match, success-free) | {report['user_interaction_quality_factmatch']:.3f} |",
-        f"| KB Interaction Quality (KBIQ, manual audit) | {_kbiq_str} ({report['kb_task_correct']}/{report['kb_task_count']} KB tasks with a correct KB answer) |",
+        f"| KB Interaction Quality (KBIQ, manual audit) | {_kbiq_str} (mean of per-task correct/asks over {report['kb_task_count']} KB tasks; {report['kb_query_correct']}/{report['kb_query_total']} queries) |",
         "",
         "### Outcome split (true success / true failure / hallucination)",
         "",

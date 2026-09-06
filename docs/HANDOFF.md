@@ -1,11 +1,35 @@
-# HANDOFF — Current state & agreed conventions (updated 2026-09-01)
+# HANDOFF — Current state & agreed conventions (updated 2026-09-07)
 
 > **Read this first** if you're starting a new session on DrainBench300. It
 > records what was done/agreed so work continues exactly as the user intends.
+> **Newcomers:** start at [`docs/getting-started.md`](getting-started.md), then
+> return here only for live run / operator conventions.
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
-> (grading rules), `reports/day1-run-2026-08-09.md` (full Day-1 audit).
+> (grading rules).
 
-## 0. LATEST STATE (2026-09-01) — mimo-v2.5-pro diagnostic run + HF dataset + docs
+## 0. ACTIVE RUN — `openai/gpt-5.6-luna` VISION (`20260907-022522`)
+
+- **Model:** `openai/gpt-5.6-luna` via OpenRouter · **VISION** (`--vision`)
+- **Serial:** `100.108.15.119:5555` (Tailscale) · **ask_user:** `gpt-5.4-mini`
+- **KB:** `benchmarks/dailyBench-600/multiturn_kb_public.json`
+- **Run root:** `assets/runs/public/20260907-022522/`
+- **Logs:** `assets/runs/public/batch-20260907-022522.log`
+- **Phoenix:** `assets/db/public/20260907-022522/phoenix.db` · http://127.0.0.1:6006
+- Detached: `Popen(..., start_new_session=True)` + `stdin=DEVNULL` (survives Cursor; **not** ADB drops).
+- Monitor: `tail -f assets/runs/public/batch-20260907-022522.log`
+- Phone reset + day1–3 reseed **PASS** before launch (2026-09-07). Terra VISION partial
+  `20260906-203738` was **aborted and deleted** (wrong model).
+
+## 0a. COMPLETED — `openai/gpt-5.6-luna` TEXT (`20260906-063336`)
+
+- Manual audit GT: **18/60 = 30.0%** · HC 6/7 honest · **0 ask_user** on all ASK tasks ·
+  avg **41.8** steps (many step-cap-60 loops).
+- Report: `reports/public/public-20260906-063336.md`
+- On website: leaderboard row + public traj run key `luna-0906` (HF media).
+- HF dataset upload: done for this run.
+
+## 0b. LATEST STATE (2026-09-01) — mimo-v2.5-pro diagnostic run + HF dataset + docs
+
 
 - **New run `20260901-002701`** — `xiaomi/mimo-v2.5-pro`, TEXT, `--save-trajectory action`,
   wireless ADB via **Tailscale** `100.108.15.119:5555`. This is a **DIAGNOSTIC run** (user chose

@@ -75,6 +75,8 @@ const PUBLIC_RUNS = [
   { key: "kimi-30v", label: "kimi-k2.6 · 30 Aug (vision)", root: "assets/runs/public/2026-08-30-021852" },
   { key: "seed-30", label: "seed-2.0-lite · 30 Aug", root: "assets/runs/public/2026-08-30-143554" },
   { key: "mimo-0901", label: "mimo-v2.5-pro · 1 Sep (text)", root: "assets/runs/public/20260901-002701" },
+  { key: "seed-05v", label: "seed-2.0-lite · 5 Sep (vision)", root: "assets/runs/public/20260905-051950" },
+  { key: "luna-0906", label: "gpt-5.6-luna · 6 Sep (text)", root: "assets/runs/public/20260906-063336" },
 ];
 
 const OUT_DATA = "website/assets/data/trajectories";

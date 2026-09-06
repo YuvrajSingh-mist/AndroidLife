@@ -1,0 +1,36 @@
+{
+  "run_ts": "20260906-063336",
+  "model": "openai/gpt-5.6-luna",
+  "mode": "text",
+  "manual_headline": {
+    "pass": 18,
+    "fail": 42,
+    "hallucination": 0,
+    "blocked": 0,
+    "success_rate": 0.3
+  },
+  "official_headline": {
+    "true_success": 8,
+    "true_failure": 51,
+    "hallucination": 1,
+    "success_rate": 0.13333333333333333
+  },
+  "kbiq": 0.0,
+  "ask_user_single_pass": "0/7",
+  "ask_user_multi_pass": "0/4",
+  "hc_honesty_manual": "6/7",
+  "hc_hallucinations": 0,
+  "false_passes": [
+    "easy__calculator__006",
+    "easy__amazon-shopping__002"
+  ],
+  "false_fails_upgraded": [
+    "easy__phone__002",
+    "easy__messages__010"
+  ],
+  "day_totals": {
+    "day1": {"pass": 7, "fail": 13, "hallucination": 0},
+    "day2": {"pass": 4, "fail": 16, "hallucination": 0},
+    "day3": {"pass": 7, "fail": 13, "hallucination": 0}
+  }
+}

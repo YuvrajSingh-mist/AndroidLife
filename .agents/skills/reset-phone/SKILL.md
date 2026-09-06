@@ -298,6 +298,40 @@ Quick cloud verify (in-app, ~10 min):
 - **Photos** food captions + Favourites for `medium__gallery__007` — **app-private AND per-account**: favourites/captions do NOT carry across accounts; if the Photos app is on a different account than where they were set, they appear gone. Re-add 3 food photos (favourited + captioned) in the SAME account the app is signed into.
 - **Digital Wellbeing** → "App timers" → "No timers set".
 
+### Manual / operator seeds that are NOT ADB-able (public 60 — re-check before every run)
+
+Chrome History provider is blocked on this non-rooted phone — **do not expect
+`reset_phone.py` to plant browsing history.** Same class of seeds below:
+
+| Task | What you must seed manually (UI) | ADB? |
+|---|---|---|
+| `medium__chrome__003` | **Chrome history TODAY** with ≥2–3 **earbuds** shopping pages (Amazon/Flipkart product or search). Swiggy/Google-only history = FAIL. | ❌ |
+| `medium__gallery__007` | 3 food photos in Google Photos: Favourites + captions Pancakes / Pizza / Veggie Bowl (same Photos account). | ❌ app-private |
+| `easy__gallery__012` | Screenshots album has a known count (real Screenshots). | ❌ |
+| `hard__gmail-calendar__003` | Gmail has the Scapia / "Pack for Delhi" flight email. | ❌ cloud |
+| `hard__drive-notes-telegram__010` | Drive shared budget spreadsheet + Obsidian/Notes `Budget Deadline.md` baseline. | Drive ❌ / note ✅ ADB restore |
+| `medium__google-drive__001` | Real Drive usage + files with visible Details sizes. | ❌ cloud |
+| `easy__google-docs__004` / Docs tasks | Real Docs with body text (not title-only), e.g. Student Project Tracker. | ❌ cloud |
+| `easy__amazon-shopping__002` | Amazon cart state for the seeded product (in or out — task asks to check). | ❌ account |
+| `easy__swiggy__001` / `hard__swiggy__005` | Swiggy signed in with real multi-month / dated order history. | ❌ account |
+| `medium__prime-video__003` | Prime Video "Continue Watching" row populated. | ❌ account |
+| `hard__photos-gmail-obsidian__012` | Event photo + caption mentioning the ASK contact (KB). | ❌ Photos UI |
+| `hard__music-obsidian__077` | Obsidian `Bedtime.md` sleep log (ADB-seeded) + YT Music as recent music app. | note ✅ / YT ❌ |
+| `easy__bookmyshow__004` / BMS tasks | BookMyShow signed in with usable UI. | ❌ account |
+| `medium__google-photos-008` / photos calendar | Real Photos library / monthly counts. | ❌ |
+| HC absents (`files-002`, `contacts-008`, `telegram-004`, `obsidian-009`, `notes-004`, `calendar-008`) | Ensure the **absent** entity is still absent (do NOT create it). | N/A |
+
+If a manual seed was wiped by a prior agent (Chrome history clear, cart empty, etc.),
+**re-seed in the UI before resuming** — the harness will not warn.
+
+**Screenshots / Files trash (`medium__files__009`):** `reset_phone.py` does **NOT**
+restore `.trashed-*` screenshots under `Pictures/Screenshots`. If a prior run trashed
+files and you need the old library for a **fresh** baseline, restore from Files/Gallery
+trash manually (or leave trashed for same-run day continuity after `files-009` already
+scored). Do not treat agent “Budget Deadline truncated” claims as seed failure — the
+ADB baseline note is restored by reset; verify with
+`cat "/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md"` before re-seeding.
+
 ## Step 5 — Run inference (public 60-task sample)
 
 Start Phoenix for the public project (DB `assets/db/public/phoenix.db`), then launch:

@@ -78,26 +78,37 @@ def test_factmatch_uiq_wrong_answers_and_empty() -> None:
     assert user_interaction_quality_factmatch([]) == 0.0
 
 
-def test_kbiq_task_based_correct_over_kb_tasks() -> None:
-    # Task-based: both KB tasks have >=1 correct query -> 2/2 = 1.0 (a task that
-    # never asked, or asked but got nothing right, would FAIL and lower the score).
+def test_kbiq_uiq_style_mean_of_per_task_ratios() -> None:
+    # UIQ-style: task A = 1/2 = 0.5, task B = 1/1 = 1.0 → mean 0.75.
+    # Old task-based formula would have scored this 2/2 = 1.0 (any ≥1 correct).
     records = [
         _rec(False, is_kb=True, kb_queries=2, kb_queries_correct=1),
         _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),
         _rec(True, is_kb=False, kb_queries=0, kb_queries_correct=0),  # non-KB ignored
     ]
-    assert kb_interaction_quality(records) == pytest.approx(2 / 2)
+    assert kb_interaction_quality(records) == pytest.approx(0.75)
 
 
 def test_kbiq_task_that_never_asked_counts_against() -> None:
-    # 4 KB tasks, only 1 engaged correctly -> 1/4 = 0.25 (not 1.000).
+    # 4 KB tasks, only 1 engaged correctly -> (1+0+0+0)/4 = 0.25.
     records = [
         _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),  # engaged + correct
-        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
-        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
-        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> FAIL
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> 0
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> 0
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),  # never asked -> 0
     ]
     assert kb_interaction_quality(records) == pytest.approx(1 / 4)
+
+
+def test_kbiq_partial_credit_does_not_full_win_a_task() -> None:
+    # Chatty KB task with 1/5 right contributes 0.2, not a full task win.
+    records = [
+        _rec(False, is_kb=True, kb_queries=5, kb_queries_correct=1),
+        _rec(True, is_kb=True, kb_queries=1, kb_queries_correct=1),
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),
+        _rec(False, is_kb=True, kb_queries=0, kb_queries_correct=0),
+    ]
+    assert kb_interaction_quality(records) == pytest.approx((0.2 + 1.0 + 0 + 0) / 4)
 
 
 def test_kbiq_unaudited_and_empty() -> None:

@@ -784,10 +784,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -802,10 +802,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -825,10 +825,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -843,10 +843,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -866,10 +866,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -884,10 +884,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -907,10 +907,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -930,10 +930,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -948,10 +948,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -966,10 +966,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -984,10 +984,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1019,10 +1019,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1037,10 +1037,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1060,10 +1060,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1083,10 +1083,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1106,10 +1106,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1129,10 +1129,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": false,
+      "model": "openai/gpt-5.6-luna",
+      "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1152,10 +1152,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1170,10 +1170,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1188,10 +1188,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1206,10 +1206,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1229,10 +1229,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1247,10 +1247,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1270,10 +1270,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1288,10 +1288,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1306,10 +1306,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1333,10 +1333,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1360,10 +1360,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1383,10 +1383,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1401,10 +1401,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1424,10 +1424,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1451,10 +1451,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1469,10 +1469,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1492,10 +1492,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1510,10 +1510,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1528,10 +1528,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1551,10 +1551,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1578,10 +1578,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1596,10 +1596,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1619,10 +1619,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1646,10 +1646,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1669,10 +1669,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1687,10 +1687,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1718,10 +1718,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1749,10 +1749,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1767,10 +1767,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1794,10 +1794,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1817,10 +1817,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1835,10 +1835,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1853,10 +1853,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1871,10 +1871,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1898,10 +1898,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 8,
       "set": "public"
     },
     {
@@ -1925,10 +1925,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 3,
-      "model": "qwen/qwen3.8-27b",
-      "success": true,
+      "model": "openai/gpt-5.6-luna",
+      "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1943,10 +1943,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1970,10 +1970,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -1988,10 +1988,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -2011,10 +2011,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 2,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -2034,10 +2034,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -2052,10 +2052,10 @@
       "placeholders": [],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": false,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     },
     {
@@ -2075,10 +2075,10 @@
       ],
       "vars_file": "public_vars.local.env",
       "day": 1,
-      "model": "qwen/qwen3.8-27b",
+      "model": "openai/gpt-5.6-luna",
       "success": true,
       "has_trajectory": true,
-      "run_count": 3,
+      "run_count": 9,
       "set": "public"
     }
   ],
