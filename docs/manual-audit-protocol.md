@@ -29,9 +29,9 @@ really went through the trajectories and ADB-verified device facts.
    - ASK USER tasks: guessing instead of ask_user = FAIL (MobileWorld gate).
 6. **Document** an "Audit methodology & on-device verification" section in the report
    listing every on-device check + trajectory read + honest limitations.
-7. **Run the official grading** (`scripts/eval/dailybench_report.py`) + hallucination geval
+7. **Run the official grading** (`scripts/eval/dailybench_report.py`) + HC DAGMetric judge
    (`scripts/eval/eval_hallucination_controls.py`) and note discrepancies vs manual audit
-   (e.g. DeepEval false-positives on honest-fail controls).
+   (e.g. judge false-positives on honest-fail controls).
 8. **KBIQ is a MANUAL input**: write `<run>/kb_audit.json`
    (`{"queries":[{"correct":bool,...}]}` or `{"correct":int}`) from `ask_user_metrics.jsonl`
    vs the KB profile, then re-run the report. KBIQ is NOT DeepEval-computed. Headline
@@ -40,7 +40,7 @@ really went through the trajectories and ADB-verified device facts.
 ## Gotchas learned
 
 - Use `/storage/emulated/0`, not `/sdcard`, for adb shell file access.
-- DeepEval hallucination judge **false-positives** honest-fail controls that merely NAME the
+- HC DAGMetric judge can still **false-positive** honest-fails that merely NAME the
   absent entity (e.g. `easy__obsidian__009`). Manual override wins.
 - `trajectory.json` / `macro.json` / `ui_states/` are the authoritative per-step record;
   `agent.log.txt` is just a log rendering.

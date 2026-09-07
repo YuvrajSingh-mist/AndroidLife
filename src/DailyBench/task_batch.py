@@ -241,13 +241,19 @@ def build_run_command(
 def find_run_dir(label: str, runs_root: str | Path = "assets/runs") -> Path | None:
     """Best-effort: find the run folder `dailybench_runner.py` just created for this label.
 
-    Batch labels are `{sub}--{rest}` and are stored under `assets/runs/<batch>/<sub>/<rest>`
-    (see files.run_dir_for_label), so the day/hard subfolder is included in the glob.
-    `runs_root` is overridable for hermetic tests.
+    Batch labels are `{day}--{rest}` stored as `<runs_root>/<day>/<slug>` when
+    `--run-root` is the batch folder, or deeper under `assets/runs/**` otherwise.
     """
     sub, sep, rest = label.partition("--")
-    pattern = f"*/{sub}/{slugify(rest)}" if sep else f"*/{slugify(label)}"
-    matches = sorted(Path(runs_root).glob(pattern))
+    slug = slugify(rest) if sep else slugify(label)
+    root = Path(runs_root)
+    if sep:
+        direct = root / sub / slug
+        if direct.is_dir():
+            return direct
+        matches = sorted(root.glob(f"**/{sub}/{slug}"))
+    else:
+        matches = sorted(root.glob(f"**/{slug}"))
     return matches[-1] if matches else None
 
 
@@ -318,11 +324,25 @@ def main() -> int:
             return
         result = subprocess.run(command, check=False)
         if result.returncode != 0:
-            run_dir = find_run_dir(label)
+            run_dir = find_run_dir(label, args.run_root if args.run_root else "assets/runs")
             if run_dir is not None and (run_dir / "PROXY_STARTUP_FAILED").exists():
                 marker = (run_dir / "PROXY_STARTUP_FAILED").read_text(encoding="utf-8").strip()
                 print(f"\nABORTING benchmark: LLM proxy failed to start for {task_id} ({label}) after all retries.\n{marker}", file=sys.stderr)
                 raise SystemExit(2)
+            if run_dir is not None and (run_dir / "DEVICE_UNREACHABLE").exists():
+                marker = (run_dir / "DEVICE_UNREACHABLE").read_text(encoding="utf-8").strip()
+                print(
+                    f"\nABORTING benchmark: device/ADB unreachable during preflight for {task_id} ({label}).\n{marker}",
+                    file=sys.stderr,
+                )
+                raise SystemExit(4)
+            if run_dir is not None and (run_dir / "PHOENIX_NOT_READY").exists():
+                marker = (run_dir / "PHOENIX_NOT_READY").read_text(encoding="utf-8").strip()
+                print(
+                    f"\nABORTING benchmark: Phoenix not ready for {task_id} ({label}).\n{marker}",
+                    file=sys.stderr,
+                )
+                raise SystemExit(3)
             if is_transient_failure(run_dir):
                 print(f"Flagging {task_id} ({label}) for rerun at end of batch - looks like a transient LLM/infra blip, not a real failure: {run_dir}")
                 retry_queue.append((command, label, task_id))

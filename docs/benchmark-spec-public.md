@@ -147,7 +147,7 @@ seeding this data (see the seed-advice rule in memory).
 | `hard__files-notes__069` | 3 | hard (also DET) |
 
 Source: `benchmarks/dailyBench-600/hallucination_controls.json`. Graded by
-`scripts/eval/eval_hallucination_controls.py` (DeepEval judge + manual confirmation).
+`scripts/eval/eval_hallucination_controls.py` (DeepEval DAGMetric + manual confirmation).
 
 ## Grading model
 
@@ -262,7 +262,7 @@ All public-run artifacts are filed automatically by
 ```
 reports/public/public-<RUN_TS>.md                          run report
 reports/metrics/public/public-<RUN_TS>-report.{json,md}    official metrics
-reports/metrics/hallucination/public-<RUN_TS>.{json,md}    HC / DeepEval grading
+reports/metrics/hallucination/public-<RUN_TS>.{json,md}    HC / DeepEval DAGMetric grading
 reports/turn-based/public/ask-query-single/<RUN_TS>/<task>.md  ASK USER SINGLE audits
 reports/turn-based/public/ask-query-multi/<RUN_TS>/<task>.md   ASK USER MULTI audits
 reports/turn-based/public/README.md                            index (regenerated)

@@ -7,18 +7,17 @@
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
 > (grading rules).
 
-## 0. ACTIVE RUN — `openai/gpt-5.6-luna` VISION (`20260907-022522`)
+## 0. ACTIVE RUN — luna VISION `20260907-234823` (launched 2026-09-07 ~23:49 IST)
 
-- **Model:** `openai/gpt-5.6-luna` via OpenRouter · **VISION** (`--vision`)
-- **Serial:** `100.108.15.119:5555` (Tailscale) · **ask_user:** `gpt-5.4-mini`
-- **KB:** `benchmarks/dailyBench-600/multiturn_kb_public.json`
-- **Run root:** `assets/runs/public/20260907-022522/`
-- **Logs:** `assets/runs/public/batch-20260907-022522.log`
-- **Phoenix:** `assets/db/public/20260907-022522/phoenix.db` · http://127.0.0.1:6006
-- Detached: `Popen(..., start_new_session=True)` + `stdin=DEVNULL` (survives Cursor; **not** ADB drops).
-- Monitor: `tail -f assets/runs/public/batch-20260907-022522.log`
-- Phone reset + day1–3 reseed **PASS** before launch (2026-09-07). Terra VISION partial
-  `20260906-203738` was **aborted and deleted** (wrong model).
+Fresh 60-task public batch after cancel/reset of `20260907-140043`.
+- Model: `openai/gpt-5.6-luna` **VISION** · serial `100.108.15.119:5555`
+- Detached (`start_new_session` + stdin `/dev/null`) · log
+  `assets/runs/public/batch-20260907-234823.log` · Phoenix
+  `assets/db/public/20260907-234823/`
+- Pre-run: `public_v2` reset + day1–3 seed verified earlier same day (PASS).
+- First task: `hard__youtube-settings__052` (running).
+
+Local Sep-6 TEXT already on HF; website `luna-0906` unchanged.
 
 ## 0a. COMPLETED — `openai/gpt-5.6-luna` TEXT (`20260906-063336`)
 
@@ -271,7 +270,7 @@ run day (call-log gap).
 ## 15. Public artifact organization (2026-08-23)
 
 - **Reports** live under `reports/public/` (per-run: `reports/public/public-<run>.md`),
-  metrics under `reports/metrics/public/`, hallucination geval under `reports/metrics/hallucination/`.
+  metrics under `reports/metrics/public/`, hallucination DAGMetric under `reports/metrics/hallucination/`.
 - **Turn-based ASK USER audits** under `reports/turn-based/public/` (per-run
   date-time folders, like the DB): `ask-query-single/<run-ts>/` and
   `ask-query-multi/<run-ts>/` — full per-turn Q&A from
@@ -284,4 +283,4 @@ run day (call-log gap).
   (`make organize-public`) creates all per-run folders, files the report/metrics/
   hallucination artifacts, archives the DB, regenerates the turn-based audits, and
   rebuilds the README. Idempotent; `--sweep` enforces on every run under `assets/runs/public/`.
-  Post-run flow (report + geval + organizer) is documented in the reset skill Step 5.
+  Post-run flow (report + HC DAGMetric judge + organizer) is documented in the reset skill Step 5.

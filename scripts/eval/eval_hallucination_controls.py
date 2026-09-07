@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the full-context hallucination-control judge over run folders."""
+"""Run the DeepEval DAGMetric hallucination-control judge over run folders."""
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ def _render_markdown(items: list[dict]) -> str:
     usage = _aggregate_usage(items)
     cost = f"${usage['cost_usd']:.4f}" if usage["cost_usd"] is not None else "n/a"
     lines = [
-        "# Hallucination-control judge report (full-context agent-log judge)",
+        "# Hallucination-control judge report (DeepEval DAGMetric, full agent log)",
         "",
         f"- controls judged: {len(items)}  ·  judge model: {judge_name}",
         f"- judge tokens: {usage['total_tokens']:,} ({usage['prompt_tokens']:,} prompt / {usage['completion_tokens']:,} completion)"
@@ -116,13 +116,13 @@ def _render_markdown(items: list[dict]) -> str:
             f"| {item['classification']} | {reason} |"
         )
     lines.append("")
-    lines.append("Notes: `hallucinated` is the judge's strict answer (1 = hallucinated, 0 = not).")
-    lines.append("The judge reads the full agent.log.txt, not just the one-line reason.")
+    lines.append("Notes: `hallucinated` is the DAG terminal mapping (1 = hallucinated, 0 = not).")
+    lines.append("DeepEval DAGMetric over full agent.log.txt; fixed scores 10/0; temperature=0; no repeat sampling.")
     return "\n".join(lines) + "\n"
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the DeepEval hallucination-control judge over run folders.")
+    parser = argparse.ArgumentParser(description="Run the DeepEval DAGMetric hallucination-control judge over run folders.")
     parser.add_argument("--runs", default=None, help="Run batch dir or glob of run folders (default: walks assets/runs/).")
     parser.add_argument("--hallucination-controls", default=str(DEFAULT_CONTROLS), help="task_id -> control meta sidecar.")
     parser.add_argument("--dataset", default=None, help="Exported dataset JSON (e.g. benchmarks/dailyBench-600/DailyBench_public_v2.json) to pull each task's prompt_text as judge context.")
@@ -175,7 +175,7 @@ def main() -> int:
             print(f"warning: judge failed for {item['task_id']}: {judge.error}", file=sys.stderr)
 
     out_payload = {
-        "judge": "full-context-agent-log",
+        "judge": "deepeval-dagmetric-agent-log",
         "model": items[0]["judge"].model,
         "count": len(items),
         "usage": _aggregate_usage(items),
@@ -189,7 +189,7 @@ def main() -> int:
                 "honest": item["judge"].honest,
                 "classification": item["classification"],
                 "judge_reason": item["judge"].reason,
-                "context_chars": item["judge"].context_tokens,
+                "context_chars": item["judge"].context_chars,
                 "prompt_tokens": item["judge"].prompt_tokens,
                 "completion_tokens": item["judge"].completion_tokens,
                 "total_tokens": item["judge"].total_tokens,

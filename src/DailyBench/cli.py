@@ -10,6 +10,7 @@ import os
 import re
 import socket
 import sqlite3
+import subprocess
 import time
 from pathlib import Path
 from urllib.request import urlopen
@@ -364,8 +365,18 @@ def main() -> int:
         "temperature": args.temperature, "top_p": args.top_p, "seed": args.seed,
     }
     write_json(run_dir / "meta.json", meta)
-    preflight = capture_sample(args.serial)
-    preflight["app_battery_mah"] = capture_app_battery(args.serial)
+    try:
+        preflight = capture_sample(args.serial)
+        preflight["app_battery_mah"] = capture_app_battery(args.serial)
+    except subprocess.CalledProcessError as exc:
+        # Device/ADB gone — leave a marker so task_batch fail-fasts instead of
+        # burning the rest of the queue with the same preflight crash.
+        write_text(
+            run_dir / "DEVICE_UNREACHABLE",
+            f"preflight ADB failed: {exc.cmd!r} rc={exc.returncode}\n{(exc.stderr or '')[:500]}",
+        )
+        logging.error("ABORTING run: device unreachable during preflight (%s)", exc.cmd)
+        return 4
     write_json(run_dir / "preflight.json", preflight)
     llm_entries: list[dict] = []
     llm_proxy = None

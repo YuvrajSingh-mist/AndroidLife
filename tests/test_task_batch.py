@@ -364,13 +364,20 @@ def test_is_transient_failure_true_only_for_early_dropped_request_errors(tmp_pat
     assert task_batch.is_transient_failure(tmp_path / "does-not-exist") is False
 
 
-def test_find_run_dir_globs_for_label_match_under_runs() -> None:
-    """find_run_dir locates the run folder under assets/runs/<date-time>/<label>/."""
-    (task_batch.Path("assets/runs") / "2026-07-30-090000" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
-    (task_batch.Path("assets/runs") / "2026-07-30-091500" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
-    found = task_batch.find_run_dir("easy-gmail-001")
-    assert found == task_batch.Path("assets/runs") / "2026-07-30-091500" / "easy-gmail-001"
-    assert task_batch.find_run_dir("no-such-label") is None
+def test_find_run_dir_globs_for_label_match_under_runs(tmp_path) -> None:
+    """find_run_dir locates the newest matching folder under a runs root."""
+    (tmp_path / "2026-07-30-090000" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "2026-07-30-091500" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)
+    found = task_batch.find_run_dir("easy-gmail-001", runs_root=tmp_path)
+    assert found == tmp_path / "2026-07-30-091500" / "easy-gmail-001"
+    assert task_batch.find_run_dir("no-such-label", runs_root=tmp_path) is None
+
+
+def test_find_run_dir_resolves_direct_batch_run_root(tmp_path) -> None:
+    """When runs_root is the batch folder itself, day--label maps to <root>/day/<slug>."""
+    target = tmp_path / "day1" / "easy-camera-006"
+    target.mkdir(parents=True, exist_ok=True)
+    assert task_batch.find_run_dir("day1--easy-camera-006", runs_root=tmp_path) == target
 
 
 def test_find_run_dir_nests_day_subfolder_for_batch_labels(tmp_path) -> None:
