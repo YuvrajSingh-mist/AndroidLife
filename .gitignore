@@ -1,9 +1,7 @@
 # --- generated / regenerable artifacts (do not commit; rebuild via scripts) ---
-# Everything generated lives under assets/ (runs, per-day seed manifests, per-day
-# Phoenix DBs). datasets/ stays at the repo root.
-assets/runs/
-assets/seeds/
-assets/db/
+# Entire assets/ tree is local/HF (runs, seeds, Phoenix DBs, etc.) — never git.
+# datasets/ stays at the repo root.
+assets/
 datasets/
 
 # --- personal / device-specific data (never commit) ---
