@@ -68,7 +68,7 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 | Script | What it does |
 |---|---|
 | `dailybench_report.py` | Aggregate a batch of run folders into MobileWorld-style metrics (SR, steps, queries, QIS fact-match, outcome split) → `report.json` + `report.md`. |
-| `eval_hallucination_controls.py` | Grade the hallucination-control tasks (DeepEval honesty check) into an eval report. |
+| `eval_hallucination_controls.py` | Grade HC tasks with DeepEval DAGMetric (full agent log) into an eval report. |
 | `e2e_askuser_phoenix.py` | End-to-end check of the ask_user + Phoenix tracing path. |
 
 ## 🛠 `tools/` — infrastructure
@@ -93,11 +93,8 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 | `website/tools/build_site_data.mjs` | Rebuild `website/assets/data/site_data.json` from the datasets + traj index. |
 | `website/tools/export_trajectories.mjs` | Local/full-bench trajectory export (also lists public run roots for parity). |
 
-### Legacy / one-shot tools (not required for a normal run)
+### Removed legacy one-shots
 
-These are **migration or one-off helpers**. They are not on the public-run path; use only if you
-know you need that specific cleanup/upload. Prefer deleting unused copies rather than adding more:
-
-`convert_*`, `remove_*`, `apply_day_cap_moves.py`, `recover_overwritten_results.py`,
-`record_borderline_seeds.py`, `send_coupon_email.py`, `watch_and_upload_public.py` (hard-coded
-old run lists — prefer `upload_public_runs_hf.py`).
+Former migration helpers (`convert_*`, `remove_*`, `watch_and_upload_public.py`,
+`patch_reports_hc_usage.py`, etc.) were deleted — use `upload_public_runs_hf.py`
+for HF uploads and live eval scripts for HC/reports.

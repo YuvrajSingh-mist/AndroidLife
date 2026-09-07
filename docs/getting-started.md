@@ -68,7 +68,7 @@ an explicit remaining `--task-id` list. Do not re-run folders that already have
 | Per-task trajectories / metrics | `assets/runs/public/<RUN_TS>/day{1,2,3}/<task>/` |
 | Narrative report (manual audit GT) | `reports/public/public-<RUN_TS>.md` |
 | Official self-report metrics | `reports/metrics/public/public-<RUN_TS>-report.{json,md}` |
-| DeepEval HC | `reports/metrics/hallucination/public-<RUN_TS>.{json,md}` |
+| DeepEval DAGMetric HC | `reports/metrics/hallucination/public-<RUN_TS>.{json,md}` |
 | ASK-USER turn audits | `reports/turn-based/public/ask-query-{single,multi}/<RUN_TS>/` |
 | Site leaderboard | `website/assets/js/leaderboard.js` |
 | Site trajectories index | `website/assets/data/trajectories/index.json` (media on Hugging Face) |

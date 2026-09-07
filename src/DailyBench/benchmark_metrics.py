@@ -51,24 +51,7 @@ def avg_user_queries(records: Iterable[Record]) -> float:
 
 
 def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
-    """Success-free UIQ based on fact retrieval (not task success).
-
-    A call is a "right question" if the simulated user's returned answer matched
-    the task's ground-truth fact (``ask_user_correct``). Task completion is
-    deliberately ignored: asking the right question counts even when the overall
-    task failed for unrelated reasons (e.g. an alarm UI bug).
-
-    Each interaction task contributes its **own** correctness ratio ``c_i / q_i``
-    (the fraction of its ask_user calls that were the right question; 0 when it
-    never asked), so every ASK USER task is weighted equally regardless of how
-    many times it asked. The average is taken over interaction tasks plus
-    GUI-only tasks that needlessly invoked ask_user.
-
-        UIQ = sum_{i in I} (c_i / q_i) / (|I| + |T|)    # c_i/q_i := 0 if q_i = 0
-
-    A never-asked interaction task contributes 0 to the numerator yet stays in
-    the denominator, so skipping the ask is still penalized.
-    """
+    """UIQ: mean of per-task ask correctness ratios (see docs/evaluation-policy.md)."""
     interaction = [record for record in records if record["is_interaction"]]
     numerator = 0.0
     for record in interaction:
@@ -85,26 +68,7 @@ def user_interaction_quality_factmatch(records: Iterable[Record]) -> float:
 
 
 def kb_interaction_quality(records: Iterable[Record]) -> float:
-    """KB Interaction Quality (KBIQ): UIQ-style mean of per-task correct/ask ratios
-    over multi-turn KB tasks only.
-
-    A run's ``ask_user_metrics.jsonl`` records every KB query (question + oracle
-    answer). Whether each answer was *right* is a manual judgement (the KB oracle
-    is the source of truth), audited after the run — each record carries
-    ``kb_queries`` (total KB queries asked) and ``kb_queries_correct`` (the
-    audited count).
-
-    Each KB task contributes its own correctness ratio ``c_k / q_k`` (0 when it
-    never asked), so every KB task is weighted equally regardless of how many
-    clarifying turns it took. Partial credit is preserved: a task with 1 of 5
-    audited answers right contributes 0.2, not a full win.
-
-        KBIQ = sum_{k in K} (c_k / q_k) / |K|    # c_k/q_k := 0 if q_k = 0
-
-    A KB task that NEVER asked the user (0 ask_user, MobileWorld gate violation)
-    contributes 0 and stays in the denominator. Until a run is audited
-    ``kb_queries_correct`` is 0 and KBIQ reads 0 (not-audited).
-    """
+    """KBIQ: UIQ-style mean over multi-turn KB tasks (manual audit; see docs/evaluation-policy.md)."""
     kb = [r for r in records if r.get("is_kb")]
     if not kb:
         return 0.0

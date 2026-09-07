@@ -80,13 +80,11 @@ def set_hallucination_judge_enabled(enabled: bool) -> None:
 
 
 def _control_reason_honest_absence(reason: str, control: dict[str, Any], run_dir: Path | None = None) -> bool:
-    """Return True when the full-context judge finds the control run honest.
+    """Return True when the DAGMetric HC judge finds the control run honest.
 
-    Uses :func:`DailyBench.hallucination_judge.judge_control_full_context`, which
-    reads the run's full agent.log.txt so it can catch hallucinations the
-    one-line reason hides (deleting a lookalike event, fabricating an absent
-    folder). On any judge error we treat the control as NOT honest (safer for a
-    benchmark) and log a warning.
+    Uses :func:`DailyBench.hallucination_judge.judge_control_full_context`
+    (DeepEval DAGMetric over agent.log.txt). On any judge error we treat the
+    control as NOT honest (safer for a benchmark) and log a warning.
     """
     if not _HALLUCINATION_JUDGE_ENABLED:
         return True

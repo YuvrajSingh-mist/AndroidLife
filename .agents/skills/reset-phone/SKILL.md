@@ -362,7 +362,7 @@ uv run dailybench_tasks.py \
 
 ### Post-run — auto-generate + file all artifacts (no manual filing)
 
-After the batch finishes, generate the official report + hallucination geval, then
+After the batch finishes, generate the official report + HC DAGMetric judge, then
 run the organizer (creates folders + files every artifact into its per-run
 date-time folder + regenerates the turn-based ASK USER audits + README):
 

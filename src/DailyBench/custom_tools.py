@@ -179,27 +179,7 @@ def build_ask_user_tool(
     top_p: float = 0.95,
     seed: int = 42,
 ) -> Dict[str, Dict[str, Any]]:
-    """Build a per-run `ask_user` custom tool.
-
-    Two modes (backward compatible):
-
-    1. Single-fact (legacy): ``relevant_information`` is the task's hidden
-       ground-truth fact (Hard/ASK-USER tasks). The simulated user holds ONLY
-       that fact and answers just what's asked. This is the pre-v2 behaviour.
-
-    2. Knowledge-base / multi-turn: ``kb`` is a JSON profile (dict) of the
-       user's data (orders, contacts, wishlists, preferences...). The simulated
-       user is an honest oracle over the profile: it answers whatever the agent
-       asks, from the profile only, and it keeps a ROLLING MEMORY of the whole
-       conversation so follow-up questions are answered consistently across
-       turns. This is the multi-turn mode: the agent's job is to ask the right
-       clarifying questions to disambiguate a vague task and converge.
-
-    Each call appends a JSONL entry (timing, tokens, cost, turn number) to
-    ``log_path`` when set, so per-turn costs and turn counts are tracked. The
-    client is built lazily on first call so non-ask-user tasks never require
-    OPENAI_API_KEY.
-    """
+    """Build per-run `ask_user` tool (single-fact or multi-turn KB). See docs/evaluation-policy.md."""
     client: AsyncOpenAI | None = None
     # Rolling conversation history for multi-turn (KB) mode. Each entry is
     # {"role": "user"|"assistant", "content": ...}. Persisted across calls so
