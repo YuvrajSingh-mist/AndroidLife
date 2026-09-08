@@ -16,7 +16,7 @@ INDEX = ROOT / "website" / "assets" / "data" / "trajectories" / "index.json"
 DATA_DIR = ROOT / "website" / "assets" / "data" / "trajectories"
 MEDIA_DIR = ROOT / "website" / "assets" / "trajectories"
 
-DEFAULT_REPO = "YuvrajSingh9886/DailyBench300-trajectories"
+DEFAULT_REPO = "YuvrajSingh9886/androidlife-trajectories"
 LFS_THRESHOLD = 5 * 1024 * 1024  # upload_folder handles LFS automatically
 
 
