@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DailyBench500  -  Real-Phone Android Agent Benchmark</title>
-  <meta name="description" content="DailyBench500 is a 60-task public Android agent benchmark plus a 530-task dataset that measures success, cost, battery drain, and thermal drift on a real phone across everyday apps.">
+  <title>AndroidLife — Can an AI Agent Survive a Day in the Life of a Real User?</title>
+  <meta name="description" content="AndroidLife: real-phone Android agent benchmark for open-weight LLMs and on-device SLMs. 60-task public set + 530-task dataset. MobileRun / Droidrun. Success, cost, battery, heat.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="DailyBench500  -  Real-Phone Android Agent Benchmark">
+  <meta property="og:title" content="AndroidLife — Can an AI Agent Survive a Day in the Life of a Real User?">
   <meta property="og:description" content="Measure not just can a mobile agent do the task, but what doing it costs a real phone: dollars, battery, and heat.">
-  <meta property="og:url" content="https://yuvrajsingh-mist.github.io/DrainBench300/">
-  <meta property="og:site_name" content="DailyBench500">
+  <meta property="og:url" content="https://yuvrajsingh-mist.github.io/AndroidLife/">
+  <meta property="og:site_name" content="AndroidLife">
   <meta property="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +21,7 @@
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 
 <nav aria-label="Main navigation">
-  <span class="nav-title">DailyBench500</span>
+  <span class="nav-title">AndroidLife</span>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Open navigation menu">
     <span aria-hidden="true"></span>
     <span aria-hidden="true"></span>
@@ -39,30 +39,31 @@
 <main>
   <div class="hero">
     <div class="container">
-      <h1>DailyBench500</h1>
-      <p class="hero-subtitle">Real-phone Android agent benchmark for everyday tasks</p>
+      <h1>AndroidLife</h1>
+      <p class="hero-subtitle">Can an AI agent survive a day in the life of a real user?</p>
       <p class="hero-desc">
-        Evaluate whether a mobile agent can actually get things done on a real phone - and what it costs
-        the phone when it does. DailyBench500 runs real agents on a real Android device over everyday
-        tasks and reports success alongside the real dollars, battery, heat, and steps. It has two tiers:
-        a <strong>60-task public benchmark</strong> - every task fully run on-device, each with its own
-        step-by-step agent trajectory, screen replay, and telemetry - and the <strong>complete 530-task
-        dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">[1]</a></sup> it's drawn from,
-        a 28-day / 31-app schedule that models one simulated month of everyday use. Runs themselves are
-        short, bounded sessions on a live phone - never a 28-day marathon.
+        <strong>AndroidLife</strong> measures whether a mobile agent can finish everyday phone tasks
+        on a <em>real</em> Android device - and what that costs in dollars, battery, heat, and steps.
+        Agents run through
+        <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
+        (by <a href="https://www.droidrun.ai/" target="_blank" rel="noopener">Droidrun</a>) over ADB.
+        Models can be <strong>API-hosted open-weight LLMs</strong> <em>or</em> future
+        <strong>on-device SLMs</strong> - same harness, same tasks, same phone costs.
+        Two tiers: a <strong>60-task public benchmark</strong> (full trajectories + telemetry) and the
+        <strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">[1]</a></sup>
+        it samples from (28-day / 31-app schedule grounded in real app-usage density).
       </p>
       <ul class="hero-note-list">
-        <li>60-task public benchmark</li>
-        <li>530-task dataset · 1 simulated month (28 days) · 31 apps</li>
-        <li>Full agent trajectories per task</li>
-        <li>Easy / Medium / Hard</li>
-        <li>ASK USER + deterministic hard tasks</li>
-        <li>On-device battery &amp; thermal capture</li>
-        <li>Cost tracked per LLM call</li>
+        <li>Open-weight models via API <em>and</em> path to on-device SLMs</li>
+        <li>MobileRun (Droidrun) agent harness on a real phone</li>
+        <li>60-task public benchmark · full trajectories</li>
+        <li>530-task dataset · ~10 apps/day like a real user</li>
+        <li>Battery, thermal, cost, and step telemetry</li>
+        <li>ASK USER + hallucination controls</li>
       </ul>
       <div class="hero-btns pill-bar">
         <a href="#leaderboard" class="btn btn-outline pill-btn">Leaderboard</a>
-        <a href="https://github.com/YuvrajSingh-mist/DrainBench300" class="btn btn-outline pill-btn" target="_blank" rel="noopener">
+        <a href="https://github.com/YuvrajSingh-mist/AndroidLife" class="btn btn-outline pill-btn" target="_blank" rel="noopener">
           <span class="pill-icon" aria-hidden="true">
             <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
           </span> Code
@@ -76,14 +77,21 @@
       <h2 class="section-title" id="heading-problem-statement">Problem Statement</h2>
       <div class="prose">
         <p>
-          Most agent benchmarks measure a model in a sandbox. The thing that made DailyBench500 different
-          is the realization that the whole point of a phone agent is the <em>phone</em>. The agent lives
-          in the same place people do, on devices with finite batteries, heat limits, and data caps.
+          Most agent benchmarks grade a model in a sandbox or on screenshots. Phone agents live where
+          people do - on devices with finite batteries, heat limits, and messy real apps. AndroidLife
+          asks what those benchmarks skip: not only <em>can the agent do the task?</em> but
+          <em>what does doing it cost a real phone?</em>
         </p>
         <p>
-          So the benchmark asks a question most benchmarks skip: not just <em>can the agent do the task?</em>
-          but <em>what does doing it cost a real phone?</em> A task completed in 40 steps with 3% battery and
-          a cool phone is worth more than the same task in 180 steps that pushes the SoC into thermal throttle.
+          We are <strong>not</strong> only targeting models deployed locally on the handset. The public
+          leaderboard already includes <strong>open-weight</strong> frontier and mid-size models served
+          over APIs (and smaller language models in the same spirit). The long-term focus is heavy on
+          <strong>SLMs that run on the phone</strong> - same tasks, same MobileRun loop, so on-device
+          and cloud open-weight agents stay comparable.
+        </p>
+        <p>
+          A task finished in 40 steps with 3% battery drain and a cool SoC beats the same task in 180
+          steps that thermal-throttles the device. That phone cost is first-class, not an afterthought.
         </p>
       </div>
     </div>
@@ -94,13 +102,23 @@
       <h2 class="section-title" id="heading-vision">Vision</h2>
       <div class="prose">
         <p>
-          DailyBench500 is a protocol for measuring everyday agent usability, not just benchmark leaderboards.
-          The goal is to test models of every size, including small models small enough to run on the phone
-          itself, on tasks people actually do, so we learn whether an agent is genuinely useful to keep
-          around, or only impressive in a demo.
+          <strong>AndroidLife</strong> is a protocol for everyday agent usability - not demo
+          leaderboards. It evaluates <strong>open-weight models across the size spectrum</strong>:
+          large open LLMs used via API today, and <strong>small language models (SLMs) meant to run
+          on-device</strong> tomorrow. The agent loop is
+          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
+          by Droidrun; the LLM endpoint is swappable (OpenRouter, local server, or on-phone runtime).
         </p>
         <p>
-          Communication and cost matter too much to be reserved for the largest models.
+          Tasks are grounded in how people actually use phones (~9-10 apps/day; see
+          <a href="./pages/how-it-was-formed.html">How it was formed</a> and
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/app-usage-grounding.md"
+             target="_blank" rel="noopener">app-usage grounding</a> - data.ai / State of Mobile and related
+          sources). Seeded persona data is fabricated for privacy; trajectories are real on-device runs.
+        </p>
+        <p>
+          <strong>Highlight:</strong> open weights now; on-device SLMs as the heavy future focus -
+          usefulness and phone cost for models that can live with the user.
         </p>
       </div>
     </div>
@@ -111,11 +129,12 @@
       <h2 class="section-title" id="heading-overview">Overview</h2>
       <div class="prose">
         <p>
-          <strong>DailyBench500</strong> ships as two tiers that share the same on-device pipeline:
+          <strong>AndroidLife</strong> ships as two tiers that share the same MobileRun on-device pipeline
+          (open-weight API models today; on-device SLMs in the same seat):
         </p>
         <ul>
           <li><strong>60-task public benchmark</strong> - the fully-run preview: every task has been
-          executed on a real phone (OnePlus CPH2423) by real LLMs, and each carries its full agent
+          executed on a real phone (OnePlus CPH2423) by real models (open-weight and API), and each carries its full agent
           trajectory (model thoughts, tool calls, per-step screenshots, screen-replay GIF), run
           telemetry, and a manual-audit leaderboard.</li>
           <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">[1]</a></sup> - the complete benchmark corpus: 530 tasks on a fixed
@@ -135,9 +154,10 @@
         </div>
 
         <p>
-          Instead of grading a model on a static screenshot, the harness runs an agent (via the
-          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">mobilerun SDK</a>)
-          against a real device over ADB and measures:
+          Instead of grading a model on a static screenshot, the harness runs an agent via
+          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
+          (Droidrun) against a real device over ADB. The model may be a remote open-weight LLM or a
+          local/on-device SLM - the phone loop and metrics stay the same. We measure:
         </p>
         <ul class="task-family-list">
           <li><strong>Success</strong>: did the goal actually get achieved, verified against on-device state (not just the agent's claim).</li>
@@ -445,13 +465,13 @@
     <div class="container">
       <h2 class="section-title" id="heading-citation">Citation</h2>
       <div class="prose">
-        <p>If you use DailyBench500 in your work, please cite it as:</p>
+        <p>If you use AndroidLife in your work, please cite it as:</p>
       </div>
-      <pre><code>@misc{singh2026dailybench500,
-      title={DailyBench500: A 28-Day Android Agent Benchmark for Success, Cost, Battery, and Heat},
+      <pre><code>@misc{singh2026androidlife,
+      title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
       author={Yuvraj Singh},
       year={2026},
-      howpublished={\url{https://github.com/YuvrajSingh-mist/DrainBench300}},
+      howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
 }</code></pre>
     </div>
   </section>
@@ -477,7 +497,7 @@
       <a href="#leaderboard">Leaderboard</a>
       <a href="#documentation">Documentation</a>
     </div>
-    <p><strong>DailyBench500</strong> &nbsp;&middot;&nbsp; real-phone Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
+    <p><strong>AndroidLife</strong> &nbsp;&middot;&nbsp; real-phone Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
     <p><em>Built by Yuvraj Singh.</em></p>
     <p class="footnote">For business inquiries, contact <a href="mailto:yuvraj.mist@gmail.com">yuvraj.mist@gmail.com</a>.</p>
   </div>

@@ -135,8 +135,8 @@ def main() -> int:
     # 5) README for the repo.
     readme = (
         "# DailyBench300 — trajectory replays\n\n"
-        "Public trajectory assets for the [DrainBench300](https://github.com/"
-        "YuvrajSingh-mist/DrainBench300) Android-agent benchmark, served to the "
+        "Public trajectory assets for the [AndroidLife](https://github.com/"
+        "YuvrajSingh-mist/AndroidLife) Android-agent benchmark, served to the "
         "published site via `resolve/main` URLs.\n\n"
         f"- `index.json` — per-task availability manifest (model, success, steps, gif/data URLs)\n"
         f"- `data/trajectories/<set>/<day>/<task>.json` — condensed step streams (thoughts, tool calls, screenshots)\n"

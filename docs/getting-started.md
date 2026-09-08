@@ -1,6 +1,6 @@
 # Getting started — study this repo
 
-**DailyBench500** measures Android LLM agents on a real phone (OnePlus CPH2423)
+**AndroidLife** measures Android agents on a real phone (OnePlus CPH2423) — open-weight LLMs via API and a path to on-device SLMs, driven by MobileRun (Droidrun)
 over everyday apps. Read this page first, then dive into the linked docs.
 
 ## What to learn (in order)
@@ -73,7 +73,7 @@ an explicit remaining `--task-id` list. Do not re-run folders that already have
 | Site leaderboard | `website/assets/js/leaderboard.js` |
 | Site trajectories index | `website/assets/data/trajectories/index.json` (media on Hugging Face) |
 
-Public HF dataset: [`YuvrajSingh9886/dailybench500-public`](https://huggingface.co/datasets/YuvrajSingh9886/dailybench500-public).
+Public HF dataset: [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public).
 
 ## Scripts that matter (vs one-shots)
 

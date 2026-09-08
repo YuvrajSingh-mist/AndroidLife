@@ -1,9 +1,17 @@
-# DailyBench500
+# AndroidLife
 
-A benchmark harness that runs **Android agent tasks** against a real phone and a real LLM, capturing
-success, cost, battery, thermal, and per-step trajectory traces for every run. It uses the
-[mobilerun SDK](https://docs.mobilerun.ai/framework/sdk) to drive the phone over ADB and an
-OpenAI-compatible model endpoint (OpenRouter, or a local host) over HTTP.
+A **real-phone** Android agent benchmark: everyday tasks on a live device, with success **and**
+phone cost (battery, thermal, dollars, steps). Agents run through
+[MobileRun](https://docs.mobilerun.ai/framework/sdk) (by [Droidrun](https://www.droidrun.ai/)) over ADB.
+
+**Models:** not on-device-only. AndroidLife evaluates **open-weight** models across sizes —
+frontier / mid-size LLMs via API today, with a **heavy future focus on SLMs deployed on the phone**.
+Same harness either way (OpenRouter, local OpenAI-compatible server, or on-device runtime).
+
+Live site: [https://yuvrajsingh-mist.github.io/AndroidLife/](https://yuvrajsingh-mist.github.io/AndroidLife/) ·
+Code: [github.com/YuvrajSingh-mist/AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) ·
+Public run artifacts: [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public)
+(old `dailybench500-public` redirects here).
 
 **Two tiers**, as presented on the website:
 
@@ -22,9 +30,6 @@ OpenAI-compatible model endpoint (OpenRouter, or a local host) over HTTP.
   (the 60-task public run takes ~2-9 h and can even be cut short by the phone's battery dying, as the
   run reports record). Still being benchmarked - more days' runs and their trajectories are added as
   they complete. Source: `benchmarks/dailyBench-600/DailyBench_530_v1.json` (with `tasks_530.md`).
-
-The live site is at
-[https://yuvrajsingh-mist.github.io/DrainBench300/](https://yuvrajsingh-mist.github.io/DrainBench300/).
 
 ---
 
@@ -106,8 +111,40 @@ uv run scripts/eval/audit_kb_queries.py --runs 'assets/runs/<timestamp>/*' --sou
 
 # Rebuild the site's trajectory assets (GIFs + step screenshots + condensed traces)
 node website/tools/export_trajectories.mjs
-# then view pages/tasks.html (530 tasks) or the homepage (public examples) in website/
 ```
+
+### Website — local preview (important)
+
+The site is **static HTML/JS** under `website/` (same tree GitHub Pages deploys). Open it
+via a local HTTP server — **do not** open `index.html` as a `file://` URL (relative
+assets / fetch of `assets/data/*.json` will break).
+
+```bash
+# From the repo root (leave this running while you edit):
+cd website
+python3 -m http.server 8000
+# then open http://localhost:8000/
+#   leaderboard:  http://localhost:8000/   (homepage)
+#   all tasks:    http://localhost:8000/pages/tasks.html
+```
+
+**Seeing your edits:** the server reads files from disk on every request — no rebuild
+step for HTML/CSS/JS. After saving, **hard-refresh the browser** (`Cmd+Shift+R` /
+`Ctrl+Shift+R`) so cached JS/CSS don't stick.
+
+| What you changed | What to do |
+|---|---|
+| `website/index.html`, `pages/*.html`, `assets/css/*`, `assets/js/*` (e.g. `leaderboard.js`) | Save → hard-refresh browser |
+| Task corpus / labels that feed `site_data.json` | `node website/tools/build_site_data.mjs` → hard-refresh |
+| Public traj picker / GIF links in `trajectories/index.json` | `uv run python website/tools/build_public_traj_from_hf.py` → hard-refresh |
+| Local trajectory screenshots/GIFs (full-bench export) | `node website/tools/export_trajectories.mjs` → hard-refresh |
+
+You do **not** need to restart `python3 -m http.server` after edits.
+
+Production deploy is automatic on push to `master` → GitHub Pages at
+[https://yuvrajsingh-mist.github.io/AndroidLife/](https://yuvrajsingh-mist.github.io/AndroidLife/).
+Trajectory **media** lives on Hugging Face (`YuvrajSingh9886/androidlife-public`);
+raw `assets/runs/` stay local/HF and are gitignored.
 
 ---
 
@@ -135,6 +172,7 @@ node website/tools/export_trajectories.mjs
 - [docs/fabricated-test-data.md](docs/fabricated-test-data.md) — seed data philosophy + controls
 - [docs/future-directions.md](docs/future-directions.md) — planned task areas
 - [docs/HANDOFF.md](docs/HANDOFF.md) — internal run workflow + conventions (per-day reset, metrics)
+- README § **Website — local preview** — `cd website && python3 -m http.server 8000` → http://localhost:8000/
 
 ## Testing
 

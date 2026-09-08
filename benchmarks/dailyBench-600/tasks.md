@@ -1,8 +1,8 @@
-# DrainBench: The 28-Day Survival Schedule
+# AndroidLife: The 28-Day Survival Schedule
 
 ### Can a model survive 28 days of an ordinary person's phone habits?
 
-DrainBench measures something no existing mobile-agent benchmark reports: not just whether an LLM agent can complete a task on a real Android phone, but what it actually **costs** to have it do so, in dollars, battery drain, thermal load, and reliability, while running through a schedule shaped like real daily usage rather than an arbitrary task list.
+AndroidLife measures something no existing mobile-agent benchmark reports: not just whether an LLM agent can complete a task on a real Android phone, but what it actually **costs** to have it do so, in dollars, battery drain, thermal load, and reliability, while running through a schedule shaped like real daily usage rather than an arbitrary task list.
 
 ## What this is
 

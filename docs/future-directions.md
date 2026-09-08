@@ -1,6 +1,6 @@
 # Future Directions
 
-Ideas for evolving DrainBench / the agent beyond the current UI-automation-only
+Ideas for evolving AndroidLife / the agent beyond the current UI-automation-only
 setup. These are **proposals** — not committed work. Each entry states the idea,
 why it matters, and the open questions / risks.
 

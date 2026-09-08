@@ -1,4 +1,4 @@
-"""Upload the completed public benchmark runs to the dailybench500-public HF dataset"""
+"""Upload the completed public benchmark runs to the androidlife-public HF dataset"""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import sys
 
 from huggingface_hub import HfApi
 
-REPO_ID = "YuvrajSingh9886/dailybench500-public"
+REPO_ID = "YuvrajSingh9886/androidlife-public"
 PUBLIC_RUNS = "assets/runs/public"
 
 # Force the Xet storage backend (chunked, deduped, parallel, adaptive commits).

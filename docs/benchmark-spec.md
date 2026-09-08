@@ -1,6 +1,6 @@
 # Benchmark Specification
 
-DailyBench300 (DrainBench) measures what it actually costs a real Android phone to have an
+DailyBench300 (AndroidLife) measures what it actually costs a real Android phone to have an
 LLM-driven agent use it — not just whether the agent finishes each task, but the dollars,
 battery percentage, and heat it costs to do so, across a realistic month of everyday phone
 use. It's built on the [mobilerun](https://docs.mobilerun.ai) (Droidrun) SDK, driving one
@@ -226,7 +226,7 @@ per-day vars, and fabricated-data records are generated for the public sample se
 
 ## Benchmark unit
 
-One benchmark unit is one task run through the harness into one timestamped run folder under [runs](/Users/yuvrajsingh9886/Desktop/DrainBench300/runs).
+One benchmark unit is one task run through the harness into one timestamped run folder under [runs](/Users/yuvrajsingh9886/Desktop/AndroidLife/runs).
 
 ## Days, seeds, and manifests — how the 28-day schedule is wired
 
