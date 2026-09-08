@@ -1,23 +1,20 @@
 # HANDOFF — Current state & agreed conventions (updated 2026-09-07)
 
-> **Read this first** if you're starting a new session on DrainBench300. It
+> **Read this first** if you're starting a new session on AndroidLife. It
 > records what was done/agreed so work continues exactly as the user intends.
 > **Newcomers:** start at [`docs/getting-started.md`](getting-started.md), then
 > return here only for live run / operator conventions.
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
 > (grading rules).
 
-## 0. ACTIVE RUN — luna VISION `20260907-234823` (launched 2026-09-07 ~23:49 IST)
+## 0. ACTIVE RUN — luna VISION `20260908-020948` (double-fork, launched 2026-09-08 ~02:10 IST)
 
-Fresh 60-task public batch after cancel/reset of `20260907-140043`.
+Fresh 60-task public batch after cleaning dead `20260907-234823`.
 - Model: `openai/gpt-5.6-luna` **VISION** · serial `100.108.15.119:5555`
-- Detached (`start_new_session` + stdin `/dev/null`) · log
-  `assets/runs/public/batch-20260907-234823.log` · Phoenix
-  `assets/db/public/20260907-234823/`
-- Pre-run: `public_v2` reset + day1–3 seed verified earlier same day (PASS).
-- First task: `hard__youtube-settings__052` (running).
+- Detached via **Unix double-fork** (PPID 1) · log `assets/runs/public/batch-20260908-020948.log`
+- Phoenix `assets/db/public/20260908-020948/` · first task `hard__youtube-settings__052`
+- Pre-run: reset+seed same night; `.gitignore` now ignores entire `assets/` (HF-only).
 
-Local Sep-6 TEXT already on HF; website `luna-0906` unchanged.
 
 ## 0a. COMPLETED — `openai/gpt-5.6-luna` TEXT (`20260906-063336`)
 
@@ -43,7 +40,7 @@ Local Sep-6 TEXT already on HF; website `luna-0906` unchanged.
 - **`stepfun/step-3.7-flash`** has `reasoning.mandatory: True` → reasoning-off 400s every call;
   must launch with `--thinking` (wired through `task_batch.py` 2026-09-01 — parser arg +
   `build_run_command` append). Same malformed-complete XML as mimo.
-- **HF dataset `YuvrajSingh9886/dailybench500-public`** created 2026-09-01: uploads the completed
+- **HF dataset `YuvrajSingh9886/androidlife-public`** created 2026-09-01: uploads the completed
   public runs (`runs/<run_id>/`) + README + `runs_manifest.json`. Uploader:
   `scripts/tools/upload_public_runs_hf.py` (detached, resumable; run with `< /dev/null`). Excludes
   the active mimo run + smoke run until they finish. README/manifest staged at

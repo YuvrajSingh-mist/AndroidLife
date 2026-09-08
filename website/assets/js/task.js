@@ -16,7 +16,7 @@ function pagePath(rootRel) {
 // GitHub URL for the published vars file (public_vars.local.env / tasks_vars.local.env)
 // that each task's placeholder values are resolved from. The repo publishes both so
 // the footnote links below actually resolve.
-const GITHUB_REPO = "https://github.com/YuvrajSingh-mist/DroidBench-530";
+const GITHUB_REPO = "https://github.com/YuvrajSingh-mist/AndroidLife";
 const VARS_FILE_DIR = "blob/master/benchmarks/dailyBench-600/";
 function varsFileUrl(file) {
   return `${GITHUB_REPO}/${VARS_FILE_DIR}${encodeURIComponent(file)}`;
@@ -602,7 +602,7 @@ async function init() {
       promptEl.innerHTML = `<code>${formatPromptResolved(task.prompt, task.placeholders || [])}</code>`;
     }
     renderPlaceholderFootnotes(task);
-    document.title = `DailyBench500  -  ${task.task_id}`;
+    document.title = `AndroidLife  -  ${task.task_id}`;
 
     const traj = (isPublic ? idx.public : idx.tasks) && (isPublic ? idx.public : idx.tasks)[taskId];
     const run = pickRun(traj);

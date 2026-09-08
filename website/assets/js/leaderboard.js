@@ -1,4 +1,4 @@
-// Leaderboard for DailyBench500. Real results, sourced from the run reports in
+// Leaderboard for AndroidLife. Real results, sourced from the run reports in
 // reports/public/ (the MANUAL AUDIT sections of each run). The reports state
 // explicitly that the manual audit is the ground truth - the "Official metrics"
 // tables are self-reported and inflated (e.g. gemini's official 63.3% hides 12

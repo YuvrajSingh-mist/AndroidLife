@@ -81,7 +81,7 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 | `mobilerun_provider_guard.py` | Guard/validation for the mobilerun provider configuration. |
 | `register_openrouter_pricing.py` | Register real OpenRouter pricing into the live per-day Phoenix DB (`assets/db/dayN/phoenix.db`) so Phoenix costs LLM spans. |
 | `organize_public_artifacts.py` | **Post-run filing.** Sweep/move public reports, metrics, hallucination evals, turn-based ASK audits into the canonical layout (`make organize-public`). |
-| `upload_public_runs_hf.py` | Upload finished `assets/runs/public/<id>/` trees (+ reports) to `YuvrajSingh9886/dailybench500-public`. |
+| `upload_public_runs_hf.py` | Upload finished `assets/runs/public/<id>/` trees (+ reports) to `YuvrajSingh9886/androidlife-public`. |
 | `publish_trajectories.py` | Publish trajectory media to HF and rewrite site URLs (paired with `website/tools/export_trajectories.mjs`). |
 | `compact_phoenix_db.py` | Shrink a Phoenix SQLite DB after a run. |
 

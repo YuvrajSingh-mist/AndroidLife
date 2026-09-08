@@ -1,7 +1,7 @@
 # Public Benchmark Specification (60-task preview)
 
 The **public benchmark** is the open, shareable slice of
-[DrainBench300](benchmark-spec.md): a 3-day (Day 1–3) preview drawn from the 530-task
+[AndroidLife](benchmark-spec.md): a 3-day (Day 1–3) preview drawn from the 530-task
 corpus so the pipeline, seeds, and grading can be exercised on a small, self-contained
 sample whose results can be published openly. It is **not** the eval set and it is not a
 curated "highlight reel" — every task keeps its real 530 `task_id`, exact prompt text, and

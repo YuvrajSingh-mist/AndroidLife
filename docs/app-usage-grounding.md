@@ -1,6 +1,6 @@
 # Grounding the schedule in real app-usage data
 
-Every DrainBench day is meant to look like an **ordinary person's real phone use**. So the number of apps a benchmark day asks the agent to touch should be anchored to how many apps a real person actually touches in a day. This document records that baseline, with citable sources, and explains the design choice it drives. Verified 2026-08-03.
+Every AndroidLife day is meant to look like an **ordinary person's real phone use**. So the number of apps a benchmark day asks the agent to touch should be anchored to how many apps a real person actually touches in a day. This document records that baseline, with citable sources, and explains the design choice it drives. Verified 2026-08-03.
 
 ## The real-world baseline
 
@@ -37,7 +37,7 @@ The schedule should not make a simulated day denser than reality. Three candidat
 
 ### Why the superset floor is 11-12 at 630 tasks, and how 530 lands at reality
 
-DrainBench's full corpus is **530 runnable tasks over 28 days across 31 apps** (216 easy + 242 medium + 72 hard). Realistically an app contributes **at most 2 tasks on any day** (one easy + one medium). Therefore each app must be active on at least 15 of 28 days, giving:
+AndroidLife's full corpus is **530 runnable tasks over 28 days across 31 apps** (216 easy + 242 medium + 72 hard). Realistically an app contributes **at most 2 tasks on any day** (one easy + one medium). Therefore each app must be active on at least 15 of 28 days, giving:
 
 - total app-days ≥ 31 × 15 = 465
 - apps/day ≥ 465 / 28 ≈ **16.6** (before the cross-app/notes-sharing relaxation)
@@ -113,7 +113,7 @@ low-penetration ones (shopping, weather) are genuinely *occasional*.
   dominate; tools are the always-on core; productivity/docs/weather/shopping are
   occasional" is a **reasonable synthesis of three proxies — not a directly
   measured "daily mix by sector"**.
-- DrainBench cannot mirror that time-share (social/video/gaming are excluded for
+- AndroidLife cannot mirror that time-share (social/video/gaming are excluded for
   ToS + ungradeable-passive-consumption reasons — see the next section). What it
   **does** preserve is the *shape*: a small ever-present communication/tool core
   (Chrome 22/28 days, Telegram 19/28, Notes 19/28), a rotating set of

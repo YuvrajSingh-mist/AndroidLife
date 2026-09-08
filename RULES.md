@@ -1,4 +1,4 @@
-# DrainBench300 — RULES (authoritative grading & operations)
+# AndroidLife — RULES (authoritative grading & operations)
 
 > This file is the single source of truth for how runs are graded and how the benchmark is
 > operated. Rules marked **(2026-09-02)** were established/confirmed in the 2026-09-01→02

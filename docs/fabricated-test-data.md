@@ -1,8 +1,8 @@
 # Fabricated & Seeded Test Data — Disclosure
 
-**Benchmark:** DrainBench300 (public sample: 50 tasks)
+**Benchmark:** AndroidLife (public sample: 50 tasks)
 **Test device:** a stock, **non-rooted** Android phone
-**Purpose of this document:** DrainBench evaluates an AI agent that operates a real
+**Purpose of this document:** AndroidLife evaluates an AI agent that operates a real
 phone through UI automation. To make the *deterministic* (non-ASK-USER) tasks
 actually solvable, a controlled, **fabricated test persona** was set up on the
 device. This document discloses — fully and honestly — every piece of fabricated

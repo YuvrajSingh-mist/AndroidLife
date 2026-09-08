@@ -190,7 +190,7 @@ async function initBrowseAppPage() {
       document.getElementById("app-meta").textContent = "Unknown app slug.";
       return;
     }
-    document.title = `${app.name} - DailyBench500`;
+    document.title = `${app.name} - AndroidLife`;
     document.getElementById("app-title").textContent = `${app.name}`;
     const platform = document.getElementById("app-platform");
     if (platform) platform.textContent = "Android";

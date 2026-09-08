@@ -1,4 +1,4 @@
-# DrainBench — Public Sample (3-Day Preview)
+# AndroidLife — Public Sample (3-Day Preview)
 
 ### Not the eval set. A structural preview only — a TRUE sample drawn from the
 530-task corpus (same task_ids, exact prompt text, placeholder slots) plus a few public-sample-specific additions. **60 tasks total** (53 runnable + 7 hallucination-control tasks whose data is genuinely absent on-device — the correct outcome for those is an honest failure).

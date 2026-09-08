@@ -1,4 +1,4 @@
-# DrainBench: The 28-Day Survival Schedule — runnable 530-task set
+# AndroidLife: The 28-Day Survival Schedule — runnable 530-task set
 
 This is the **canonical runnable schedule**: the deterministic 530-task corpus
 (216 easy / 242 medium / 72 hard = 49 ASK USER [36 SINGLE + 13 MULTI] / 23 DETERMINISTIC), landing each
