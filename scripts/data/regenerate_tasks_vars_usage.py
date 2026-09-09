@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate benchmarks/dailyBench-600/tasks_vars_usage.json from the 530 dataset (DailyBench_530_v1.json) and tasks_vars.local.env."""
+"""Regenerate benchmarks/androidlife-600/tasks_vars_usage.json from the 530 dataset (AndroidLife_530_v1.json) and tasks_vars.local.env."""
 from __future__ import annotations
 
 import json
@@ -7,9 +7,9 @@ from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DATASET = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
-VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
-OUT = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars_usage.json"
+DATASET = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars.local.env"
+OUT = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars_usage.json"
 
 
 def parse_flat_env(text: str) -> dict[str, str]:
@@ -65,7 +65,7 @@ def main() -> int:
     doc = {
         "file": "Global var->tasks index",
         "description": "For each key in tasks_vars.local.env (and every placeholder in the 530 dataset), the exact tasks that use it.",
-        "generated_from": "DailyBench_530_v1.json + tasks_vars.local.env",
+        "generated_from": "AndroidLife_530_v1.json + tasks_vars.local.env",
         "generated_at": "2026-08-12",
         "var_key_count_in_local_env": len(local_keys),
         "placeholder_key_count_in_dataset": len(dataset_placeholders),

@@ -19,7 +19,7 @@ Every script carries a module docstring; run any with `--help` for its exact fla
 
 | Script | What it does |
 |---|---|
-| `run_day.py` | **Main launcher.** Run one day (or all 530) from `tasks_530.md`: resolves the per-day vars file, emits one `dailybench_tasks.py` invocation per task, auto-detects the serial. `--dry-run` prints commands. |
+| `run_day.py` | **Main launcher.** Run one day (or all 530) from `tasks_530.md`: resolves the per-day vars file, emits one `androidlife_tasks.py` invocation per task, auto-detects the serial. `--dry-run` prints commands. |
 | `smoke_test.sh` | Pre-flight: prerequisites, LLM server + real completion, wired/wireless ADB + device health, one real one-step agent run. Run before any benchmark. |
 | `run_tests.sh` | Thin `pytest` wrapper for the test suite. |
 
@@ -59,15 +59,15 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 
 | Script | What it does |
 |---|---|
-| `export_530_dataset.py` | Export `tasks_530.md` → `DailyBench_530_v1.json`/`.jsonl` (the runnable dataset; also the shared `parse()` used by `run_day.py`). |
+| `export_530_dataset.py` | Export `tasks_530.md` → `AndroidLife_530_v1.json`/`.jsonl` (the runnable dataset; also the shared `parse()` used by `run_day.py`). |
 | `export_530_markdown.py` | Regenerate the markdown schedule (tasks_530.md) from the dataset / template. |
-| `export_public_dataset.py` | Build the public preview dataset (`DailyBench_public_v2.json`), merging ask_user facts. |
+| `export_public_dataset.py` | Build the public preview dataset (`AndroidLife_public_v2.json`), merging ask_user facts. |
 
 ## 📈 `eval/` — metrics, evaluation & reports
 
 | Script | What it does |
 |---|---|
-| `dailybench_report.py` | Aggregate a batch of run folders into MobileWorld-style metrics (SR, steps, queries, QIS fact-match, outcome split) → `report.json` + `report.md`. |
+| `androidlife_report.py` | Aggregate a batch of run folders into MobileWorld-style metrics (SR, steps, queries, QIS fact-match, outcome split) → `report.json` + `report.md`. |
 | `eval_hallucination_controls.py` | Grade HC tasks with DeepEval DAGMetric (full agent log) into an eval report. |
 | `e2e_askuser_phoenix.py` | End-to-end check of the ask_user + Phoenix tracing path. |
 
@@ -75,7 +75,7 @@ manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`
 
 | Script | What it does |
 |---|---|
-| `openai_proxy_logger.py` | Local OpenAI-compatible proxy that forwards to `--llm-upstream-base` and logs every completion to JSONL. Spawned per task by the harness (`src/DailyBench/processes.py`). |
+| `openai_proxy_logger.py` | Local OpenAI-compatible proxy that forwards to `--llm-upstream-base` and logs every completion to JSONL. Spawned per task by the harness (`src/androidlife/processes.py`). |
 | `device_health_check.py` | Battery/thermal/CPU device health snapshot over ADB. |
 | `app_audit.py` | **Device-readiness check**: verifies the connected phone has the 22 apps the benchmark targets (label → candidate packages map, OEM-tolerant). `--json` for machine output. |
 | `mobilerun_provider_guard.py` | Guard/validation for the mobilerun provider configuration. |

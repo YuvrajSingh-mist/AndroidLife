@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build website public-trajectory index from HF raw runs (no local media copy).
 
-For each public benchmark run on YuvrajSingh9886/dailybench500-public this script:
+For each public benchmark run on YuvrajSingh9886/androidlife-public this script:
   1. Lists day*/task folders on HF (or uses a local assets/runs/public/<id> mirror)
   2. Downloads only meta.json / output.json / trajectory.json (tiny)
   3. Writes condensed step JSON under website/assets/data/trajectories/public/<key>/
@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = ROOT / "website" / "assets" / "data" / "trajectories" / "index.json"
 OUT_DATA = ROOT / "website" / "assets" / "data" / "trajectories"
 
-HF_RUNS_REPO = "YuvrajSingh9886/dailybench500-public"
+HF_RUNS_REPO = "YuvrajSingh9886/androidlife-public"
 HF_RUNS_BASE = f"https://huggingface.co/datasets/{HF_RUNS_REPO}/resolve/main"
 
 # Oldest → newest (last becomes primary on the site).

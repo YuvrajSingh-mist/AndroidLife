@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="../assets/css/style.css?v=10">
+  <link rel="stylesheet" href="../assets/css/style.css?v=14">
 </head>
 <body data-site-data="../assets/data/site_data.json">
 
@@ -64,7 +64,7 @@
           focus. Agents run on
           <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
           (Droidrun); the LLM can be remote or local. Task density is grounded in real usage
-          (~9-10 apps/day; data.ai <em>State of Mobile</em> and related sources below).
+          (~<a href="https://www.data.ai/en/insights/market-data/state-of-mobile-2023/" target="_blank" rel="noopener">9-10 apps/day</a>; data.ai <em>State of Mobile</em> and related sources below).
         </p>
 
         <p>
@@ -99,24 +99,24 @@
           arbitrary task list.
         </p>
         <blockquote>
-          The average smartphone user has ~80 apps installed but uses only <strong>~9–10 per day</strong>
+          The average smartphone user has ~80 apps installed but uses only <strong>~9-10 per day</strong>
           and ~30 per month - <em>data.ai (App Annie), State of Mobile</em>.
         </blockquote>
         <p>The design drives the per-day app density down to reality:</p>
         <table>
           <thead>
-            <tr><th>Design</th><th>Apps/day</th><th>vs. real ~9–10</th></tr>
+            <tr><th>Design</th><th>Apps/day</th><th>vs. real ~9-10</th></tr>
           </thead>
           <tbody>
-            <tr><td>Original 21-day draft (30 tasks/day)</td><td>17–18</td><td>~80–100% above</td></tr>
-            <tr><td>First 28-day draft (630 tasks, decoupled)</td><td>12–15</td><td>~35–50% above</td></tr>
-            <tr><td>630-task superset, co-located</td><td>11–12</td><td>~15–25% above</td></tr>
-            <tr><td><strong>Final 530-task corpus</strong></td><td><strong>~10.8 (10–12)</strong></td><td><strong>~10% above</strong></td></tr>
+            <tr><td>Original 21-day draft (30 tasks/day)</td><td>17-18</td><td>~80-100% above</td></tr>
+            <tr><td>First 28-day draft (630 tasks, decoupled)</td><td>12-15</td><td>~35-50% above</td></tr>
+            <tr><td>630-task superset, co-located</td><td>11-12</td><td>~15-25% above</td></tr>
+            <tr><td><strong>Final 530-task corpus</strong></td><td><strong>~10.8 (10-12)</strong></td><td><strong>~10% above</strong></td></tr>
           </tbody>
         </table>
         <p>
-          The 530-task corpus spans 28 days (15–22 tasks/day, ~18.9/day) across 31 apps. Per-day
-          distinct apps run 10–12 (mean ~10.6); cross-app tasks are spread 4–10 per day (mean ~6.4) so
+          The 530-task corpus spans 28 days (15-22 tasks/day, ~18.9/day) across 31 apps. Per-day
+          distinct apps run 10-12 (mean ~10.6); cross-app tasks are spread 4-10 per day (mean ~6.4) so
           no day is all-single-app or all-cross-app. (The full, cited breakdown lives in
           <code>docs/app-usage-grounding.md</code>.)
         </p>
@@ -128,8 +128,8 @@
     <div class="container">
       <h2 class="section-title" id="heading-corpus">The 530-task corpus</h2>
       <div class="prose">
-        <p><strong>Source of truth:</strong> <code>benchmarks/dailyBench-600/tasks_530.md</code>
-        &rarr; <code>DailyBench_530_v1.json</code>. The corpus is pinned at exactly 530 tasks.</p>
+        <p><strong>Source of truth:</strong> <code>benchmarks/androidlife-600/tasks_530.md</code>
+        &rarr; <code>AndroidLife_530_v1.json</code>. The corpus is pinned at exactly 530 tasks.</p>
       </div>
       <table>
         <thead>
@@ -140,44 +140,217 @@
           <tr><td>Schedule</td><td><strong>28 days</strong>, ~18.9 tasks/day (min 15 · max 22)</td></tr>
           <tr><td>Distinct apps</td><td><strong>31</strong> (733 app-touches; a task counts once per app it touches)</td></tr>
           <tr><td>Easy (1pt, 1 app)</td><td><strong>216</strong></td></tr>
-          <tr><td>Medium (3pt, 1–2 apps)</td><td><strong>242</strong></td></tr>
-          <tr><td>Hard (5pt, 2–3 apps)</td><td><strong>72</strong> - 36 ASK USER SINGLE / 13 ASK USER MULTI / 23 DETERMINISTIC</td></tr>
+          <tr><td>Medium (3pt, 1-2 apps)</td><td><strong>242</strong></td></tr>
+          <tr><td>Hard (5pt, 2-3 apps)</td><td><strong>72</strong> - 36 ASK USER SINGLE / 13 ASK USER MULTI / 23 non-ASK USER</td></tr>
           <tr><td>Max achievable points</td><td><strong>1302</strong></td></tr>
           <tr><td>Single-app tasks</td><td><strong>362 (68.3%)</strong></td></tr>
           <tr><td>Cross-app tasks</td><td><strong>168 (31.7%)</strong> - 145 two-app + 23 three-app</td></tr>
-          <tr><td>Hallucination controls</td><td><strong>60</strong> (days 2–28)</td></tr>
+          <tr><td>Hallucination controls</td><td><strong>60</strong> (days 2-28)</td></tr>
           <tr><td>ASK USER fact sidecars</td><td>36 single-turn (<code>ask_user_facts_730.json</code>) + 13 multi-turn (<code>multiturn_kb_530.json</code>)</td></tr>
           <tr><td>Placeholders used</td><td>303 uses across 119 distinct keys</td></tr>
         </tbody>
       </table>
       <div class="prose">
-        <h3 class="subsection-title">Difficulty taxonomy</h3>
+        <h3 class="subsection-title" id="difficulty-taxonomy">Difficulty taxonomy</h3>
         <ul>
-          <li><strong>Easy</strong> - 1 app, 1 step.</li>
-          <li><strong>Medium</strong> - 1–2 apps, 3 steps.</li>
-          <li><strong>Hard</strong> - 2–3 apps, 5 steps, split into:
-            <ul>
-              <li><strong>DETERMINISTIC</strong> (23) - explicit, ADB-verified end state, no withheld facts.</li>
-              <li><strong>ASK USER SINGLE</strong> (36) - one deliberately withheld fact the agent must ask for instead of guessing.</li>
-              <li><strong>ASK USER MULTI</strong> (13) - a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome.</li>
-            </ul>
-          </li>
+          <li><strong>Easy</strong> - 1 app, 1 step, 1 point  - 
+          <a href="#cross-app">single-app</a> by design.</li>
+          <li><strong>Medium</strong> - 1-2 apps, 3 steps, 3 points
+          (~47% <a href="#cross-app">cross-app</a>).</li>
+          <li><strong>Hard</strong> - 2-3 apps, 5 steps, 5 points, split into
+          non-ASK USER / <a href="#ask-user">ASK USER</a>
+          (<a href="#ask-user-single">SINGLE</a> /
+          <a href="#ask-user-multi">MULTI</a>).</li>
         </ul>
+        <h3 class="subsection-title" id="cross-app">Single-app vs cross-app</h3>
+        <p>
+          A task is <strong>cross-app</strong> when its <code>apps</code> array has more than one app  - 
+          the agent must switch apps mid-task, not camp on one screen. Easy tasks are
+          <strong>single-app by design</strong> (216/216). Medium is ~47% cross-app; hard is mostly
+          cross-app (~85%). Cross-app load is spread across the 28-day schedule so no day is
+          all-single-app or all-cross-app. See also
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/benchmark-spec.md" target="_blank" rel="noopener">benchmark-spec.md</a>.
+        </p>
+
+        <div class="viz-grid" id="corpus-charts">
+          <div class="viz-card">
+            <h4>530 by difficulty</h4>
+            <div class="pie-wrap">
+              <div class="pie-canvas-wrap">
+                <canvas class="al-chart" aria-label="Easy 216, Medium 242, Hard 72"
+                  data-chart='{"type":"doughnut","labels":["Easy","Medium","Hard"],"data":[216,242,72],"colors":["#8a7355","#6b8a94","#c4b09a"],"center":{"value":"530","label":"tasks"}}'></canvas>
+              </div>
+              <ul class="pie-legend"></ul>
+            </div>
+            <p class="viz-caption">Points: 1 / 3 / 5 · max 1302. Hover for exact counts.</p>
+          </div>
+          <div class="viz-card">
+            <h4>Cross-app share by bucket</h4>
+            <div class="viz-chart-wrap">
+              <div class="bar-canvas-wrap">
+                <canvas class="al-chart" aria-label="Cross-app percent by bucket"
+                  data-chart='{"type":"bar","labels":["Easy","Medium","Hard"],"data":[0,47,85],"colors":["#8a7355","#6b8a94","#c4b09a"],"unit":"%","max":100}'></canvas>
+              </div>
+            </div>
+            <p class="viz-caption">Cross-app = <code>apps.length &gt; 1</code></p>
+          </div>
+          <div class="viz-card">
+            <h4>Hard interaction modes</h4>
+            <div class="pie-wrap">
+              <div class="pie-canvas-wrap">
+                <canvas class="al-chart" aria-label="ASK USER single 36, multi 13, non-ASK 23"
+                  data-chart='{"type":"doughnut","labels":["ASK USER SINGLE","ASK USER MULTI","non-ASK USER"],"data":[36,13,23],"colors":["#6b8a94","#8a7355","#b7a48c"],"center":{"value":"72","label":"hard"},"hrefs":["#ask-user-single","#ask-user-multi",null]}'></canvas>
+              </div>
+              <ul class="pie-legend"></ul>
+            </div>
+            <p class="viz-caption">Plus 60 <a href="#hallucination-controls">hallucination controls</a> across days 2-28</p>
+          </div>
+        </div>
+
+        <h3 class="subsection-title" id="placeholders">Placeholders - endless variations</h3>
+        <p>
+          Task text is templated with placeholders such as <code>[contact]</code>,
+          <code>[presentation name]</code>, and <code>[video name]</code>. Swapping the pin file
+          changes the concrete instance without editing the task list - so the corpus supports
+          many variations of the same graded behaviors. The 530 uses <strong>303 placeholder
+          slots across 119 distinct keys</strong>. For the public 60, device-pinned values ship in
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.example.env" target="_blank" rel="noopener"><code>benchmarks/androidlife-600/public_vars.example.env</code></a>
+          (see also <code>public_vars.example.env</code>).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="task-modes" aria-labelledby="heading-task-modes">
+    <div class="container">
+      <h2 class="section-title" id="heading-task-modes">ASK USER &amp; hallucination controls</h2>
+      <div class="prose">
+        <p>
+          Beyond easy / medium / hard, two task <em>modes</em> stress whether the agent knows what it
+          does not know. Both appear on the homepage as
+          <strong>ASK USER</strong> and <strong>hallucination controls</strong>.
+        </p>
+
+        <h3 class="subsection-title" id="ask-user">ASK USER</h3>
+        <p>
+          A load-bearing fact is <strong>deliberately withheld</strong> from the prompt (who to message,
+          which file, which place, …). The agent must call the <code>ask_user</code> tool and get the
+          answer from a <strong>simulated user</strong> - guessing scores zero even if the later UI
+          steps look right (MobileWorld-style SR gate).
+        </p>
+        <p>
+          <strong>Simulated user model:</strong> default <code>gpt-5.4-mini</code>, selected with
+          <code>--ask-user-model</code> (see <code>DEFAULT_ASK_USER_MODEL</code> in
+          <code>src/DailyBench/custom_tools.py</code>). The judge answers from the ground-truth fact
+          sidecar or multi-turn KB profile - not from the phone screen.
+        </p>
+        <div class="flow-h" aria-label="ASK USER runtime flow">
+          <div class="flow-step">
+            <div class="flow-step-label">1</div>
+            <div class="flow-step-title">Withheld prompt</div>
+            <div class="flow-step-detail">Fact absent from the agent goal</div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">2</div>
+            <div class="flow-step-title"><code>ask_user</code></div>
+            <div class="flow-step-detail">Agent must call the tool</div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">3</div>
+            <div class="flow-step-title">gpt-5.4-mini user</div>
+            <div class="flow-step-detail">Answers from fact / KB sidecar</div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">4</div>
+            <div class="flow-step-title">Act + grade</div>
+            <div class="flow-step-detail">UIQ / KBIQ + on-device end-state</div>
+          </div>
+        </div>
+        <ul>
+          <li id="ask-user-single"><strong>ASK USER SINGLE</strong> (36 in the 530) - one or two
+          withheld facts; each question is answered independently from the ground-truth fact sidecar
+          (<code>ask_user_facts_*.json</code>). Success requires: ask &rarr; correct answer &rarr;
+          completed on-device end state.</li>
+          <li id="ask-user-multi"><strong>ASK USER MULTI</strong> (13 in the 530) - a multi-turn
+          KB-oracle dialogue (<code>multiturn_kb_*.json</code>). The agent must drive the conversation
+          to the profile's <code>correct_target</code> (KBIQ) and finish the graded end state.</li>
+        </ul>
+
+        <h3 class="subsection-title" id="hallucination-controls">Hallucination controls</h3>
+        <p>
+          The target data is <strong>verified absent</strong> on the device (no such email, file, note,
+          …). The correct behavior is an <em>honest failure</em>: stop and report that the thing is not
+          there. Claiming success anyway is scored as a <strong>hallucination</strong>. On the public
+          60, 7 tasks are honesty-graded this way; the 530 has 60 such controls across days 2-28.
+        </p>
+        <p>
+          <strong>Post-run GEval / DeepEval pipeline:</strong> after the batch,
+          <code>scripts/eval/eval_hallucination_controls.py</code> runs a
+          <strong>DeepEval <code>DAGMetric</code></strong> judge over the full
+          <code>agent.log.txt</code> (<code>src/DailyBench/hallucination_judge.py</code>). Default judge
+          model is again <code>gpt-5.4-mini</code> (<code>--hallucination-judge-model</code> /
+          <code>--model</code>). Outputs land in
+          <code>reports/metrics/hallucination/public-&lt;RUN_TS&gt;.{json,md}</code>. Manual audit remains
+          ground truth for the published leaderboard; the DAGMetric pass is the automated GEval-style
+          check for HC honesty.
+        </p>
+        <div class="flow-h" aria-label="Hallucination control grading flow">
+          <div class="flow-step">
+            <div class="flow-step-label">1</div>
+            <div class="flow-step-title">Absent seed</div>
+            <div class="flow-step-detail">Target never planted on device</div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">2</div>
+            <div class="flow-step-title">Agent run</div>
+            <div class="flow-step-detail">Trajectory + <code>agent.log.txt</code></div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">3</div>
+            <div class="flow-step-title">DAGMetric</div>
+            <div class="flow-step-detail">DeepEval GEval-style judge</div>
+          </div>
+          <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
+          <div class="flow-step">
+            <div class="flow-step-label">4</div>
+            <div class="flow-step-title">Manual audit</div>
+            <div class="flow-step-detail">Leaderboard ground truth</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Mode</th><th>What is missing</th><th>Correct agent behavior</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>ASK USER</strong></td><td>fact withheld from the model (exists for the simulated user)</td><td>ask, then act on the answer</td></tr>
+            <tr><td><strong>Hallucination control</strong></td><td>target data absent on-device for everyone</td><td>honest fail - do not invent success</td></tr>
+            <tr><td><strong>Non-ASK USER</strong></td><td>nothing withheld - required facts are in the prompt / seeds</td><td>complete the graded end-state</td></tr>
+          </tbody>
+        </table>
+        <p>
+          Policy detail:
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">docs/evaluation-policy.md</a>.
+        </p>
       </div>
     </div>
   </section>
 
   <section id="public-sample" aria-labelledby="heading-public-sample">
     <div class="container">
-      <h2 class="section-title" id="heading-public-sample">The public 60-task sample</h2>
+      <h2 class="section-title" id="heading-public-sample">The public 60-task evaluation set</h2>
       <div class="prose">
         <p>
-          The public benchmark (<code>benchmarks/dailyBench-600/public.md</code> &rarr;
-          <code>DailyBench_public_v2.json</code>) is a <strong>true sample</strong> drawn from the 530
-          corpus - every task keeps its real 530 <code>task_id</code>, exact prompt text, and placeholder
-          slots - rebuilt as a 3-day (Day 1–3) preview. It is <strong>not</strong> the eval set and not a
-          curated "highlight reel"; it exists so the pipeline, seeds, and grading can be exercised on a
-          small, self-contained slice whose results can be published openly.
+          The public benchmark (<code>benchmarks/androidlife-600/public.md</code> &rarr;
+          <code>AndroidLife_public_v2.json</code>) is a <strong>standalone publishable evaluation set</strong>
+          (3 days &times; 20 tasks). It shares MobileRun, seeds, and grading with the 530 corpus and is
+          shaped to be representative of that mix - not a throwaway subset. See
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/reproducibility.md" target="_blank" rel="noopener">reproducibility</a>
+          for reset / seed / verify and why live-phone runs are never bitwise-identical.
         </p>
       </div>
       <table>
@@ -188,7 +361,7 @@
           <tr><td>Runnable tasks</td><td><strong>60</strong> (Day 1: 20 · Day 2: 20 · Day 3: 20)</td></tr>
           <tr><td>Grading</td><td><strong>53 success-graded + 7 hallucination-control</strong> (honesty-graded)</td></tr>
           <tr><td>Buckets</td><td><strong>26 easy / 17 medium / 17 hard</strong></td></tr>
-          <tr><td>Hard split</td><td><strong>6 ASK USER SINGLE + 4 ASK USER MULTI + 7 DETERMINISTIC</strong></td></tr>
+          <tr><td>Hard split</td><td><strong>6 ASK USER SINGLE + 4 ASK USER MULTI + 7 non-ASK USER</strong></td></tr>
           <tr><td>ASK USER tasks (any bucket)</td><td><strong>7 SINGLE + 4 MULTI = 11</strong></td></tr>
           <tr><td>Hallucination controls</td><td><strong>7</strong> (Day 1: 2 · Day 2: 2 · Day 3: 3)</td></tr>
           <tr><td>Single-app tasks</td><td><strong>31 (51.7%)</strong></td></tr>
@@ -201,7 +374,7 @@
       <h3 class="subsection-title">Per-day composition</h3>
       <table>
         <thead>
-          <tr><th>Day</th><th>Easy</th><th>Medium</th><th>Hard</th><th>Hard SINGLE</th><th>Hard MULTI</th><th>Hard DET</th><th>HC</th><th>Total</th></tr>
+          <tr><th>Day</th><th>Easy</th><th>Medium</th><th>Hard</th><th>Hard SINGLE</th><th>Hard MULTI</th><th>Hard non-ASK</th><th>HC</th><th>Total</th></tr>
         </thead>
         <tbody>
           <tr><td>1</td><td>9</td><td>5</td><td>6</td><td>1</td><td>2</td><td>3</td><td>2</td><td><strong>20</strong></td></tr>
@@ -224,22 +397,24 @@
       <h2 class="section-title" id="heading-grading">How tasks are graded</h2>
       <div class="prose">
         <p>
-          Grading is the 530-corpus model (<code>docs/evaluation-policy.md</code> +
-          <code>src/DailyBench/benchmark_metrics.py</code>) applied to the 60-task sample. Success is
-          gated on the <strong>verified on-device end state</strong>, never the model's self-report.
+          Grading follows
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener"><code>docs/evaluation-policy.md</code></a>
+          + <code>src/DailyBench/benchmark_metrics.py</code> on both the 530 and the public 60.
+          Success is gated on the <strong>verified on-device end state</strong>, never the model's self-report.
           Three outcome classes: <strong>true success / true failure / hallucination</strong> (no
           partials).
         </p>
         <ul>
-          <li><strong>DETERMINISTIC</strong> - scored by explicit on-device success/failure evidence.</li>
+          <li><strong>Non-ASK USER</strong> - scored by explicit on-device success/failure evidence.</li>
           <li><strong>ASK USER SINGLE</strong> - success only if the agent <em>asked</em> for the withheld
           fact (guessing &rarr; 0, mirroring the MobileWorld SR gate) <em>and</em> the returned answer
-          matched the ground-truth fact, <em>and</em> the outcome was completed.</li>
+          matched the ground-truth fact, <em>and</em> the outcome was completed. See
+          <a href="#ask-user">ASK USER</a>.</li>
           <li><strong>ASK USER MULTI</strong> - the agent must drive the KB-oracle dialogue; the
           interaction is scored against the profile's <code>correct_target</code> (KBIQ) and the
-          end-state must be reached.</li>
+          end-state must be reached. See <a href="#ask-user-multi">ASK USER MULTI</a>.</li>
           <li><strong>Hallucination control</strong> - honest failure = correct; fabricated success =
-          hallucination.</li>
+          hallucination. See <a href="#hallucination-controls">hallucination controls</a>.</li>
         </ul>
         <h3 class="subsection-title">Derived metrics</h3>
         <table>
@@ -273,15 +448,15 @@
             <tr><th>Bucket</th><th>Meaning</th><th>Data policy</th></tr>
           </thead>
           <tbody>
-            <tr><td><strong>Deterministic</strong></td><td>single correct, verifiable end state</td><td>all required data fabricated and seeded on-device</td></tr>
+            <tr><td><strong>Non-ASK USER</strong></td><td>no withheld facts; required data is seeded / in the prompt</td><td>all required data fabricated and seeded on-device</td></tr>
             <tr><td><strong>ASK USER</strong></td><td>deliberately missing one load-bearing fact</td><td>data deliberately absent; the agent must ask the simulated user</td></tr>
             <tr><td><strong>Hallucination control</strong></td><td>target data verified absent</td><td>nothing to find - honest failure is the correct behavior</td></tr>
           </tbody>
         </table>
         <p>
           Seeds are documented per task in seed manifests
-          (<code>scripts/seeding/build_day_seed_manifest.py</code>); days 1–6 use hand-authored specs,
-          days 7–28 are auto-generated from the dataset. Per-day placeholder vars are written by
+          (<code>scripts/seeding/build_day_seed_manifest.py</code>); days 1-6 use hand-authored specs,
+          days 7-28 are auto-generated from the dataset. Per-day placeholder vars are written by
           <code>scripts/seeding/generate_day_vars.py</code> and passed with <code>--vars-file</code>.
         </p>
       </div>
@@ -317,7 +492,7 @@
       <div class="prose">
         <p>
           The homepage <strong>Benchmark Summary</strong> is computed directly from the public dataset
-          (<code>DailyBench_public_v2.json</code>) plus the hallucination-control and multi-turn-KB
+          (<code>AndroidLife_public_v2.json</code>) plus the hallucination-control and multi-turn-KB
           sidecars in <code>website/tools/build_site_data.mjs</code>, so it always matches the 60 tasks
           you can browse. The <strong>Leaderboard</strong> is hand-copied from the run reports in
           <code>reports/public/</code> (the run folders are private / gitignored). The full spec is in
@@ -348,6 +523,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="../assets/js/charts.js?v=1"></script>
 <script src="../assets/js/nav.js?v=10"></script>
 <script src="../assets/js/app.js?v=11"></script>
 </body>

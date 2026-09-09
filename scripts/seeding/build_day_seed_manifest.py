@@ -13,7 +13,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from DailyBench.user_config import (  # noqa: E402
+from androidlife.user_config import (  # noqa: E402
     load_user_config,
     parse_flat_config,
     resolve_template,
@@ -22,16 +22,16 @@ from DailyBench.user_config import (  # noqa: E402
 )
 
 # Runnable dataset (the 530-task corpus; tasks_530.md is the source of truth).
-DATASET = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
-ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
+DATASET = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
+ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "androidlife-600" / "ask_user_facts_730.json"
 # Hallucination controls: data genuinely ABSENT on-device -> honest failure, never create.
-HALLUCINATION_CONTROLS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "hallucination_controls.json"
+HALLUCINATION_CONTROLS = REPO_ROOT / "benchmarks" / "androidlife-600" / "hallucination_controls.json"
 # Generated manifest metadata (per-task manifest.json + index + jsonl).
 MANIFESTS_ROOT = REPO_ROOT / "assets" / "seeds" / "manifests"
 # Flat folder of real seed artifacts (photos/pdf/notes) actually pushed to the device.
 ARTIFACTS_ROOT = REPO_ROOT / "assets" / "seeds"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
-VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars.local.env"
 
 
 # ---------------------------------------------------------------------------

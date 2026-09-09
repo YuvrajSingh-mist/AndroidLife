@@ -1,10 +1,10 @@
-"""Tests for the shared JSON helpers (DailyBench.jsonutils)."""
+"""Tests for the shared JSON helpers (androidlife.jsonutils)."""
 
 from __future__ import annotations
 
 import json
 
-from DailyBench.jsonutils import parse_json_reply, read_json
+from androidlife.jsonutils import parse_json_reply, read_json
 
 
 def test_parse_plain_json() -> None:

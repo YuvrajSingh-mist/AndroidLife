@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
-from DailyBench import processes
+from androidlife import processes
 
 load_dotenv()
 

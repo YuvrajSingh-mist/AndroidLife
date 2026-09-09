@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from DailyBench.benchmark_metrics import (
+from androidlife.benchmark_metrics import (
     avg_steps,
     avg_user_queries,
     kb_interaction_quality,

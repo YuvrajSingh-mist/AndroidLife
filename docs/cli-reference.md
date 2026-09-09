@@ -2,7 +2,7 @@
 
 Full flag tables for the two harness entry points. See [README.md](../README.md) for the common quick-start commands.
 
-## `dailybench_runner.py` — single-run harness
+## `androidlife_runner.py` — single-run harness
 
 | Flag | Default | Meaning |
 |---|---|---|
@@ -39,11 +39,11 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 
 > **Note:** The `ask_user` simulated user (`--ask-user-model`, default `gpt-5.4-mini`) only supports **OpenAI-hosted models** — the `ask_user` tool calls the OpenAI API directly, and its per-1M-token cost table covers OpenAI models. It is a separate service from the agent's LLM (`--model`), which can be any model your LLM host (e.g. OpenRouter) serves.
 
-## `dailybench_tasks.py` — dataset-backed batch runner
+## `androidlife_tasks.py` — dataset-backed batch runner
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--dataset` | `benchmarks/dailyBench-600/DailyBench_530_v1.json` | Which exported task dataset to read |
+| `--dataset` | `benchmarks/androidlife-600/AndroidLife_530_v1.json` | Which exported task dataset to read |
 | `--day` | *(none)* | Run every task whose schedule `day` equals `N` (any day 1..28 on the 530-task set). A selector on its own; combines with `--bucket`/`--app`/`--task-id` |
 | `--bucket` | *(none)* | Filter to `easy`/`medium`/`hard`/`hard-deterministic`/`open-ended` (`hard` is the current dialect's shuffled DETERMINISTIC+ASK USER battery; `hard-deterministic`/`open-ended` are the older dialect's split buckets) |
 | `--app` | *(none)* | Filter to one app slug (e.g. `gmail`) |
@@ -58,7 +58,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--sample-interval` | `1.0` | Forwarded to each task run |
 | `--llm-upstream-base` | `$LLM_UPSTREAM` | Forwarded to each task run |
 | `--llm-proxy-port-base` | `8090` | First proxy port; each task/repeat invocation gets `base + running index` |
-| `--model` | `$MODEL` | Model name, forwarded as `dailybench_runner.py --model` |
+| `--model` | `$MODEL` | Model name, forwarded as `androidlife_runner.py --model` |
 | `--temperature` | `0.0` | Sampling temperature |
 | `--top-p` | `0.95` | Nucleus sampling top-p, forwarded to each task run (agent + `ask_user`) |
 | `--seed` | `42` | Fixed sampling seed, forwarded to each task run (agent + `ask_user`), for run-to-run reproducibility |
@@ -90,7 +90,7 @@ when the launching terminal closes (stdin becomes invalid). **Always redirect st
 `/dev/null`:**
 
 ```bash
-nohup uv run dailybench_tasks.py --dataset ... --all --serial ... \
+nohup uv run androidlife_tasks.py --dataset ... --all --serial ... \
   --model <model> --save-trajectory action \
   --run-root "assets/runs/public/<TS>" \
   < /dev/null > "assets/runs/public/batch-<TS>.log" 2>&1 &
@@ -99,7 +99,7 @@ nohup uv run dailybench_tasks.py --dataset ... --all --serial ... \
 If a detached batch dies mid-run, **resume in place** (same run-root, no re-runs):
 
 ```bash
-uv run dailybench_tasks.py --dataset ... --all --serial ... \
+uv run androidlife_tasks.py --dataset ... --all --serial ... \
   --model <model> --save-trajectory action \
   --run-root "assets/runs/public/<TS>" --resume-from "<next-task-id>" \
   < /dev/null > "assets/runs/public/resume-<TS>.log" 2>&1 &

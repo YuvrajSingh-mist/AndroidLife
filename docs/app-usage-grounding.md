@@ -138,7 +138,7 @@ If the corpus were weighted by real time-share, ~35% of tasks would be social me
 3. **Verifiability skews the mix toward productivity/documents** — which is why the corpus over-represents those sectors relative to real time-share (a documented, intentional trade-off, not a flaw).
 4. **The hard requirement the corpus *does* preserve is density**: the *number* of distinct apps per day (10-12, avg ~10.8) tracks the real ~9-10 apps/day baseline, because that is the property that makes a day look like a real person's phone.
 
-**What the distribution actually does (measured 2026-08-12 from `DailyBench_530_v1.json`):**
+**What the distribution actually does (measured 2026-08-12 from `AndroidLife_530_v1.json`):**
 
 - **Per-day distinct apps**: 10-12, mean **~10.8** (real baseline ~9-10 → ~10% above, the closest the 28-day/31-app corpus can land without dropping density constraints).
 - **Every-day apps** (present ≥75% of days): Chrome 22/28 — the one always-on "hub" app (Telegram 19/28 and Notes 19/28 just miss the ≥75% bar; Obsidian 17/28). After the 2026-08-12 rebalance the always-on core is slimmer because 36 note-anchored cross tasks became unrelated multi-intent chains that touch Telegram/Gmail/Phone instead of Notes/Obsidian.

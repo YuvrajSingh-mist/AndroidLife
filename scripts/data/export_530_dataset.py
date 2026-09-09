@@ -11,7 +11,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
-from DailyBench.task_dataset import (  # noqa: E402
+from androidlife.task_dataset import (  # noqa: E402
     HARD_FLAT_POINTS,
     app_slug,
     difficulty_of,
@@ -22,11 +22,11 @@ from DailyBench.task_dataset import (  # noqa: E402
     to_prompt_template,
 )
 
-SRC = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_530.md"
-OUT_JSON = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
-OUT_JSONL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.jsonl"
-FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
-HALLUCINATIONS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "hallucination_controls.json"
+SRC = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_530.md"
+OUT_JSON = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
+OUT_JSONL = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.jsonl"
+FACTS = REPO_ROOT / "benchmarks" / "androidlife-600" / "ask_user_facts_730.json"
+HALLUCINATIONS = REPO_ROOT / "benchmarks" / "androidlife-600" / "hallucination_controls.json"
 
 DAY_RE = re.compile(r"^### Day (\d+)$")
 SECTION_RE = re.compile(r"^\*\*\[(.+?)\]\*\*$")
@@ -73,7 +73,7 @@ def parse(md_text: str) -> list[dict]:
                 "day": day,
                 # `app` is the display label shown in the md section/header; `app_slug`
                 # is always the task_id's middle segment (the id is the authority and
-                # matches what dailybench_report.py recovers from the id).
+                # matches what androidlife_report.py recovers from the id).
                 "app": app_name,
                 "app_slug": task_id.split("__")[1],
                 "apps": apps,
@@ -230,7 +230,7 @@ def merge_hallucination_controls(tasks: list[dict]) -> None:
 def build_dataset(tasks: list[dict]) -> dict:
     bucket_counts = Counter(t["bucket"] for t in tasks)
     return {
-        "dataset_name": "DrainBench 530 (28-day survival schedule)",
+        "dataset_name": "AndroidLife 530 (28-day survival schedule)",
         "dataset_version": "v1",
         # The 730 lineage was retired; the 530 is standalone (parsed from md).
         "parent": None,
@@ -238,7 +238,7 @@ def build_dataset(tasks: list[dict]) -> dict:
         "task_count": len(tasks),
         "bucket_counts": {k: bucket_counts[k] for k in ("easy", "medium", "hard")},
         "selection": "scripts/export_530_dataset.py: parse tasks_530.md (source of truth) "
-                     "-> DailyBench_530_v1.json/.jsonl",
+                     "-> AndroidLife_530_v1.json/.jsonl",
         "tasks": tasks,
     }
 

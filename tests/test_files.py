@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from DailyBench.files import dated_out_dir, make_run_dir, run_dir_for_label, slugify, write_json, write_text
+from androidlife.files import dated_out_dir, make_run_dir, run_dir_for_label, slugify, write_json, write_text
 
 
 def test_run_dir_for_label_nests_day_subfolder() -> None:

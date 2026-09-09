@@ -7,13 +7,75 @@
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
 > (grading rules).
 
-## 0. ACTIVE RUN — luna VISION `20260908-020948` (double-fork, launched 2026-09-08 ~02:10 IST)
+## 0. PAUSED — qwen3.8-27b VISION `20260909-043419` (resume later)
 
-Fresh 60-task public batch after cleaning dead `20260907-234823`.
-- Model: `openai/gpt-5.6-luna` **VISION** · serial `100.108.15.119:5555`
-- Detached via **Unix double-fork** (PPID 1) · log `assets/runs/public/batch-20260908-020948.log`
-- Phoenix `assets/db/public/20260908-020948/` · first task `hard__youtube-settings__052`
-- Pre-run: reset+seed same night; `.gitignore` now ignores entire `assets/` (HF-only).
+- **Cancelled 2026-09-09 ~10:14 IST** — keep run root; do **not** wipe
+- Model: `qwen/qwen3.8-27b` **VISION** · serial `100.108.15.119:5555`
+- **Battery at cancel: ~36%** (discharging; temp ~36.6°C)
+- Progress: **40/60** with `output.json`
+- Interrupted mid-task: `medium__google-photos__008` (day3) — **incomplete folder cleared**
+- Resume: `--run-root assets/runs/public/20260909-043419 --resume-from medium__google-photos__008 --vision`
+  (prefer `androidlife_tasks.py`; `dailybench_tasks.py` still works)
+- Charge before relaunch; Phoenix was stopped — restart with `--public --run-ts 20260909-043419`
+- Log: `assets/runs/public/batch-20260909-043419.log`
+- See § REMINDERS below (TEXT run, Slides redo, camera notes) — still apply
+
+### RENAME (2026-09-09) — DailyBench → AndroidLife (compat shims)
+
+- Package: `src/androidlife/` · shim `src/DailyBench/` still imports
+- CLIs: `androidlife_{tasks,runner}.py` canonical; `dailybench_*` aliases
+- Env: `ANDROIDLIFE_SERIAL` preferred; `DAILYBENCH_SERIAL` fallback
+- Dataset paths / Phoenix defaults `dailybench-*` **unchanged** (continuity)
+- Details: [`docs/naming.md`](naming.md)
+
+### REMINDERS (operator — do not forget)
+
+1. **Also run qwen3.8-27b TEXT** on the same public 60 (new `RUN_TS`, no `--vision`), after this
+   VISION batch finishes — same reset/seed/verify gate. Phone reboot fixed tools for VISION;
+   use the same reboot habit if TEXT ever goes tool-dead.
+2. **Redo Google Slides for other published models** — prior runs often saw an empty / 1-slide
+   `Q3 Review` deck (wrong GT). Confirm the deck is fully seeded (multi-slide), then
+   re-run **`easy__google-slides__001`** (merge-in-place) for affected leaderboard rows.
+3. **Camera / video-record on public 60:** `easy__camera__006` = switch to video mode only
+   (already done on this VISION run). Closest real video check is
+   **`medium__google-photos__008`** — resume point now; also redo for models that ran with bad seeds.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 0a. COMPLETED — `openai/gpt-5.6-luna` TEXT (`20260906-063336`)
@@ -55,14 +117,14 @@ Fresh 60-task public batch after cleaning dead `20260907-234823`.
 
 ## 0b. PREVIOUS STATE (2026-08-29) — Public 3-day runs + music-obsidian-077 reruns
 
-- **Active benchmark:** the PUBLIC 3-day sample — `benchmarks/dailyBench-600/DailyBench_public_v2.json` (60 tasks) + `public.md` + `multiturn_kb_public.json` + `public_vars.local.env`. Three target runs under `assets/runs/public/`:
+- **Active benchmark:** the PUBLIC 3-day sample — `benchmarks/androidlife-600/AndroidLife_public_v2.json` (60 tasks) + `public.md` + `multiturn_kb_public.json` + `public_vars.local.env`. Three target runs under `assets/runs/public/`:
   - `2026-08-26-184934` — **qwen3.8-27b VISION-ONLY** · manual **22 PASS / 37 FAIL / 1 HC** · official **23/36/1 = 38.3%**
   - `20260826-105200` — **gemini-3.1-flash-lite** · manual **25 PASS / 34 FAIL / 1 HC** · official **37/22/1 = 61.7%** (post music-obsidian merge; hard-swiggy-005 = 12th false pass)
   - `2026-08-28-002424` — **qwen3.8-27b TEXT** · manual **37 PASS / 23 FAIL / 0 HC** · official **31/29/0 = 51.7%**
 - **Music-Obsidian-077 redesigned (2026-08-28→29):** prompt = *"…once you start it yourself, it then stops by itself around my asleep time… in the music app I used the most lately…"*. Oracle/`Bedtime.md` = 20-night raw log, bedtime constant 10:30 PM, field `music`, **YouTube Music RECURS ~11:00 PM + Chillhop Lofi Beats - Sleep Mix (9/10, last-5 all YT)**. Correct target `youtube-music::sleep-timer-1030pm`; KBIQ stop ≈ 11:00 PM + Chillhop.
 - **Music-Obsidian-077 reruns (2026-08-29) — ALL 3 FAIL (0 ask_user each), merged in place** into each run's `day2/hard-music-obsidian-077/` with row-above telemetry: 184934 ← `easy-google-maps-004`; 105200 ← `easy-google-maps-004`; 002424 ← `hard-google-search-telegram-clock-018`. Failures: qwen-vision stuck in Obsidian "Go to file" loop (60-step cap); gemini opened regular **YouTube** (not YT Music), gave up at step 13 (official success 38→37); qwen-text opened OnePlus Notes, 60-step cap. None read the note, none asked, none set up YT Music + Chillhop + ~11 PM. Standalone rerun folders deleted.
 - **Reports updated:** `reports/public/public-{184934,105200,002424}.md` (Music-Obsidian rerun notes + tables), `reports/metrics/public/public-*-report.{json,md}` (regenerated via `dailybench_report.py --out reports/metrics/public/<base>.json --out-md ...`), turn-based `reports/turn-based/public/ask-query-multi/<run>/hard__music-obsidian__077.md` (new prompt, 0 turns), 105200 manual-audit (music-obsidian removed from false-pass list 9→8).
-- **Phoenix:** started per-run with `start_phoenix.py --public --run-ts <ts>` (DB at `assets/db/public/<ts>/phoenix.db`, project `dailybench-public`); runner traces ON by default. 2026-08-29 rerun DBs exist for all 3 (qwen-vision, gemini, qwen-text).
+- **Phoenix:** started per-run with `start_phoenix.py --public --run-ts <ts>` (DB at `assets/db/public/<ts>/phoenix.db`, project `androidlife-public`); runner traces ON by default. 2026-08-29 rerun DBs exist for all 3 (qwen-vision, gemini, qwen-text).
 - **All conventions + the full music-obsidian story live in `/memories/repo/run-preferences.md`** — read that for the canonical, up-to-date rules (merge-in-place, row-above telemetry, turn-based .md format, deep-audit, phoenix, music-obsidian redesign + rerun results).
 
 ---
@@ -77,11 +139,11 @@ Fresh 60-task public batch after cleaning dead `20260907-234823`.
 
 ## 2. Phoenix — per-day model (DONE)
 
-- Current run project: **`dailybench-day1`** — the ONLY project left in the DB.
+- Current run project: **`androidlife-day1`** — the ONLY project left in the DB.
 - Day-1 DB: `assets/db/day1/phoenix.db` (23 traces = 22 MobileAgent.run + 1 ask_user.llm).
 - Start phoenix per day: `PHOENIX_SQL_DATABASE_URL=sqlite:///<abs>/assets/db/dayN/phoenix.db`
-  + `PHOENIX_PROJECT_NAME=dailybench-dayN`.
-- `scripts/run/run_day.py --day N` auto-sets `--phoenix-project dailybench-dayN`.
+  + `PHOENIX_PROJECT_NAME=androidlife-dayN`.
+- `scripts/run/run_day.py --day N` auto-sets `--phoenix-project androidlife-dayN`.
 - Pricing + e2e scripts default to `assets/db/day1/phoenix.db` (override `--db`).
 - **Agent cost field:** in `llm_proxy_metrics.jsonl` cost is NESTED at `usage.cost`
   (NOT a top-level `cost` key).
@@ -120,8 +182,8 @@ Fresh 60-task public batch after cleaning dead `20260907-234823`.
 ## 3b. Day-1 task rewordings (DONE 2026-08-09 — data already regenerated)
 
 The following tasks failed on data/device preconditions, so they were reworded to be
-achievable and re-seeded. All changes are in `benchmarks/dailyBench-600/tasks_530.md`
-(source of truth) and the regenerated `DailyBench_530_v1.json/.jsonl` + day-1 seed
+achievable and re-seeded. All changes are in `benchmarks/androidlife-600/tasks_530.md`
+(source of truth) and the regenerated `AndroidLife_530_v1.json/.jsonl` + day-1 seed
 manifest + `website/assets/data/site_data.json` (site auto-deploys on push):
 
 - **easy__phone__001** → "In Phone, message the most recent unknown number with
@@ -185,9 +247,9 @@ invent steps; this is the agreed, verified workflow:
    `adb -s "$DAILYBENCH_SERIAL" shell "input keyevent 3; input keyevent KEYCODE_WAKEUP; wm dismiss-keyguard"`
 3. **Verify seeds for that day on-device**:
    `uv run scripts/seeding/seed_data.py --serial "$DAILYBENCH_SERIAL" --day N --verify`
-4. **Start Phoenix for that day** (fresh per-day DB; project `dailybench-dayN`):
-   `PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/dayN/phoenix.db" PHOENIX_PROJECT_NAME=dailybench-dayN uv run phoenix serve --port 6006`
-5. **Run the day** (auto-targets the `dailybench-dayN` project):
+4. **Start Phoenix for that day** (fresh per-day DB; project `androidlife-dayN`):
+   `PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/dayN/phoenix.db" PHOENIX_PROJECT_NAME=androidlife-dayN uv run phoenix serve --port 6006`
+5. **Run the day** (auto-targets the `androidlife-dayN` project):
    `uv run python scripts/run/run_day.py --day N --dry-run` first, then without `--dry-run`.
 6. **Register pricing into that day's DB** (default is day1 — pass `--db` for other days):
    `uv run scripts/tools/register_openrouter_pricing.py --model qwen/qwen3.7-flash --db assets/db/dayN/phoenix.db`
@@ -233,7 +295,7 @@ USER tasks; per-day Phoenix DB lives at `assets/db/dayN/phoenix.db`.
 
 Task changes (all benchmark files updated, dataset re-exported at 68 tasks):
 - `easy__swiggy__001` **REWORDED** → "calculate the total spendings last month on foods"
-  (sum July-2026 Swiggy order totals in-app). `public.md` + `DailyBench_public_v2.json` updated.
+  (sum July-2026 Swiggy order totals in-app). `public.md` + `AndroidLife_public_v2.json` updated.
 - `hard__google-search-telegram-clock__018` fact fixed → recipient added:
   "The place is the SBI ATM. The person to message is Yuvraj Singh Jio."
   (`ask_user_facts.json` + dataset).

@@ -113,7 +113,7 @@ uv run dailybench_tasks.py \
       <div class="prose">
         <p>
           Run a whole day from the 28-day schedule (or all 530) with one command. This also sets up the
-          per-day Phoenix project (<code>dailybench-dayN</code>) automatically:
+          per-day Phoenix project (<code>androidlife-dayN</code>) automatically:
         </p>
       </div>
       <pre><code class="language-bash">uv run python scripts/run/run_day.py --day 1
@@ -155,7 +155,7 @@ uv run scripts/eval/dailybench_report.py \
         </p>
       </div>
       <pre><code class="language-bash">PHOENIX_SQL_DATABASE_URL="sqlite:///$PWD/assets/db/day1/phoenix.db" \
-PHOENIX_PROJECT_NAME=dailybench-day1 \
+PHOENIX_PROJECT_NAME=androidlife-day1 \
 uv run phoenix serve --port 6006   # then view http://localhost:6006
 
 # register real OpenRouter pricing so Phoenix shows LLM cost:

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Smoke-tests the full DailyBench300 stack before a real benchmark run:
+# Smoke-tests the full AndroidLife stack before a real benchmark run:
 #
 #   1. local prerequisites (adb, curl, uv, the mobilerun SDK import)
 #   2. the OpenAI-compatible LLM server (llama.cpp, vLLM, Ollama's OpenAI shim, ...)
@@ -31,7 +31,7 @@ cd "$REPO_DIR"
 LLM_URL="${LLM_UPSTREAM:-${LLM_URL:-http://127.0.0.1:8081/v1}}"
 MODEL="${MODEL:-}"
 USB_SERIAL="${USB_SERIAL:-}"
-WIRELESS_SERIAL="${WIRELESS_SERIAL:-${DAILYBENCH_SERIAL:-}}"
+WIRELESS_SERIAL="${WIRELESS_SERIAL:-${ANDROIDLIFE_SERIAL:-${DAILYBENCH_SERIAL:-}}}"
 WIRELESS_PORT="${WIRELESS_PORT:-5555}"
 CURL_TIMEOUT="${SMOKE_TIMEOUT:-10}"
 SMOKE_PROXY_PORT="${SMOKE_PROXY_PORT:-18099}"
@@ -49,7 +49,7 @@ usage() {
 Usage: scripts/run/smoke_test.sh [options]
 
 Smoke-tests the LLM server plus wired and wireless ADB/mobilerun connectivity
-for DailyBench300, ending (by default) with one real one-step agent run through
+for AndroidLife, ending (by default) with one real one-step agent run through
 the harness itself. Every target is configurable - nothing is hardcoded to one
 phone or model host.
 
@@ -66,7 +66,7 @@ Options:
   --usb-serial SERIAL     Explicit wired ADB serial to test (auto-detected if omitted)
   --wireless-serial IP:PORT
                           Explicit wireless ADB serial to test
-                          (env: WIRELESS_SERIAL or DAILYBENCH_SERIAL)
+                          (env: WIRELESS_SERIAL or ANDROIDLIFE_SERIAL / DAILYBENCH_SERIAL)
   --wireless-port PORT    Port to use when enabling `adb tcpip` mode (default: 5555)
   --timeout SECONDS       curl/network timeout in seconds (default: 10)
   --steps N               Step budget for the end-to-end agent smoke run (default: 3)
@@ -290,16 +290,16 @@ else
 fi
 
 if [[ ! -f "$REPO_DIR/pyproject.toml" ]]; then
-  fail "pyproject.toml not found at $REPO_DIR - run this script from inside the DailyBench300 checkout"
+  fail "pyproject.toml not found at $REPO_DIR - run this script from inside the AndroidLife / DrainBench300 checkout"
 else
   pass "running from repo root ($REPO_DIR)"
 fi
 
 info "uv run python -c 'import mobilerun' ..."
-if uv run python -c "import mobilerun" >/tmp/DailyBench_smoke_mobilerun_import.log 2>&1; then
+if uv run python -c "import mobilerun" >/tmp/androidlife_smoke_mobilerun_import.log 2>&1; then
   pass "mobilerun SDK imports cleanly"
 else
-  fail "mobilerun SDK failed to import - run 'uv sync --extra dev --extra tracing --extra hf' first (log: /tmp/DailyBench_smoke_mobilerun_import.log)"
+  fail "mobilerun SDK failed to import - run 'uv sync --extra dev --extra tracing --extra hf' first (log: /tmp/androidlife_smoke_mobilerun_import.log)"
 fi
 
 # ---------------------------------------------------------------------------
@@ -484,7 +484,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 4. End-to-end: one real DailyBench task through the harness itself
+# 4. End-to-end: one real AndroidLife task through the harness itself
 # ---------------------------------------------------------------------------
 if [[ "$RUN_AGENT_SMOKE" -eq 1 ]]; then
   section "End-to-end agent smoke run"
@@ -496,8 +496,8 @@ if [[ "$RUN_AGENT_SMOKE" -eq 1 ]]; then
     warn "MODEL not set - skipping the end-to-end agent smoke run (pass --model or export MODEL)"
   else
     agent_log="$(mktemp)"
-    info "uv run dailybench_runner.py against $agent_serial (goal: \"$SMOKE_GOAL\", steps=$SMOKE_STEPS) ..."
-    if uv run dailybench_runner.py \
+    info "uv run androidlife_runner.py against $agent_serial (goal: \"$SMOKE_GOAL\", steps=$SMOKE_STEPS) ..."
+    if uv run androidlife_runner.py \
       --serial "$agent_serial" \
       --label smoke-test \
       --run-root assets/runs/full-bench/smoke-test \

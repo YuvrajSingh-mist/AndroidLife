@@ -11,8 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from DailyBench.task_batch import load_json_object
-from DailyBench.task_dataset import multiturn_kb_path
+from androidlife.task_batch import load_json_object
+from androidlife.task_dataset import multiturn_kb_path
 
 
 def collect_kb_queries(run_dirs: list[Path], kb_ids: set[str]) -> list[tuple[Path, str, list[dict]]]:

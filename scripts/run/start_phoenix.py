@@ -18,8 +18,8 @@ DB_ROOT = REPO_ROOT / "assets" / "db"
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="Start phoenix serve for a day's run.")
     g = ap.add_mutually_exclusive_group(required=True)
-    g.add_argument("--day", type=int, metavar="N", help="Day 1-28: DB assets/db/dayN/phoenix.db, project dailybench-dayN")
-    g.add_argument("--public", action="store_true", help="Public-sample run: DB assets/db/public/phoenix.db, project dailybench-public")
+    g.add_argument("--day", type=int, metavar="N", help="Day 1-28: DB assets/db/dayN/phoenix.db, project androidlife-dayN")
+    g.add_argument("--public", action="store_true", help="Public-sample run: DB assets/db/public/phoenix.db, project androidlife-public")
     g.add_argument("--project", default=None, help="Shared project name -> assets/db/misc/phoenix.db")
     ap.add_argument("--run-ts", default=None, metavar="YYYYMMDD-HHMMSS", help="With --public: use assets/db/public/<run-ts>/phoenix.db (dedicated per-run DB folder)")
     ap.add_argument("--port", type=int, default=6006, help="Phoenix dashboard/HTTP port (default 6006)")
@@ -44,10 +44,10 @@ def _already_running(host: str, port: int) -> bool:
 def main() -> int:
     args = build_parser().parse_args()
     if args.day is not None:
-        project = f"dailybench-day{args.day}"
+        project = f"androidlife-day{args.day}"
         db_path = DB_ROOT / f"day{args.day}" / "phoenix.db"
     elif args.public:
-        project = "dailybench-public"
+        project = "androidlife-public"
         db_path = DB_ROOT / "public" / (args.run_ts or "") / "phoenix.db" if args.run_ts else DB_ROOT / "public" / "phoenix.db"
     else:
         project = args.project

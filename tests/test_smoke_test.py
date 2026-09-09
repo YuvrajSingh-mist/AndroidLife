@@ -19,7 +19,7 @@ from pathlib import Path
 import pytest
 from conftest import first_adb_device, first_wired_adb_device, first_wireless_adb_device
 
-from DailyBench import processes
+from androidlife import processes
 
 ROOT = Path(__file__).resolve().parents[1]
 SMOKE_TEST = ROOT / "scripts" / "run" / "smoke_test.sh"

@@ -1,16 +1,16 @@
 #!/bin/bash
-# Periodic watcher for a running dailybench batch.
+# Periodic watcher for a running androidlife batch.
 # Sends a macOS notification (via osascript) when the batch process finishes,
 # and optionally every N minutes with a progress heartbeat.
 #
 # Usage:
 #   ./scripts/tools/watch_batch.sh --pid <PID> --label "day5-rerun11" [--every 300]
 #
-# If --pid is omitted, watches the newest dailybench_tasks.py process.
+# If --pid is omitted, watches the newest androidlife_tasks.py / dailybench_tasks.py process.
 set -u
 
 PID=""
-LABEL="dailybench"
+LABEL="androidlife"
 EVERY=300
 LOG=""
 
@@ -29,11 +29,11 @@ notify() {
 }
 
 if [ -z "$PID" ]; then
-  PID=$(pgrep -f "dailybench_tasks.py" | head -1)
+  PID=$(pgrep -f "androidlife_tasks.py|dailybench_tasks.py" | head -1)
 fi
 
 if [ -z "$PID" ]; then
-  echo "No dailybench_tasks.py process found."
+  echo "No androidlife_tasks.py / dailybench_tasks.py process found."
   notify "Batch watcher" "No running batch found for '$LABEL'"
   exit 1
 fi

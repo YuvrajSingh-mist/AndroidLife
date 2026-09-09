@@ -216,7 +216,7 @@ and are answered only if the agent asks:
 
 Every `[placeholder]` in `public.md` is filled at launch with a persona value via repeated
 `--var key=value` flags. These are the exact values used for the public runs (also recorded
-in `benchmarks/dailyBench-600/public_vars.local.env`, gitignored):
+in `benchmarks/androidlife-600/public_vars.local.env`, gitignored):
 
 | Var | Value | Notes |
 |---|---|---|
@@ -234,7 +234,7 @@ These are benchmark parameters, not real-world data.
 - `easy__contacts__001` (rename a contact to include a middle initial) targets a **different
   real contact present on the device: Akash Kumar** (a genuine contact with a phone number),
   NOT the persona contact. This is implemented as a per-task override in the generated dataset
-  (`benchmarks/dailyBench-600/DailyBench_public_v2.json` + `.jsonl`, both gitignored): the
+  (`benchmarks/androidlife-600/AndroidLife_public_v2.json` + `.jsonl`, both gitignored): the
   prompt hardcodes "change Akash Kumar's name to include their middle initial", and only the
   `middle initial` placeholder remains (`Kumar Sahoo`). The change is **scoped to this task**
   so the shared `contact` var used by messaging tasks is unaffected. The override is **baked
@@ -247,7 +247,7 @@ must be recorded alongside any results:
 
 ```bash
 .venv/bin/python dailybench_tasks.py \
-  --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
+  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --all --serial <serial> \
   --llm-upstream-base https://openrouter.ai/api \
   --model qwen/qwen3.6-plus --temperature 0.0 --steps 200 \
@@ -328,7 +328,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   - `medium__files-pdf__001` (Files+PDF, 3-step): open `[invoice file]` ('Invoice INV-2026-071.pdf'), read out the amount due (**Rs. 1,240.00**), check whether the due date has passed. **Vision-required**: Files' PDF viewer does not expose the document body to the a11y tree — text-only agents fail, vision (screenshot) agents win.
   - `medium__files-pdf__002` (Files+PDF, 3-step): open `[rent receipt]` ('Rent Receipt.pdf'), read the rent amount (**Rs. 9,000.00**), confirm the receipt shows paid-in-full. **New fabricated seed**: `Rent Receipt.pdf` (text-layer PDF: Rs. 9,000.00, due 2026-08-05, paid in full) pushed to `/sdcard/Download/` + media-scanned.
   - 'Wait no, hold on' is kept **unique** to `medium__google-maps__002` (the new tasks use plain natural voice, no repeated 'Wait').
-  - Public sample **57 → 61 tasks**. New tasks are public-sample-specific (added to `public.md` only); the 530 corpus stays exactly 530 by design. Regenerated `DailyBench_public_v2.json/.jsonl`. **4 new placeholders** (`timer minutes`, `timer label`, `invoice file`, `rent receipt`) added to `public_vars.local.env`, `config/user.yaml`, and the `SCHEMA`.
+  - Public sample **57 → 61 tasks**. New tasks are public-sample-specific (added to `public.md` only); the 530 corpus stays exactly 530 by design. Regenerated `AndroidLife_public_v2.json/.jsonl`. **4 new placeholders** (`timer minutes`, `timer label`, `invoice file`, `rent receipt`) added to `public_vars.local.env`, `config/user.yaml`, and the `SCHEMA`.
 - **2026-08-19 — google-photos__012 album name placeholder-ized.**
   - `medium__google-photos__012` now asks for a new album called `[album name]` instead of the hardcoded
     'Weekend'; the placeholder resolves to **'Hostel Life'** (added `album name=Hostel Life` to
@@ -513,7 +513,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   - `hard__msn-news__007` — biggest story in followed topic → summarize → message [contact].
     Header now **[MSN News+Telegram]**.
   KB profiles unchanged (facts matched); the tasks stay multi-turn (markers + `multiturn_kb_530.json`
-  untouched, still 13). Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes) +
+  untouched, still 13). Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) +
   `tasks_vars_usage.json`; aligned the day-3 seed manifest end_state for
   `hard__google-search-notes__019`. `verify_config.py` PASS; full suite PASS. **Note:** 3 of the 9
   remain single-app by multi-turn design (`makemytrip__003`, `prime-video__005`,
@@ -547,8 +547,8 @@ Harness behavior that affects results and is part of the reproducible spec:
     `src/DailyBench/user_config.py` DEFAULT_CONFIG, and the `build_day_seed_manifest.py` day-3 spec
     (vars now `{}`, seed/end_state updated to 'lo-fi beats by Chillhop'); updated
     `tests/test_task_dataset.py`; regenerated `tasks_vars_usage.json` (91 keys).
-  - Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes, 36 AU / 36 DET) +
-    `DailyBench_public_v2.json/.jsonl` (57 tasks). `verify_config.py` PASS; full test suite PASS (218,
+  - Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes, 36 AU / 36 DET) +
+    `AndroidLife_public_v2.json/.jsonl` (57 tasks). `verify_config.py` PASS; full test suite PASS (218,
     1 hardware skip).
 
 - **2026-08-18 — Task-uniqueness audit: files/delete-largest cluster differentiated; unsolvable Phone task fixed.**
@@ -565,7 +565,7 @@ Harness behavior that affects results and is part of the reproducible spec:
     delete the extra copies, count how many you removed" (uses Files' duplicate cleaner).
   - `medium__google-drive__007` (duplicate delete-largest) → "files that were shared with me that I
     can edit, tell me how many there are" (no delete).
-  Regenerated `DailyBench_530_v1.json/.jsonl` (530 tasks, 0 dupes) + `DailyBench_public_v2.json/.jsonl`
+  Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) + `AndroidLife_public_v2.json/.jsonl`
   (57 tasks). This orphaned the `[video size threshold]` and `[file size threshold]` placeholders
   (only `[size threshold]` remains, used by `medium__files__010`): removed those keys from
   `config/user_config.example` + `config/user.yaml` + `public_vars.example.env` and the local
@@ -577,10 +577,10 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 - **2026-08-10 — Fixed "Goa trip" regression in run-time fact + dataset.**
   The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
-  `ask_user_facts_730.json` and `DailyBench_530_v1.json/.jsonl` — they still told the
+  `ask_user_facts_730.json` and `AndroidLife_530_v1.json/.jsonl` — they still told the
   sim user/agent the event was the **Goa trip** while the on-device photo caption reads
   **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_730.json`,
-  `DailyBench_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
+  `AndroidLife_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
   `golden_trajectory` fields to the Day-2 seed manifests (esp. the Photos tasks, with
   the "confirm the photo actually depicts the subject" rule from the Day-1 pizza
   false-pass); fixed stale `DAY2_TASKS` placeholder declarations (`time 1/time 2`,
@@ -597,7 +597,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   the earlier fabricated ASMR mp3 was **removed** (the music side is now real app +
   web state — the agent must search + download the highly-liked video itself, see
   §3.9) and only an Obsidian `Bedtime.md` note remains on-device. Regenerated
-  `tasks_vars/day_3.env` (10/10 placeholders pinned) + `DailyBench_530_v1.json/
+  `tasks_vars/day_3.env` (10/10 placeholders pinned) + `AndroidLife_530_v1.json/
   .jsonl` (export --verify PASS, 531 tasks).
 
 - **2026-08-06 — Day-3 placeholder discipline + Yuvraj contact descriptions.**
@@ -611,7 +611,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   with August birthdays (aneja/Jio/Singh — see §3.1) via ADB so
   `medium__contacts__002` can suggest presents; typo-fixed "descriptiosn
   menitoned" → "descriptions mentioned". Regenerated `tasks_vars/day_3.env`
-  (9/9 placeholders pinned) + `DailyBench_530_v1.json/.jsonl` (export --verify PASS,
+  (9/9 placeholders pinned) + `AndroidLife_530_v1.json/.jsonl` (export --verify PASS,
   531 tasks).
 
 - **2026-08-06 — Event-photo caption added + trip renamed to "Bhubaneswar trip".**
@@ -619,7 +619,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   photo (Sep 24, 2023 · Gothapatna) now carries the caption **"Bhubaneswar trip with Yuvraj
   Airtel"**, so the "email it to them if so" branch is reachable. The persona trip was renamed
   **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_730.json`
-  → "The event is the Bhubaneswar trip.", regenerated `DailyBench_530_v1.json/.jsonl`, rebuilt seed
+  → "The event is the Bhubaneswar trip.", regenerated `AndroidLife_530_v1.json/.jsonl`, rebuilt seed
   manifests + `tasks_vars/day_2.env`). Re-ran the task into `runs/full-bench/2026-08-06-030706/day2/
   hard-photos-gmail-obsidian-012` (original caption-missing run preserved as `*.nomention-backup`):
   **PARTIAL → PASS** — photo starred + emailed to Yuvraj Airtel + send recorded in an Obsidian note.
@@ -650,8 +650,8 @@ Harness behavior that affects results and is part of the reproducible spec:
   them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
 - **2026-08-03 — ask_user_facts split per source.** The combined facts file (50 tasks.md + 6
   public facts) is split into per-source files, derived via `--source` with no hardcoded paths
-  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/dailyBench-600/ask_user_facts_730.json`
-  (50 facts), `public.md` -> `benchmarks/dailyBench-600/ask_user_facts.json` (the 6 public facts,
+  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-600/ask_user_facts_730.json`
+  (50 facts), `public.md` -> `benchmarks/androidlife-600/ask_user_facts.json` (the 6 public facts,
   which `scripts/data/export_public_dataset.py` publishes). The combined file
   `ask_user_facts_public.json` is left untouched.
 - **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts.json` had been replaced with
@@ -757,7 +757,7 @@ following entities were **seeded on the test device** (all recorded in
   tasks were previously grouped by type (all ASK USER then all DETERMINISTIC),
   which is a giveaway bias. They are now **randomly interleaved within each day**
   (deterministic shuffle, `random.seed(3)`, max 2 consecutive same-type) in
-  `public.md` + `DailyBench_public_v2.json/.jsonl` — same tasks, same ids, new
+  `public.md` + `AndroidLife_public_v2.json/.jsonl` — same tasks, same ids, new
   order, matching how the 530 corpus is ordered.
 - **Fabricated data made natural (2026-08-18):** demo-obvious names were renamed
   to look like real user data — `seed_large_video.mp4` →
@@ -771,7 +771,7 @@ following entities were **seeded on the test device** (all recorded in
 - **Non-ASK-USER unambiguity pass (2026-08-18):** every deterministic (DET/KB)
   public task now resolves every entity it references. Fixed 6 prompts that
   named an entity without a placeholder (in `public.md` +
-  `DailyBench_public_v2.json/.jsonl`), adding config values so they resolve:
+  `AndroidLife_public_v2.json/.jsonl`), adding config values so they resolve:
   `easy__shopping-delivery-browser__012` → `[store]` (Decathlon),
   `medium__shopping-delivery-browser__010` → `[food delivery site]`+`[restaurant]`
   (Swiggy / Downtown Delight), `medium__youtube__006` → `[topic]`,
@@ -802,13 +802,13 @@ following entities were **seeded on the test device** (all recorded in
   `easy__google-photos__004` "date", `medium__calculator__001` "final grade",
   `easy__messages__013` "number of unread", `easy__phone__015` "number of missed
   calls", `medium__youtube__006` "number"). Updated in `public.md` +
-  `DailyBench_public_v2.json/.jsonl`; a deliberate small deviation from the raw
+  `AndroidLife_public_v2.json/.jsonl`; a deliberate small deviation from the raw
   530 prompt text for those tasks (noted in the `public.md` header).
 - **Gallery → Google Photos (2026-08-18):** all 25 Gallery tasks in the 530
   corpus + the 1 in the public sample now use **Google Photos** instead of the
   Gallery app (which has no search), so search/curation tasks are agent-solvable.
-  Updated in `DailyBench_530_v1.json`, `tasks_530.md`, `tasks.md`,
-  `DailyBench_public_v2.json/.jsonl`, `public.md` (incl. the operator's
+  Updated in `AndroidLife_530_v1.json`, `tasks_530.md`, `tasks.md`,
+  `AndroidLife_public_v2.json/.jsonl`, `public.md` (incl. the operator's
   food-collage edit on `medium__gallery__007`), the gallery seed manifests, and
   the pipeline scripts (`build_day_seed_manifest.py`, `harvest_real_queries.py`).
   Task IDs stay `*__gallery__*` (stable identifiers); the app label/counts now
@@ -821,8 +821,8 @@ following entities were **seeded on the test device** (all recorded in
   **description/caption**, and copy the matching photo **one by one** under the
   matching heading (Pancakes / Pizza / Veggie Bowl) in the Obsidian note
   `Food Favourites.md` (in `Papers vault oneplus /`). Updated in
-  `DailyBench_530_v1.json/.jsonl`, `tasks_530.md`, `tasks.md`,
-  `DailyBench_public_v2.json/.jsonl`, `public.md`, and the
+  `AndroidLife_530_v1.json/.jsonl`, `tasks_530.md`, `tasks.md`,
+  `AndroidLife_public_v2.json/.jsonl`, `public.md`, and the
   `day_14/medium__gallery__007` seed manifest. **Seeded/real data:** the note has
   the 3 empty headings; the 3 food photos (`pancakes.jpg`, `pizza.jpg`,
   `veggie bowl.jpg` in `DCIM/Camera`) are favourited in Google Photos and each
@@ -843,13 +843,13 @@ following entities were **seeded on the test device** (all recorded in
   instead of Gmail. Professional emails keep the Gmail app and now target the
   **`[email-id]`** placeholder (a real address: `hafari4025@aghism.com`), not
   `[contact]` (a person). **530 changes** (`tasks_530.md` +
-  `DailyBench_530_v1.json/.jsonl`): 13 casual `email [contact]` →
+  `AndroidLife_530_v1.json/.jsonl`): 13 casual `email [contact]` →
   `message [contact]` with apps updated `*+Gmail` → `*+Telegram` (incl.
   `medium__google-maps__003`; `medium__telegram__005` → `*+Messages`;
   `medium__google-drive__011`, `medium__calendar__011`,
   `medium__google-search__013`, `medium__contacts__013`); 2 professional
   (`medium__contacts__008`, `medium__calculator__003`) → `email [email-id]`. **Public changes** (`public.md` +
-  `DailyBench_public_v2.json/.jsonl`): `medium__music__004` (meeting prep =
+  `AndroidLife_public_v2.json/.jsonl`): `medium__music__004` (meeting prep =
   professional) → `email [email-id]`; `medium__youtube__005` + already-message
   `medium__google-maps__003` → `message [contact] on Telegram` with apps
   `YouTube+Gmail` / `Google Maps+Gmail` → `*+Telegram`. Added `email-id` to

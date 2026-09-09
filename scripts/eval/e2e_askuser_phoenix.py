@@ -17,7 +17,7 @@ except ImportError:  # pragma: no cover - .env loading is optional
 os.environ["phoenix_url"] = os.environ.get("phoenix_url", "http://localhost:6006")
 os.environ["phoenix_project_name"] = "askuser-e2e-real"
 
-from DailyBench.custom_tools import build_ask_user_tool  # noqa: E402
+from androidlife.custom_tools import build_ask_user_tool  # noqa: E402
 
 
 class _FS:
