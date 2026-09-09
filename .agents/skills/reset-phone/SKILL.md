@@ -343,21 +343,21 @@ uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"
 
 # 2. Batch (qwen3.6-plus; --task-timeout N overrides the 40-min cap)
 uv run dailybench_tasks.py \
-  --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
+  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --source public.md --all \
   --serial RS7XKZDI8HTOJNYL \
   --llm-upstream-base https://openrouter.ai/api \
   --model qwen/qwen3.6-plus --temperature 0.0 --steps 60 \
   --save-trajectory action \
-  --vars-file benchmarks/dailyBench-600/public_vars.local.env \
-  --ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json \
-  --phoenix-url http://localhost:6006 --phoenix-project dailybench-public \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+  --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
   --run-root "assets/runs/public/$(date +%Y-%m-%d-%H%M%S)"
 ```
 
 - `--save-trajectory action` is the default (kept explicit per user preference).
 - `--task-timeout` auto-applies 2400s (40 min) per task; `--task-timeout N` overrides, `0` = no wall-clock cap (2026-08-22).
-- The 4 multi-turn KB tasks NEED `--ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json` (NOT auto-derived by the runner).
+- The 4 multi-turn KB tasks NEED `--ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json` (NOT auto-derived by the runner).
 - Guardrails: intervene only if the agent contacts someone NOT in the prompt / creates an unapproved group / places a real call.
 
 ### Post-run — auto-generate + file all artifacts (no manual filing)

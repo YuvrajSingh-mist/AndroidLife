@@ -13,18 +13,18 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from DailyBench.hallucination_judge import (
+from androidlife.hallucination_judge import (
     DEFAULT_JUDGE_MODEL,
     JudgeResult,
     judge_control_full_context,
     read_agent_log,
     resolve_control,
 )
-from DailyBench.jsonutils import read_json
-from DailyBench.user_config import load_user_config, parse_flat_config
-from dailybench_report import discover_run_folders, parse_task_id_from_label
+from androidlife.jsonutils import read_json
+from androidlife.user_config import load_user_config, parse_flat_config
+from androidlife_report import discover_run_folders, parse_task_id_from_label
 
-DEFAULT_CONTROLS = ROOT / "benchmarks" / "dailyBench-600" / "hallucination_controls.json"
+DEFAULT_CONTROLS = ROOT / "benchmarks" / "androidlife-600" / "hallucination_controls.json"
    
 
 def _load_task_prompts(dataset_arg: str | None) -> dict[str, str]:
@@ -125,12 +125,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run the DeepEval DAGMetric hallucination-control judge over run folders.")
     parser.add_argument("--runs", default=None, help="Run batch dir or glob of run folders (default: walks assets/runs/).")
     parser.add_argument("--hallucination-controls", default=str(DEFAULT_CONTROLS), help="task_id -> control meta sidecar.")
-    parser.add_argument("--dataset", default=None, help="Exported dataset JSON (e.g. benchmarks/dailyBench-600/DailyBench_public_v2.json) to pull each task's prompt_text as judge context.")
+    parser.add_argument("--dataset", default=None, help="Exported dataset JSON (e.g. benchmarks/androidlife-600/AndroidLife_public_v2.json) to pull each task's prompt_text as judge context.")
     parser.add_argument("--model", default=None, help=f"Judge model (default: env DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME, else {DEFAULT_JUDGE_MODEL}).")
     parser.add_argument("--sub", default="public", choices=("full-bench", "public"),
                         help="Legacy label only — outputs always land flat in reports/metrics/hallucination/ (no nested public/ or full-bench/ folders).")
     parser.add_argument("--config", default=None, help="User config file (flat key: value), default config/user.yaml; resolved over shipped defaults.")
-    parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/dailyBench-600/public_vars.local.env).")
+    parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/androidlife-600/public_vars.local.env).")
     parser.add_argument("--out", default=None, help="JSON output path (default: reports/metrics/hallucination/hallucination-eval.json).")
     parser.add_argument("--out-md", default=None, help="Markdown output path (default: reports/metrics/hallucination/hallucination-eval.md).")
     args = parser.parse_args()

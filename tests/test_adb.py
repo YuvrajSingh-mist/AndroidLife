@@ -8,8 +8,8 @@ import time
 import pytest
 from conftest import first_adb_device
 
-from DailyBench import adb
-from DailyBench.adb import adb_cmd, adb_shell, capture_sample, get_foreground_package, parse_battery_output, parse_thermal_output, reset_app_state, should_force_stop
+from androidlife import adb
+from androidlife.adb import adb_cmd, adb_shell, capture_sample, get_foreground_package, parse_battery_output, parse_thermal_output, reset_app_state, should_force_stop
 
 DEVICE_SERIAL = first_adb_device()
 

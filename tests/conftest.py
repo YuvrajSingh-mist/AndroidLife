@@ -1,4 +1,4 @@
-"""Shared pytest helpers for DailyBench tests."""
+"""Shared pytest helpers for AndroidLife tests."""
 
 from __future__ import annotations
 

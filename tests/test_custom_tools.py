@@ -12,7 +12,7 @@ import asyncio
 import pytest
 from conftest import first_adb_device
 
-from DailyBench.custom_tools import CUSTOM_TOOLS, build_ask_user_tool
+from androidlife.custom_tools import CUSTOM_TOOLS, build_ask_user_tool
 
 DEVICE_SERIAL = first_adb_device()
 
@@ -26,7 +26,7 @@ def test_ask_user_tool_is_zero_parameter_free_form_question() -> None:
 
 def test_get_ask_user_phoenix_tracer_returns_none_without_phoenix_url(monkeypatch) -> None:
     """Without a phoenix_url env var, no ask_user tracer is built (no Phoenix spans attempted)."""
-    from DailyBench import custom_tools
+    from androidlife import custom_tools
 
     monkeypatch.delenv("phoenix_url", raising=False)
     monkeypatch.setattr(custom_tools, "_ask_user_phoenix_tracer", None)
@@ -35,7 +35,7 @@ def test_get_ask_user_phoenix_tracer_returns_none_without_phoenix_url(monkeypatc
 
 def test_annotate_ask_user_span_records_tokens_and_model() -> None:
     """The ask_user span carries model + token counts so Phoenix counts the simulated user."""
-    from DailyBench import custom_tools
+    from androidlife import custom_tools
 
     recorded: dict[str, object] = {}
 
@@ -64,7 +64,7 @@ def test_annotate_ask_user_span_records_tokens_and_model() -> None:
 
 def test_emit_ask_user_span_never_raises_on_tracer_failure() -> None:
     """A tracer that explodes must not break the ask_user answer (span emission is best-effort)."""
-    from DailyBench import custom_tools
+    from androidlife import custom_tools
 
     class ExplodingTracer:
         def start_as_current_span(self, name: str) -> None:
@@ -97,7 +97,7 @@ def test_get_current_datetime_and_location_against_the_real_device() -> None:
 def test_ask_user_kb_template_injects_kb_and_history() -> None:
     """The multi-turn KB system prompt carries the profile AND the rolling history (as JSON)."""
     import json as _json
-    from DailyBench.custom_tools import ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE
+    from androidlife.custom_tools import ASK_USER_KB_SYSTEM_PROMPT_TEMPLATE
     kb = {"orders": [{"app": "Swiggy", "eta": "18:40"}]}
     history = _json.dumps(
         [{"role": "user", "content": "which app?"}, {"role": "assistant", "content": "Swiggy"}]
@@ -125,7 +125,7 @@ def test_build_ask_user_tool_kb_mode_spec_unchanged() -> None:
 def test_ask_user_tool_turn_number_logged(tmp_path, monkeypatch) -> None:
     """Each call records an increasing turn_number in the ask_user log."""
     import json as _json
-    import DailyBench.custom_tools as ct
+    import androidlife.custom_tools as ct
     from types import SimpleNamespace
 
     # stub the LLM client to avoid any network (SimpleNamespace attrs aren't bound)

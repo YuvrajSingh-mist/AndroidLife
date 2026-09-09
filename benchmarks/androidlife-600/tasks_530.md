@@ -6,7 +6,7 @@ day at the real-world ~9-10 distinct-app density (see
 docs/app-usage-grounding.md).
 
 This file is the **source of truth for the runnable set**: edit it, then run
-`scripts/export_530_dataset.py` to regenerate `DailyBench_530_v1.json` / `.jsonl`.
+`scripts/export_530_dataset.py` to regenerate `AndroidLife_530_v1.json` / `.jsonl`.
 Each task line carries its `task_id` in an HTML comment, so ids survive edits.
 Resync from the JSON with `scripts/export_530_markdown.py`.
 

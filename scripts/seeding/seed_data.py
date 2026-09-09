@@ -16,7 +16,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "seeding"))
-from DailyBench.user_config import load_user_config  # noqa: E402
+from androidlife.user_config import load_user_config  # noqa: E402
 import device_paths  # noqa: E402  (auto-detect vault/calendar/email per device)
 
 DAY_DIR = REPO_ROOT / "assets" / "seeds" / "day_1"

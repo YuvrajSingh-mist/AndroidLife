@@ -12,7 +12,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from DailyBench.user_config import (  # noqa: E402
+from androidlife.user_config import (  # noqa: E402
     SCHEMA,
     load_user_config,
     parse_flat_config,
@@ -22,11 +22,11 @@ from DailyBench.user_config import (  # noqa: E402
 # The full 730-corpus markdown (tasks.md) was retired; tasks_530.md is the
 # runnable source of truth (530 tasks, all 28 days), and the verifier checks
 # that config resolves every placeholder/fact/seed it needs.
-DATASET_530 = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
-FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
+DATASET_530 = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
+FACTS = REPO_ROOT / "benchmarks" / "androidlife-600" / "ask_user_facts_730.json"
 MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "seeding" / "build_day_seed_manifest.py"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
-VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars.local.env"
 
 # {key} names that are natural-language directives, NOT config placeholders
 # (e.g. "{today's date}" in the note-title template). Ignored by the verifier.

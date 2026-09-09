@@ -1,7 +1,7 @@
 {
-  "dataset_name": "DailyBench-Public",
+  "dataset_name": "AndroidLife-Public",
   "dataset_version": "v2",
-  "source_path": "benchmarks/dailyBench-600/public.md",
+  "source_path": "benchmarks/androidlife-600/public.md",
   "task_count": 60,
   "bucket_counts": {
     "hard": 17,
@@ -38,7 +38,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "YouTube+Settings",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__google-maps__002",
@@ -69,7 +69,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Google Maps + Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__gallery__012",
@@ -97,7 +97,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__contacts__009",
@@ -128,7 +128,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Contacts + Phone",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__telegram-calendar__016",
@@ -157,7 +157,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Telegram+Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md",
+      "source_path": "benchmarks/androidlife-600/public.md",
       "intended_ask": {
         "design": "The chat thread never locked anything down (it 'floated options and left the plan open'). The prompt EXPLICITLY instructs the agent to confirm EACH detail one at a time — exact day, time, place, and reminder — before creating the calendar event. All four are deliberately omitted.",
         "questions": [
@@ -212,7 +212,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__camera__006",
@@ -240,7 +240,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__phone__002",
@@ -270,7 +270,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__google-slides__001",
@@ -300,7 +300,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__calendar__002",
@@ -328,7 +328,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__calendar__008",
@@ -358,7 +358,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__gallery__007",
@@ -387,7 +387,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Google Photos + Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__files__002",
@@ -417,7 +417,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__files-pdf__001",
@@ -447,7 +447,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Files + PDF",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__google-drive__001",
@@ -475,7 +475,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__drive-notes-telegram__010",
@@ -505,7 +505,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Drive+Notes+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__google-sheets-amazon-shopping__074",
@@ -537,7 +537,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Sheets+Amazon Shopping",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__swiggy__005",
@@ -568,7 +568,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Swiggy+Zomato+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md",
+      "source_path": "benchmarks/androidlife-600/public.md",
       "intended_ask": {
         "design": "Deliberately names NO date ('the food I ate on [date]') and NO recipient ('message him on Telegram'). The agent MUST ask which order to reorder and who to message the total to before acting — guessing either is a fail.",
         "questions": [
@@ -619,7 +619,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Contacts+Gmail",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__calculator__006",
@@ -649,7 +649,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__chrome-telegram-notes__008",
@@ -683,7 +683,7 @@
       "placeholder_count": 3,
       "is_cross_app": true,
       "cross_app_label": "Chrome+Telegram+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__gmail-calendar__003",
@@ -712,7 +712,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Gmail+Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md",
+      "source_path": "benchmarks/androidlife-600/public.md",
       "intended_ask": {
         "design": "The prompt says 'my next trip' and 'my friend's email id' without naming the trip, the Gmail account that holds the confirmation, or the friend's address. The agent MUST ask which trip + which account + the friend's email, then extract the flight details, forward, and add a 3-hours-before-departure reminder.",
         "questions": [
@@ -763,7 +763,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Chrome + Messages",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__calculator__002",
@@ -795,7 +795,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Calculator + Messages",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__files__009",
@@ -823,7 +823,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__bookmyshow__005",
@@ -856,7 +856,7 @@
       "placeholder_count": 3,
       "is_cross_app": true,
       "cross_app_label": "BookMyShow+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__settings__014",
@@ -884,7 +884,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__phone__005",
@@ -912,7 +912,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__amazon-shopping__002",
@@ -942,7 +942,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__prime-video__003",
@@ -970,7 +970,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__photos-gmail-obsidian__012",
@@ -1002,7 +1002,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Google Photos+Gmail+Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__google-maps__004",
@@ -1030,7 +1030,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__music-obsidian__077",
@@ -1059,7 +1059,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Music+Obsidian",
-      "source_path": "benchmarks/dailyBench-600/public.md",
+      "source_path": "benchmarks/androidlife-600/public.md",
       "intended_ask": {
         "design": "The prompt says 'the music app I used the most lately' and 'stops by itself around my asleep time' without naming the app or the time. The agent should read the Bedtime.md Obsidian note (the sleep-routine record) to identify the most-used app + sleep time, and ASK the user to confirm the app + time before setting the sleep timer.",
         "questions": [
@@ -1107,7 +1107,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__clock__009",
@@ -1136,7 +1136,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Clock + Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__google-meet__004",
@@ -1169,7 +1169,7 @@
       "placeholder_count": 4,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__telegram__004",
@@ -1199,7 +1199,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__contacts__008",
@@ -1229,7 +1229,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__youtube__011",
@@ -1257,7 +1257,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__google-search-telegram-clock__018",
@@ -1287,7 +1287,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Telegram+Clock",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__google-photos__008",
@@ -1319,7 +1319,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Gallery + Phone",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__clock-calendar__023",
@@ -1351,7 +1351,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Clock+Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__google-photos-calendar__001",
@@ -1380,7 +1380,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Google Photos + Calendar",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__bookmyshow__004",
@@ -1408,7 +1408,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__youtube__009",
@@ -1436,7 +1436,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__google-search__008",
@@ -1467,7 +1467,7 @@
       "placeholder_count": 1,
       "is_cross_app": true,
       "cross_app_label": "Google Search + Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__google-search-obsidian-telegram__057",
@@ -1500,7 +1500,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Search+Obsidian+Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__contacts__012",
@@ -1532,7 +1532,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Contacts + Phone",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__calculator__001",
@@ -1565,7 +1565,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Calculator + Obsidian + Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__google-docs__004",
@@ -1593,7 +1593,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__obsidian__009",
@@ -1623,7 +1623,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__notes__004",
@@ -1653,7 +1653,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__msn-news__002",
@@ -1683,7 +1683,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__google-meet-files__070",
@@ -1715,7 +1715,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Google Meet+Files",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__messages__010",
@@ -1745,7 +1745,7 @@
       "placeholder_count": 1,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__chrome-youtube-notes__088",
@@ -1775,7 +1775,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Chrome+YouTube+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "hard__files-notes__069",
@@ -1804,7 +1804,7 @@
       "placeholder_count": 0,
       "is_cross_app": true,
       "cross_app_label": "Files+Notes",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__prime-video__002",
@@ -1832,7 +1832,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "easy__google-photos__015",
@@ -1860,7 +1860,7 @@
       "placeholder_count": 0,
       "is_cross_app": false,
       "cross_app_label": null,
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     },
     {
       "task_id": "medium__music-telegram__001",
@@ -1892,7 +1892,7 @@
       "placeholder_count": 2,
       "is_cross_app": true,
       "cross_app_label": "Music + Telegram",
-      "source_path": "benchmarks/dailyBench-600/public.md"
+      "source_path": "benchmarks/androidlife-600/public.md"
     }
   ]
 }

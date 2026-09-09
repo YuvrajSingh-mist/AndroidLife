@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from DailyBench.task_dataset import (
+from androidlife.task_dataset import (
     extract_inline_app,
     find_apps_in_text,
     merge_ask_user_facts,
@@ -82,7 +82,7 @@ def test_parse_tasks_markdown_handles_the_21_day_schedule_format() -> None:
 
 - *Medium (3pt):* Using Gmail, find all emails with 'urgent' in the subject, count them
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/tasks.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/tasks.md")
     assert dataset["task_count"] == 4
     assert dataset["bucket_counts"] == {"easy": 2, "medium": 2}
 
@@ -114,7 +114,7 @@ def test_parse_tasks_markdown_handles_h3_hard_and_open_ended_headings() -> None:
 
 1. Find a highly-rated coffee shop nearby that's open now on Maps, then send its location to [contact] on Telegram
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/tasks.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/tasks.md")
     assert dataset["bucket_counts"] == {"hard-deterministic": 2, "open-ended": 1}
 
     composite = dataset["tasks"][0]
@@ -150,7 +150,7 @@ def test_parse_tasks_markdown_handles_the_3day_sample_format() -> None:
 **2. [Gmail+Contacts] — ASK USER**
 - Could you just forward that report over? (deliberately no file identified as 'the report' and no manager contact saved - agent must ask which report and who the manager actually is)
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/public.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/public.md")
     assert dataset["task_count"] == 4
     assert dataset["bucket_counts"] == {"easy": 1, "medium": 1, "hard": 2}
 
@@ -203,7 +203,7 @@ def test_parse_hard_interaction_labels() -> None:
 **3. [Clock] — DETERMINISTIC**
 - Set a timer. <!--hard__clock__003-->
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/tasks_530.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/tasks_530.md")
     by_id = {t["task_id"]: t for t in dataset["tasks"]}
     single = by_id["hard__gmail__001"]
     multi = by_id["hard__swiggy__002"]
@@ -224,7 +224,7 @@ def test_resolve_apps_maps_a_browser_tagged_category_header_to_chrome() -> None:
 - Easy (1pt): Check the estimated restock date for wireless earbuds on Amazon
 - Medium (3pt): Search for "Nike Air Jordans" and compare prices on Amazon and Nike's site
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/public.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/public.md")
     no_app_named, generic_verb_task = dataset["tasks"]
     assert no_app_named["apps"] == ["Chrome"]
     assert no_app_named["cross_app_required"] is False
@@ -246,7 +246,7 @@ def test_merge_ask_user_facts_fills_in_matching_task_ids_only(tmp_path) -> None:
 **1. [Gmail+Contacts] — ASK USER**
 - Forward the report? (deliberately no file identified - agent must ask)
 """.strip()
-    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/dailyBench-600/public.md")
+    dataset = parse_tasks_markdown(markdown, source_path="benchmarks/androidlife-600/public.md")
     facts_path = tmp_path / "ask_user_facts.json"
     facts_path.write_text(json.dumps({"hard__gmail-contacts__001": "The report is Q2_Budget.xlsx."}))
 

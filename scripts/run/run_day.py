@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 
 # This file lives in scripts/run/, so the repo root is two levels up.
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SCHEDULE = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_530.md"
-VARS_DIR = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars"
+SCHEDULE = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_530.md"
+VARS_DIR = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars"
 
 DAY_RE = re.compile(r"^### Day (\d+)$")
 
@@ -57,8 +57,8 @@ def build_parser() -> argparse.ArgumentParser:
     sel = ap.add_mutually_exclusive_group(required=True)
     sel.add_argument("--day", type=int, metavar="N", help="Day 1-28 to run (its task ids from tasks_530.md)")
     sel.add_argument("--all", action="store_true", help="Run the whole 530-task set")
-    ap.add_argument("--serial", default=os.environ.get("DAILYBENCH_SERIAL"),
-                    help="ADB serial (default: $DAILYBENCH_SERIAL or auto-detect)")
+    ap.add_argument("--serial", default=os.environ.get("ANDROIDLIFE_SERIAL") or os.environ.get("DAILYBENCH_SERIAL"),
+                    help="ADB serial (default: $ANDROIDLIFE_SERIAL / $DAILYBENCH_SERIAL or auto-detect)")
     ap.add_argument("--llm-upstream-base", default=os.environ.get("LLM_UPSTREAM", DEFAULT_UPSTREAM))
     ap.add_argument("--model", default=os.environ.get("MODEL", DEFAULT_MODEL))
     ap.add_argument("--vars-file", default=None, help="Overrides the auto per-day vars file")
@@ -81,10 +81,10 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--phoenix-url")
     ap.add_argument("--run-root", default=None,
                     help="Forwarded to the runner: put runs under this root (e.g. assets/runs/full-bench/<ts>) instead of the default assets/runs/<ts>.")
-    # Default per-day: running `--day N` auto-targets the `dailybench-dayN` Phoenix
+    # Default per-day: running `--day N` auto-targets the `androidlife-dayN` Phoenix
     # project (and its per-day DB under assets/db/dayN/). Override to opt out.
     ap.add_argument("--phoenix-project", default=None,
-                    help="Phoenix project name for traces (default: dailybench-day<N> when --day N is given).")
+                    help="Phoenix project name for traces (default: androidlife-day<N> when --day N is given).")
     return ap
 
 
@@ -114,12 +114,12 @@ def main() -> int:
         if candidate.exists():
             vars_file = str(candidate)
 
-    # Per-day Phoenix project: `--day N` targets `dailybench-dayN` by default so traces
+    # Per-day Phoenix project: `--day N` targets `androidlife-dayN` by default so traces
     # land in the day's own project + DB (assets/db/dayN/phoenix.db) instead of a shared
-    # "dailybench" bucket. An explicit --phoenix-project overrides this.
+    # "androidlife" bucket. An explicit --phoenix-project overrides this.
     phoenix_project = args.phoenix_project
     if phoenix_project is None and args.day is not None:
-        phoenix_project = f"dailybench-day{args.day}"
+        phoenix_project = f"androidlife-day{args.day}"
 
     # Phoenix pre-flight guard: tracing is ON by default, and the mobilerun SDK
     # silently drops traces when `phoenix serve` isn't running (day-4 2026-08-13 lost
@@ -128,7 +128,7 @@ def main() -> int:
     if not args.no_tracing and not args.dry_run:
         phoenix_url = args.phoenix_url or "http://localhost:6006"
         sys.path.insert(0, str(REPO_ROOT / "src"))
-        from DailyBench.cli import check_phoenix_ready  # noqa: E402
+        from androidlife.cli import check_phoenix_ready  # noqa: E402
 
         if not check_phoenix_ready(phoenix_url, warn_only=False):
             print(
@@ -140,7 +140,7 @@ def main() -> int:
             )
             return 3
 
-    cmd = [sys.executable, str(REPO_ROOT / "dailybench_tasks.py"),
+    cmd = [sys.executable, str(REPO_ROOT / "androidlife_tasks.py"),
            "--serial", serial,
            "--llm-upstream-base", args.llm_upstream_base,
            "--model", args.model]

@@ -3,7 +3,7 @@
 mobilerun's own agentic loop (real function-calling against a real LLM) is out of scope for this
 harness's tests - that's mobilerun's own test suite's job. These tests stub only the MobileAgent SDK
 boundary itself (`cli.MobileAgent`), exactly mirroring how the pre-SDK version of this test stubbed out
-the external `mobilerun` binary with a stand-in script - everything DailyBench owns (adb sampling, the
+the external `mobilerun` binary with a stand-in script - everything AndroidLife owns (adb sampling, the
 real proxy subprocess, scrcpy wiring, file writes) stays real.
 """
 
@@ -20,7 +20,7 @@ from pathlib import Path
 import pytest
 from conftest import first_adb_device
 
-from DailyBench import cli, processes
+from androidlife import cli, processes
 
 DEVICE_SERIAL = first_adb_device()
 
@@ -145,7 +145,7 @@ def test_cli_main_writes_run_artifacts(monkeypatch, tmp_path: Path) -> None:
             sys,
             "argv",
             [
-                "DailyBench_runner.py",
+                "androidlife_runner.py",
                 "--serial", DEVICE_SERIAL,
                 "--label", "cli smoke",
                 "--sample-interval", "0.5",
@@ -203,7 +203,7 @@ def test_cli_main_records_failure_when_agent_raises(monkeypatch, tmp_path: Path)
         sys,
         "argv",
         [
-            "DailyBench_runner.py",
+            "androidlife_runner.py",
             "--serial", DEVICE_SERIAL,
             "--label", "cli failure",
             "--sample-interval", "0.5",

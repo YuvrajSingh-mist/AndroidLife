@@ -1,4 +1,4 @@
-"""Assemble Hugging Face release packages for DrainBench (two repos)"""
+"""Assemble Hugging Face release packages for AndroidLife (two repos)."""
 
 from __future__ import annotations
 
@@ -8,11 +8,17 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BENCH = REPO_ROOT / "benchmarks" / "dailyBench-600"
+BENCH = REPO_ROOT / "benchmarks" / "androidlife-600"
 DOCS = REPO_ROOT / "docs"
 CONFIG = REPO_ROOT / "config"
 SEEDS_PUBLIC = REPO_ROOT / "assets" / "seeds" / "public"
 DEFAULT_OUT = REPO_ROOT / "hf_release"
+
+# Canonical HF dataset ids (upload targets).
+HF_530_REPO = "YuvrajSingh9886/androidlife-530"
+HF_SAMPLE_REPO = "YuvrajSingh9886/androidlife-public-sample"
+# Legacy id kept as a redirect card only.
+HF_530_LEGACY = "YuvrajSingh9886/drainbench-530"
 
 
 def _copy(out: Path, src: Path, rel: str) -> None:
@@ -28,9 +34,9 @@ def _copy(out: Path, src: Path, rel: str) -> None:
     print(f"  copied {rel}")
 
 
-README_530 = """---
+README_530 = f"""---
 license: mit
-pretty_name: DrainBench-530 (Android agent benchmark)
+pretty_name: AndroidLife-530 (Android agent benchmark)
 task_categories:
   - text-generation
   - other
@@ -46,22 +52,25 @@ size_categories:
   - 1K<n<10K
 ---
 
-# DrainBench-530 — Android agent benchmark (real phone, real LLM)
+# AndroidLife-530 — Android agent benchmark (real phone, real LLM)
 
-DrainBench runs Android agent tasks against a **real phone** (via ADB/mobilerun)
+AndroidLife runs Android agent tasks against a **real phone** (via ADB/MobileRun)
 and a real LLM, and grades the agent on reaching a verifiable device end-state.
 This repo ships the **530-task corpus** plus everything needed to reproduce runs.
 
-> The 68-task **public 3-day sample** (61 runnable + 7 hallucination-control;
-> its personal/device-specific vars + seeds) is kept in a separate private repo;
-> this public repo carries only the 530 corpus + its run-time variables +
-> fabrication disclosure.
+> Formerly published as `DrainBench-530` / DailyBench. Canonical dataset id:
+> [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
+> Legacy [`{HF_530_LEGACY}`](https://huggingface.co/datasets/{HF_530_LEGACY}) redirects here.
+
+> The **public sample** (runnable tasks + hallucination controls; personal/device-specific
+> vars + seeds) is kept in a separate private companion; this public repo carries only
+> the 530 corpus + its run-time variables + fabrication disclosure.
 
 ## Files
 
 | File | Content |
 |---|---|
-| `data/DailyBench_530_v1.json` / `.jsonl` | The 530-task corpus (Easy 1pt / Medium 3pt / Hard 5pt). |
+| `data/AndroidLife_530_v1.json` / `.jsonl` | The 530-task corpus (Easy 1pt / Medium 3pt / Hard 5pt). |
 | `data/tasks_530.md` | Human-readable source (canonical prompt text). |
 | `data/tasks.md` | Wider task list (superset). |
 | `data/multiturn_kb_530.json` | Knowledge-base profiles for **ASK USER - MULTI** tasks. |
@@ -90,9 +99,9 @@ fabricated data are seeded on the device. Everything is disclosed honestly in
 numbers, personal emails, or real identities appear; all personas are fictional.
 """
 
-README_SAMPLE = """---
+README_SAMPLE = f"""---
 license: mit
-pretty_name: DrainBench public sample (68 tasks, private companion)
+pretty_name: AndroidLife public sample (private companion)
 task_categories:
   - text-generation
   - other
@@ -106,33 +115,45 @@ size_categories:
   - n<1K
 ---
 
-# DrainBench public sample (PRIVATE companion repo)
+# AndroidLife public sample (PRIVATE companion repo)
 
-The **68-task public 3-day sample** (61 runnable + 7 hallucination-control) for DrainBench-530, kept in a **private**
+The **public sample** for AndroidLife-530, kept in a **private**
 repo because it carries personal/device-specific data (run-time vars, the
 personal user config, and the fabricated on-device seed documents).
+
+Canonical corpus: [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
 
 ## Files
 
 | File | Content |
 |---|---|
-| `data/DailyBench_public_v2.json` / `.jsonl` | The 68-task public sample (61 runnable + 7 hallucination-control; drawn from the 530 corpus + public-specific additions). |
+| `data/AndroidLife_public_v2.json` / `.jsonl` | Public sample tasks (runnable + hallucination-control). |
 | `data/public.md` | Human-readable source. |
 | `data/multiturn_kb_public.json` | Knowledge-base profiles for public multi-turn tasks. |
 | `vars/public_vars.local.env` | Public-sample placeholder values (personal). |
 | `config/user.yaml` | Personal persona/device config (gitignored upstream). |
-| `fabrication/seeds/` | Fabricated seed documents: the 2 realistic PDFs + 8 enriched Obsidian notes. |
+| `fabrication/seeds/` | Fabricated seed documents. |
 | `fabrication/` | Full fabrication disclosure. |
+"""
 
-The 530 corpus itself is published separately (public repo); this package is the
-companion with the sample-specific, personal data. See the main `DrainBench-530`
-dataset card for the task model and schema.
+README_LEGACY_REDIRECT = f"""---
+license: mit
+pretty_name: AndroidLife-530 (moved)
+---
+
+# Moved → AndroidLife-530
+
+This dataset was renamed. **Use the canonical repo:**
+
+**[{HF_530_REPO}](https://huggingface.co/datasets/{HF_530_REPO})**
+
+Filenames are now `AndroidLife_530_v1.json` / `.jsonl` (formerly `DailyBench_*` / DrainBench branding).
 """
 
 
 def build_530_public(out: Path) -> None:
     print(f"[1/2] 530-public -> {out}")
-    for f in ["DailyBench_530_v1.json", "DailyBench_530_v1.jsonl"]:
+    for f in ["AndroidLife_530_v1.json", "AndroidLife_530_v1.jsonl"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["tasks_530.md", "tasks.md"]:
         _copy(out, BENCH / f, f"data/{f}")
@@ -149,7 +170,7 @@ def build_530_public(out: Path) -> None:
 
 def build_public_sample(out: Path) -> None:
     print(f"[2/2] public-sample (private) -> {out}")
-    for f in ["DailyBench_public_v2.json", "DailyBench_public_v2.jsonl"]:
+    for f in ["AndroidLife_public_v2.json", "AndroidLife_public_v2.jsonl"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["public.md", "multiturn_kb_public.json"]:
         _copy(out, BENCH / f, f"data/{f}")
@@ -179,11 +200,14 @@ def main() -> int:
     build_530_public(out / "530-public")
     print()
     build_public_sample(out / "public-sample")
+    (out / "LEGACY_REDIRECT_README.md").write_text(README_LEGACY_REDIRECT, encoding="utf-8")
 
     n530 = sum(1 for _ in (out / "530-public").rglob("*") if _.is_file())
     nps = sum(1 for _ in (out / "public-sample").rglob("*") if _.is_file())
     print(f"\nstaged 530-public ({n530} files) + public-sample ({nps} files) under {out}")
-    print("next: hf auth login && huggingface-cli upload <repo> <dir>")
+    print(f"next: upload 530 -> {HF_530_REPO}")
+    print(f"      upload sample -> {HF_SAMPLE_REPO} (private)")
+    print(f"      redirect card -> {HF_530_LEGACY}")
     return 0
 
 

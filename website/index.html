@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AndroidLife — Can an AI Agent Survive a Day in the Life of a Real User?</title>
+  <title>AndroidLife  -  Can an AI Agent Survive a Day in the Life of a Real User?</title>
   <meta name="description" content="AndroidLife: real-phone Android agent benchmark for open-weight LLMs and on-device SLMs. 60-task public set + 530-task dataset. MobileRun / Droidrun. Success, cost, battery, heat.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="AndroidLife — Can an AI Agent Survive a Day in the Life of a Real User?">
+  <meta property="og:title" content="AndroidLife  -  Can an AI Agent Survive a Day in the Life of a Real User?">
   <meta property="og:description" content="Measure not just can a mobile agent do the task, but what doing it costs a real phone: dollars, battery, and heat.">
   <meta property="og:url" content="https://yuvrajsingh-mist.github.io/AndroidLife/">
   <meta property="og:site_name" content="AndroidLife">
@@ -16,9 +16,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./assets/css/style.css?v=10">
+  <link rel="stylesheet" href="./assets/css/style.css?v=14">
 </head>
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
+<!-- androidlife-copy-v2 -->
 
 <nav aria-label="Main navigation">
   <span class="nav-title">AndroidLife</span>
@@ -42,24 +43,27 @@
       <h1>AndroidLife</h1>
       <p class="hero-subtitle">Can an AI agent survive a day in the life of a real user?</p>
       <p class="hero-desc">
-        <strong>AndroidLife</strong> measures whether a mobile agent can finish everyday phone tasks
-        on a <em>real</em> Android device - and what that costs in dollars, battery, heat, and steps.
+        <strong>AndroidLife</strong> measures whether a mobile agent can finish a user's everyday phone tasks
+        on a <em>real</em> Android device - and what that costs in dollars, battery, thermals, and your time.
         Agents run through
         <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
         (by <a href="https://www.droidrun.ai/" target="_blank" rel="noopener">Droidrun</a>) over ADB.
-        Models can be <strong>API-hosted open-weight LLMs</strong> <em>or</em> future
-        <strong>on-device SLMs</strong> - same harness, same tasks, same phone costs.
-        Two tiers: a <strong>60-task public benchmark</strong> (full trajectories + telemetry) and the
-        <strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">[1]</a></sup>
-        it samples from (28-day / 31-app schedule grounded in real app-usage density).
+        Models can be
+        <a href="https://openrouter.ai/models" target="_blank" rel="noopener">API</a>-hosted
+        <a href="#leaderboard">open-weight</a> LLMs or future on-device SLMs - same harness, same tasks, same phone costs.
+        <br>Two tiers: a <strong>60-task public benchmark</strong> (full trajectories + telemetry) and the
+        <strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1a">*</a></sup>
+        (28-day schedule across <strong>31 distinct apps</strong>,
+        ~<a href="https://www.data.ai/en/insights/market-data/state-of-mobile-2023/" target="_blank" rel="noopener">10 apps/day</a>).
       </p>
       <ul class="hero-note-list">
-        <li>Open-weight models via API <em>and</em> path to on-device SLMs</li>
-        <li>MobileRun (Droidrun) agent harness on a real phone</li>
-        <li>60-task public benchmark · full trajectories</li>
-        <li>530-task dataset · ~10 apps/day like a real user</li>
-        <li>Battery, thermal, cost, and step telemetry</li>
-        <li>ASK USER + hallucination controls</li>
+        <li>Easy / Medium / Hard · single-app and cross-app tasks</li>
+        <li><a href="#placeholders">Placeholders</a> · endless scenario variants from one template</li>
+        <li>Graded on-device end-state · <a href="#metrics">SR, steps, UIQ / KBIQ</a></li>
+        <li>Per-task trajectories + screen-replay GIFs</li>
+        <li><a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> interaction +
+          <a href="./pages/how-it-was-formed.html#hallucination-controls">hallucination controls</a></li>
+        <li>Battery, thermal, latency, and dollar-cost telemetry</li>
       </ul>
       <div class="hero-btns pill-bar">
         <a href="#leaderboard" class="btn btn-outline pill-btn">Leaderboard</a>
@@ -77,21 +81,28 @@
       <h2 class="section-title" id="heading-problem-statement">Problem Statement</h2>
       <div class="prose">
         <p>
-          Most agent benchmarks grade a model in a sandbox or on screenshots. Phone agents live where
-          people do - on devices with finite batteries, heat limits, and messy real apps. AndroidLife
-          asks what those benchmarks skip: not only <em>can the agent do the task?</em> but
-          <em>what does doing it cost a real phone?</em>
+          Most agent benchmarks grade a model in a sandbox or on screenshots
+          (<a href="https://www.alphaxiv.org/abs/2307.10088" target="_blank" rel="noopener">AITW</a>,
+          <a href="https://www.alphaxiv.org/abs/2401.10935" target="_blank" rel="noopener">SeeClick</a>,
+          <a href="https://www.alphaxiv.org/abs/2405.14573" target="_blank" rel="noopener">AndroidWorld</a>,
+          <a href="https://www.alphaxiv.org/abs/2512.19432" target="_blank" rel="noopener">MobileWorld</a>).
+          Phone agents live where people do - on devices with finite batteries, heat limits, and messy real apps.
+          AndroidLife asks what those benchmarks skip: not only <em>can the agent do the task on a live phone?</em>
+          but <em>what does doing it cost a real phone?</em>
         </p>
         <p>
           We are <strong>not</strong> only targeting models deployed locally on the handset. The public
-          leaderboard already includes <strong>open-weight</strong> frontier and mid-size models served
-          over APIs (and smaller language models in the same spirit). The long-term focus is heavy on
-          <strong>SLMs that run on the phone</strong> - same tasks, same MobileRun loop, so on-device
-          and cloud open-weight agents stay comparable.
+          <a href="#leaderboard">leaderboard</a> already includes
+          <a href="#leaderboard">open-weight</a> frontier and mid-size models served over
+          <a href="https://openrouter.ai/models" target="_blank" rel="noopener">APIs</a>
+          (and smaller language models in the same spirit). The long-term focus is heavy on
+          <strong>SLMs that run on the phone</strong> - same tasks, same
+          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
+          loop, so on-device and cloud open-weight agents stay comparable.
         </p>
         <p>
           A task finished in 40 steps with 3% battery drain and a cool SoC beats the same task in 180
-          steps that thermal-throttles the device. That phone cost is first-class, not an afterthought.
+          steps that thermal-throttles the device. <em>That phone cost is first-class, not an afterthought.</em>
         </p>
       </div>
     </div>
@@ -102,23 +113,21 @@
       <h2 class="section-title" id="heading-vision">Vision</h2>
       <div class="prose">
         <p>
-          <strong>AndroidLife</strong> is a protocol for everyday agent usability - not demo
-          leaderboards. It evaluates <strong>open-weight models across the size spectrum</strong>:
-          large open LLMs used via API today, and <strong>small language models (SLMs) meant to run
-          on-device</strong> tomorrow. The agent loop is
-          <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
-          by Droidrun; the LLM endpoint is swappable (OpenRouter, local server, or on-phone runtime).
+          Emulator leaderboards answer a narrow question: can a model click the
+          right widget in a clean sandbox? That is not how people use phones. Real instructions are
+          vaguely complicated, span several apps, and collide with notifications, incoming calls, and half-finished
+          context. A useful phone agent has to survive a day of real use and finish the job <em>and</em> leave the device in a state
+          a human would accept - without burning the battery or overheating the SoC along the way.
         </p>
         <p>
-          Tasks are grounded in how people actually use phones (~9-10 apps/day; see
-          <a href="./pages/how-it-was-formed.html">How it was formed</a> and
-          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/app-usage-grounding.md"
-             target="_blank" rel="noopener">app-usage grounding</a> - data.ai / State of Mobile and related
-          sources). Seeded persona data is fabricated for privacy; trajectories are real on-device runs.
-        </p>
+          <strong>AndroidLife</strong> exists because that combination was missing: a
+          <em>real-device</em> protocol for everyday tasks, with phone cost (dollars, battery, heat,
+          latency, steps) as a first-class score and not a footnote left for future work. It evaluates
+          <a href="#leaderboard">open-weight models</a> on tasks that requires that requires ambiguity resolution through human input one or many times, or requires to know when the data is not available to complete the task with query worded in a way that mimics a human's query. This is a broad set of tasks that is not limited to a single app or a single task.</p>
         <p>
-          <strong>Highlight:</strong> open weights now; on-device SLMs as the heavy future focus -
-          usefulness and phone cost for models that can live with the user.
+          The dataset + benchmark is shaped like ordinary <i>Day In The Life</i> of a user,
+          while each <em>run</em> stays a short, bounded session on live hardware. Fabricated persona
+          seeds keep privacy intact; every published trajectory is a real on-device execution you can replay.
         </p>
       </div>
     </div>
@@ -129,52 +138,138 @@
       <h2 class="section-title" id="heading-overview">Overview</h2>
       <div class="prose">
         <p>
-          <strong>AndroidLife</strong> ships as two tiers that share the same MobileRun on-device pipeline
-          (open-weight API models today; on-device SLMs in the same seat):
-        </p>
-        <ul>
-          <li><strong>60-task public benchmark</strong> - the fully-run preview: every task has been
-          executed on a real phone (OnePlus CPH2423) by real models (open-weight and API), and each carries its full agent
-          trajectory (model thoughts, tool calls, per-step screenshots, screen-replay GIF), run
-          telemetry, and a manual-audit leaderboard.</li>
-          <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">[1]</a></sup> - the complete benchmark corpus: 530 tasks on a fixed
-          28-day schedule across 31 apps (easy/medium/hard, ASK USER + deterministic + hallucination
-          controls). The 28 days model one month of real daily use (a person touches ~10 apps a day, not
-          all 31), so the corpus spreads coverage across a simulated month; the public 60 are sampled from
-          it, and trajectories are included for every day that has been run.</li>
-        </ul>
-
-        <div class="callout">
-          <strong>Why runs are short - and why the corpus is 28 days.</strong> The 28-day schedule is the
-          <em>dataset's</em> shape, not a run's: it exists so everyday use across all 31 apps can be
-          covered at real-world density (~10 apps a day, like a real person). Actual runs are bounded
-          sessions on a live phone - a full 60-task run takes roughly 2-9 hours, and longer runs have ended
-          when the phone's battery died mid-run (the run reports record these interruptions). So "28 days"
-          describes a simulated month of use, never a continuous month-long benchmark.
-        </div>
-
-        <p>
-          Instead of grading a model on a static screenshot, the harness runs an agent via
+          The agent loop is
           <a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
-          (Droidrun) against a real device over ADB. The model may be a remote open-weight LLM or a
-          local/on-device SLM - the phone loop and metrics stay the same. We measure:
+          by <a href="https://www.droidrun.ai/" target="_blank" rel="noopener">Droidrun</a> framework over wireless ADB.
+          The LLM endpoint is swappable -
+          <a href="https://openrouter.ai/models" target="_blank" rel="noopener">OpenRouter</a>,
+          a local OpenAI-compatible server, or an on-phone runtime - so the same tasks and phone
+          metrics apply whether the model is remote or on-device.
         </p>
-        <ul class="task-family-list">
-          <li><strong>Success</strong>: did the goal actually get achieved, verified against on-device state (not just the agent's claim).</li>
-          <li><strong>Efficiency</strong>: how many steps and LLM calls did it take.</li>
-          <li><strong>Cost</strong>: real USD per run, tracked through an LLM proxy per call.</li>
-          <li><strong>Phone cost</strong>: battery drain (mAh, % delta), CPU/GPU/NPU/skin thermals, and charge-counter deltas captured per second on-device.</li>
-        </ul>
-        <p>The benchmark covers three buckets of increasing difficulty:</p>
+        <p>
+          Tasks are grounded in how people actually use phones
+          (~<a href="https://www.data.ai/en/insights/market-data/state-of-mobile-2023/" target="_blank" rel="noopener">9-10 apps/day</a>;
+          see <a href="./pages/how-it-was-formed.html">How it was formed</a> and
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/app-usage-grounding.md" target="_blank" rel="noopener">app-usage grounding</a>
+          - data.ai <em>State of Mobile</em> and related sources). Seeded persona data is fabricated for
+          privacy; trajectories are real on-device runs.
+        </p>
+        <p>
+          <strong>AndroidLife</strong> ships as two tiers:
+        </p>
         <ul>
-          <li><strong>Easy (216)</strong>: single-app, 1 to 2 subgoal tasks worth 1 point each.</li>
-          <li><strong>Medium (242)</strong>: mostly cross-app (47%), 3 to 4 subgoals, worth 3 points.</li>
-          <li><strong>Hard (72)</strong>: 5+ subgoals, worth 5 points, split into <strong>49 ASK USER</strong> (36 single-turn + 13 multi-turn KB, the agent must request load-bearing facts via the simulated user) and <strong>23 DETERMINISTIC</strong> (fully verifiable on-device state).</li>
+          <li><strong>60-task public benchmark</strong> - a representative, holistic evaluation
+          set of 60 tasks (3 days &times; 20 tasks), sharing the same MobileRun harness and
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">grading philosophy</a>
+          as the 530 corpus. The reset / seed / verify
+          protocol is documented so others can re-run the same evaluation
+          <sup class="fn-ref"><a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/reproducibility.md" target="_blank" rel="noopener" id="fnref-repro">*</a></sup>.
+          Every one of the 60 tasks has been
+          executed on a real phone (OnePlus 10R 5G) by
+          <a href="#leaderboard">real models</a>
+          (<a href="#leaderboard">open-weight</a> and
+          <a href="https://openrouter.ai/models" target="_blank" rel="noopener">API</a> models).</li>
+          <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">*</a></sup> - the complete dataset: 530 tasks on a fixed
+          28-day schedule across 31 apps (easy/medium/hard,
+          <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> + non-ASK USER +
+          <a href="./pages/how-it-was-formed.html#hallucination-controls">hallucination controls</a>).
+          The 28 days model one month of real daily use (close replication of any usual day of a user projected to a month) (a person touches
+          ~<a href="https://www.data.ai/en/insights/market-data/state-of-mobile-2023/" target="_blank" rel="noopener">10 apps a day</a>,
+          not all 31), so the corpus spreads coverage across a simulated month. Trajectories and
+          artifacts are rolling out day by day - <strong>5 of 28 days</strong> have been fully run so far.</li>
+        </ul>
+        <div class="callout" id="placeholders">
+          <ul>
+            <li>
+              Each task carries its full agent trajectory (model thoughts, tool calls, per-step a11y tree,
+              screen-replay GIF), run telemetry (cost / battery / thermal / latency / steps), and a
+              manual-audited report.
+            </li>
+            <li>
+              Prompts use <strong>placeholders</strong> (e.g. <code>[contact]</code>, <code>[presentation name]</code>)
+              so the same task template can resolve into many concrete instances - endless variations
+              without rewriting the corpus (303 uses / 119 keys across the 530). Pin files:
+              <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.example.env" target="_blank" rel="noopener"><code>public_vars.example.env</code></a>
+              (public template) and
+              <a href="https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530/tree/main/vars" target="_blank" rel="noopener"><code>vars/</code></a>
+              on HF for the 530 (<code>tasks_vars.local.env</code> + per-day <code>tasks_vars/</code>).
+            </li>
+          </ul>
+        </div>
+        <h3 class="subsection-title" id="metrics">Metrics</h3>
+        <p>
+          Literature measures model performance on a number of metrics. However, we have kept it
+          simple with just the metrics that matter:
+        </p>
+        <ul class="task-family-list" id="metrics-list">
+          <li id="metric-success"><strong>Success</strong>: did the goal actually get achieved, verified against on-device state (not just the agent's claim).
+            <ul>
+              <li id="metric-sr"><strong>SR</strong> - success rate: verified true successes / tasks run (overall and per bucket).</li>
+              <li id="metric-uiq"><strong>UIQ</strong> - user interaction quality: fact-match on <code>ask_user</code> answers for
+                <a href="./pages/how-it-was-formed.html#ask-user-single">ASK USER SINGLE</a>
+                (guessing without asking &rarr; 0).</li>
+              <li id="metric-kbiq"><strong>KBIQ</strong> - KB interaction quality: multi-turn
+                <a href="./pages/how-it-was-formed.html#ask-user-multi">ASK USER MULTI</a>
+                dialogue correctness against the KB <code>correct_target</code>.</li>
+              <li id="metric-hc"><strong>Hallucination rate</strong> - self-reported success on
+                <a href="./pages/how-it-was-formed.html#hallucination-controls">known-absent controls</a>
+                that failed verification (honest fail = correct).</li>
+            </ul>
+          </li>
+          <li id="metric-efficiency"><strong>Efficiency</strong>: how many steps and LLM calls did it take.</li>
+          <li id="metric-latency"><strong>Latency</strong>: end-to-end wall-clock time per task, plus cooldown-corrected true agent running time.</li>
+          <li id="metric-cost"><strong>Cost</strong>: real USD per run, tracked through an LLM proxy per call.</li>
+          <li id="metric-phone"><strong>Phone cost</strong>: battery drain (mAh, % delta), CPU/GPU/NPU/skin thermals, and charge-counter deltas captured per second on-device.</li>
         </ul>
         <p>
-          Hard ASK USER tasks exercise the <code>ask_user</code> tool against a simulated user
-          (<code>gpt-5.4-mini</code>), and hallucination controls catch agents that claim success on
-          tasks whose data is deliberately absent.
+          The 530 corpus spans three difficulty buckets (1 / 3 / 5 points; design steps 1 / 3 / 5).
+          See <a href="./pages/how-it-was-formed.html#difficulty-taxonomy">How it was formed</a>
+          for the full taxonomy and
+          <a href="./pages/how-it-was-formed.html#cross-app">single- vs cross-app</a> design.
+        </p>
+        <div class="viz-grid" aria-label="530-task difficulty mix">
+          <div class="viz-card">
+            <h4>530 tasks by bucket</h4>
+            <div class="pie-wrap">
+              <div class="pie-canvas-wrap">
+                <canvas class="al-chart" aria-label="Pie: Easy 216, Medium 242, Hard 72"
+                  data-chart='{"type":"doughnut","labels":["Easy","Medium","Hard"],"data":[216,242,72],"colors":["#8a7355","#6b8a94","#c4b09a"],"center":{"value":"530","label":"tasks"},"hrefs":[null,null,"./pages/how-it-was-formed.html#difficulty-taxonomy"]}'></canvas>
+              </div>
+              <ul class="pie-legend"></ul>
+            </div>
+            <p class="viz-caption">Easy 1 pt · Medium 3 pt (~47% <a href="./pages/how-it-was-formed.html#cross-app">cross-app</a>) · Hard 5 pt (2-3 apps). Hover a slice for counts.</p>
+          </div>
+          <div class="viz-card">
+            <h4>Hard (72) interaction split</h4>
+            <div class="pie-wrap">
+              <div class="pie-canvas-wrap">
+                <canvas class="al-chart" aria-label="Pie: ASK USER single 36, multi 13, non-ASK USER 23"
+                  data-chart='{"type":"doughnut","labels":["ASK USER SINGLE","ASK USER MULTI","non-ASK USER"],"data":[36,13,23],"colors":["#6b8a94","#8a7355","#b7a48c"],"center":{"value":"72","label":"hard"},"hrefs":["./pages/how-it-was-formed.html#ask-user-single","./pages/how-it-was-formed.html#ask-user-multi",null]}'></canvas>
+              </div>
+              <ul class="pie-legend"></ul>
+            </div>
+            <p class="viz-caption">Hard-bucket interaction modes. See <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> and <a href="./pages/how-it-was-formed.html#hallucination-controls">hallucination controls</a>.</p>
+          </div>
+        </div>
+        <h3 class="subsection-title" id="evaluation">Evaluation</h3>
+        <p>
+          Hard <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> tasks
+          (including
+          <a href="./pages/how-it-was-formed.html#ask-user-multi">ASK USER MULTI</a>)
+          call <code>ask_user</code> against a simulated user  - 
+          default model <code>gpt-5.4-mini</code> via <code>--ask-user-model</code>.
+          <a href="./pages/how-it-was-formed.html#hallucination-controls">Hallucination controls</a>
+          cover cases where the needed data is <em>not available</em> on-device; post-run they are
+          graded with a <strong>DeepEval DAGMetric / GEval-style</strong> judge
+          (<code>eval_hallucination_controls.py</code>, also <code>gpt-5.4-mini</code>) plus manual audit.
+          Full pipelines:
+          <a href="./pages/how-it-was-formed.html#task-modes">How it was formed</a> ·
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">evaluation policy</a>.
+          Score definitions above:
+          <a href="#metric-sr">SR</a>,
+          <a href="#metric-uiq">UIQ</a>,
+          <a href="#metric-kbiq">KBIQ</a>,
+          <a href="#metric-hc">hallucination rate</a>.
         </p>
       </div>
       <div class="callout">
@@ -188,8 +283,6 @@
     <div class="container">
       <h2 class="section-title" id="heading-leaderboard">Leaderboard</h2>
       <div class="lb-disclaimer">
-        <p><strong>Early results.</strong><sup class="fn-ref"><a href="#fn-2" id="fnref-2">[2]</a></sup></p>
-        <p><strong>Why vision mode trails.</strong><sup class="fn-ref"><a href="#fn-3" id="fnref-3">[3]</a></sup></p>
         <button type="button" class="info-btn" aria-describedby="stats-tooltip">
           How the metrics are computed <span aria-hidden="true">&#9432;</span>
           <span id="stats-tooltip" class="info-tooltip" role="tooltip">
@@ -222,54 +315,72 @@
           <div class="lb-chart-card-inner"></div>
         </div>
       </div>
+
+      <ol class="lb-notes-row" aria-label="Leaderboard notes">
+        <li><strong>Early results.</strong><sup class="fn-ref"><a href="#fn-2" id="fnref-2">[2]</a></sup></li>
+        <li><strong>Why vision mode trails.</strong><sup class="fn-ref"><a href="#fn-3" id="fnref-3">[3]</a></sup></li>
+      </ol>
     </div>
   </section>
 
   <section id="anatomy" aria-labelledby="heading-anatomy">
     <div class="container">
-      <h2 class="section-title" id="heading-anatomy">Benchmark Anatomy</h2>
+      <h2 class="section-title" id="heading-anatomy">Execution Workflow</h2>
+      <div class="prose">
+        <p>
+          Same MobileRun loop for both tiers. Resolve the task prompt (and placeholders), then run
+          on-device through telemetry, trajectory capture, and graded audit.
+        </p>
+      </div>
       <div class="flowchart">
         <div class="flow-step">
-          <div class="flow-step-label">Step 1</div>
+          <div class="flow-step-label">1</div>
           <div class="flow-step-title">Task Prompt</div>
-          <div class="flow-step-detail"><code>DailyBench_530_v1.json</code> task, placeholders resolved from <code>tasks_vars</code></div>
+          <div class="flow-step-detail"><code>AndroidLife_public_v2.json</code> /
+          <code>public.md</code>; placeholders from
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.example.env" target="_blank" rel="noopener"><code>public_vars.example.env</code></a>
+          /
+          <a href="https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530/tree/main/vars" target="_blank" rel="noopener"><code>tasks_vars</code></a>
+          (<code>.local.env</code>)</div>
         </div>
         <div class="flow-arrow"></div>
         <div class="flow-step">
-          <div class="flow-step-label">Step 2</div>
+          <div class="flow-step-label">Shared</div>
           <div class="flow-step-title">MobileAgent on Device</div>
-          <div class="flow-step-detail">mobilerun SDK drives the real phone over ADB (<code>AndroidDriver</code> / <code>MobileAgent</code>)</div>
+          <div class="flow-step-detail">MobileRun SDK over ADB (<code>AndroidDriver</code> / <code>MobileAgent</code>); a11y tree &plusmn; vision</div>
         </div>
         <div class="flow-arrow"></div>
         <div class="flow-step">
-          <div class="flow-step-label">Step 3</div>
+          <div class="flow-step-label">Shared</div>
           <div class="flow-step-title">LLM Inference</div>
-          <div class="flow-step-detail">Real model over OpenAI-compatible endpoint (OpenRouter or local host), proxied per call for cost tracking</div>
+          <div class="flow-step-detail">OpenRouter / local / on-phone endpoint, proxied per call for cost</div>
         </div>
         <div class="flow-arrow"></div>
         <div class="flow-step">
-          <div class="flow-step-label">Step 4</div>
+          <div class="flow-step-label">Shared</div>
           <div class="flow-step-title">Tool Calls + Telemetry</div>
-          <div class="flow-step-detail">Every action on-device; battery/thermal sampled per second (<code>samples.ndjson</code>)</div>
+          <div class="flow-step-detail">On-device actions; battery/thermal per second (<code>samples.ndjson</code>); <code>ask_user</code> when needed</div>
         </div>
         <div class="flow-arrow"></div>
         <div class="flow-step">
-          <div class="flow-step-label">Step 5</div>
+          <div class="flow-step-label">Shared</div>
           <div class="flow-step-title">Completion + Trajectory</div>
           <div class="flow-step-detail"><code>output.json</code>, <code>trajectories/</code>, <code>run_metrics.json</code>, Phoenix traces</div>
         </div>
         <div class="flow-arrow"></div>
         <div class="flow-step">
-          <div class="flow-step-label">Step 6</div>
-          <div class="flow-step-title">Aggregate Report</div>
-          <div class="flow-step-detail"><code>dailybench_report.py</code> &rarr; MobileWorld-style metrics (SR, steps, UIQ)</div>
+          <div class="flow-step-label">Shared</div>
+          <div class="flow-step-title">Aggregate + Audit</div>
+          <div class="flow-step-detail"><code>androidlife_report.py</code> &rarr;
+          <a href="#metric-sr">SR</a> / steps /
+          <a href="#metric-uiq">UIQ</a> /
+          <a href="#metric-kbiq">KBIQ</a>; HC via DeepEval DAGMetric + manual audit</div>
         </div>
       </div>
       <div class="prose">
         <p>
-          Hard ASK USER tasks add a simulated-user round trip: the agent calls <code>ask_user</code>, and the
-          simulated user (<code>gpt-5.4-mini</code>) answers with the hidden fact the task requires. A single
-          skipped <code>ask_user</code> call fails the task.
+          See <a href="#evaluation">Evaluation</a> for ASK USER / hallucination-control details and
+          <a href="#metrics">Metrics</a> for score definitions.
         </p>
       </div>
     </div>
@@ -312,9 +423,13 @@
       </div>
       <div class="prose">
         <p>
-          Aggregation follows the MobileWorld metrics (arXiv:2512.19432): Success Rate (overall, per bucket,
-          interaction vs GUI-only), Average Completion Steps, Average User Queries, and User Interaction
-          Quality (UIQ), excluding the MCP metric. See <a href="https://arxiv.org/abs/2512.19432" target="_blank" rel="noopener">the paper</a>.
+          Aggregation follows the
+          <a href="https://www.alphaxiv.org/abs/2512.19432" target="_blank" rel="noopener">MobileWorld</a>
+          metrics:
+          <a href="#metric-sr">Success Rate</a> (overall, per bucket,
+          interaction vs GUI-only), Average Completion Steps, Average User Queries, and
+          <a href="#metric-uiq">User Interaction Quality (UIQ)</a> /
+          <a href="#metric-kbiq">KBIQ</a>, excluding the MCP metric.
         </p>
       </div>
     </div>
@@ -325,7 +440,7 @@
       <h2 class="section-title" id="heading-examples">Public Tasks</h2>
       <div class="prose" style="margin-bottom: 1rem;">
         <p>
-          The full public benchmark sample (<code>DailyBench_public_v2.json</code>, exported from
+          The full public benchmark sample (<code>AndroidLife_public_v2.json</code>, exported from
           <code>public.md</code>) - every task we've run, each with its recorded agent trajectory.
           Pick a <strong>model · date</strong> run below to filter cards to that exact
           benchmark session's pass/fail and steps (same model can appear on multiple dates).
@@ -351,8 +466,8 @@
       <div class="prose">
         <p>
           The harness is <code>uv</code>-managed end to end: the dataset lives in
-          <code>benchmarks/dailyBench-600/</code>, the runner in <code>dailybench_runner.py</code> /
-          <code>dailybench_tasks.py</code>, and run artifacts under <code>assets/runs/</code> (with
+          <code>benchmarks/androidlife-600/</code>, the runner in <code>androidlife_runner.py</code> /
+          <code>androidlife_tasks.py</code>, and run artifacts under <code>assets/runs/</code> (with
           per-day Phoenix DBs in <code>assets/db/dayN/</code>). The website data
           file is generated directly from the dataset (see
           <a href="./tools/build_site_data.mjs"><code>website/tools/build_site_data.mjs</code></a>).
@@ -413,7 +528,7 @@
     <div class="container">
       <h2 class="section-title" id="heading-schedule">Daily Schedule</h2>
       <div class="prose">
-        <p>The fixed 28-day schedule: tasks per day, easy/medium/hard split, ASK USER vs deterministic hard tasks, and distinct apps per day.</p>
+        <p>The fixed 28-day schedule: tasks per day, easy/medium/hard split, ASK USER vs non-ASK USER hard tasks, and distinct apps per day.</p>
       </div>
       <table>
         <thead>
@@ -438,6 +553,10 @@
         <li>
           <a href="./assets/data/site_data.json">Task Metadata</a>
           <span> -  generated app, day, and example index consumed by the published website</span>
+        </li>
+        <li>
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/reproducibility.md" target="_blank" rel="noopener">Reproducibility</a>
+          <span> -  reset, seed, verify protocol - and why live-phone runs are never bitwise-identical</span>
         </li>
         <li>
           <a href="./pages/tasks.html">Tasks</a>
@@ -467,12 +586,14 @@
       <div class="prose">
         <p>If you use AndroidLife in your work, please cite it as:</p>
       </div>
-      <pre><code>@misc{singh2026androidlife,
+      <div class="citation-block">
+<pre><code>@misc{singh2026androidlife,
       title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
       author={Yuvraj Singh},
       year={2026},
       howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
 }</code></pre>
+      </div>
     </div>
   </section>
 
@@ -480,7 +601,7 @@
     <div class="container">
       <h2 class="section-title" id="heading-footnotes">Footnotes</h2>
       <ol class="footnotes-list">
-        <li id="fn-1"><strong>530-task dataset (ongoing).</strong> The full 530-task corpus is still being benchmarked - more days' runs and their agent trajectories are added as they complete. The 60-task public benchmark above is the fully-run, published snapshot of it. <a href="#fnref-1a" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
+        <li id="fn-1"><strong>530-task dataset*</strong> - only <strong>5 of 28 schedule days</strong> have been fully run on-device so far (days 1-5; reports in <code>reports/day-*.md</code>). The remaining days are rolling out on the same harness; task definitions for all 530 already ship in the dataset. The 60-task public benchmark above is the fully-run, published evaluation set (see <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/reproducibility.md" target="_blank" rel="noopener">reproducibility</a>). <a href="#fnref-1a" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
         <li id="fn-2"><strong>Early results.</strong> Each row is a public-dataset run (60 tasks - 20 tasks &times; 3 days) on a OnePlus CPH2423 (Android 15, non-rooted); the kimi-k2.6 VISION row is flagged <em>interrupted</em> - its run died at 35/60 when the phone battery hit 0, so its numbers cover only the 35 finished tasks. Success rate is the <strong>manual-audit ground truth</strong> from each run's report in <code>reports/public/</code> - every task's verdict was hand-verified on-device (false passes downgraded to FAIL, honest-fail hallucination controls counted as success). See <em>How the metrics are computed</em> below for each metric's definition. More rows will appear as more models are benchmarked. <a href="#fnref-2" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
         <li id="fn-3"><strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> - it draws a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is <strong>no OCR element-grouping, no element IDs, and no marked touch boxes</strong>. The model inspects the raw screenshot and eyeballs where to tap from pixels + grid, with no per-element anchors to lean on (that marked-boxes approach is UI-TARS / mobile-vlm / Mobile-Agent-v2, not mobilerun). So a vision run has to reconstruct every target from pixels alone - which is why vision consistently lands below the text runs below. <a href="#fnref-3" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
       </ol>
@@ -503,8 +624,10 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+<script src="./assets/js/charts.js?v=1"></script>
 <script src="./assets/js/nav.js?v=10"></script>
 <script src="./assets/js/app.js?v=12"></script>
 <script src="./assets/js/leaderboard.js?v=12"></script>

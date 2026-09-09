@@ -8,7 +8,7 @@ import sys
 
 import pytest
 
-from DailyBench import cli
+from androidlife import cli
 
 from mobilerun_provider_guard import classify_endpoint, looks_like_local_model
 
@@ -59,22 +59,22 @@ def test_openai_model_names_are_not_classified_as_local() -> None:
 
 
 def test_api_key_uses_openrouter_with_dummy_fallback(monkeypatch) -> None:
-    """The main agent uses OPENROUTER_API_KEY when set, or 'sk-DailyBench-local'
+    """The main agent uses OPENROUTER_API_KEY when set, or 'sk-AndroidLife-local'
     when absent (safe for local llama-server). OPENAI_API_KEY is never a fallback —
     it belongs to a completely separate service (the ask_user tool)."""
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-v1-real-key")
     monkeypatch.setenv("OPENAI_API_KEY", "sk-openai-real-key")
-    chosen = os.environ.get("OPENROUTER_API_KEY", "sk-DailyBench-local")
+    chosen = os.environ.get("OPENROUTER_API_KEY", "sk-AndroidLife-local")
     assert chosen == "sk-or-v1-real-key"
 
 
 def test_api_key_falls_back_to_dummy_when_openrouter_unset(monkeypatch) -> None:
-    """When OPENROUTER_API_KEY is absent, the dummy 'sk-DailyBench-local' is used.
+    """When OPENROUTER_API_KEY is absent, the dummy 'sk-AndroidLife-local' is used.
     OPENAI_API_KEY is NOT used as a fallback."""
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.setenv("OPENAI_API_KEY", "sk-openai-real-key")
-    chosen = os.environ.get("OPENROUTER_API_KEY", "sk-DailyBench-local")
-    assert chosen == "sk-DailyBench-local"
+    chosen = os.environ.get("OPENROUTER_API_KEY", "sk-AndroidLife-local")
+    assert chosen == "sk-AndroidLife-local"
 
 
 # ---------------------------------------------------------------------------
@@ -168,7 +168,7 @@ def test_proxy_preserves_multi_segment_base_url(tmp_path) -> None:
     import urllib.request
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-    from DailyBench import processes
+    from androidlife import processes
 
     class _PathRecorder(BaseHTTPRequestHandler):
         received_path = None

@@ -102,7 +102,7 @@ purely about grading and anti-gaming.
 ## 4) Close the Google Sheets gap — DONE (2026-08-12)
 
 **Today:** the benchmark has **no `sheets` app_slug**, yet at least one task in
-`benchmarks/dailyBench-600/public.md` explicitly says *"open it in the google
+`benchmarks/androidlife-600/public.md` explicitly says *"open it in the google
 sheets app"* (the Files → SPORTS_VIDEO_DATA task), and Google Sheets **is installed
 on the device** (`com.google.android.apps.docs.editors.sheets`). So the app exists on
 the phone but is missing from the benchmark's app inventory / app list.

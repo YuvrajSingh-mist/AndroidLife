@@ -1,12 +1,12 @@
 # Public Benchmark Specification (60-task preview)
 
-The **public benchmark** is the open, shareable slice of
-[AndroidLife](benchmark-spec.md): a 3-day (Day 1–3) preview drawn from the 530-task
-corpus so the pipeline, seeds, and grading can be exercised on a small, self-contained
-sample whose results can be published openly. It is **not** the eval set and it is not a
-curated "highlight reel" — every task keeps its real 530 `task_id`, exact prompt text, and
-placeholder slots, and the bucket/app/difficulty distributions intentionally track the parent
-corpus.
+The **public benchmark** is AndroidLife's open, publishable **evaluation set** — a
+3-day (Day 1–3) schedule of 60 tasks that stands on its own. It shares the same
+[MobileRun](https://docs.mobilerun.ai) harness, fabricated-seed philosophy, and grading
+policy as the [530-task corpus](benchmark-spec.md), and its bucket/app/difficulty mix is
+deliberately representative of that corpus — but it is **not** a throwaway subset or
+highlight reel. See [`docs/reproducibility.md`](reproducibility.md) for reset/seed/verify
+and why live-phone runs are protocol-reproducible, never bitwise-identical.
 
 It runs on the same physical Android device (OnePlus CPH2423, non-rooted, serial
 `RS7XKZDI8HTOJNYL`) through the same [mobilerun](https://docs.mobilerun.ai) harness, with the
@@ -16,8 +16,8 @@ and [`docs/fabricated-test-data.md`](fabricated-test-data.md) for the machinery 
 
 ## Benchmark at a glance (as of 2026-08-23)
 
-**Source of truth:** `benchmarks/dailyBench-600/public.md`
-(`DailyBench_public_v2.json`/`.jsonl`)
+**Source of truth:** `benchmarks/androidlife-600/public.md`
+(`AndroidLife_public_v2.json`/`.jsonl`)
 
 | metric | value |
 |---|---|
@@ -68,7 +68,7 @@ Every public task is drawn from the 530 with the same text, so the public set is
 
 ### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
 
-Fact source: `benchmarks/dailyBench-600/ask_user_facts.json`.
+Fact source: `benchmarks/androidlife-600/ask_user_facts.json`.
 
 These are the **7 single-query ask tasks**: the 1–2 facts the task needs (recipient, place,
 item, route, threshold, …) are deliberately withheld from the model and given to the simulated
@@ -97,7 +97,7 @@ withheld fact(s), and the same answer comes back each time. Guessing without ask
 
 ### ASK USER MULTI (4) — KB-oracle multi-turn dialogue with a deterministic, verifiable outcome
 
-Profile source: `benchmarks/dailyBench-600/multiturn_kb_public.json`. These are exactly the 4
+Profile source: `benchmarks/androidlife-600/multiturn_kb_public.json`. These are exactly the 4
 multi-turn profiles that ship in the public sidecar; the other 9 live in
 `multiturn_kb_530.json` for the full corpus.
 
@@ -146,7 +146,7 @@ seeding this data (see the seed-advice rule in memory).
 | `medium__notes__004` | 3 | medium |
 | `hard__files-notes__069` | 3 | hard (also DET) |
 
-Source: `benchmarks/dailyBench-600/hallucination_controls.json`. Graded by
+Source: `benchmarks/androidlife-600/hallucination_controls.json`. Graded by
 `scripts/eval/eval_hallucination_controls.py` (DeepEval DAGMetric + manual confirmation).
 
 ## Grading model
@@ -206,13 +206,13 @@ runs can be published openly without ToS risk.
 ## Placeholders
 
 32 distinct keys, 44 uses across the 60 tasks — pinned per-device in
-`benchmarks/dailyBench-600/public_vars.local.env` (the public equivalent of
+`benchmarks/androidlife-600/public_vars.local.env` (the public equivalent of
 `tasks_vars.local.env`). Most-used: `[contact]` (11), `[contact name]` (2), `[weekly meeting]` (2). Open (unpinned) placeholders are left verbatim in the prompt and are
 part of what the agent must resolve or ask about.
 
 ## Data & seeds
 
-- **Vars:** `benchmarks/dailyBench-600/public_vars.local.env` (pass with `--vars-file`).
+- **Vars:** `benchmarks/androidlife-600/public_vars.local.env` (pass with `--vars-file`).
 - **Seed manifests:** generated for the 3 public days from the same
   `scripts/seeding/build_day_seed_manifest.py` pipeline as the corpus (see
   `docs/fabricated-test-data.md`).
@@ -228,23 +228,23 @@ Start a per-run Phoenix DB (dedicated date-time folder — same convention as th
 
 ```bash
 uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"   # e.g. 20260826-105200
-# → assets/db/public/20260826-105200/phoenix.db, project dailybench-public
+# → assets/db/public/20260826-105200/phoenix.db, project androidlife-public
 ```
 
 Run all 60 tasks:
 
 ```bash
 uv run dailybench_tasks.py \
-  --dataset benchmarks/dailyBench-600/DailyBench_public_v2.json \
+  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --source public.md --all \
   --serial RS7XKZDI8HTOJNYL \
   --llm-upstream-base https://openrouter.ai/api \
   --model qwen/qwen3.6-plus \
   --temperature 0.0 \
   --steps 60 --task-timeout 2400 --save-trajectory action \
-  --vars-file benchmarks/dailyBench-600/public_vars.local.env \
-  --ask-user-kb benchmarks/dailyBench-600/multiturn_kb_public.json \
-  --phoenix-url http://localhost:6006 --phoenix-project dailybench-public \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+  --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
   --run-root "assets/runs/public/$RUN_TS"
 ```
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from DailyBench.summary import TaskOutcome, summarize, summarize_app_battery
+from androidlife.summary import TaskOutcome, summarize, summarize_app_battery
 
 
 def test_task_outcome_round_trips_through_model_dump() -> None:

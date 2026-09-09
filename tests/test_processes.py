@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from DailyBench import processes
+from androidlife import processes
 
 
 class _StubUpstreamHandler(BaseHTTPRequestHandler):

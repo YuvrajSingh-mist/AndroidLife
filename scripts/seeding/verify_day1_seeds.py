@@ -15,14 +15,14 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from DailyBench.user_config import load_user_config, parse_flat_config, template_keys  # noqa: E402
+from androidlife.user_config import load_user_config, parse_flat_config, template_keys  # noqa: E402
 
-DATASET_530 = REPO_ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_530_v1.json"
-FACTS = REPO_ROOT / "benchmarks" / "dailyBench-600" / "ask_user_facts_730.json"
+DATASET_530 = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
+FACTS = REPO_ROOT / "benchmarks" / "androidlife-600" / "ask_user_facts_730.json"
 MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "seeding" / "build_day_seed_manifest.py"
 SEED_SCRIPT = REPO_ROOT / "scripts" / "seeding" / "seed_data.py"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
-VARS_LOCAL = REPO_ROOT / "benchmarks" / "dailyBench-600" / "tasks_vars.local.env"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars.local.env"
 NON_CONFIG_TEMPLATES = {"today's date"}
 
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "seeding"))

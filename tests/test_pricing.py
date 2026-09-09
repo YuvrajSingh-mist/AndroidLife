@@ -1,4 +1,4 @@
-"""Tests for runtime model pricing (DailyBench.pricing) and ask_user cost logging.
+"""Tests for runtime model pricing (androidlife.pricing) and ask_user cost logging.
 
 Pricing is fetched live from a provider catalog, so these tests stand in a local HTTP server
 that serves a small OpenRouter-shaped ``/v1/models`` payload — no real network, no hardcoded
@@ -14,8 +14,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
 
-from DailyBench.custom_tools import _log_ask_user_call, build_ask_user_tool
-from DailyBench.pricing import ModelPricing
+from androidlife.custom_tools import _log_ask_user_call, build_ask_user_tool
+from androidlife.pricing import ModelPricing
 
 # The fake catalog this test serves: standard per-token USD rates (OpenRouter shape).
 FAKE_CATALOG = {

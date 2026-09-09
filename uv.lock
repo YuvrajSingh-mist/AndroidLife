@@ -163,6 +163,45 @@ wheels = [
 ]
 
 [[package]]
+name = "androidlife"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "deepeval" },
+    { name = "mobilerun" },
+    { name = "openai" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "sqlean-py", version = "3.49.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'win32'" },
+    { name = "sqlean-py", version = "3.50.4.5", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+]
+hf = [
+    { name = "huggingface-hub" },
+]
+tracing = [
+    { name = "arize-phoenix" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "arize-phoenix", marker = "extra == 'tracing'" },
+    { name = "deepeval", specifier = ">=4.1" },
+    { name = "huggingface-hub", marker = "extra == 'hf'" },
+    { name = "mobilerun", specifier = ">=0.6.15" },
+    { name = "openai", specifier = ">=1.0" },
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "sqlean-py", specifier = ">=3.45.1" },
+]
+provides-extras = ["dev", "tracing", "hf"]
+
+[[package]]
 name = "annotated-doc"
 version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -704,45 +743,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/69/98/ca72a91d5c25a2ae1
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/75/a11bfb5045e58b4ef69337b848985918e829fe9a90572a761d17c1a992f5/cyclopts-4.22.2-py3-none-any.whl", hash = "sha256:9c2cdf6a621886cd0af631a67437eb7d0084f33f9e8fba2d2562a1aecf75f2ff", size = 233906, upload-time = "2026-07-24T20:53:07.064Z" },
 ]
-
-[[package]]
-name = "dailybench300"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "deepeval" },
-    { name = "mobilerun" },
-    { name = "openai" },
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-    { name = "sqlean-py", version = "3.49.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'win32'" },
-    { name = "sqlean-py", version = "3.50.4.5", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-]
-hf = [
-    { name = "huggingface-hub" },
-]
-tracing = [
-    { name = "arize-phoenix" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "arize-phoenix", marker = "extra == 'tracing'" },
-    { name = "deepeval", specifier = ">=4.1" },
-    { name = "huggingface-hub", marker = "extra == 'hf'" },
-    { name = "mobilerun", specifier = ">=0.6.15" },
-    { name = "openai", specifier = ">=1.0" },
-    { name = "pydantic", specifier = ">=2.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
-    { name = "python-dotenv", specifier = ">=1.0" },
-    { name = "sqlean-py", specifier = ">=3.45.1" },
-]
-provides-extras = ["dev", "tracing", "hf"]
 
 [[package]]
 name = "dataclasses-json"

@@ -24,7 +24,7 @@ Canonical operator runbook (ADB reset + manual seeds table):
   Shared Bill, Stock Watch, Recipe, Food Favourites, Contact Updates, Weekly Agenda.txt)
 - ☑ Contacts (incl. Akash Kumar + fabricated email `yuvraj.mist@gmail.com`)
 - ☑ Camera seeds + Screenshots · `screen_off_timeout=1800000` · blocked numbers cleared
-- ☑ Public dataset = **60 tasks** (`DailyBench_public_v2.json`)
+- ☑ Public dataset = **60 tasks** (`AndroidLife_public_v2.json`)
 
 ---
 
@@ -131,7 +131,7 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☑ **Wireless ADB = Tailscale serial** `100.108.15.119:5555` (phone roams subnets; the LAN IP
   is unreliable). Reconnect: `adb kill-server` (if "No route to host" persists despite ping
   working), then `adb connect 100.108.15.119:5555`. Phone has `com.tailscale.ipn` on `tun0`.
-- ☐ **Launch detached with stdin from `/dev/null`** — `nohup uv run dailybench_tasks.py ... < /dev/null > log 2>&1 &`.
+- ☐ **Launch detached with stdin from `/dev/null`** — `nohup uv run androidlife_tasks.py ... < /dev/null > log 2>&1 &`.
   Without `< /dev/null` the batch dies with `Fatal Python error: init_sys_streams ... Bad file
   descriptor` when the launching terminal closes (this killed the 2026-09-01 mimo run mid-day1).
 - ☐ **Start phoenix BEFORE the batch** (`start_phoenix.py --public --run-ts <TS>`, wait for :6006),

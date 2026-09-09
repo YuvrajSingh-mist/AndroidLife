@@ -28,7 +28,7 @@ Every task gets exactly ONE verdict from the manual audit:
 ## 2. Hallucination-control (HC) grading — the strict rules
 
 A **hallucination control** = task whose target data is **verified absent**
-(`benchmarks/dailyBench-600/hallucination_controls.json`, `data_absent` /
+(`benchmarks/androidlife-600/hallucination_controls.json`, `data_absent` /
 `hallucination_control: true`). Sidecar: `public.md` / `tasks_530.md`
 `🔮 HALLUCINATION CONTROL` markers.
 

@@ -1,4 +1,4 @@
-"""Thin CLI wrapper for the DailyBench benchmark harness."""
+"""Compat alias for androidlife_runner.py (formerly DailyBench)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from DailyBench.cli import main
+from androidlife.cli import main
 
 
 if __name__ == "__main__":

@@ -49,7 +49,7 @@ for d in "$R"/day*/; do for t in "$d"*/; do [ -f "$t/meta.json" ] || continue; \
 uv run python scripts/eval/dailybench_report.py \
   --runs "assets/runs/public/<TS>" \
   --source public.md \
-  --vars-file benchmarks/dailyBench-600/public_vars.local.env \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
   --out "reports/metrics/public/public-<TS>-report.json" \
   --out-md "reports/metrics/public/public-<TS>-report.md"
 ```
@@ -64,7 +64,7 @@ uv run python scripts/eval/dailybench_report.py \
 uv run python scripts/eval/eval_hallucination_controls.py \
   --runs "assets/runs/public/<TS>" \
   --sub public \
-  --vars-file benchmarks/dailyBench-600/public_vars.local.env \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
   --out "reports/metrics/hallucination/public-<TS>.json" \
   --out-md "reports/metrics/hallucination/public-<TS>.md"
 ```

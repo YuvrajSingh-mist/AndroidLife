@@ -13,18 +13,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from DailyBench.task_dataset import save_dataset_files  # noqa: E402
+from androidlife.task_dataset import save_dataset_files  # noqa: E402
 
-BENCH = ROOT / "benchmarks" / "dailyBench-600"
-S530 = BENCH / "DailyBench_530_v1.json"
+BENCH = ROOT / "benchmarks" / "androidlife-600"
+S530 = BENCH / "AndroidLife_530_v1.json"
 FACTS_730 = BENCH / "ask_user_facts_730.json"
 FACTS_PUB = BENCH / "ask_user_facts.json"
 HC = BENCH / "hallucination_controls.json"
 PUBLIC_VARS = BENCH / "public_vars.local.env"
 USER_YAML = ROOT / "config" / "user.yaml"
 OUT_MD = BENCH / "public.md"
-OUT_JSON = BENCH / "DailyBench_public_v2.json"
-OUT_JSONL = BENCH / "DailyBench_public_v2.jsonl"
+OUT_JSON = BENCH / "AndroidLife_public_v2.json"
+OUT_JSONL = BENCH / "AndroidLife_public_v2.jsonl"
 
 # The 4 best multi-turn (KB) tasks, by their REAL 530 ids.
 MULTITURN = [
@@ -218,7 +218,7 @@ def main() -> int:
 
     # --- write public.md (530 format, with <!--task_id--> comments) ---
     md_lines = [
-        "# DrainBench — Public Sample (3-Day Preview)",
+        "# AndroidLife — Public Sample (3-Day Preview)",
         "",
         "### Not the eval set. A structural preview only — a TRUE sample drawn from the",
         "530-task corpus (same task_ids, exact prompt text, placeholder slots). "
@@ -300,9 +300,9 @@ def main() -> int:
 
     # --- write the public dataset files (real ids) ---
     dataset = {
-        "dataset_name": "DailyBench-Public",
+        "dataset_name": "AndroidLife-Public",
         "dataset_version": "v2",
-        "source_path": "benchmarks/dailyBench-600/public.md",
+        "source_path": "benchmarks/androidlife-600/public.md",
         "task_count": len(public_tasks),
         "bucket_counts": dict(Counter(t["bucket"] for t in public_tasks)),
         "tasks": public_tasks,

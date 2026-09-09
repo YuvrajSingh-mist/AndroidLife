@@ -1,4 +1,4 @@
-"""Thin CLI wrapper for dataset-backed DailyBench task runs."""
+"""Compat alias for androidlife_tasks.py (formerly DailyBench)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from DailyBench.task_batch import main
+from androidlife.task_batch import main
 
 
 if __name__ == "__main__":

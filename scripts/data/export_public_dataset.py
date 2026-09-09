@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from DailyBench.task_dataset import ask_user_facts_path, merge_ask_user_facts, parse_tasks_markdown, save_dataset_files
+from androidlife.task_dataset import ask_user_facts_path, merge_ask_user_facts, parse_tasks_markdown, save_dataset_files
 
 # The public sample is now a TRUE slice of the 530 corpus, so every task line carries
 # its real 530 task_id in an HTML comment (<!--hard__swiggy__005-->). Honor those ids:
@@ -20,13 +20,13 @@ STRIP_COMMENTS = re.compile(r"<!--.*?-->")
 
 
 def main() -> int:
-    """Parse benchmarks/dailyBench-600/public.md (the 3-day public sample) and write the dataset artifacts.
+    """Parse benchmarks/androidlife-600/public.md (the 3-day public sample) and write the dataset artifacts.
 
     This is a structural preview, not the real held-out eval, so unlike the private benchmark it's
     fine to publish each ASK USER task's `ask_user_fact` right in the dataset (see
     docs/evaluation-policy.md).
     """
-    source_path = "benchmarks/dailyBench-600/public.md"
+    source_path = "benchmarks/androidlife-600/public.md"
     source = ROOT / source_path
     raw = source.read_text(encoding="utf-8")
     real_ids = TASK_ID_COMMENT.findall(raw)  # in file order, one per task line
@@ -74,9 +74,9 @@ def main() -> int:
             task["ahi"] = "ASK USER"
             task["interaction"] = "single"
             task["is_ask_user"] = True
-    dataset["dataset_name"] = "DailyBench-Public"
+    dataset["dataset_name"] = "AndroidLife-Public"
     dataset["dataset_version"] = "v2"
-    save_dataset_files(dataset, ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_public_v2.json", ROOT / "benchmarks" / "dailyBench-600" / "DailyBench_public_v2.jsonl")
+    save_dataset_files(dataset, ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_public_v2.json", ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_public_v2.jsonl")
     print(f"Exported {dataset['task_count']} tasks.")
     return 0
 

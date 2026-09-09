@@ -37,7 +37,7 @@ def fetch_openrouter_pricing(
     """
     req = urllib.request.Request(
         OPENROUTER_MODELS_URL,
-        headers={"Authorization": f"Bearer {api_key}", "User-Agent": "dailybench-pricing/1.0"},
+        headers={"Authorization": f"Bearer {api_key}", "User-Agent": "androidlife-pricing/1.0"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         payload: dict[str, Any] = json.loads(resp.read().decode("utf-8"))

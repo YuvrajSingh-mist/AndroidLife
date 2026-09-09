@@ -4,8 +4,8 @@
 //   node website/tools/build_site_data.mjs
 //
 // Reads:
-//   benchmarks/dailyBench-600/DailyBench_530_v1.json  (the 533-task private set)
-//   benchmarks/dailyBench-600/DailyBench_public_v2.json (the 50-task public preview)
+//   benchmarks/androidlife-600/AndroidLife_530_v1.json  (the 533-task private set)
+//   benchmarks/androidlife-600/AndroidLife_public_v2.json (the 50-task public preview)
 //
 // Writes:
 //   website/assets/data/site_data.json  (consumed by the static website)
@@ -87,12 +87,12 @@ function primaryApp(task) {
 }
 
 function main() {
-  const full = readJson("benchmarks/dailyBench-600/DailyBench_530_v1.json");
-  const pub = readJson("benchmarks/dailyBench-600/DailyBench_public_v2.json");
+  const full = readJson("benchmarks/androidlife-600/AndroidLife_530_v1.json");
+  const pub = readJson("benchmarks/androidlife-600/AndroidLife_public_v2.json");
   const tasks = full.tasks;
   const publicTasks = pub.tasks;
-  const publicVars = parseEnvFile("benchmarks/dailyBench-600/public_vars.local.env");
-  const tasksVars = parseEnvFile("benchmarks/dailyBench-600/tasks_vars.local.env");
+  const publicVars = parseEnvFile("benchmarks/androidlife-600/public_vars.local.env");
+  const tasksVars = parseEnvFile("benchmarks/androidlife-600/tasks_vars.local.env");
 
   const stats = {
     task_count: tasks.length,
@@ -166,10 +166,10 @@ function main() {
   let hcSidecar = {};
   let kbSidecar = {};
   try {
-    hcSidecar = readJson("benchmarks/dailyBench-600/hallucination_controls.json");
+    hcSidecar = readJson("benchmarks/androidlife-600/hallucination_controls.json");
   } catch {}
   try {
-    kbSidecar = readJson("benchmarks/dailyBench-600/multiturn_kb_public.json");
+    kbSidecar = readJson("benchmarks/androidlife-600/multiturn_kb_public.json");
   } catch {}
 
   const publicIdSet = new Set(publicTasks.map((t) => t.task_id));

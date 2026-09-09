@@ -14,7 +14,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "src"))
 
-from DailyBench.jsonutils import read_json  # noqa: E402
+from androidlife.jsonutils import read_json  # noqa: E402
 
 RUNS = REPO / "assets" / "runs" / "public"
 DB = REPO / "assets" / "db" / "public"
@@ -25,10 +25,10 @@ HALL = REPORTS / "metrics" / "hallucination"
 TB = REPORTS / "turn-based" / "public"
 SINGLE = TB / "ask-query-single"
 MULTI = TB / "ask-query-multi"
-BENCH = REPO / "benchmarks" / "dailyBench-600"
+BENCH = REPO / "benchmarks" / "androidlife-600"
 FACTS = BENCH / "ask_user_facts.json"
 KB = BENCH / "multiturn_kb_public.json"
-DATASET = BENCH / "DailyBench_public_v2.json"
+DATASET = BENCH / "AndroidLife_public_v2.json"
 
 # The mobile GUI agent's `ask_user` tool description — exactly what the RUN AGENT
 # sees registered for its ask_user tool (both single-fact and multi-turn/KB modes

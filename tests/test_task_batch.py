@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from DailyBench import task_batch
+from androidlife import task_batch
 
 
 def test_build_run_command_contains_selection_config(tmp_path) -> None:
@@ -145,16 +145,16 @@ def test_build_run_command_forwards_phoenix_flags_only_when_provided() -> None:
             "--llm-upstream-base", "http://mini2:8081/v1",
             "--model", "m",
             "--phoenix-url", "http://localhost:6006",
-            "--phoenix-project", "DailyBench",
+            "--phoenix-project", "AndroidLife",
         ]
     )
     configured_command, _ = task_batch.build_run_command(configured_args, task, "Check inbox", 8090)
     assert configured_command[configured_command.index("--phoenix-url") + 1] == "http://localhost:6006"
-    assert configured_command[configured_command.index("--phoenix-project") + 1] == "DailyBench"
+    assert configured_command[configured_command.index("--phoenix-project") + 1] == "AndroidLife"
 
 
 def test_main_runs_each_task_once_by_default(monkeypatch, tmp_path) -> None:
-    """Without --repeats, main() invokes DailyBench_runner exactly once per task, with no '-repNN' label suffix."""
+    """Without --repeats, main() invokes androidlife_runner exactly once per task, with no '-repNN' label suffix."""
     dataset = {
         "tasks": [
             {
@@ -174,7 +174,7 @@ def test_main_runs_each_task_once_by_default(monkeypatch, tmp_path) -> None:
 
     def fake_run(command, check=False, **kwargs):
         # capture_sample()'s pre-batch device snapshot shells out via "adb ... shell dumpsys ...";
-        # only the DailyBench_runner invocations (python commands) are what these tests assert on.
+        # only the androidlife_runner invocations (python commands) are what these tests assert on.
         if command[0] != "adb":
             calls.append(command)
         return SimpleNamespace(returncode=0, stdout="")
@@ -200,7 +200,7 @@ def test_main_runs_each_task_once_by_default(monkeypatch, tmp_path) -> None:
 
 
 def test_main_runs_each_task_repeats_times(monkeypatch, tmp_path) -> None:
-    """main() invokes DailyBench_runner --repeats times per selected task, each with a bumped proxy port and rep label."""
+    """main() invokes androidlife_runner --repeats times per selected task, each with a bumped proxy port and rep label."""
     dataset = {
         "tasks": [
             {
@@ -220,7 +220,7 @@ def test_main_runs_each_task_repeats_times(monkeypatch, tmp_path) -> None:
 
     def fake_run(command, check=False, **kwargs):
         # capture_sample()'s pre-batch device snapshot shells out via "adb ... shell dumpsys ...";
-        # only the DailyBench_runner invocations (python commands) are what these tests assert on.
+        # only the androidlife_runner invocations (python commands) are what these tests assert on.
         if command[0] != "adb":
             calls.append(command)
         return SimpleNamespace(returncode=0, stdout="")
@@ -325,7 +325,7 @@ def test_build_run_command_forwards_ask_user_kb_for_kb_tasks_only() -> None:
     parser = task_batch.build_parser()
     args = parser.parse_args(
         ["--serial", "device-1", "--llm-upstream-base", "http://mini2:8081/v1", "--model", "m",
-         "--ask-user-kb", "benchmarks/dailyBench-600/multiturn_kb_530.json"]
+         "--ask-user-kb", "benchmarks/androidlife-600/multiturn_kb_530.json"]
     )
     kb_task = {"bucket": "hard", "app_slug": "swiggy", "task_number_within_app": 5, "task_id": "hard__swiggy__005", "ahi": "DETERMINISTIC", "placeholders": []}
     plain_task = {"bucket": "hard", "app_slug": "maps-notes", "task_number_within_app": 5, "task_id": "hard__google-maps-notes__005", "ahi": "DETERMINISTIC", "placeholders": []}
@@ -335,7 +335,7 @@ def test_build_run_command_forwards_ask_user_kb_for_kb_tasks_only() -> None:
     plain_command, _ = task_batch.build_run_command(args, plain_task, "Find it", 8090, ask_user_kb=kb)
 
     assert "--ask-user-kb" in kb_command
-    assert kb_command[kb_command.index("--ask-user-kb") + 1] == "benchmarks/dailyBench-600/multiturn_kb_530.json"
+    assert kb_command[kb_command.index("--ask-user-kb") + 1] == "benchmarks/androidlife-600/multiturn_kb_530.json"
     assert "--ask-user-context" not in kb_command
     assert "--ask-user-kb" not in plain_command
 
