@@ -13,30 +13,37 @@
     bar: "#8a7355",
   };
 
-  function baseOptions(title) {
+  function baseOptions() {
     return {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: 4 },
       plugins: {
         legend: { display: false },
         title: { display: false },
         tooltip: {
-          backgroundColor: "rgba(40, 36, 32, 0.92)",
-          titleFont: { family: "Crimson Pro, Georgia, serif", size: 14 },
-          bodyFont: { family: "Crimson Pro, Georgia, serif", size: 13 },
-          padding: 10,
+          enabled: true,
+          backgroundColor: "rgba(40, 36, 32, 0.94)",
+          titleFont: { family: "Crimson Pro, Georgia, serif", size: 13 },
+          bodyFont: { family: "Crimson Pro, Georgia, serif", size: 12 },
+          padding: 8,
           cornerRadius: 4,
+          displayColors: false,
+          caretPadding: 8,
           callbacks: {
+            title(items) {
+              return items[0] ? items[0].label : "";
+            },
             label(ctx) {
               const v = ctx.raw;
               const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
               const pct = total ? ((v / total) * 100).toFixed(1) : "0";
-              return ` ${ctx.label}: ${v} (${pct}%)`;
+              return `${v}  (${pct}%)`;
             },
           },
         },
       },
-      animation: { duration: 700, easing: "easeOutQuart" },
+      animation: { duration: 550, easing: "easeOutQuart" },
     };
   }
 
@@ -45,59 +52,45 @@
     const data = cfg.data || [];
     const colors = cfg.colors || labels.map((_, i) => Object.values(PALETTE)[i % 6]);
     const center = cfg.center || null;
+    const opts = baseOptions();
+    opts.cutout = "62%";
+    opts.interaction = { mode: "nearest", intersect: true };
+    opts.onHover = (evt, els) => {
+      evt.native.target.style.cursor = els.length ? "pointer" : "default";
+    };
+    opts.elements = {
+      arc: { hoverOffset: 4, borderWidth: 2, borderColor: "rgba(255,255,255,0.9)" },
+    };
 
-    const chart = new Chart(canvas.getContext("2d"), {
+    // HTML center label (avoids canvas text stacking / overlap)
+    const host = canvas.closest(".pie-canvas-wrap");
+    if (host && center) {
+      let badge = host.querySelector(".pie-center");
+      if (!badge) {
+        badge = document.createElement("div");
+        badge.className = "pie-center";
+        badge.setAttribute("aria-hidden", "true");
+        host.appendChild(badge);
+      }
+      badge.innerHTML =
+        `<span class="pie-center-value">${center.value}</span>` +
+        (center.label ? `<span class="pie-center-label">${center.label}</span>` : "");
+    }
+
+    return new Chart(canvas.getContext("2d"), {
       type: "doughnut",
       data: {
         labels,
-        datasets: [
-          {
-            data,
-            backgroundColor: colors,
-            borderColor: "rgba(255,255,255,0.85)",
-            borderWidth: 2,
-            hoverOffset: 8,
-          },
-        ],
+        datasets: [{ data, backgroundColor: colors, hoverOffset: 4 }],
       },
-      options: {
-        ...baseOptions(cfg.title),
-        cutout: "58%",
-        onHover(evt, els) {
-          evt.native.target.style.cursor = els.length ? "pointer" : "default";
-        },
-      },
-      plugins: center
-        ? [
-            {
-              id: "centerText",
-              afterDraw(c) {
-                const { ctx, chartArea } = c;
-                if (!chartArea) return;
-                const x = (chartArea.left + chartArea.right) / 2;
-                const y = (chartArea.top + chartArea.bottom) / 2;
-                ctx.save();
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillStyle = "#5c5348";
-                ctx.font = "600 1.35rem Cormorant Garamond, Georgia, serif";
-                ctx.fillText(String(center.value), x, y - 8);
-                ctx.fillStyle = "#8a8074";
-                ctx.font = "0.72rem Crimson Pro, Georgia, serif";
-                ctx.fillText(center.label || "", x, y + 14);
-                ctx.restore();
-              },
-            },
-          ]
-        : [],
+      options: opts,
     });
-    return chart;
   }
 
   function renderBar(canvas, cfg) {
     const labels = cfg.labels || [];
     const data = cfg.data || [];
-    const opts = baseOptions(cfg.title);
+    const opts = baseOptions();
     opts.indexAxis = cfg.horizontal === false ? "x" : "y";
     opts.scales = {
       x: {
@@ -115,9 +108,12 @@
       },
     };
     opts.plugins.tooltip.callbacks = {
+      title(items) {
+        return items[0] ? items[0].label : "";
+      },
       label(ctx) {
         const u = cfg.unit === "%" ? "%" : "";
-        return ` ${ctx.label}: ${ctx.raw}${u}`;
+        return `${ctx.raw}${u}`;
       },
     };
     return new Chart(canvas.getContext("2d"), {
@@ -137,19 +133,29 @@
     });
   }
 
+  /** Grid legend: swatch | label | count | pct - columns stay aligned. */
   function fillLegend(el, cfg) {
     if (!el || !cfg.labels) return;
     const colors = cfg.colors || [];
+    const total = cfg.data.reduce((a, b) => a + b, 0);
+    el.classList.add("pie-legend--grid");
     el.innerHTML = cfg.labels
       .map((label, i) => {
         const v = cfg.data[i];
-        const total = cfg.data.reduce((a, b) => a + b, 0);
-        const pct = cfg.showPct !== false && total ? ` · ${((v / total) * 100).toFixed(1)}%` : "";
+        const pct =
+          cfg.showPct !== false && total ? `${((v / total) * 100).toFixed(1)}%` : "";
         const href = (cfg.hrefs && cfg.hrefs[i]) || null;
-        const text = href
-          ? `<a href="${href}">${label}</a> <strong>${v}</strong>${pct}`
-          : `<strong>${label}</strong> ${v}${pct}`;
-        return `<li><span class="swatch" style="background:${colors[i]}"></span>${text}</li>`;
+        const name = href
+          ? `<a class="pie-legend-name" href="${href}">${label}</a>`
+          : `<span class="pie-legend-name">${label}</span>`;
+        return (
+          `<li>` +
+          `<span class="swatch" style="background:${colors[i]}"></span>` +
+          name +
+          `<span class="pie-legend-count">${v}</span>` +
+          `<span class="pie-legend-pct">${pct}</span>` +
+          `</li>`
+        );
       })
       .join("");
   }
