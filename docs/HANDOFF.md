@@ -7,19 +7,14 @@
 > Companion notes: `docs/future-directions.md` (proposals), `docs/evaluation-policy.md`
 > (grading rules).
 
-## 0. PAUSED — qwen3.8-27b VISION `20260909-043419` (resume later)
+## 0. ACTIVE — qwen3.8-27b VISION `20260909-043419` (resumed)
 
-- **Cancelled 2026-09-09 ~10:14 IST** — keep run root; do **not** wipe
+- **Resumed 2026-09-09 ~20:09 IST** from `medium__google-photos__008` (day3)
 - Model: `qwen/qwen3.8-27b` **VISION** · serial `100.108.15.119:5555`
-- **Battery at cancel: ~36%** (discharging; temp ~36.6°C)
-- Progress: **40/60** with `output.json`
-- Interrupted mid-task: `medium__google-photos__008` (day3) — **incomplete folder cleared**
-- Resume: `--run-root assets/runs/public/20260909-043419 --resume-from medium__google-photos__008 --vision`
-  (prefer `androidlife_tasks.py`; `dailybench_tasks.py` still works)
-- Charge before relaunch; Phoenix was stopped — restart with `--public --run-ts 20260909-043419`
-- Log: `assets/runs/public/batch-20260909-043419.log`
+- Was **40/60**; remaining **20** day3 tasks
+- Phoenix: `assets/db/public/20260909-043419/phoenix.db`, project `dailybench-public`, port 6006 (`--host 127.0.0.1`)
+- Log: `assets/runs/public/batch-20260909-043419.log` · PIDs in `batch-20260909-043419.pid` / `phoenix-20260909-043419.pid`
 - See § REMINDERS below (TEXT run, Slides redo, camera notes) — still apply
-
 ### RENAME (2026-09-09) — DailyBench → AndroidLife (compat shims)
 
 - Package: `src/androidlife/` · shim `src/DailyBench/` still imports

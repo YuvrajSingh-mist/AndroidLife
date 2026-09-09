@@ -2380,6 +2380,29 @@ a.app-card:hover {
   width: 100% !important;
   height: 100% !important;
 }
+.pie-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  line-height: 1.1;
+  gap: 0.15rem;
+}
+.pie-center-value {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.45rem;
+  color: #4a433c;
+}
+.pie-center-label {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-size: 0.68rem;
+  color: #8a8074;
+  letter-spacing: 0.02em;
+}
 .bar-canvas-wrap {
   position: relative;
   width: 100%;
@@ -2397,17 +2420,55 @@ a.app-card:hover {
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-sec);
-  line-height: 1.55;
-  flex: 1 1 140px;
-  min-width: 140px;
+  line-height: 1.35;
+  flex: 1 1 180px;
+  min-width: 168px;
 }
 .pie-legend li {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.45rem;
-  margin: 0.2rem 0;
+  margin: 0.35rem 0;
+}
+.pie-legend--grid {
+  display: grid;
+  grid-template-columns: 0.7rem minmax(0, 1fr) 2.4rem 3.4rem;
+  column-gap: 0.55rem;
+  row-gap: 0.55rem;
+  align-items: center;
+}
+.pie-legend--grid li {
+  display: contents;
+  margin: 0;
+}
+.pie-legend--grid .swatch {
+  margin-top: 0;
+}
+.pie-legend-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-sec);
+  font-weight: 400;
+  min-width: 0;
+}
+.pie-legend-name,
+.pie-legend a.pie-legend-name {
+  text-underline-offset: 2px;
+}
+.pie-legend-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+.pie-legend-pct {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-ter);
+  text-align: right;
+  white-space: nowrap;
 }
 .pie-legend a {
   text-underline-offset: 2px;
@@ -2417,7 +2478,7 @@ a.app-card:hover {
   height: 0.7rem;
   border-radius: 2px;
   flex: 0 0 auto;
-  margin-top: 0.25rem;
+  margin-top: 0;
 }
 .bar-chart { margin: 0.4rem 0 0; }
 .bar-row {
