@@ -4,12 +4,6 @@
 assets/
 datasets/
 
-# Exception: GitHub Pages paper figures under website/assets/img/ (force-ship with the site).
-# Parent dirs must be re-included because `assets/` matches any path segment named assets.
-!website/assets/
-!website/assets/img/
-!website/assets/img/**
-
 # --- personal / device-specific data (never commit) ---
 .env
 config/user.yaml

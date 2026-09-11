@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./assets/css/style.css?v=26">
+  <link rel="stylesheet" href="./assets/css/style.css?v=27">
 </head>
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 <!-- androidlife-copy-v2 -->
@@ -122,56 +122,111 @@
         <p>
           <strong>AndroidLife</strong> is a real-phone agent benchmark: everyday tasks on a live
           OnePlus CPH2423, graded by on-device end-state — and by what finishing the job
-          <em>costs</em> (dollars, battery, heat, steps). Inspired by the visual brevity of
-          <a href="https://tongyi-mai.github.io/MobileWorld/" target="_blank" rel="noopener">MobileWorld</a>,
-          the story below is figure-first; deep prose lives in
-          <a href="./pages/how-it-was-formed.html">How it was formed</a>.
+          <em>costs</em> (dollars, battery, heat, steps). Deep prose lives in
+          <a href="./pages/how-it-was-formed.html">How it was formed</a>; below is the compact
+          picture (tables · charts · flow diagrams).
         </p>
-      </div>
-
-      <figure class="paper-fig">
-        <img src="./assets/img/fig-comparison.png" width="1200" height="675" loading="lazy"
-             alt="Comparison: sterile sandbox/emulator benches versus AndroidLife on a real phone with Amazon Music background load and battery/thermal cost">
-        <figcaption>
-          <strong>Fig. 1.</strong> Sandbox / emulator benches ask “can it tap the right widget?”
-          AndroidLife asks that <em>and</em> “what did it cost a real phone?” — with concurrent
-          background media as a day-in-the-life proxy.
-        </figcaption>
-      </figure>
-
-      <div class="prose">
         <p>
           Two tiers, same harness
           (<a href="https://docs.mobilerun.ai/framework/sdk" target="_blank" rel="noopener">MobileRun</a>
           / Droidrun over wireless ADB):
+          <strong>60-task public leaderboard</strong>
+          (<a href="./pages/tasks.html">trajectories</a>) and
+          <strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">*</a></sup>
+          (28-day · 31 apps · 168 cross-app).
         </p>
-        <ul>
-          <li><strong>60-task public leaderboard</strong> — fully run on-device (3×20 days),
-            manual-audit ground truth.
-            <a href="./pages/tasks.html">Browse trajectories</a>.</li>
-          <li><strong>530-task dataset</strong><sup class="fn-ref"><a href="#fn-1" id="fnref-1b">*</a></sup>
-            — 28-day schedule · 31 apps · 168 cross-app · ASK USER + hallucination controls.
-            <a href="./pages/how-it-was-formed.html">How it was formed</a>.</li>
-        </ul>
       </div>
 
-      <figure class="paper-fig">
-        <img src="./assets/img/fig-architecture.png" width="1200" height="675" loading="lazy"
-             alt="System architecture: host MobileRun agent and LLM on the left, real Android phone with battery samples and Amazon Music background on the right">
+      <figure class="academic-fig" id="fig-comparison">
+        <div class="table-scroll">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">Typical sandbox / emulator</th>
+                <th scope="col">AndroidLife</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Device</th>
+                <td>Emulator / clean VM</td>
+                <td>Live OnePlus CPH2423 (ADB)</td>
+              </tr>
+              <tr>
+                <th scope="row">Success</th>
+                <td>UI match / self-report</td>
+                <td>On-device end-state + manual audit</td>
+              </tr>
+              <tr>
+                <th scope="row">Cost metrics</th>
+                <td>Often omitted</td>
+                <td>$ · battery % · thermal · steps · latency</td>
+              </tr>
+              <tr>
+                <th scope="row">Background load</th>
+                <td>Idle / silent</td>
+                <td><a href="#amazon-music-bg">Amazon Music</a><sup class="fn-ref"><a href="#fn-4" id="fnref-4a">†</a></sup> (~20%)</td>
+              </tr>
+              <tr>
+                <th scope="row">Task mix</th>
+                <td>Mostly GUI-only</td>
+                <td>GUI · <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> · <a href="./pages/how-it-was-formed.html#hallucination-controls">HC</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <figcaption>
-          <strong>Fig. 2.</strong> Host agent loop ↔ live phone over ADB. Background
-          <a href="#amazon-music-bg">Amazon Music</a><sup class="fn-ref"><a href="#fn-4" id="fnref-4a">†</a></sup>
-          is part of the controlled run env so cost metrics include concurrent everyday load
-          (playback may pause mid-run — see footnote).
+          <strong>Table 1.</strong> Sandbox benches ask “can it tap the right widget?”
+          AndroidLife also asks “what did it cost a real phone?”
         </figcaption>
       </figure>
 
-      <figure class="paper-fig">
-        <img src="./assets/img/fig-task-modes.png" width="1200" height="675" loading="lazy"
-             alt="Three task modes: GUI-only, ASK USER clarification, and hallucination controls">
+      <figure class="academic-fig" id="fig-architecture">
+        <div class="arch-diagram" role="img" aria-label="Host agent and LLM on the left; ADB to live phone with cost sampling and Amazon Music on the right">
+          <div class="arch-col">
+            <div class="arch-box">Task prompt</div>
+            <div class="arch-arrow" aria-hidden="true">↓</div>
+            <div class="arch-box arch-box-accent">MobileRun agent</div>
+            <div class="arch-arrow" aria-hidden="true">↓</div>
+            <div class="arch-box">LLM (OpenRouter / local)</div>
+          </div>
+          <div class="arch-bridge" aria-hidden="true">
+            <span class="arch-bridge-line"></span>
+            <span class="arch-bridge-label">wireless ADB</span>
+            <span class="arch-bridge-line"></span>
+          </div>
+          <div class="arch-col">
+            <div class="arch-box arch-box-accent">OnePlus CPH2423</div>
+            <div class="arch-arrow" aria-hidden="true">↓</div>
+            <div class="arch-box">Apps · a11y / vision</div>
+            <div class="arch-arrow" aria-hidden="true">↓</div>
+            <div class="arch-box">Battery · thermal · $<br><span class="arch-sub">+ Amazon Music† bg</span></div>
+          </div>
+        </div>
         <figcaption>
-          <strong>Fig. 3.</strong> Beyond GUI-only: ASK USER (clarify ambiguity) and hallucination
-          controls (absent data — honest fail counts as success). Details:
+          <strong>Fig. 1.</strong> Host agent loop ↔ live phone. Cost samples include concurrent
+          <a href="#amazon-music-bg">Amazon Music</a><sup class="fn-ref"><a href="#fn-4" id="fnref-4b">†</a></sup> load.
+        </figcaption>
+      </figure>
+
+      <figure class="academic-fig" id="fig-task-modes">
+        <div class="mode-grid" role="list">
+          <div class="mode-card" role="listitem">
+            <strong>GUI-only</strong>
+            <span>Navigate apps; end-state check</span>
+          </div>
+          <div class="mode-card" role="listitem">
+            <strong>ASK USER</strong>
+            <span>Clarify ambiguity via <code>ask_user</code></span>
+          </div>
+          <div class="mode-card" role="listitem">
+            <strong>Hallucination control</strong>
+            <span>Absent data — honest fail = pass</span>
+          </div>
+        </div>
+        <figcaption>
+          <strong>Fig. 2.</strong> Task modes beyond pure GUI.
           <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> ·
           <a href="./pages/how-it-was-formed.html#hallucination-controls">HC</a>.
         </figcaption>
@@ -198,7 +253,7 @@
               </div>
               <ul class="pie-legend"></ul>
             </div>
-            <p class="viz-caption"><strong>Fig. 4.</strong> Easy 1 pt · Medium 3 pt (~47% <a href="./pages/how-it-was-formed.html#cross-app">cross-app</a>) · Hard 5 pt (2-3 apps).</p>
+            <p class="viz-caption"><strong>Fig. 3.</strong> Easy 1 pt · Medium 3 pt (~47% <a href="./pages/how-it-was-formed.html#cross-app">cross-app</a>) · Hard 5 pt (2-3 apps).</p>
           </div>
           <div class="viz-card">
             <h4>Hard (72) interaction split</h4>
@@ -209,7 +264,7 @@
               </div>
               <ul class="pie-legend"></ul>
             </div>
-            <p class="viz-caption"><strong>Fig. 5.</strong> Hard-bucket modes. See <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> · <a href="./pages/how-it-was-formed.html#hallucination-controls">HC</a>.</p>
+            <p class="viz-caption"><strong>Fig. 4.</strong> Hard-bucket modes. See <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> · <a href="./pages/how-it-was-formed.html#hallucination-controls">HC</a>.</p>
           </div>
         </div>
 
@@ -274,7 +329,7 @@
                 (<a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">protocol</a></div>
             </div>
           </div>
-          <figcaption><strong>Fig. 3.</strong> Post-run evaluation flowchart. Both arms converge on
+          <figcaption><strong>Fig. 5.</strong> Post-run evaluation flowchart. Both arms converge on
             <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual audit</a>.</figcaption>
         </figure>
 
@@ -305,7 +360,7 @@
 │           ├── <a id="run-artifact-screenshots" href="https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public/tree/main/runs/2026-08-28-002424/day1/easy-calculator-006/trajectories/20260828_024225_720a808c/screenshots" target="_blank" rel="noopener">screenshots/</a>            <span class="run-tree-note">per-step PNGs (vision primary)</span>
 │           └── <a id="run-artifact-ui-states" href="https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public/tree/main/runs/2026-08-28-002424/day1/easy-calculator-006/trajectories/20260828_024225_720a808c/ui_states" target="_blank" rel="noopener">ui_states/</a>              <span class="run-tree-note">per-step UI dumps</span>
 └── <span class="run-tree-note">(batch log / Phoenix DB live beside the run root)</span></pre>
-        <figcaption><strong>Fig. 4.</strong> Typical public-run artifact tree.
+        <figcaption><strong>Fig. 6.</strong> Typical public-run artifact tree.
           Linked <code>screenshots/</code> and <code>ui_states/</code> open the best-model example task
           (<code>easy-calculator-006</code> from qwen3.8-27b TEXT). Clicking an artifact name in the tree
           highlights it (orange tint = <code>:target</code>).</figcaption>
@@ -376,15 +431,15 @@
             <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/scripts/eval/eval_hallucination_controls.py" target="_blank" rel="noopener"><code>eval_hallucination_controls.py</code></a>
             +
             <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual audit</a>
-            (<a href="#evaluation">Fig. 3</a>)
+            (<a href="#evaluation">Fig. 5</a>)
           </div>
         </div>
       </div>
-      <p class="fig-caption"><strong>Fig. 5.</strong> Execution workflow from task prompt through on-device MobileRun to aggregate metrics and
+      <p class="fig-caption"><strong>Fig. 7.</strong> Execution workflow from task prompt through on-device MobileRun to aggregate metrics and
         <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual audit</a>.</p>
       <div class="prose">
         <p>
-          See <a href="#evaluation">Evaluation (Fig. 3)</a> for ASK USER / hallucination-control details and
+          See <a href="#evaluation">Evaluation (Fig. 5)</a> for ASK USER / hallucination-control details and
           <a href="#metrics">Metrics</a> for score definitions.
         </p>
       </div>
@@ -396,7 +451,7 @@
       <h2 class="section-title" id="heading-features">Key Features</h2>
       <div class="prose">
         <p>
-          Figure-first summary — same story as Figs&nbsp;1–3 above. Deep lists and app inventory live in
+          Figure-first summary — Table&nbsp;1 / Figs&nbsp;1–2 above. Deep lists and app inventory live in
           <a href="./pages/how-it-was-formed.html">How it was formed</a>.
         </p>
       </div>
@@ -450,52 +505,17 @@
         </ul>
 
         <h3 class="subsection-title" style="margin-top: 1.5rem;" id="controlled-run-env">Controlled run environment</h3>
-        <p>
+        <p id="amazon-music-bg">
           Every public 60-task leaderboard run uses the same fixed phone state so battery, thermal,
-          and success stay comparable across models. This is a <em>day-in-the-life</em> proxy — not a
-          quiet idle handset:
+          and success stay comparable across models. Amazon Music plays in the background
+          <sup class="fn-ref"><a href="#fn-4" id="fnref-4c">†</a></sup>
+          (volume ~20%) as a proxy for concurrent real-user load — a real phone is rarely idle while
+          someone switches apps — so measured battery / thermal include that activity.
+          Screen brightness is fixed at <strong>50%</strong>; <strong>Wi-Fi only</strong>;
+          auto-rotate / location / dark mode <strong>on</strong>; public caps
+          <code>--steps 60</code>, <code>--task-timeout 2400</code> (40&nbsp;min) per
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">evaluation policy</a>.
         </p>
-        <figure class="paper-fig">
-          <img src="./assets/img/fig-run-env.png" width="1200" height="675" loading="lazy"
-               alt="Controlled run environment: Amazon Music at ~20% volume with fixed brightness, Wi-Fi, dark mode, location, auto-rotate, step and timeout caps">
-          <figcaption>
-            <strong>Fig. 6.</strong> Controlled public-run env — Amazon Music as day-in-the-life
-            background load<sup class="fn-ref"><a href="#fn-4" id="fnref-4c">†</a></sup>, plus fixed
-            brightness / network / timeout caps so battery and thermal stay comparable across models.
-          </figcaption>
-        </figure>
-        <div class="callout run-env-highlight" id="amazon-music-bg" role="note">
-          <p>
-            <strong>Amazon Music plays in the background</strong><sup class="fn-ref"><a href="#fn-4" id="fnref-4d">†</a></sup>
-            (volume ~20%) for public 60-task runs. That is intentional: a real user’s phone is rarely
-            idle — media is often running while they switch apps. Keeping Amazon Music
-            (<code>com.amazon.mp3</code>, whitelisted against OxygenOS virtual-freeze) is our
-            <strong>proxy for concurrent real-user load</strong> while the agent works, so measured
-            battery / thermal cost includes that background activity.
-          </p>
-          <p class="run-env-note">
-            <strong>Caveat†</strong>: playback did <em>not</em> stay continuous for the full run —
-            Android / OxygenOS priority scheduling can still pause or kill Amazon Music mid-batch even
-            after whitelist. Treat battery/thermal as “with music intended,” not guaranteed continuous
-            audio for every minute of the 60 tasks.
-          </p>
-          <p class="run-env-note">
-            Whitelist once per device:
-            <code>adb shell dumpsys deviceidle whitelist +com.amazon.mp3</code>
-            and
-            <code>adb shell cmd appops set com.amazon.mp3 RUN_ANY_IN_BACKGROUND allow</code>
-            (+ Settings → Don’t optimize / allow background activity). Without this, OxygenOS
-            SIGSTOPs background apps and playback dies mid-run.
-          </p>
-        </div>
-        <ul>
-          <li>Screen brightness fixed at <strong>50%</strong>.</li>
-          <li><strong>Wi-Fi only</strong> (mobile data off).</li>
-          <li>Auto-rotate <strong>on</strong> · Location <strong>on</strong> · Dark mode <strong>on</strong>.</li>
-          <li>Public caps (per
-            <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">evaluation policy</a>
-            / AndroidDaily): <code>--steps 60</code>, <code>--task-timeout 2400</code> (40&nbsp;min).</li>
-        </ul>
 
         <h3 class="subsection-title" style="margin-top: 1.5rem;" id="reset-seed-verify">Reset → seed → verify (before every public run)</h3>
         <pre><code class="language-bash">S=100.108.15.119:5555
@@ -663,7 +683,7 @@ nohup uv run androidlife_tasks.py \
           <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual-audit protocol</a>
           (false passes downgraded to FAIL, honest-fail hallucination controls counted as success). See <a href="#lb-metrics-help">How the metrics are computed</a> for each metric's definition. More rows will appear as more models are benchmarked. <a href="#fnref-2" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
         <li id="fn-3"><strong>Why vision mode trails.</strong> mobilerun is <em>pixel-grounding only</em> - it draws a labeled coordinate grid on the screenshot (10 divisions, <code>x=N / y=N</code>) but there is <strong>no OCR element-grouping, no element IDs, and no marked touch boxes</strong>. The model inspects the raw screenshot and eyeballs where to tap from pixels + grid, with no per-element anchors to lean on (that marked-boxes approach is UI-TARS / mobile-vlm / Mobile-Agent-v2, not mobilerun). So a vision run has to reconstruct every target from pixels alone - which is why vision consistently lands below the text runs below. <a href="#fnref-3" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
-        <li id="fn-4"><strong>Amazon Music†</strong> — intended as continuous background load (~20% volume) for the full public 60-task run, but playback <em>did not</em> run uninterrupted: the OS shut it off mid-run due to system priority scheduling (despite deviceidle whitelist / <code>RUN_ANY_IN_BACKGROUND</code> / battery “Don’t optimize”). Battery and thermal numbers still include periods with music on; do not assume continuous audio for every task. <a href="#fnref-4a" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
+        <li id="fn-4"><strong>Amazon Music†</strong> — Amazon Music plays in the background (volume ~20%) for public 60-task runs. That is intentional: a real user’s phone is rarely idle — media is often running while they switch apps. Keeping Amazon Music (<code>com.amazon.mp3</code>, whitelisted against OxygenOS virtual-freeze) is our proxy for concurrent real-user load while the agent works, so measured battery / thermal cost includes that background activity. <em>Caveat:</em> playback did <em>not</em> stay continuous for the full run — Android / OxygenOS priority scheduling can still pause or kill Amazon Music mid-batch even after whitelist. Treat battery/thermal as “with music intended,” not guaranteed continuous audio for every minute of the 60 tasks. Whitelist once per device: <code>adb shell dumpsys deviceidle whitelist +com.amazon.mp3</code> and <code>adb shell cmd appops set com.amazon.mp3 RUN_ANY_IN_BACKGROUND allow</code> (+ Settings → Don’t optimize / allow background activity). Without this, OxygenOS SIGSTOPs background apps and playback dies mid-run. <a href="#fnref-4a" class="fn-back" aria-label="Back to reference">&#8617;</a></li>
       </ol>
     </div>
   </section>
