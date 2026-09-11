@@ -24,8 +24,8 @@
         tooltip: {
           enabled: true,
           backgroundColor: "rgba(40, 36, 32, 0.94)",
-          titleFont: { family: "Crimson Pro, Georgia, serif", size: 13 },
-          bodyFont: { family: "Crimson Pro, Georgia, serif", size: 12 },
+          titleFont: { family: "ui-monospace, SFMono-Regular, Menlo, monospace", size: 12, weight: "600" },
+          bodyFont: { family: "ui-monospace, SFMono-Regular, Menlo, monospace", size: 12 },
           padding: 8,
           cornerRadius: 4,
           displayColors: false,
@@ -35,10 +35,10 @@
               return items[0] ? items[0].label : "";
             },
             label(ctx) {
-              const v = ctx.raw;
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct = total ? ((v / total) * 100).toFixed(1) : "0";
-              return `${v}  (${pct}%)`;
+              const v = Number(ctx.raw);
+              const total = ctx.dataset.data.reduce((a, b) => a + Number(b), 0);
+              const pct = total ? ((v / total) * 100).toFixed(1) : "0.0";
+              return `${v} (${pct}%)`;
             },
           },
         },

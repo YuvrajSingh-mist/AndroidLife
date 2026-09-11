@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="../assets/css/style.css?v=15">
+  <link rel="stylesheet" href="../assets/css/style.css?v=23">
 </head>
 <body data-site-data="../assets/data/site_data.json">
 
@@ -182,7 +182,7 @@
               </div>
               <ul class="pie-legend"></ul>
             </div>
-            <p class="viz-caption">Points: 1 / 3 / 5 · max 1302. Hover for exact counts.</p>
+            <p class="viz-caption"><strong>Fig. A.</strong> Points: 1 / 3 / 5 · max 1302. Hover for exact counts.</p>
           </div>
           <div class="viz-card">
             <h4>Cross-app share by bucket</h4>
@@ -192,7 +192,7 @@
                   data-chart='{"type":"bar","labels":["Easy","Medium","Hard"],"data":[0,47,85],"colors":["#8a7355","#6b8a94","#c4b09a"],"unit":"%","max":100}'></canvas>
               </div>
             </div>
-            <p class="viz-caption">Cross-app = <code>apps.length &gt; 1</code></p>
+            <p class="viz-caption"><strong>Fig. B.</strong> Cross-app = <code>apps.length &gt; 1</code></p>
           </div>
           <div class="viz-card">
             <h4>Hard interaction modes</h4>
@@ -203,7 +203,7 @@
               </div>
               <ul class="pie-legend"></ul>
             </div>
-            <p class="viz-caption">Plus 60 <a href="#hallucination-controls">hallucination controls</a> across days 2-28</p>
+            <p class="viz-caption"><strong>Fig. C.</strong> Plus 60 <a href="#hallucination-controls">hallucination controls</a> across days 2-28</p>
           </div>
         </div>
 
@@ -213,9 +213,11 @@
           <code>[presentation name]</code>, and <code>[video name]</code>. Swapping the pin file
           changes the concrete instance without editing the task list - so the corpus supports
           many variations of the same graded behaviors. The 530 uses <strong>303 placeholder
-          slots across 119 distinct keys</strong>. For the public 60, device-pinned values ship in
-          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.example.env" target="_blank" rel="noopener"><code>benchmarks/androidlife-600/public_vars.example.env</code></a>
-          (see also <code>public_vars.example.env</code>).
+          slots across 119 distinct keys</strong>. For the public 60,
+          <strong>template</strong>:
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.example.env" target="_blank" rel="noopener"><code>public_vars.example.env</code></a>;
+          <strong>device pin</strong>:
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/benchmarks/androidlife-600/public_vars.local.env" target="_blank" rel="noopener"><code>public_vars.local.env</code></a>.
         </p>
       </div>
     </div>
@@ -241,34 +243,37 @@
         <p>
           <strong>Simulated user model:</strong> default <code>gpt-5.4-mini</code>, selected with
           <code>--ask-user-model</code> (see <code>DEFAULT_ASK_USER_MODEL</code> in
-          <code>src/DailyBench/custom_tools.py</code>). The judge answers from the ground-truth fact
+          <code>src/androidlife/custom_tools.py</code>). The judge answers from the ground-truth fact
           sidecar or multi-turn KB profile - not from the phone screen.
         </p>
+        <figure class="flow-figure">
         <div class="flow-h" aria-label="ASK USER runtime flow">
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">1</div>
             <div class="flow-step-title">Withheld prompt</div>
             <div class="flow-step-detail">Fact absent from the agent goal</div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">2</div>
             <div class="flow-step-title"><code>ask_user</code></div>
             <div class="flow-step-detail">Agent must call the tool</div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">3</div>
             <div class="flow-step-title">gpt-5.4-mini user</div>
             <div class="flow-step-detail">Answers from fact / KB sidecar</div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">4</div>
             <div class="flow-step-title">Act + grade</div>
             <div class="flow-step-detail">UIQ / KBIQ + on-device end-state</div>
           </div>
         </div>
+        <figcaption><strong>Fig. D.</strong> ASK USER runtime: withheld fact → <code>ask_user</code> → simulated user → graded end-state.</figcaption>
+        </figure>
         <ul>
           <li id="ask-user-single"><strong>ASK USER SINGLE</strong> (36 in the 530) - one or two
           withheld facts; each question is answered independently from the ground-truth fact sidecar
@@ -290,38 +295,43 @@
           <strong>Post-run GEval / DeepEval pipeline:</strong> after the batch,
           <code>scripts/eval/eval_hallucination_controls.py</code> runs a
           <strong>DeepEval <code>DAGMetric</code></strong> judge over the full
-          <code>agent.log.txt</code> (<code>src/DailyBench/hallucination_judge.py</code>). Default judge
+          <code>agent.log.txt</code> (<code>src/androidlife/hallucination_judge.py</code>). Default judge
           model is again <code>gpt-5.4-mini</code> (<code>--hallucination-judge-model</code> /
           <code>--model</code>). Outputs land in
-          <code>reports/metrics/hallucination/public-&lt;RUN_TS&gt;.{json,md}</code>. Manual audit remains
-          ground truth for the published leaderboard; the DAGMetric pass is the automated GEval-style
+          <code>reports/metrics/hallucination/public-&lt;RUN_TS&gt;.{json,md}</code>.
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">Manual audit</a>
+          remains ground truth for the published leaderboard; the DAGMetric pass is the automated GEval-style
           check for HC honesty.
         </p>
+        <figure class="flow-figure">
         <div class="flow-h" aria-label="Hallucination control grading flow">
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">1</div>
             <div class="flow-step-title">Absent seed</div>
             <div class="flow-step-detail">Target never planted on device</div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">2</div>
             <div class="flow-step-title">Agent run</div>
             <div class="flow-step-detail">Trajectory + <code>agent.log.txt</code></div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">3</div>
             <div class="flow-step-title">DAGMetric</div>
             <div class="flow-step-detail">DeepEval GEval-style judge</div>
           </div>
           <div class="flow-arrow-h" aria-hidden="true">&rarr;</div>
-          <div class="flow-step">
+          <div class="flow-step flow-process">
             <div class="flow-step-label">4</div>
             <div class="flow-step-title">Manual audit</div>
             <div class="flow-step-detail">Leaderboard ground truth</div>
           </div>
         </div>
+        <figcaption><strong>Fig. E.</strong> Hallucination-control grading: absent seed → run → DAGMetric →
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual audit</a>.</figcaption>
+        </figure>
         <table>
           <thead>
             <tr><th>Mode</th><th>What is missing</th><th>Correct agent behavior</th></tr>
@@ -333,8 +343,10 @@
           </tbody>
         </table>
         <p>
-          Policy detail:
-          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">docs/evaluation-policy.md</a>.
+          See the site
+          <a href="../index.html#evaluation">evaluation flowchart (Fig. 3)</a>.
+          Manual leaderboard ground truth:
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual-audit protocol</a>.
         </p>
       </div>
     </div>
@@ -397,38 +409,14 @@
       <h2 class="section-title" id="heading-grading">How tasks are graded</h2>
       <div class="prose">
         <p>
-          Grading follows
-          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener"><code>docs/evaluation-policy.md</code></a>
-          + <code>src/DailyBench/benchmark_metrics.py</code> on both the 530 and the public 60.
-          Success is gated on the <strong>verified on-device end state</strong>, never the model's self-report.
-          Three outcome classes: <strong>true success / true failure / hallucination</strong> (no
-          partials).
+          Scoring is summarized on the site
+          <a href="../index.html#evaluation">evaluation flowchart (Fig. 3)</a>.
+          Published leaderboard rows use the
+          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/manual-audit-protocol.md" target="_blank" rel="noopener">manual-audit protocol</a>
+          as ground truth after automated report / HC DAGMetric passes.
+          Metric definitions live under
+          <a href="../index.html#metrics">Metrics</a> on the homepage.
         </p>
-        <ul>
-          <li><strong>Non-ASK USER</strong> - scored by explicit on-device success/failure evidence.</li>
-          <li><strong>ASK USER SINGLE</strong> - success only if the agent <em>asked</em> for the withheld
-          fact (guessing &rarr; 0, mirroring the MobileWorld SR gate) <em>and</em> the returned answer
-          matched the ground-truth fact, <em>and</em> the outcome was completed. See
-          <a href="#ask-user">ASK USER</a>.</li>
-          <li><strong>ASK USER MULTI</strong> - the agent must drive the KB-oracle dialogue; the
-          interaction is scored against the profile's <code>correct_target</code> (KBIQ) and the
-          end-state must be reached. See <a href="#ask-user-multi">ASK USER MULTI</a>.</li>
-          <li><strong>Hallucination control</strong> - honest failure = correct; fabricated success =
-          hallucination. See <a href="#hallucination-controls">hallucination controls</a>.</li>
-        </ul>
-        <h3 class="subsection-title">Derived metrics</h3>
-        <table>
-          <thead>
-            <tr><th>metric</th><th>definition</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Success rate (SR)</td><td>verified true successes / tasks run (overall + per bucket)</td></tr>
-            <tr><td>UIQ</td><td>success-free fact-match - is each <code>ask_user</code> answer the right one, regardless of whole-task success</td></tr>
-            <tr><td>KBIQ</td><td><code>kb_query_correct / kb_query_total</code> against the multi-turn KB <code>correct_target</code></td></tr>
-            <tr><td>Hallucination rate</td><td>self-reported successes that failed on-device verification, over the 7 known-absent controls</td></tr>
-            <tr><td>Cost / battery / thermal</td><td>tokens × registered OpenRouter pricing &rarr; USD; per-app mAh + peak °C</td></tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </section>
@@ -524,7 +512,7 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="../assets/js/charts.js?v=2"></script>
+<script src="../assets/js/charts.js?v=4"></script>
 <script src="../assets/js/nav.js?v=10"></script>
 <script src="../assets/js/app.js?v=11"></script>
 </body>

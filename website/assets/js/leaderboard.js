@@ -37,13 +37,13 @@
 // canonical row list.
 
 const COL_DEFS = {
-  success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth - the official self-reported metric was inflated.",
+  success: "manual-audit success rate: fully-successful tasks ÷ 60, from the run report's manual audit per docs/manual-audit-protocol.md (honest-fail controls count as success; false passes downgraded to FAIL). The manual audit is the ground truth - the official self-reported metric was inflated.",
   askUser: "manual interaction pass rate on the 10 ASK USER tasks (6 SINGLE + 4 MULTI), where the agent must ask the simulated user (gpt-5.4-mini) for a load-bearing fact before acting.",
   guiOnly: "manual genuine pass rate on the 53 non-control tasks (honest-fail hallucination controls excluded), where the end state is verified directly on the device.",
   steps: "mean agent steps per task across the run.",
   queries: "mean number of times the agent asked the simulated user per task.",
   uiq: "User Interaction Quality (UIQ, fact-match) - share of ask_user calls whose answer matched the ground-truth fact.",
-  kbiq: "KB Interaction Quality (KBIQ, manual) - UIQ-style mean of per-task (correct KB answers ÷ asks) over the 4 multi-turn KB tasks; never-asked tasks count as 0.",
+  kbiq: "KB Interaction Quality (KBIQ, manual) - mean of per-task (correct KB answers ÷ asks) over the 4 ASK USER MULTI tasks. Shows N/A when every MULTI task made 0 ask_user calls (nothing to grade).",
   elapsed: "wall-clock run duration (including resets) vs agent running time (cooldown between tasks subtracted).",
   hc: "share of the 7 controls the agent honestly reported as absent, instead of falsely claiming success.",
   buckets: "manual success rate by difficulty bucket: easy / medium / hard.",
@@ -155,27 +155,27 @@ const LEADERBOARD_ROWS = [
   },
   {
     model: "qwen3.8-27b (VISION)",
-    params: "Public · 60 tasks · 2026-08-26",
+    params: "Public · 60 tasks · 2026-09-09",
     org: "Alibaba (OpenRouter)",
     mode: "vision",
     runs: 60,
-    success: { score: 36.7, margin: 0 },
-    askUser: 20.0,
-    guiOnly: 39.6,
-    steps: 39.83,
-    queries: 0.43,
-    uiq: 0.125,
+    success: { score: 60.0, margin: 0 },
+    askUser: 18.2,
+    guiOnly: 58.5,
+    steps: 26.28,
+    queries: 0.71,
+    uiq: 0.167,
     kbiq: "0.250",
-    elapsed: { wall: "32452 s (9.01 h)", agent: "31862 s (8.85 h)" },
-    hc: { score: 85.7, detail: "6/7 honest" },
-    buckets: { easy: 57.7, medium: 23.5, hard: 17.6 },
-    cost: { total: 8.369, detail: "2,530 requests" },
-    askUserCost: { total: 0.0036, detail: "4 requests" },
-    totalCost: { total: 8.37, perTask: 0.140 },
-    cpuTemp: { max: 85.6, detail: "CPU 85.6 · GPU 85.6 · NPU 85.6" },
-    powerSkinTemp: { max: 45.8, detail: "power-amp 45.8 · skin 45.4" },
-    batteryTemp: 37.7,
-    batteryDrain: -99,
+    elapsed: { wall: "26163 s (7.27 h)", agent: "25573 s (7.10 h)" },
+    hc: { score: 85.7, detail: "6/7 honest (manual; DeepEval 7/7)" },
+    buckets: { easy: 76.9, medium: 70.6, hard: 23.5 },
+    cost: { total: 5.069, detail: "1,692 requests" },
+    askUserCost: { total: 0.0059, detail: "11 requests" },
+    totalCost: { total: 5.07, perTask: 0.085 },
+    cpuTemp: { max: 85.3, detail: "CPU 85.0 · GPU 85.0 · NPU 85.3" },
+    powerSkinTemp: { max: 44.2, detail: "power-amp 44.2 · skin 43.2" },
+    batteryTemp: 36.3,
+    batteryDrain: -79,
   },
   {
     model: "seed-2.0-lite (VISION)",
@@ -226,6 +226,30 @@ const LEADERBOARD_ROWS = [
     batteryDrain: -85,
   },
   {
+    model: "gpt-5.6-luna (VISION)",
+    params: "Public · 60 tasks · 2026-09-10",
+    org: "OpenAI (OpenRouter)",
+    mode: "vision",
+    runs: 60,
+    success: { score: 16.7, margin: 0 },
+    askUser: 0.0,
+    guiOnly: 20.4,
+    steps: 44.83,
+    queries: 0.14,
+    uiq: 0.143,
+    kbiq: "0.000",
+    elapsed: { wall: "30935 s (8.59 h)", agent: "30345 s (8.43 h)" },
+    hc: { score: 100, detail: "7/7 honest" },
+    buckets: { easy: 30.8, medium: 5.9, hard: 5.9 },
+    cost: { total: 5.72, detail: "2,705 requests" },
+    askUserCost: { total: 0.0003, detail: "1 request" },
+    totalCost: { total: 5.72, perTask: 0.095 },
+    cpuTemp: { max: 86.1, detail: "CPU 86.1 · GPU 86.1 · NPU 86.1" },
+    powerSkinTemp: { max: 43.8, detail: "power-amp 43.6 · skin 43.8" },
+    batteryTemp: 35.4,
+    batteryDrain: -88,
+  },
+  {
     model: "kimi-k2.6 (VISION)",
     params: "Public · 35/60 · interrupted 2026-08-30",
     org: "Moonshot AI (OpenRouter)",
@@ -253,13 +277,14 @@ const LEADERBOARD_ROWS = [
 
 // Rows (manual audit, from the reports in reports/public/):
 //   2026-08-28 qwen3.8-27b TEXT      → SR 61.7%, steps 29.25, HC 7/7
+//   2026-09-09 qwen3.8-27b VISION    → SR 60.0%, steps 26.28, HC 6/7
 //   2026-08-29 kimi-k2.6 TEXT        → SR 58.3%, steps 32.12, HC 6/7
 //   2026-09-05 seed-2.0-lite VISION  → SR 53.3%, steps 19.72, HC 6/7
 //   2026-08-30 seed-2.0-lite TEXT    → SR 45.0%, steps 13.77, HC 4/7
 //   2026-08-26 gemini-3.1-flash-lite → SR 41.7%, steps 8.32,  HC 6/7
-//   2026-08-26 qwen3.8-27b VISION    → SR 36.7%, steps 39.83, HC 6/7
 //   2026-09-06 gpt-5.6-luna TEXT     → SR 30.0%, steps 41.82, HC 6/7
 //   2026-08-30 kimi-k2.6 VISION      → SR 17.1% (35/60, interrupted), HC 2/2 reached
+//   2026-09-10 gpt-5.6-luna VISION   → SR 16.7%, steps 44.83, HC 7/7
 
 let currentSearchQuery = "";
 let currentTableSort = { key: "success", direction: "desc" };
@@ -381,7 +406,12 @@ const COLUMNS = [
   { key: "steps", label: "Avg steps", def: COL_DEFS.steps, cell: (r) => `<td class="lb-score">${formatSteps(r.steps)}</td>` },
   { key: "queries", label: "Avg queries", def: COL_DEFS.queries, cell: (r) => `<td class="lb-score">${r.queries.toFixed(2)}</td>` },
   { key: "uiq", label: "UIQ", def: COL_DEFS.uiq, cell: (r) => `<td class="lb-score">${r.uiq.toFixed(3)}</td>` },
-  { key: "kbiq", label: "KBIQ", def: COL_DEFS.kbiq, cell: (r) => `<td class="lb-score">${escapeHtml(r.kbiq)}</td>` },
+  { key: "kbiq", label: "KBIQ", def: COL_DEFS.kbiq, cell: (r) => {
+    if (r.kbiq === "N/A") {
+      return `<td class="lb-score lb-na" title="N/A: all 4 ASK USER MULTI / KB tasks made 0 ask_user calls, so there were no KB turns to grade.">N/A</td>`;
+    }
+    return `<td class="lb-score">${escapeHtml(r.kbiq)}</td>`;
+  } },
   { key: "elapsed", label: "Elapsed", def: COL_DEFS.elapsed, cell: (r) => `<td class="lb-score"><span class="lb-elapsed">${r.elapsed.wall}</span><span class="lb-sub">agent ${r.elapsed.agent}</span></td>` },
   { key: "hc", label: "HC honesty", def: COL_DEFS.hc, cell: (r) => `<td class="lb-score">${r.hc.score.toFixed(1)}%<span class="lb-sub">${r.hc.detail}</span></td>` },
   { key: "buckets", label: "Buckets E / M / H", def: COL_DEFS.buckets, cell: (r) => `<td class="lb-score">${r.buckets.easy.toFixed(1)} / ${r.buckets.medium.toFixed(1)} / ${r.buckets.hard.toFixed(1)}</td>` },
