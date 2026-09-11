@@ -299,43 +299,13 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
 
 .callout strong { color: var(--text); font-weight: 500; }
 
-/* Controlled-run highlight: Amazon Music background as real-user proxy */
-.run-env-highlight {
-  border-left-width: 3px;
-  border-left-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, var(--bg-subtle));
-  padding: 1rem 1.15rem;
-}
-.run-env-highlight p { margin: 0 0 0.65rem; color: var(--text); }
-.run-env-highlight p:last-child { margin-bottom: 0; }
-.run-env-highlight .run-env-note {
-  font-size: 0.88rem;
-  color: var(--text-sec);
-  line-height: 1.55;
-}
-.run-env-highlight code {
-  font-size: 0.82em;
-  word-break: break-word;
-}
-
-/* MobileWorld-style paper figures (overview + technical) */
-.paper-fig {
+/* Academic figures: tables + box diagrams (not AI bitmaps) */
+.academic-fig {
   margin: 1.75rem 0 2rem;
   padding: 0;
   border: 0;
-  text-align: center;
 }
-.paper-fig img {
-  display: block;
-  width: 100%;
-  max-width: 960px;
-  height: auto;
-  margin: 0 auto;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--bg-subtle);
-}
-.paper-fig figcaption {
+.academic-fig > figcaption {
   margin: 0.85rem auto 0;
   max-width: 720px;
   font-family: "Crimson Pro", Georgia, serif;
@@ -343,6 +313,136 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
   line-height: 1.5;
   color: var(--text-sec);
   text-align: center;
+}
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  background: var(--bg);
+}
+.compare-table th,
+.compare-table td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.compare-table thead th {
+  background: var(--bg-subtle);
+  font-weight: 500;
+  color: var(--text);
+}
+.compare-table tbody th {
+  font-weight: 500;
+  background: var(--bg-subtle);
+  white-space: nowrap;
+}
+.compare-table tbody td { color: var(--text-sec); }
+
+.arch-diagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  padding: 1.25rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border-lt);
+  border-radius: 4px;
+}
+.arch-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 11rem;
+  flex: 1 1 11rem;
+  max-width: 16rem;
+}
+.arch-box {
+  width: 100%;
+  text-align: center;
+  padding: 0.65rem 0.75rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--text);
+}
+.arch-box-accent {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+.arch-sub {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--text-sec);
+}
+.arch-arrow {
+  color: var(--text-ter);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.arch-bridge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 5.5rem;
+  color: var(--text-sec);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.arch-bridge-line {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--border);
+}
+.arch-bridge-label { white-space: nowrap; }
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.mode-card {
+  margin: 0;
+  padding: 1rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+}
+.mode-card strong {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.mode-card span {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-sec);
+}
+@media (max-width: 720px) {
+  .mode-grid { grid-template-columns: 1fr; }
+  .arch-bridge {
+    flex-direction: row;
+    width: 100%;
+    min-width: 0;
+  }
+  .arch-bridge-line { width: 1.25rem; }
 }
 
 /* Compact feature tiles (less text-dense than long prose lists) */
@@ -359,7 +459,7 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
   padding: 1rem 1.1rem;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: var(--bg-subtle);
+  background: var(--bg);
 }
 .feature-tiles strong {
   display: block;
@@ -2484,7 +2584,7 @@ a.app-card:hover {
 .viz-card {
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: var(--bg-subtle);
+  background: var(--bg);
   padding: 1.05rem 1.15rem 1.2rem;
   display: flex;
   flex-direction: column;
