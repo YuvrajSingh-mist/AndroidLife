@@ -656,37 +656,6 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
 }
 
-.gh-sponsor-btn {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  box-sizing: border-box;
-  min-height: 40px;
-  padding: 0 0.95rem;
-  border-radius: 6px;
-  background: #24292f;
-  color: #fff !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none !important;
-  white-space: nowrap;
-}
-
-.gh-sponsor-btn:hover {
-  background: #32383f;
-  color: #fff !important;
-}
-
-.gh-sponsor-icon {
-  width: 14px;
-  height: 14px;
-  color: #db61a2;
-  flex-shrink: 0;
-}
-
 .kofi-wrap img {
   display: block;
   width: 196px;
@@ -699,11 +668,6 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
     right: 0.75rem;
     bottom: 0.75rem;
     gap: 0.4rem;
-  }
-  .gh-sponsor-btn {
-    min-height: 2rem;
-    padding: 0 0.75rem;
-    font-size: 0.78rem;
   }
   .kofi-wrap img {
     width: auto;

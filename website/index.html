@@ -17,18 +17,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="./assets/css/style.css?v=32">
+  <link rel="stylesheet" href="./assets/css/style.css?v=33">
 </head>
 <body data-site-data="./assets/data/site_data.json" data-trajectory-index="./assets/data/trajectories/index.json">
 <!-- androidlife-copy-v2 -->
 
 <div class="kofi-wrap" id="kofi-wrap">
-  <a class="gh-sponsor-btn" href="https://github.com/sponsors/YuvrajSingh-mist" target="_blank" rel="noopener" aria-label="Sponsor on GitHub">
-    <svg class="gh-sponsor-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-      <path fill="currentColor" d="M8 14.25l-1.09-.99C3.14 9.48 1 7.55 1 5.25 1 3.23 2.69 1.75 4.75 1.75c1.08 0 2.12.48 2.8 1.25.68-.77 1.72-1.25 2.8-1.25C13.31 1.75 15 3.23 15 5.25c0 2.3-2.14 4.23-5.91 8.01L8 14.25z"/>
-    </svg>
-    <span>Sponsor on GitHub</span>
-  </a>
   <a href="https://ko-fi.com/O7W120DR8R" target="_blank" rel="noopener" aria-label="Support me on Ko-fi">
     <img src="logos/support_me_on_kofi_beige.png" alt="Support me on Ko-fi" width="196" height="40" loading="lazy">
   </a>
@@ -304,25 +298,6 @@
           </div>
         </div>
         <h3 class="subsection-title" id="evaluation">Evaluation</h3>
-        <p>
-          Hard <a href="./pages/how-it-was-formed.html#ask-user">ASK USER</a> tasks
-          (including
-          <a href="./pages/how-it-was-formed.html#ask-user-multi">ASK USER MULTI</a>)
-          call <code>ask_user</code> against a simulated user - 
-          default model <code>gpt-5.4-mini</code> via <code>--ask-user-model</code>.
-          <a href="./pages/how-it-was-formed.html#hallucination-controls">Hallucination controls</a>
-          cover cases where the needed data is <em>not available</em> on-device; post-run they are
-          graded with a <strong>DeepEval DAGMetric / GEval-style</strong> judge
-          (<code>eval_hallucination_controls.py</code>, also <code>gpt-5.4-mini</code>) plus manual audit.
-          Full pipelines:
-          <a href="./pages/how-it-was-formed.html#task-modes">How it was formed</a> ·
-          <a href="https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/docs/evaluation-policy.md" target="_blank" rel="noopener">evaluation policy</a>.
-          Score definitions above:
-          <a href="#metric-sr">SR</a>,
-          <a href="#metric-uiq">UIQ</a>,
-          <a href="#metric-kbiq">KBIQ</a>,
-          <a href="#metric-hc">hallucination rate</a>.
-        </p>
         <figure class="flow-figure" id="fig-evaluation">
           <div class="flow-chart-eval" aria-label="Post-run evaluation flowchart">
             <div class="fce-node fce-process">
