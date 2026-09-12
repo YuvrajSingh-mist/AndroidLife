@@ -64,13 +64,21 @@ nav {
   letter-spacing: 0.04em;
 }
 
-.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: clamp(0.65rem, 1.2vw, 1.5rem);
+  align-items: center;
+  min-width: 0;
+}
 
 .nav-links a {
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-ter);
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .nav-links a:hover { color: var(--accent); }
@@ -354,6 +362,46 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
   border: 1px solid var(--border-lt);
   border-radius: 4px;
 }
+
+/* Fig. 1: animated horizontal flow */
+.arch-flow {
+  margin: 0.35rem 0 0.75rem;
+  padding: 1rem 0.5rem 0.35rem;
+}
+.arch-flow .arch-anim {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: arch-step-in 0.55s ease forwards;
+  animation-delay: calc(var(--i, 0) * 0.12s + 0.08s);
+}
+.arch-flow .flow-arrow-h {
+  opacity: 0;
+  animation: arch-step-in 0.4s ease forwards;
+  animation-delay: 0.35s;
+}
+@keyframes arch-step-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arch-flow .arch-anim,
+  .arch-flow .flow-arrow-h {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+.viz-shared-caption {
+  margin-top: 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  line-height: 1.5;
+  text-align: center;
+}
+.viz-card .viz-caption strong {
+  color: var(--text);
+  font-weight: 600;
+}
 .arch-col {
   display: flex;
   flex-direction: column;
@@ -584,6 +632,84 @@ pre[class*="language-"] .token.punctuation { color: var(--text-ter) !important; 
 .docs-list li span { color: var(--text-sec); font-size: 0.9rem; }
 
 .publish-note { max-width: 540px; margin: 0 auto; }
+
+.kofi-wrap {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  line-height: 0;
+}
+
+.kofi-wrap > a {
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.18));
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.kofi-wrap > a:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
+}
+
+.gh-sponsor-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  border-radius: 6px;
+  background: #24292f;
+  color: #fff !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.gh-sponsor-btn:hover {
+  background: #32383f;
+  color: #fff !important;
+}
+
+.gh-sponsor-icon {
+  width: 14px;
+  height: 14px;
+  color: #db61a2;
+  flex-shrink: 0;
+}
+
+.kofi-wrap img {
+  display: block;
+  width: 196px;
+  height: auto;
+  max-width: min(196px, calc(100vw - 2rem));
+}
+
+@media (max-width: 640px) {
+  .kofi-wrap {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    gap: 0.4rem;
+  }
+  .gh-sponsor-btn {
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    font-size: 0.78rem;
+  }
+  .kofi-wrap img {
+    width: auto;
+    height: 2rem;
+  }
+}
 
 footer {
   padding: 2.5rem 0;
@@ -1358,7 +1484,8 @@ table.lb-table td .lb-elapsed {
   white-space: nowrap;
 }
 
-@media (max-width: 740px) {
+/* Hamburger before links wrap/crush (tablet + phone). */
+@media (max-width: 1100px) {
   nav {
     height: auto;
     min-height: 56px;
@@ -1400,6 +1527,7 @@ table.lb-table td .lb-elapsed {
   .nav-links {
     grid-column: 1 / -1;
     display: grid;
+    flex-wrap: unset;
     gap: 0;
     width: 100%;
     max-height: 0;
@@ -1412,7 +1540,7 @@ table.lb-table td .lb-elapsed {
   }
 
   nav.nav-open .nav-links {
-    max-height: 320px;
+    max-height: 420px;
     padding: 0.35rem 0 0.65rem;
     opacity: 1;
     visibility: visible;
@@ -1424,7 +1552,11 @@ table.lb-table td .lb-elapsed {
     display: block;
     padding: 0.72rem 0.25rem;
     font-size: 0.82rem;
+    white-space: nowrap;
   }
+}
+
+@media (max-width: 740px) {
   .container { padding: 0 1rem; }
   .hero { padding: 4.25rem 0 3.5rem; }
   .hero h1 { font-size: 2.65rem; }
@@ -2367,7 +2499,7 @@ pre.run-tree .run-tree-note {
   font-size: 0.86em;
 }
 
-/* ── Browse Apps (Interaction Mining–style grid, site cream theme) ── */
+/* Browse Apps (Interaction Mining-style grid, site cream theme) */
 .container-wide { max-width: 1080px; }
 
 .app-page-header {
@@ -2805,7 +2937,7 @@ a.app-card:hover {
   margin-top: 0.25rem;
 }
 
-/* Evaluation flowchart (Fig. 3) — process → diamond → fork → join → end */
+/* Evaluation flowchart (Fig. 3) - process -> diamond -> fork -> join -> end */
 .flow-figure {
   margin: 1.4rem 0 1.6rem;
   padding: 0;
