@@ -28,7 +28,7 @@ document.querySelectorAll("nav").forEach((nav) => {
     }
   });
 
-  const desktop = window.matchMedia("(min-width: 741px)");
+  const desktop = window.matchMedia("(min-width: 1101px)");
   const resetAtDesktop = (event) => {
     if (event.matches) setOpen(false);
   };
@@ -157,7 +157,7 @@ document.querySelectorAll("nav").forEach((nav) => {
     scan();
   }
 
-  // Leaderboard / public-run options are filled after fetch — re-scan periodically briefly.
+  // Leaderboard / public-run options are filled after fetch - re-scan periodically briefly.
   let passes = 0;
   const timer = setInterval(() => {
     scan();

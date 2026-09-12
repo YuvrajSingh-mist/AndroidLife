@@ -24,7 +24,7 @@ function appMatchesQuery(app, query) {
   const name = (app.name || "").toLowerCase();
   const slug = (app.slug || "").toLowerCase();
   const publisher = (app.publisher || "").toLowerCase();
-  // Prefix / token match on app name — "note" hits Notes only, not Swiggy.
+  // Prefix / token match on app name - "note" hits Notes only, not Swiggy.
   if (name === q || slug === q) return true;
   if (name.startsWith(q) || slug.startsWith(q)) return true;
   const tokens = name.split(/[\s/-]+/);
