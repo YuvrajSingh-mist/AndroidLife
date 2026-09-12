@@ -40,6 +40,8 @@ PUBLIC_RUNS = [
     {"key": "mimo-0901", "label": "mimo-v2.5-pro · 1 Sep (text)", "hf_id": "20260901-002701"},
     {"key": "seed-05v", "label": "seed-2.0-lite · 5 Sep (vision)", "hf_id": "20260905-051950"},
     {"key": "luna-0906", "label": "gpt-5.6-luna · 6 Sep (text)", "hf_id": "20260906-063336"},
+    {"key": "qwen-0909v", "label": "qwen3.8-27b · 9 Sep (vision)", "hf_id": "20260909-043419"},
+    {"key": "luna-0910v", "label": "gpt-5.6-luna · 10 Sep (vision)", "hf_id": "20260910-041531"},
 ]
 
 TASK_ID_ALIASES = {

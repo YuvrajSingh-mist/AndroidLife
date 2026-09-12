@@ -1,0 +1,388 @@
+{
+  "task_id": "medium__google-maps__002",
+  "set": "public",
+  "day": 1,
+  "dir": "medium-google-maps-002",
+  "model": "qwen/qwen3.8-27b",
+  "success": true,
+  "reason": "Compared all three travel modes to Bhubaneswar Airport (Biju Patnaik International Airport) in Google Maps:\n\u2022 Driving: 26 min, 13 km \u2190 FASTEST\n\u2022 Transit: not available (no route found)\n\u2022 Walking: 2 hr 50 min, 13 km\n\nFastest option is Driving (26 min, 13 km). I saved this to Notes with the title \"Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\" including the mode, ETA (26 min), and distance (13 km), plus the other modes for reference. The note is confirmed saved in the Notes list.",
+  "steps_count": 16,
+  "tool_call_count": 16,
+  "screenshot_count": 16,
+  "screenshot_base": "https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public/resolve/main/runs/20260909-043419/day1/medium-google-maps-002/trajectories/20260909_043951_02304e5d/screenshots",
+  "started_at_utc": "2026-09-08T23:09:39.490806+00:00",
+  "ended_at_utc": "2026-09-08T23:14:09.892515+00:00",
+  "hf_run_id": "20260909-043419",
+  "traj_ts": "20260909_043951_02304e5d",
+  "steps": [
+    {
+      "index": 0,
+      "thought": "I'll start by opening Google Maps to search for directions to Bhubaneswar Airport.",
+      "code": "<function_calls>\n<invoke name=\"open_app\">\n<parameter name=\"text\">Google Maps</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 6140,
+        "response_tokens": 53,
+        "total_tokens": 6193,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "open_app",
+          "tool_args": {
+            "text": "Google Maps"
+          },
+          "success": true,
+          "summary": "App started: com.google.android.apps.maps with activity com.google.android.maps.MapsActivity"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>open_app</name>\n<output>App started: com.google.android.apps.maps with activity com.google.android.maps.MapsActivity</output>\n</result>\n</function_results>",
+      "screenshot": "0000.png"
+    },
+    {
+      "index": 1,
+      "thought": "Google Maps is open. I'll tap the search box and type the destination.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">53</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 8549,
+        "response_tokens": 50,
+        "total_tokens": 8599,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 53
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Search here' | Class: EditText | Type: unknown | Coordinates: (391, 192)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Search here' | Class: EditText | Type: unknown | Coordinates: (391, 192)</output>\n</result>\n</function_results>",
+      "screenshot": "0001.png"
+    },
+    {
+      "index": 2,
+      "thought": "I can see \"Biju Patnaik International Airport\" in recent history. I'll tap it to select the destination.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">39</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9434,
+        "response_tokens": 59,
+        "total_tokens": 9493,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 39
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Biju Patnaik International Airport' | Class: TextView | Type: unknown | Coordinates: (630, 697)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Biju Patnaik International Airport' | Class: TextView | Type: unknown | Coordinates: (630, 697)</output>\n</result>\n</function_results>",
+      "screenshot": "0002.png"
+    },
+    {
+      "index": 3,
+      "thought": "The airport place page is open. I'll tap \"Directions\" to get route options.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">24</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9532,
+        "response_tokens": 52,
+        "total_tokens": 9584,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 24
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Directions to Biju Patnaik International Airport, Airport Rd' | Class: Button | Type: unknown | Coordinates: (228, 1795)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Directions to Biju Patnaik International Airport, Airport Rd' | Class: Button | Type: unknown | Coordinates: (228, 1795)</output>\n</result>\n</function_results>",
+      "screenshot": "0003.png"
+    },
+    {
+      "index": 4,
+      "thought": "A \"Choose destination\" dialog appeared. I'll select the main airport.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">24</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 8134,
+        "response_tokens": 49,
+        "total_tokens": 8183,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 24
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Directions to Biju Patnaik International Airport' | Class: Button | Type: unknown | Coordinates: (948, 1435)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Directions to Biju Patnaik International Airport' | Class: Button | Type: unknown | Coordinates: (948, 1435)</output>\n</result>\n</function_results>",
+      "screenshot": "0004.png"
+    },
+    {
+      "index": 5,
+      "thought": "I can see the mode tabs: Driving 26 min, Transit \" - \" (not available), Walking 2 hr 50 min. Let me verify the transit tab by tapping it.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">35</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 8978,
+        "response_tokens": 73,
+        "total_tokens": 9051,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 35
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Public transport mode: not available' | Class: LinearLayout | Type: unknown | Coordinates: (714, 1880)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Public transport mode: not available' | Class: LinearLayout | Type: unknown | Coordinates: (714, 1880)</output>\n</result>\n</function_results>",
+      "screenshot": "0005.png"
+    },
+    {
+      "index": 6,
+      "thought": "Transit is confirmed \"not available\" (Cannot seem to find a way there). Now let me check the walking mode to get its distance.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">25</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9226,
+        "response_tokens": 63,
+        "total_tokens": 9289,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 25
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Walking mode: 2 hours 50 minutes' | Class: LinearLayout | Type: unknown | Coordinates: (921, 1841)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Walking mode: 2 hours 50 minutes' | Class: LinearLayout | Type: unknown | Coordinates: (921, 1841)</output>\n</result>\n</function_results>",
+      "screenshot": "0006.png"
+    },
+    {
+      "index": 7,
+      "thought": "Walking is 2 hr 50 min (13 km). Now let me check the driving mode to get its distance.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">29</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9280,
+        "response_tokens": 60,
+        "total_tokens": 9340,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 29
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Driving mode: 26 minutes' | Class: LinearLayout | Type: unknown | Coordinates: (89, 1931)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Driving mode: 26 minutes' | Class: LinearLayout | Type: unknown | Coordinates: (89, 1931)</output>\n</result>\n</function_results>",
+      "screenshot": "0007.png"
+    },
+    {
+      "index": 8,
+      "thought": "I now have all three modes:\n- **Driving: 26 min (13 km)** - fastest\n- **Transit: not available**\n- **Walking: 2 hr 50 min (13 km)**\n\nDriving is the fastest. I'll save this to Notes. Let me open the Notes app.\n\n<add_memory>Fastest route to Biju Patnaik International Airport (Bhubaneswar Airport): Driving, 26 min, 13 km. Transit not available. Walking 2 hr 50 min, 13 km.</add_memory>",
+      "code": "<function_calls>\n<invoke name=\"open_app\">\n<parameter name=\"text\">Notes</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 10322,
+        "response_tokens": 159,
+        "total_tokens": 10481,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "open_app",
+          "tool_args": {
+            "text": "Notes"
+          },
+          "success": true,
+          "summary": "App started: com.oneplus.note with activity com.nearme.note.main.MainActivity"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>open_app</name>\n<output>App started: com.oneplus.note with activity com.nearme.note.main.MainActivity</output>\n</result>\n</function_results>",
+      "screenshot": "0008.png"
+    },
+    {
+      "index": 9,
+      "thought": "Notes app is open. I'll tap the \"+\" button to create a new note.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">50</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 10835,
+        "response_tokens": 51,
+        "total_tokens": 10886,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 50
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'New note' | Class: ImageView | Type: unknown | Coordinates: (936, 2040)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'New note' | Class: ImageView | Type: unknown | Coordinates: (936, 2040)</output>\n</result>\n</function_results>",
+      "screenshot": "0009.png"
+    },
+    {
+      "index": 10,
+      "thought": "A new note is open. I'll tap the editor area to focus it, then type the title and content.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">10</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9370,
+        "response_tokens": 57,
+        "total_tokens": 9427,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 10
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'android.webkit.WebView' | Class: WebView | Type: unknown | Coordinates: (540, 1170)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'android.webkit.WebView' | Class: WebView | Type: unknown | Coordinates: (540, 1170)</output>\n</result>\n</function_results>",
+      "screenshot": "0010.png"
+    },
+    {
+      "index": 11,
+      "thought": "The editor is focused with the keyboard open. I'll type the title and content.",
+      "code": "<function_calls>\n<invoke name=\"type\">\n<parameter name=\"text\">Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\nMode: Driving\nETA: 26 min\nDistance: 13 km\n(Transit: not available; Walking: 2 hr 50 min, 13 km)</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 7941,
+        "response_tokens": 106,
+        "total_tokens": 8047,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "type",
+          "tool_args": {
+            "text": "Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\nMode: Driving\nETA: 26 min\nDistance: 13 km\n(Transit: not available; Walking: 2 hr 50 min, 13 km)"
+          },
+          "success": true,
+          "summary": "Text typed successfully (clear=False)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>type</name>\n<output>Text typed successfully (clear=False)</output>\n</result>\n</function_results>",
+      "screenshot": "0011.png"
+    },
+    {
+      "index": 12,
+      "thought": "The note content is entered correctly. I'll tap \"Done\" to save the note.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">6</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 8385,
+        "response_tokens": 51,
+        "total_tokens": 8436,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 6
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Done' | Class: ImageView | Type: unknown | Coordinates: (984, 207)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Done' | Class: ImageView | Type: unknown | Coordinates: (984, 207)</output>\n</result>\n</function_results>",
+      "screenshot": "0012.png"
+    },
+    {
+      "index": 13,
+      "thought": "The note is saved with the title \"Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\" and the content. I'll go back to the notes list to confirm it's saved, then exit.",
+      "code": "<function_calls>\n<invoke name=\"click\">\n<parameter name=\"index\">2</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 8519,
+        "response_tokens": 79,
+        "total_tokens": 8598,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "click",
+          "tool_args": {
+            "index": 2
+          },
+          "success": true,
+          "summary": "Clicked on Text: 'Navigate up' | Class: ImageButton | Type: unknown | Coordinates: (84, 204)"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>click</name>\n<output>Clicked on Text: 'Navigate up' | Class: ImageButton | Type: unknown | Coordinates: (84, 204)</output>\n</result>\n</function_results>",
+      "screenshot": "0013.png"
+    },
+    {
+      "index": 14,
+      "thought": "The note is saved and visible at the top of the list: \"Fastest route to Bhubaneswar Airport (...\" with \"Mode: Driving\" and \"Just now\". The task is complete. I'll exit the app.",
+      "code": "<function_calls>\n<invoke name=\"system_button\">\n<parameter name=\"button\">home</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 9469,
+        "response_tokens": 81,
+        "total_tokens": 9550,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "system_button",
+          "tool_args": {
+            "button": "home"
+          },
+          "success": true,
+          "summary": "Pressed HOME button"
+        }
+      ],
+      "output": "<function_results>\n<result>\n<name>system_button</name>\n<output>Pressed HOME button</output>\n</result>\n</function_results>",
+      "screenshot": "0014.png"
+    },
+    {
+      "index": 15,
+      "thought": "The task is complete. I compared all three travel modes to Bhubaneswar Airport (Biju Patnaik International Airport) in Google Maps, identified the fastest, and saved it to Notes.",
+      "code": "<function_calls>\n<invoke name=\"complete\">\n<parameter name=\"success\">true</parameter>\n<parameter name=\"message\">Compared all three travel modes to Bhubaneswar Airport (Biju Patnaik International Airport) in Google Maps:\n\u2022 Driving: 26 min, 13 km \u2190 FASTEST\n\u2022 Transit: not available (no route found)\n\u2022 Walking: 2 hr 50 min, 13 km\n\nFastest option is Driving (26 min, 13 km). I saved this to Notes with the title &quot;Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)&quot; including the mode, ETA (26 min), and distance (13 km), plus the other modes for reference. The note is confirmed saved in the Notes list.</parameter>\n</invoke>\n</function_calls>",
+      "usage": {
+        "request_tokens": 10781,
+        "response_tokens": 226,
+        "total_tokens": 11007,
+        "requests": 1
+      },
+      "tools": [
+        {
+          "tool_name": "complete",
+          "tool_args": {
+            "success": true,
+            "message": "Compared all three travel modes to Bhubaneswar Airport (Biju Patnaik International Airport) in Google Maps:\n\u2022 Driving: 26 min, 13 km \u2190 FASTEST\n\u2022 Transit: not available (no route found)\n\u2022 Walking: 2 hr 50 min, 13 km\n\nFastest option is Driving (26 min, 13 km). I saved this to Notes with the title \"Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\" including the mode, ETA (26 min), and distance (13 km), plus the other modes for reference. The note is confirmed saved in the Notes list."
+          },
+          "success": true,
+          "summary": "Compared all three travel modes to Bhubaneswar Airport (Biju Patnaik International Airport) in Google Maps:\n\u2022 Driving: 26 min, 13 km \u2190 FASTEST\n\u2022 Transit: not available (no route found)\n\u2022 Walking: 2 hr 50 min, 13 km\n\nFastest option is Driving (26 min, 13 km). I saved this to Notes with the title \"Fastest route to Bhubaneswar Airport (Biju Patnaik Intl)\" including the mode, ETA (26 min), and distance (13 km), plus the other modes for reference. The note is confirmed saved in the Notes list."
+        }
+      ],
+      "output": "",
+      "screenshot": "0015.png"
+    }
+  ]
+}

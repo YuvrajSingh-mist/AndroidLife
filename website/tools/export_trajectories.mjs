@@ -77,6 +77,8 @@ const PUBLIC_RUNS = [
   { key: "mimo-0901", label: "mimo-v2.5-pro · 1 Sep (text)", root: "assets/runs/public/20260901-002701" },
   { key: "seed-05v", label: "seed-2.0-lite · 5 Sep (vision)", root: "assets/runs/public/20260905-051950" },
   { key: "luna-0906", label: "gpt-5.6-luna · 6 Sep (text)", root: "assets/runs/public/20260906-063336" },
+  { key: "qwen-0909v", label: "qwen3.8-27b · 9 Sep (vision)", root: "assets/runs/public/20260909-043419" },
+  { key: "luna-0910v", label: "gpt-5.6-luna · 10 Sep (vision)", root: "assets/runs/public/20260910-041531" },
 ];
 
 const OUT_DATA = "website/assets/data/trajectories";
