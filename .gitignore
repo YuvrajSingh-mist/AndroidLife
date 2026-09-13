@@ -54,3 +54,7 @@ hf_release/
 website/assets/trajectories/
 website/assets/data/trajectories/day*/
 website/assets/data/trajectories/public/
+
+# Private website checkout (own git remote → Vercel). Do not commit into AndroidLife.
+androidlife-website/
+website-src/
