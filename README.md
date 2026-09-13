@@ -90,12 +90,14 @@ uv run scripts/eval/audit_kb_queries.py --runs 'assets/runs/public/<RUN_TS>/*' -
 ```
 ### Website
 
-Hosted from the private repo
-[`YuvrajSingh-mist/androidlife-website`](https://github.com/YuvrajSingh-mist/androidlife-website)
-on Vercel: https://androidlife-website.vercel.app/
+Canonical site: https://androidlife-website.vercel.app/  
+(GitHub Pages redirect: https://yuvrajsingh-mist.github.io/AndroidLife/)
 
-GitHub Pages (`website/` in this repo) only redirects
-https://yuvrajsingh-mist.github.io/AndroidLife/ → the Vercel URL.
+Source lives in the private repo
+[`YuvrajSingh-mist/androidlife-website`](https://github.com/YuvrajSingh-mist/androidlife-website).
+A local checkout belongs at `androidlife-website/` in this workspace (gitignored) — edit and
+`git push` **from that folder**; AndroidLife pushes never include it. The tracked `website/`
+here is only the Pages redirect stub.
 
 ## Layout
 
@@ -107,6 +109,7 @@ https://yuvrajsingh-mist.github.io/AndroidLife/ → the Vercel URL.
 | `scripts/seeding/` | Reset / seed / verify |
 | `assets/` | Runs, seeds, Phoenix DBs (gitignored) |
 | `website/` | GitHub Pages redirect → Vercel site |
+| `androidlife-website/` | Local clone of private site repo (gitignored; push separately) |
 | `reports/` | Audits + metrics |
 
 ## Docs
