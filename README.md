@@ -7,7 +7,8 @@ Real-phone Android agent benchmark: everyday tasks on a live device, scoring **s
 Evaluates **open-weight** models (API today; **on-device SLMs** as the long-term focus). Same
 harness for OpenRouter, a local OpenAI-compatible server, or on-device runtime.
 
-Live site: [yuvrajsingh-mist.github.io/AndroidLife](https://yuvrajsingh-mist.github.io/AndroidLife/) ·
+Live site: [androidlife-website.vercel.app](https://androidlife-website.vercel.app/) ·
+also [github.io/AndroidLife](https://yuvrajsingh-mist.github.io/AndroidLife/) (redirects) ·
 Code: [github.com/YuvrajSingh-mist/AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) ·
 Public artifacts: [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public) ·
 530 corpus: [`YuvrajSingh9886/androidlife-530`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530)
@@ -36,9 +37,11 @@ cp .env.example .env                      # OPENROUTER_API_KEY, OPENAI_API_KEY f
 
 Needs `adb`, `scrcpy`, Python 3.11–3.13 (`uv`-managed).
 
-### Reset + seed (before every public run)
+### Reset + seed (before every **public** 60-task run)
 
-Full command sequence: **[docs/device-reset-and-seed.md](docs/device-reset-and-seed.md)**.
+`public_v2` reset / Day 1-3 seed is for the **public benchmark only** (not the full 530-day
+corpus). Full command sequence:
+**[docs/device-reset-and-seed.md](docs/device-reset-and-seed.md)**.
 
 ```bash
 S=100.108.15.119:5555   # Tailscale serial
@@ -85,15 +88,14 @@ uv run androidlife_tasks.py --serial "$S" --llm-upstream-base https://openrouter
 uv run scripts/eval/androidlife_report.py --runs assets/runs/public/<RUN_TS>
 uv run scripts/eval/audit_kb_queries.py --runs 'assets/runs/public/<RUN_TS>/*' --source public.md --interactive
 ```
-### Website (local)
+### Website
 
-```bash
-cd website && npx --yes live-server --port=8000 --host=127.0.0.1
-# or: python3 -m http.server 8000
-```
+Hosted from the private repo
+[`YuvrajSingh-mist/androidlife-website`](https://github.com/YuvrajSingh-mist/androidlife-website)
+on Vercel: https://androidlife-website.vercel.app/
 
-Hard-refresh after HTML/JS/CSS edits. Rebuild `site_data.json` with
-`node website/tools/build_site_data.mjs` if the task corpus changed.
+GitHub Pages (`website/` in this repo) only redirects
+https://yuvrajsingh-mist.github.io/AndroidLife/ → the Vercel URL.
 
 ## Layout
 
@@ -104,7 +106,7 @@ Hard-refresh after HTML/JS/CSS edits. Rebuild `site_data.json` with
 | `benchmarks/androidlife-600/` | 530 + public datasets |
 | `scripts/seeding/` | Reset / seed / verify |
 | `assets/` | Runs, seeds, Phoenix DBs (gitignored) |
-| `website/` | GitHub Pages site |
+| `website/` | GitHub Pages redirect → Vercel site |
 | `reports/` | Audits + metrics |
 
 ## Docs
