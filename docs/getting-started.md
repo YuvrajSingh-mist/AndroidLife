@@ -12,17 +12,17 @@ Harness install exercised on **MacBook Air (M1, 2020)** and **Mac mini (M4, 2025
 1. **[README.md](../README.md)** — what the harness is, quick start, public vs 530.
 2. **This page** — mental model + where artifacts live.
 3. **[docs/benchmark-spec-public.md](benchmark-spec-public.md)** — the **60-task public**
-   evaluation set (what the website leaderboard uses).
+ evaluation set (what the website leaderboard uses).
 4. **[docs/evaluation-policy.md](evaluation-policy.md)** — how PASS / FAIL / hallucination
-   are graded (manual audit is ground truth).
+ are graded (manual audit is ground truth).
 5. **[docs/fabricated-test-data.md](fabricated-test-data.md)** — why seeds exist and what
-   ADB can vs cannot plant.
+ ADB can vs cannot plant.
 6. **[docs/device-reset-and-seed.md](device-reset-and-seed.md)** — reset + seed **commands**
-   (public run). Edge cases: [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
+ (public run). Edge cases: [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
 7. **[docs/reproducibility.md](reproducibility.md)** — what “reproducible” means here
-   (protocol, not bitwise-identical live-phone runs).
+ (protocol, not bitwise-identical live-phone runs).
 8. **[docs/cli-reference.md](cli-reference.md)** — flags, detach/resume, model notes.
-9. **[docs/naming.md](naming.md)** — AndroidLife vs DailyBench aliases (package / CLI / env).
+9. **[docs/naming.md](naming.md)** — AndroidLife vs AndroidLife aliases (package / CLI / env).
 10. **[docs/HANDOFF.md](HANDOFF.md)** — current run state (maintainers; may be mid-session stale).
 
 ## Two corpora
@@ -45,15 +45,15 @@ Same dataset either way; treat them as separate leaderboard rows.
 
 ```text
 reset_phone.py --profile public_v2 --apply
-  → seed_data.py --day {1,2,3} + enrich_public_notes + fabricate_public_pdfs
-  → tomorrow Team Sync / Mentor conflicts
-  → verify (baseline + day seeds PASS)
-  → operator manual seeds (Chrome history, Photos favourites, Gmail Scapia, …)
-  → start Phoenix (per-run DB) then androidlife_tasks.py --source public.md --all
-  → androidlife_report.py + eval_hallucination_controls.py
-  → make organize-public
-  → manual audit → reports/public/public-<RUN_TS>.md
-  → website: build_public_traj_from_hf.py + build_site_data.mjs + leaderboard.js row
+ → seed_data.py --day {1,2,3} + enrich_public_notes + fabricate_public_pdfs
+ → tomorrow Team Sync / Mentor conflicts
+ → verify (baseline + day seeds PASS)
+ → operator manual seeds (Chrome history, Photos favourites, Gmail Scapia, …)
+ → start Phoenix (per-run DB) then androidlife_tasks.py --source public.md --all
+ → androidlife_report.py + eval_hallucination_controls.py
+ → make organize-public
+ → manual audit → reports/public/public-<RUN_TS>.md
+ → website: build_public_traj_from_hf.py + build_site_data.mjs + leaderboard.js row
 ```
 
 Detached launch (survives Cursor/terminal exit):

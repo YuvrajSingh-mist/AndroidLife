@@ -1,6 +1,6 @@
 # Benchmark Specification
 
-DailyBench300 (AndroidLife) measures what it actually costs a real Android phone to have an
+AndroidLife measures what it actually costs a real Android phone to have an
 LLM-driven agent use it — not just whether the agent finishes each task, but the dollars,
 battery percentage, and heat it costs to do so, across a realistic month of everyday phone
 use. It's built on the [mobilerun](https://docs.mobilerun.ai) (Droidrun) SDK, driving one
@@ -14,7 +14,7 @@ MSN News, Amazon Shopping). Apps with active anti-automation enforcement
 (Instagram, WhatsApp, TikTok, etc.) are deliberately excluded, so runs can be published openly
 without ToS risk.
 
-Most mobile-agent benchmarks report task success rate and stop there. DailyBench300's central,
+Most mobile-agent benchmarks report task success rate and stop there. AndroidLife's central,
 differentiating measurement is what that success *costs* on hardware someone actually owns:
 live battery drain (mAh, per-app), device thermal load (CPU/GPU/skin/battery temperature
 sampled throughout the run), and real dollar cost per model — reported alongside success rate,
@@ -84,26 +84,26 @@ that fabricates a plausible-sounding answer.
 > replacement passes (again, dist unchanged — corpus stays exactly 530/216/242/72,
 > 36/36, 61 HC, 0 dupes):
 > 1. **Strict-format output.** Audited the corpus: only 7 tasks genuinely demanded
->    a constrained reply shape (`"Contact" | "Link" strictly`, "reply with only X,
->    no other text"). Replaced 12 weak medium tasks (days 5-28) with **strict-format
->    output** variants — `'X' | 'Y' strictly` line lists (Drive filename|last-opened,
->    Drive filename|folder, Contacts name|phone, Obsidian note-title|date) and
->    "reply with only <value>, no other text" single-value answers (Sheets sum/sort/
->    max, Messages contact, Calculator total, Docs keyword count, Maps cheapest,
->    Chrome cheaper site). Strict-output tasks went **7 → 21 (4.0%)**.
+> a constrained reply shape (`"Contact" | "Link" strictly`, "reply with only X,
+> no other text"). Replaced 12 weak medium tasks (days 5-28) with **strict-format
+> output** variants — `'X' | 'Y' strictly` line lists (Drive filename|last-opened,
+> Drive filename|folder, Contacts name|phone, Obsidian note-title|date) and
+> "reply with only <value>, no other text" single-value answers (Sheets sum/sort/
+> max, Messages contact, Calculator total, Docs keyword count, Maps cheapest,
+> Chrome cheaper site). Strict-output tasks went **7 → 21 (4.0%)**.
 > 2. **Notes/Obsidian/Docs reading & essay balance.** Audited Notes/Obsidian/Docs/
->    Drive tasks: too many write-only side-effects ("save X in a note", "make a
->    copy", "note the count") and then (after the first pass) too many pure-read
->    asks ("tell me what it's about"). Replaced 8 easy/medium tasks (days 5-28)
->    with genuine, varied **everyday** content tasks: add a one-sentence summary at
->    the top of a doc, turn a note's tasks into a checkbox checklist, add a
->    'Summary' section at the end, add a bullet-point key-points list, rewrite a
->    messy note into clean sections, and — school-student style — **research a
->    topic on the web via Google Search then write a 150-200 word research report
->    (intro / 3 key points / conclusion) into a new Obsidian note**, replying with
->    only the note title. `medium__obsidian__005` became a **Google Search+Obsidian**
->    cross-app task (day-17 cross count 8 → 9). Notes/Docs tasks now skew READ 51 /
->    BOTH 39 / WRITE 4 instead of WRITE-heavy.
+> Drive tasks: too many write-only side-effects ("save X in a note", "make a
+> copy", "note the count") and then (after the first pass) too many pure-read
+> asks ("tell me what it's about"). Replaced 8 easy/medium tasks (days 5-28)
+> with genuine, varied **everyday** content tasks: add a one-sentence summary at
+> the top of a doc, turn a note's tasks into a checkbox checklist, add a
+> 'Summary' section at the end, add a bullet-point key-points list, rewrite a
+> messy note into clean sections, and — school-student style — **research a
+> topic on the web via Google Search then write a 150-200 word research report
+> (intro / 3 key points / conclusion) into a new Obsidian note**, replying with
+> only the note title. `medium__obsidian__005` became a **Google Search+Obsidian**
+> cross-app task (day-17 cross count 8 → 9). Notes/Docs tasks now skew READ 51 /
+> BOTH 39 / WRITE 4 instead of WRITE-heavy.
 
 Cross-app tasks are the mechanism that forces multi-app reasoning (an agent must switch apps mid-task, not camp on one screen). After the 2026-08-12 rebalance the **unrelated multi-intent** flavor makes up ~20% of cross-app tasks: a compound real-user request bundles two *independent* actions (e.g. "rank next week's meetings in Calendar **and** message [contact] the longest one's time"), each with its own verifiable end-state. The rest split ~46% note-anchored (research/summarize → save) and ~34% info→comm action chains. Cross-app load is spread across every day (4-10 per day, avg ~6.4) so no day is all-single-app or all-cross-app.
 
@@ -218,11 +218,11 @@ per-day vars, and fabricated-data records are generated for the public sample se
 - **Dataset**: 530 runnable tasks on a fixed 28-day schedule, 31 apps and ~18.9 tasks/day (range 15-22) — calibrated against published real-world app-usage data rather than an arbitrary task list (see `app-usage-grounding.md`).
 - **Difficulty tiers**: easy (1 app, 1 step), medium (1-2 apps, 3 steps), hard (2-3 apps, 5 steps). Hard tasks split into **DETERMINISTIC** end-states (23), **ASK USER SINGLE** (36 — one deliberately withheld fact the agent must ask for instead of guessing), and **ASK USER - MULTI** (13 — a KB-oracle multi-turn dialogue with a deterministic, verifiable outcome).
 - **Measurement axes**:
-  - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
-  - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)
-  - model token and dollar cost (prompt/completion tokens, USD per run)
-  - interaction quality (does the agent ask for the withheld fact and is the returned answer the right one — see `evaluation-policy.md`)
-  - hallucination rate (self-reported success vs. verified on-device end-state, on tasks with a known-absent target)
+ - end-to-end task latency (wall-clock, and cooldown-corrected true agent running time)
+ - phone battery and thermal data (per-app battery estimate, peak CPU/GPU/skin/battery temperature)
+ - model token and dollar cost (prompt/completion tokens, USD per run)
+ - interaction quality (does the agent ask for the withheld fact and is the returned answer the right one — see `evaluation-policy.md`)
+ - hallucination rate (self-reported success vs. verified on-device end-state, on tasks with a known-absent target)
 
 ## Benchmark unit
 
@@ -232,19 +232,19 @@ One benchmark unit is one task run through the harness into one timestamped run 
 
 The 530-task schedule spans **28 days** (`day` field on every dataset row, 15-22 tasks/day). Three artifacts make any day runnable, inspectable, and extensible:
 
-1. **Runs** — `runs/<batch>/day<N>/<task-id>/...` (each task's run nests under its day, auto-created by `day_subfolder` in `src/DailyBench/task_batch.py`).
+1. **Runs** — `runs/<batch>/day<N>/<task-id>/...` (each task's run nests under its day, auto-created by `day_subfolder` in `src/AndroidLife/task_batch.py`).
 2. **Seed manifests** — `scripts/seeding/build_day_seed_manifest.py --day N` generates `seeds/manifests/day_<N>/` for **any** day 1..28:
-   - `manifest_index.json` — day-level index (task ids, buckets, count)
-   - `<task_id>/manifest.json` — per-task fabricated-data spec (resolved prompt, `--var` map, ASK USER fact, seed list, expected end state)
-   - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
-   - Days 1–6 use **hand-authored specs** (`DAY1..DAY6_TASKS`); days 7–28 are **auto-generated** from the dataset (placeholders resolved from config + `tasks_vars.local.env`, OPEN ones left verbatim, seed marked `auto`). Hand-author a `DAY<N>_TASKS` entry to document a day's fabricated seeds.
+ - `manifest_index.json` — day-level index (task ids, buckets, count)
+ - `<task_id>/manifest.json` — per-task fabricated-data spec (resolved prompt, `--var` map, ASK USER fact, seed list, expected end state)
+ - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
+ - Days 1–6 use **hand-authored specs** (`DAY1..DAY6_TASKS`); days 7–28 are **auto-generated** from the dataset (placeholders resolved from config + `tasks_vars.local.env`, OPEN ones left verbatim, seed marked `auto`). Hand-author a `DAY<N>_TASKS` entry to document a day's fabricated seeds.
 3. **Per-day vars** — `scripts/seeding/generate_day_vars.py --all` writes `tasks_vars/day_N.env` for every day (13/13 pinned on day 3 etc.), passed to the runner with `--vars-file`.
 
 ## Running any day
 
 ```bash
-uv run dailybench_tasks.py --serial "$DAILYBENCH_SERIAL" --llm-upstream-base "$LLM_UPSTREAM" \
-  --model "$MODEL" --day 3 --vars-file benchmarks/androidlife-600/tasks_vars/day_3.env
+uv run androidlife_tasks.py --serial "$ANDROIDLIFE_SERIAL" --llm-upstream-base "$LLM_UPSTREAM" \
+ --model "$MODEL" --day 3 --vars-file benchmarks/androidlife-600/tasks_vars/day_3.env
 ```
 
 `--day N` (any 1..28) is a first-class selector and combines with `--bucket`/`--app`/`--task-id`. See [cli-reference.md](cli-reference.md) and the README.
@@ -293,7 +293,7 @@ once against each app it touches (cross-app tasks count toward every app in thei
 
 Sectors are a convenience grouping (see `app_usage_grounding.md` for the
 per-day app-density rationale); the authoritative per-app counts above are what
-`dailybench_report.py` uses for bucket/`--app` selection. The Google Workspace
+`androidlife_report.py` uses for bucket/`--app` selection. The Google Workspace
 task sets (Docs rotation ~1/3 of note-app slots; Sheets; Slides; Meet) were added
 from day 4 onward — see `future-directions.md`. The 2026-08-12 diversification
 pass added real apps for the biggest real-world gaps (food, OTT, travel, tickets,
@@ -312,18 +312,18 @@ phones, the corpus's sector mix is compared against published usage data
 **Ground-truth anchors:**
 
 - **Social media is the single largest time category** — **35.1%** of time spent
-  in mobile apps worldwide (2024, Android-only, Statista stat 1465726, released
-  Feb 2025).
+ in mobile apps worldwide (2024, Android-only, Statista stat 1465726, released
+ Feb 2025).
 - Google Play **category penetration** (share of Android users with the category
-  installed; Statista stat 200855, **data as of September 2019** — the most
-  recent public release of this series): Communication **99.39%**, Tools
-  **99.81%**, Business **99.33%**, Video Players & Editors **96.63%**, Travel &
-  Local **95.70%**, Social Media **95.02%**, Productivity **91.67%**, Music &
-  Audio **88.38%**, Entertainment **83.85%**, News & Magazines **81.11%**,
-  Photography **75.77%**, Books & Reference **70.74%**, Shopping **35.79%**,
-  Weather **32.46%**.
+ installed; Statista stat 200855, **data as of September 2019** — the most
+ recent public release of this series): Communication **99.39%**, Tools
+ **99.81%**, Business **99.33%**, Video Players & Editors **96.63%**, Travel &
+ Local **95.70%**, Social Media **95.02%**, Productivity **91.67%**, Music &
+ Audio **88.38%**, Entertainment **83.85%**, News & Magazines **81.11%**,
+ Photography **75.77%**, Books & Reference **70.74%**, Shopping **35.79%**,
+ Weather **32.46%**.
 - The average smartphone user spends **~2 h 51 m/day in apps** (≈90% of
-  smartphone time) and uses **~9 apps/day, ~30/month** (eMarketer / Techjury).
+ smartphone time) and uses **~9 apps/day, ~30/month** (eMarketer / Techjury).
 
 > ⚠️ **Source-accuracy note (2026-08-11):** the penetration figures were
 > cross-checked against the **primary Statista page (200855)**. A widely-copied
@@ -352,13 +352,13 @@ phones, the corpus's sector mix is compared against published usage data
 **Missing sectors (not represented as apps in the corpus):**
 
 1. **Social media apps** (Facebook, Instagram, TikTok, X, Snapchat, Reddit) —
-   the **#1 real-world time category (35.1%)** yet entirely absent as apps
-   (Telegram is messaging; Chrome/Search are browser). The single biggest gap.
+ the **#1 real-world time category (35.1%)** yet entirely absent as apps
+ (Telegram is messaging; Chrome/Search are browser). The single biggest gap.
 2. **Gaming** — a top global time-spend category; zero games in the corpus.
 3. **Finance / banking / UPI** (Paytm, PhonePe, GPay, banking apps) — a very
-   high-usage category in India (the benchmark's home market) and absent.
+ high-usage category in India (the benchmark's home market) and absent.
 4. **Food delivery / ride-hailing breadth** — Swiggy now covers food; ride
-   (Uber/Ola) still absent.
+ (Uber/Ola) still absent.
 5. **Health & fitness** — absent.
 
 **Why this matters / caveats:** the corpus is a *task-difficulty* benchmark, not
@@ -431,31 +431,31 @@ end-states; PDF handling stays in Files/Drive/Gmail as open+read tasks. The key
 published terms for the still-absent categories:
 
 - **WhatsApp (Meta)** — Acceptable Use explicitly bans "bulk messaging,
-  auto-messaging, auto-dialing" (item *e*), "any non-personal use of our
-  Services unless otherwise authorized by us" (item *f*), and — under
-  "Harm To WhatsApp" — any access "through automated or other means" used in
-  "impermissible or unauthorized manners" (including reverse engineering and
-  collecting user info in unauthorized ways). Its "Excluded Disputes" carve-out
-  even names "engage with our Services in unauthorized ways (for example,
-  automated ways)".
+ auto-messaging, auto-dialing" (item *e*), "any non-personal use of our
+ Services unless otherwise authorized by us" (item *f*), and — under
+ "Harm To WhatsApp" — any access "through automated or other means" used in
+ "impermissible or unauthorized manners" (including reverse engineering and
+ collecting user info in unauthorized ways). Its "Excluded Disputes" carve-out
+ even names "engage with our Services in unauthorized ways (for example,
+ automated ways)".
 - **Instagram (Meta)** — Terms ban "access or collect information in automated
-  way (including by engaging in Automated Data Collection ...) without our
-  express permission", and the platform blocks/detects scripted UI drivers
-  aggressively (login challenges, rate limits, account locks).
+ way (including by engaging in Automated Data Collection ...) without our
+ express permission", and the platform blocks/detects scripted UI drivers
+ aggressively (login challenges, rate limits, account locks).
 - **TikTok / X / Snapchat / Reddit** — each has a comparable no-bot/no-scraping
-  automation clause and active anti-automation (e.g. TikTok's CAPTCHA + device
-  fingerprinting on programmatic access).
+ automation clause and active anti-automation (e.g. TikTok's CAPTCHA + device
+ fingerprinting on programmatic access).
 - **Gaming & passive OTT** — no ToS barrier per se, but no crisp verifiable
-  end-state (passive consumption; nothing to "complete" that is checkable against
-  device state), so they are ungradeable under the deterministic/honesty
-  framework. (Prime Video's tasks were scoped to catalog lookups, not passive
-  playback.)
+ end-state (passive consumption; nothing to "complete" that is checkable against
+ device state), so they are ungradeable under the deterministic/honesty
+ framework. (Prime Video's tasks were scoped to catalog lookups, not passive
+ playback.)
 - **PDF editing/annotating** — excluded as a premium feature; PDF tasks open +
-  read only (page count, totals, attachments), never edit.
+ read only (page count, totals, attachments), never edit.
 - **Finance / UPI / banking** — the highest-risk category: payment UIs involve
-  credentials and real money; automated control risks account locks and is
-  excluded on safety grounds (see `future-directions.md` §7 for a sandboxed
-  mock-pay proposal).
+ credentials and real money; automated control risks account locks and is
+ excluded on safety grounds (see `future-directions.md` §7 for a sandboxed
+ mock-pay proposal).
 
 **What that means for the corpus:** the benchmark favours **Google-ecosystem
 apps** (Docs, Sheets, Slides, Meet, Drive, Photos, Maps, Search) because their
@@ -482,12 +482,12 @@ The canonical runnable task list lives in [benchmarks/androidlife-600/tasks_530.
 
 The benchmark is organised day-by-day so it is fully inspectable and extensible:
 
-- **Run any day** with the batch runner: `uv run dailybench_tasks.py --day 3 ...` (a `--day N` selector for any day 1..28, see [README](../README.md#run-a-day-530)). Runs land under `runs/<batch>/day<N>/...`.
+- **Run any day** with the batch runner: `uv run androidlife_tasks.py --day 3 ...` (a `--day N` selector for any day 1..28, see [README](../README.md#run-a-day-530)). Runs land under `runs/<batch>/day<N>/...`.
 - **Seed manifests** are generated per day under `seeds/manifests/day_<N>/`:
-  - `manifest_index.json` — day-level index (task ids in schedule order, bucket counts)
-  - `<task_id>/manifest.json` — per-task fabricated-data manifest (resolved prompt, `--var` map, ASK USER fact, required seed data + status, expected end state, config keys used)
-  - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
-  - real seed files (photos/pdf/notes) live flat in `assets/seeds/day_<N>/`; `DEVICE_PATHS.md` per task sits in the manifest dir
+ - `manifest_index.json` — day-level index (task ids in schedule order, bucket counts)
+ - `<task_id>/manifest.json` — per-task fabricated-data manifest (resolved prompt, `--var` map, ASK USER fact, required seed data + status, expected end state, config keys used)
+ - `day_<N>_fabricated_data.jsonl` — one meticulous JSON line per task
+ - real seed files (photos/pdf/notes) live flat in `assets/seeds/day_<N>/`; `DEVICE_PATHS.md` per task sits in the manifest dir
 - **Days 1–6** have hand-authored specs (`DAY1..6_TASKS` in `scripts/seeding/build_day_seed_manifest.py`) that document each task's exact fabricated data.
 - **Days 7–28** are auto-generated per-task from the dataset (same manifest shape): each task gets an app-appropriate seed entry (web / needs_ui / needs_seed / present / sanity / creation) and a resolved-vars map. To document a specific day's fabricated seeds by hand, add a `DAY<N>_TASKS` block to `scripts/seeding/build_day_seed_manifest.py` and wire it into `build_day()` — the generator then uses your spec instead of the auto one.
 - Rebuild all days at once: `for d in $(seq 1 28); do uv run python scripts/seeding/build_day_seed_manifest.py --day $d; done`.
@@ -524,7 +524,7 @@ Optional artifacts:
 ## Derived benchmark metrics (the "why")
 
 The five raw fields above are the per-run **inputs**; the actual benchmark metrics are **derived** from them
-plus the run's verified on-device end-state evidence, and are implemented in `src/DailyBench/benchmark_metrics.py`
+plus the run's verified on-device end-state evidence, and are implemented in `src/AndroidLife/benchmark_metrics.py`
 and specified in `docs/evaluation-policy.md`. They were previously documented
 only in those files — that is why this spec did not list them. The full set:
 
@@ -543,7 +543,7 @@ Why these exist: the benchmark gates success on the **on-device end state** (not
 interaction quality as the MobileWorld-style SR gate for ASK USER tasks, and measures both device cost
 (battery/thermal) and model cost (tokens/USD) so a leaderboard can compare agents on correctness *and* efficiency.
 
-**Formulae (exactly as implemented in `src/DailyBench/benchmark_metrics.py`):**
+**Formulae (exactly as implemented in `src/AndroidLife/benchmark_metrics.py`):**
 
 Let $N$ = tasks run, $s_i \in \{0,1\}$ = classification-aware success of task $i$ (only
 `true_success` counts; hallucinated self-reports and honest control failures are 0), $n_i$ =
@@ -563,7 +563,7 @@ correct KB answers (`kb_audit.json`).
 $$\text{KBIQ} = \frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k}, \qquad \tfrac{c_k}{q_k} := 0 \ \text{if} \ q_k = 0$$
 
 - **Hallucination rate** = self-reported successes that failed on-device verification, over tasks
-  with a known-absent target (`hallucination_controls.json`).
+ with a known-absent target (`hallucination_controls.json`).
 - **Cost** = (prompt_tokens + completion_tokens) × registered OpenRouter price → USD, per task/day.
 - **Battery/thermal** = per-app mAh + peak CPU/GPU/skin/battery °C (from `run_metrics.json`).
 

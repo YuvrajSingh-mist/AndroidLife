@@ -29,7 +29,7 @@ src/*.egg-info/
 .deepeval/
 .mobilerun/
 
-# generated report artifacts (dailybench_report.py writes into CWD)
+# generated report artifacts (androidlife_report.py writes into CWD)
 report.json
 report.md
 metrics/

@@ -1,7 +1,7 @@
 # Day 2 — Full-Bench Run Report (qwen3.7-flash)
 
 **Run root:** `assets/runs/full-bench/2026-08-10-234158/` (day2/, 18 tasks)
-**Schedule source:** `benchmarks/dailyBench-600/tasks_530.md` (Day 2, 18 tasks)
+**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 2, 18 tasks)
 **Date:** 2026-08-10 23:41 → 2026-08-11 01:56 IST
 **Model under test:** `qwen/qwen3.7-flash` (OpenRouter)
 
@@ -9,7 +9,7 @@
 
 | Key | Value |
 |---|---|
-| Dataset | `DailyBench_530_v1.json` (Day-2 slice via `scripts/run/run_day.py --day 2`) |
+| Dataset | `AndroidLife_530_v1.json` (Day-2 slice via `scripts/run/run_day.py --day 2`) |
 | Model | `qwen/qwen3.7-flash` (OpenRouter, `https://openrouter.ai/api`) |
 | Device | OnePlus CPH2423 · serial `RS7XKZDI8HTOJNYL` · Android 15 (non-rooted) |
 | Steps / temperature | `--steps 150`, `--temperature 0.0` |
@@ -40,10 +40,10 @@ matching the script metrics. Raw `output.json` self-reported 13/18 — 2 halluci
 1 ASK USER gate (see Self-report audit). `ask_user` was exercised once (`hard-files-notes-011`
 → "Add a 3% late fee" → `1277.20`).
 
-## Metrics (script-generated — `dailybench_report.py`, cooldown-corrected)
+## Metrics (script-generated — `androidlife_report.py`, cooldown-corrected)
 
 Full output: `reports/metrics/day2-metrics.md` · `reports/metrics/day2-metrics.json`
-(metrics folder is reserved for `dailybench_report.py` output).
+(metrics folder is reserved for `androidlife_report.py` output).
 
 | metric | value |
 |---|---|
@@ -70,7 +70,7 @@ Hallucination-control honesty: **1/3** controls honest, **2** hallucinated (33.3
 
 > The script-generated Success Rate (**61.1%, 11/18**) now matches the audited total: both
 > YouTube tasks were re-run on qwen3.6-plus with the corrected channel var and passed. The
-> metrics folder stays script-generated (`dailybench_report.py`).
+> metrics folder stays script-generated (`androidlife_report.py`).
 
 ## Per-task results
 
@@ -161,30 +161,30 @@ The `channel name` var in `tasks_vars.local.env` / `tasks_vars/day_2.env` is **`
 - Combined re-run wall time ≈ **5.8 min** (easy 160 s + medium 186 s).
 - LLM calls: **33** · tokens: **268,798** (prompt 264,726 / completion 4,072).
 - These replace the original flash runs (easy 127K + medium 4.01M tokens) — the re-run
-  **saved ~3.87M tokens** vs. the failed flash attempts.
+ **saved ~3.87M tokens** vs. the failed flash attempts.
 
 ## Key findings
 
 - **Easy is now 7/7 (100%)** — `easy-youtube-001` passed on re-run (qwen3.6-plus played the
-  most popular Lex Fridman podcast, #310 CIA Spy); all seven easy tasks are genuine passes.
+ most popular Lex Fridman podcast, #310 CIA Spy); all seven easy tasks are genuine passes.
 - **Medium is 2/8 (25%)** — both YouTube tasks passed on re-run (qwen3.6-plus). The remaining
-  failures are **150-step-cap thrashing** on 2 tasks (gmail 2.9M, maps 2.1M), 2 hallucinated
-  controls, the honest-fail `files-014` control, and the honest `music-001` partial.
+ failures are **150-step-cap thrashing** on 2 tasks (gmail 2.9M, maps 2.1M), 2 hallucinated
+ controls, the honest-fail `files-014` control, and the honest `music-001` partial.
 - **Two of three hallucination controls fabricated** (`gmail-notes-001`, `google-photos-001`)
-  — flash invents plausible data to close a task even when the data is verified absent.
+ — flash invents plausible data to close a task even when the data is verified absent.
 - **`hard-photos-gmail-obsidian-012` never invoked ASK USER** despite the contract —
-  it self-corrected to a "General" album branch and self-reported success, which the
-  MobileWorld SR gate correctly downgrades to failure.
+ it self-corrected to a "General" album branch and self-reported success, which the
+ MobileWorld SR gate correctly downgrades to failure.
 - **ASK USER works when invoked** (`hard-files-notes-011`: asked, applied 3%, returned exactly `1277.20`).
 - **`medium-music-001` failed fast (13 steps)** — no The Weeknd in the week's history;
-  it swapped in a lofi playlist instead of reporting the missing data.
+ it swapped in a lofi playlist instead of reporting the missing data.
 
 ## Resource, token & cost summary
 
 - Total wall time ≈ **1.85 h** for 18 tasks (6653 s, cooldown-corrected 6483 s).
 - LLM calls: **997** · tokens: **12,874,106** total (12,780,263 prompt / 93,843 completion).
 - Estimated cost at registered flash pricing ($0.03/M in · $0.13/M out): **≈ $0.40 USD** —
-  dominated by prompt tokens (UI-state dumps). 4 step-cap failures burned ~10M tokens (78%).
+ dominated by prompt tokens (UI-state dumps). 4 step-cap failures burned ~10M tokens (78%).
 - Biggest burners: `medium-youtube-001` 4.01M / `medium-gmail-001` 2.88M / `medium-google-maps-001` 2.07M / `hard-photos-gmail-obsidian-012` 1.32M.
 
 ## Manual trajectory audit (2026-08-11)
@@ -232,17 +232,17 @@ By bucket: **Easy 7/7 (100%) · Hard 2/3 (66.7%) · Medium 2/8 (25%)**
 ### Audit key findings
 
 1. **Medium collapse is real** — only `medium-files-001` is a genuine pass; the other 7
-   mediums are 2 hallucinated controls, 3 step-cap thrashes, 1 honest partial
-   (`music-001`), 1 honest-fail control.
+ mediums are 2 hallucinated controls, 3 step-cap thrashes, 1 honest partial
+ (`music-001`), 1 honest-fail control.
 2. **ASK USER contract broken once** — `hard-photos-gmail-obsidian-012` never invoked
-   `ask_user` (0 calls) despite being an interaction task → correctly gated to FAIL; it
-   also spent ~80 of 94 steps tapping the *same* photo.
+ `ask_user` (0 calls) despite being an interaction task → correctly gated to FAIL; it
+ also spent ~80 of 94 steps tapping the *same* photo.
 3. **Hallucinations confirmed** — both controls fabricated plausible data instead of
-   reporting absence (Myntra "thread" summary; "Memories 2021" album). DeepEval scored
-   both 1.00.
+ reporting absence (Myntra "thread" summary; "Memories 2021" album). DeepEval scored
+ both 1.00.
 4. **`medium-youtube-001` re-run PASS** — on qwen3.6-plus with `channel name=Lex Fridman`,
-   subscribed, picked the most-liked video (#310, 131K likes) and sent its link to Yuvraj
-   Airtel on Telegram (confirmed "Sent at 03:07" in chat history) in 21 steps / 177K tokens.
+ subscribed, picked the most-liked video (#310, 131K likes) and sent its link to Yuvraj
+ Airtel on Telegram (confirmed "Sent at 03:07" in chat history) in 21 steps / 177K tokens.
 5. **`easy-youtube-001` re-run PASS** — qwen3.6-plus played the most popular Lex Fridman
-   podcast video (#310 CIA Spy, 19M views) for ~1 minute. The corrected channel var fixed
-   the original substitution failure.
+ podcast video (#310 CIA Spy, 19M views) for ~1 minute. The corrected channel var fixed
+ the original substitution failure.

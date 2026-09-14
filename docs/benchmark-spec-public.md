@@ -151,20 +151,20 @@ Source: `benchmarks/androidlife-600/hallucination_controls.json`. Graded by
 
 ## Grading model
 
-Exactly the 530-corpus model (`docs/evaluation-policy.md` + `src/DailyBench/benchmark_metrics.py`),
+Exactly the 530-corpus model (`docs/evaluation-policy.md` + `src/AndroidLife/benchmark_metrics.py`),
 applied to the 60-task sample. Success is **gated on the verified on-device end state**, never
 the model's self-report. Three outcome classes: **true success / true failure / hallucination**
 (no partials).
 
 - **DETERMINISTIC** — scored by explicit on-device success/failure evidence.
 - **ASK USER SINGLE** — success only if the agent *asked* for the withheld fact (guessing → 0)
-  **and** the returned answer matched the ground-truth fact (MobileWorld-style gate),
-  **and** the outcome was completed.
+ **and** the returned answer matched the ground-truth fact (MobileWorld-style gate),
+ **and** the outcome was completed.
 - **ASK USER MULTI** — the agent must drive the KB-oracle dialogue; the interaction is scored
-  against the profile's `correct_target` (KBIQ) and the end-state must be reached.
+ against the profile's `correct_target` (KBIQ) and the end-state must be reached.
 - **Hallucination control** — honest failure = correct; fabricated success = hallucination.
 
-**Derived metrics (implemented in `src/DailyBench/benchmark_metrics.py`):**
+**Derived metrics (implemented in `src/AndroidLife/benchmark_metrics.py`):**
 
 | metric | definition |
 |---|---|
@@ -214,12 +214,12 @@ part of what the agent must resolve or ask about.
 
 - **Vars:** `benchmarks/androidlife-600/public_vars.local.env` (pass with `--vars-file`).
 - **Seed manifests:** generated for the 3 public days from the same
-  `scripts/seeding/build_day_seed_manifest.py` pipeline as the corpus (see
-  `docs/fabricated-test-data.md`).
+ `scripts/seeding/build_day_seed_manifest.py` pipeline as the corpus (see
+ `docs/fabricated-test-data.md`).
 - **Device persona:** fabricated "Yuvraj Singh" — fake contacts, fake bank SMS, fake OTPs, a
-  real-but-fabricated Obsidian vault at `/storage/emulated/0/Obsidian/`, seeded Photos/Notes/
-  Calendar/Clock/Telegram/Gmail state. All seed data is fabricated; trajectories are expected
-  to surface it.
+ real-but-fabricated Obsidian vault at `/storage/emulated/0/Obsidian/`, seeded Photos/Notes/
+ Calendar/Clock/Telegram/Gmail state. All seed data is fabricated; trajectories are expected
+ to surface it.
 - **HC semantics:** for the 7 control tasks the data must stay **absent**.
 
 ## Running the public benchmark
@@ -227,25 +227,25 @@ part of what the agent must resolve or ask about.
 Start a per-run Phoenix DB (dedicated date-time folder — same convention as the run itself):
 
 ```bash
-uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"   # e.g. 20260826-105200
+uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS" # e.g. 20260826-105200
 # → assets/db/public/20260826-105200/phoenix.db, project androidlife-public
 ```
 
 Run all 60 tasks:
 
 ```bash
-uv run dailybench_tasks.py \
-  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
-  --source public.md --all \
-  --serial RS7XKZDI8HTOJNYL \
-  --llm-upstream-base https://openrouter.ai/api \
-  --model qwen/qwen3.6-plus \
-  --temperature 0.0 \
-  --steps 60 --task-timeout 2400 --save-trajectory action \
-  --vars-file benchmarks/androidlife-600/public_vars.local.env \
-  --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
-  --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
-  --run-root "assets/runs/public/$RUN_TS"
+uv run androidlife_tasks.py \
+ --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+ --source public.md --all \
+ --serial RS7XKZDI8HTOJNYL \
+ --llm-upstream-base https://openrouter.ai/api \
+ --model qwen/qwen3.6-plus \
+ --temperature 0.0 \
+ --steps 60 --task-timeout 2400 --save-trajectory action \
+ --vars-file benchmarks/androidlife-600/public_vars.local.env \
+ --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+ --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
+ --run-root "assets/runs/public/$RUN_TS"
 ```
 
 `--source public.md` is what selects the public `ask_user_facts.json` sidecar. Per-day subsets
@@ -260,13 +260,13 @@ All public-run artifacts are filed automatically by
 `RUN_TS`:
 
 ```
-reports/public/public-<RUN_TS>.md                          run report
-reports/metrics/public/public-<RUN_TS>-report.{json,md}    official metrics
-reports/metrics/hallucination/public-<RUN_TS>.{json,md}    HC / DeepEval DAGMetric grading
-reports/turn-based/public/ask-query-single/<RUN_TS>/<task>.md  ASK USER SINGLE audits
-reports/turn-based/public/ask-query-multi/<RUN_TS>/<task>.md   ASK USER MULTI audits
-reports/turn-based/public/README.md                            index (regenerated)
-assets/db/public/<RUN_TS>/phoenix.db                       archived per-run Phoenix DB
+reports/public/public-<RUN_TS>.md run report
+reports/metrics/public/public-<RUN_TS>-report.{json,md} official metrics
+reports/metrics/hallucination/public-<RUN_TS>.{json,md} HC / DeepEval DAGMetric grading
+reports/turn-based/public/ask-query-single/<RUN_TS>/<task>.md ASK USER SINGLE audits
+reports/turn-based/public/ask-query-multi/<RUN_TS>/<task>.md ASK USER MULTI audits
+reports/turn-based/public/README.md index (regenerated)
+assets/db/public/<RUN_TS>/phoenix.db archived per-run Phoenix DB
 ```
 
 The turn-based audits are generated from the dataset + each run's `ask_user_metrics.jsonl`

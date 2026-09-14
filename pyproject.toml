@@ -33,8 +33,6 @@ hf = ["huggingface_hub"]
 [project.scripts]
 androidlife-tasks = "androidlife.task_batch:main"
 androidlife-runner = "androidlife.cli:main"
-dailybench-tasks = "androidlife.task_batch:main"
-dailybench-runner = "androidlife.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

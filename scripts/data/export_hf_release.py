@@ -22,34 +22,34 @@ HF_530_LEGACY = "YuvrajSingh9886/drainbench-530"
 
 
 def _copy(out: Path, src: Path, rel: str) -> None:
-    if not src.exists():
-        print(f"  [skip] {rel} (missing)")
-        return
-    dst = out / rel
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    if src.is_dir():
-        shutil.copytree(src, dst, dirs_exist_ok=True)
-    else:
-        shutil.copy2(src, dst)
-    print(f"  copied {rel}")
+ if not src.exists():
+ print(f" [skip] {rel} (missing)")
+ return
+ dst = out / rel
+ dst.parent.mkdir(parents=True, exist_ok=True)
+ if src.is_dir():
+ shutil.copytree(src, dst, dirs_exist_ok=True)
+ else:
+ shutil.copy2(src, dst)
+ print(f" copied {rel}")
 
 
 README_530 = f"""---
 license: cc-by-4.0
 pretty_name: AndroidLife-530 (Android agent benchmark)
 task_categories:
-  - text-generation
-  - other
+ - text-generation
+ - other
 tags:
-  - android
-  - mobile-agent
-  - agent-benchmark
-  - gui-agents
-  - tool-use
+ - android
+ - mobile-agent
+ - agent-benchmark
+ - gui-agents
+ - tool-use
 language:
-  - en
+ - en
 size_categories:
-  - 1K<n<10K
+ - 1K<n<10K
 ---
 
 # AndroidLife-530 — Android agent benchmark (real phone, real LLM)
@@ -58,7 +58,7 @@ AndroidLife runs Android agent tasks against a **real phone** (via ADB/MobileRun
 and a real LLM, and grades the agent on reaching a verifiable device end-state.
 This repo ships the **530-task corpus** plus everything needed to reproduce runs.
 
-> Formerly published as `DrainBench-530` / DailyBench. Canonical dataset id:
+> Canonical dataset id:
 > [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
 > Legacy [`{HF_530_LEGACY}`](https://huggingface.co/datasets/{HF_530_LEGACY}) redirects here.
 
@@ -83,7 +83,7 @@ This repo ships the **530-task corpus** plus everything needed to reproduce runs
 ## Task model
 
 - **DETERMINISTIC** — everything needed is seeded on-device; end state is
-  ADB-verified.
+ ADB-verified.
 - **ASK USER SINGLE** — one fact deliberately omitted; agent must ask.
 - **ASK USER - MULTI** — multi-turn dialogue against the KB profile.
 
@@ -107,10 +107,10 @@ If you use AndroidLife — the benchmark, leaderboard, tasks, or results — ple
 
 ```bibtex
 @misc{{singh2026androidlife,
-      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
-      author={{Yuvraj Singh}},
-      year={{2026}},
-      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+ title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+ author={{Yuvraj Singh}},
+ year={{2026}},
+ howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
 }}
 ```
 """
@@ -119,16 +119,16 @@ README_SAMPLE = f"""---
 license: cc-by-4.0
 pretty_name: AndroidLife public sample (private companion)
 task_categories:
-  - text-generation
-  - other
+ - text-generation
+ - other
 tags:
-  - android
-  - mobile-agent
-  - agent-benchmark
+ - android
+ - mobile-agent
+ - agent-benchmark
 language:
-  - en
+ - en
 size_categories:
-  - n<1K
+ - n<1K
 ---
 
 # AndroidLife public sample (PRIVATE companion repo)
@@ -160,10 +160,10 @@ If you use AndroidLife — the benchmark, leaderboard, tasks, or results — ple
 
 ```bibtex
 @misc{{singh2026androidlife,
-      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
-      author={{Yuvraj Singh}},
-      year={{2026}},
-      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+ title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+ author={{Yuvraj Singh}},
+ year={{2026}},
+ howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
 }}
 ```
 """
@@ -179,80 +179,80 @@ This dataset was renamed. **Use the canonical repo:**
 
 **[{HF_530_REPO}](https://huggingface.co/datasets/{HF_530_REPO})**
 
-Filenames are now `AndroidLife_530_v1.json` / `.jsonl` (formerly `DailyBench_*` / DrainBench branding).
+Filenames are now `AndroidLife_530_v1.json` / `.jsonl`.
 
 License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution to Yuvraj Singh required).
 
 ```bibtex
 @misc{{singh2026androidlife,
-      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
-      author={{Yuvraj Singh}},
-      year={{2026}},
-      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+ title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+ author={{Yuvraj Singh}},
+ year={{2026}},
+ howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
 }}
 ```
 """
 
 
 def build_530_public(out: Path) -> None:
-    print(f"[1/2] 530-public -> {out}")
-    for f in ["AndroidLife_530_v1.json", "AndroidLife_530_v1.jsonl"]:
-        _copy(out, BENCH / f, f"data/{f}")
-    for f in ["tasks_530.md", "tasks.md"]:
-        _copy(out, BENCH / f, f"data/{f}")
-    for f in ["multiturn_kb_530.json", "ask_user_facts.json", "hallucination_controls.json"]:
-        _copy(out, BENCH / f, f"data/{f}")
-    for f in ["tasks_vars.local.env", "tasks_vars.local.json"]:
-        _copy(out, BENCH / f, f"vars/{f}")
-    _copy(out, BENCH / "tasks_vars", "vars/tasks_vars")
-    _copy(out, CONFIG / "user_config.example", "config/user_config.example")
-    _copy(out, REPO_ROOT / ".fabricated_test_data.json", "fabrication/fabricated_test_data.json")
-    _copy(out, DOCS / "fabricated-test-data.md", "fabrication/fabricated-test-data.md")
-    (out / "README.md").write_text(README_530, encoding="utf-8")
+ print(f"[1/2] 530-public -> {out}")
+ for f in ["AndroidLife_530_v1.json", "AndroidLife_530_v1.jsonl"]:
+ _copy(out, BENCH / f, f"data/{f}")
+ for f in ["tasks_530.md", "tasks.md"]:
+ _copy(out, BENCH / f, f"data/{f}")
+ for f in ["multiturn_kb_530.json", "ask_user_facts.json", "hallucination_controls.json"]:
+ _copy(out, BENCH / f, f"data/{f}")
+ for f in ["tasks_vars.local.env", "tasks_vars.local.json"]:
+ _copy(out, BENCH / f, f"vars/{f}")
+ _copy(out, BENCH / "tasks_vars", "vars/tasks_vars")
+ _copy(out, CONFIG / "user_config.example", "config/user_config.example")
+ _copy(out, REPO_ROOT / ".fabricated_test_data.json", "fabrication/fabricated_test_data.json")
+ _copy(out, DOCS / "fabricated-test-data.md", "fabrication/fabricated-test-data.md")
+ (out / "README.md").write_text(README_530, encoding="utf-8")
 
 
 def build_public_sample(out: Path) -> None:
-    print(f"[2/2] public-sample (private) -> {out}")
-    for f in ["AndroidLife_public_v2.json", "AndroidLife_public_v2.jsonl"]:
-        _copy(out, BENCH / f, f"data/{f}")
-    for f in ["public.md", "multiturn_kb_public.json"]:
-        _copy(out, BENCH / f, f"data/{f}")
-    for f in ["public_vars.local.env", "public_vars.example.env"]:
-        _copy(out, BENCH / f, f"vars/{f}")
-    _copy(out, CONFIG / "user.yaml", "config/user.yaml")
-    _copy(out, SEEDS_PUBLIC, "fabrication/seeds")
-    _copy(out, REPO_ROOT / ".fabricated_test_data.json", "fabrication/fabricated_test_data.json")
-    _copy(out, DOCS / "fabricated-test-data.md", "fabrication/fabricated-test-data.md")
-    (out / "README.md").write_text(README_SAMPLE, encoding="utf-8")
+ print(f"[2/2] public-sample (private) -> {out}")
+ for f in ["AndroidLife_public_v2.json", "AndroidLife_public_v2.jsonl"]:
+ _copy(out, BENCH / f, f"data/{f}")
+ for f in ["public.md", "multiturn_kb_public.json"]:
+ _copy(out, BENCH / f, f"data/{f}")
+ for f in ["public_vars.local.env", "public_vars.example.env"]:
+ _copy(out, BENCH / f, f"vars/{f}")
+ _copy(out, CONFIG / "user.yaml", "config/user.yaml")
+ _copy(out, SEEDS_PUBLIC, "fabrication/seeds")
+ _copy(out, REPO_ROOT / ".fabricated_test_data.json", "fabrication/fabricated_test_data.json")
+ _copy(out, DOCS / "fabricated-test-data.md", "fabrication/fabricated-test-data.md")
+ (out / "README.md").write_text(README_SAMPLE, encoding="utf-8")
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Stage two HF release packages (530-public + private public-sample).")
-    ap.add_argument("--out", default=str(DEFAULT_OUT), help="Output staging root.")
-    ap.add_argument("--force", action="store_true", help="Replace an existing staging dir.")
-    args = ap.parse_args()
+ ap = argparse.ArgumentParser(description="Stage two HF release packages (530-public + private public-sample).")
+ ap.add_argument("--out", default=str(DEFAULT_OUT), help="Output staging root.")
+ ap.add_argument("--force", action="store_true", help="Replace an existing staging dir.")
+ args = ap.parse_args()
 
-    out = Path(args.out)
-    if out.exists() and not args.force:
-        print(f"error: {out} already exists (use --force to replace)")
-        return 1
-    if out.exists():
-        shutil.rmtree(out)
-    out.mkdir(parents=True)
+ out = Path(args.out)
+ if out.exists() and not args.force:
+ print(f"error: {out} already exists (use --force to replace)")
+ return 1
+ if out.exists():
+ shutil.rmtree(out)
+ out.mkdir(parents=True)
 
-    build_530_public(out / "530-public")
-    print()
-    build_public_sample(out / "public-sample")
-    (out / "LEGACY_REDIRECT_README.md").write_text(README_LEGACY_REDIRECT, encoding="utf-8")
+ build_530_public(out / "530-public")
+ print()
+ build_public_sample(out / "public-sample")
+ (out / "LEGACY_REDIRECT_README.md").write_text(README_LEGACY_REDIRECT, encoding="utf-8")
 
-    n530 = sum(1 for _ in (out / "530-public").rglob("*") if _.is_file())
-    nps = sum(1 for _ in (out / "public-sample").rglob("*") if _.is_file())
-    print(f"\nstaged 530-public ({n530} files) + public-sample ({nps} files) under {out}")
-    print(f"next: upload 530 -> {HF_530_REPO}")
-    print(f"      upload sample -> {HF_SAMPLE_REPO} (private)")
-    print(f"      redirect card -> {HF_530_LEGACY}")
-    return 0
+ n530 = sum(1 for _ in (out / "530-public").rglob("*") if _.is_file())
+ nps = sum(1 for _ in (out / "public-sample").rglob("*") if _.is_file())
+ print(f"\nstaged 530-public ({n530} files) + public-sample ({nps} files) under {out}")
+ print(f"next: upload 530 -> {HF_530_REPO}")
+ print(f" upload sample -> {HF_SAMPLE_REPO} (private)")
+ print(f" redirect card -> {HF_530_LEGACY}")
+ return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+ sys.exit(main())

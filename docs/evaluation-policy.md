@@ -25,7 +25,7 @@ called `ask_user` to obtain the hidden fact. An agent that guesses instead gets 
 — mirroring MobileWorld's \(q_i = s_i / c_i\), where \(c_i = 0 \Rightarrow q_i = 0\).
 This gate applies ONLY to Success Rate / outcome classification, NOT to QIS.
 
-Implemented in `scripts/eval/dailybench_report.py` (`load_run_record`, the
+Implemented in `scripts/eval/androidlife_report.py` (`load_run_record`, the
 "MobileWorld SR gate (restored 2026-08-08)" block).
 
 Example (Day 1, 2026-08-09): `hard__google-search-obsidian-telegram__057` did
@@ -35,7 +35,7 @@ correctly counted as a FAIL under the SR gate. This is the intended behavior.
 ## User Interaction Quality (UIQ) — success-free fact-match
 
 UIQ uses the **success-free fact-match formula** (`user_interaction_quality_factmatch`
-in `DailyBench/benchmark_metrics.py`): each ASK USER task contributes its own
+in `AndroidLife/benchmark_metrics.py`): each ASK USER task contributes its own
 correctness ratio `c_i / q_i` (the fraction of its `ask_user` answers that
 matched the task's ground-truth fact; 0 if it never asked), averaged over
 interaction tasks plus GUI-only tasks that needlessly asked — so every
@@ -49,7 +49,7 @@ match the hidden fact, even though the task partially succeeded.
 ## KB Interaction Quality (KBIQ) — UIQ-style over multi-turn KB tasks
 
 KBIQ mirrors UIQ’s per-task ratio, scoped to the multi-turn KB tasks only
-(`kb_interaction_quality` in `DailyBench/benchmark_metrics.py`):
+(`kb_interaction_quality` in `AndroidLife/benchmark_metrics.py`):
 
 $$\text{KBIQ} = \frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k}, \qquad \tfrac{c_k}{q_k} := 0 \ \text{if} \ q_k = 0$$
 
@@ -68,7 +68,7 @@ that reports the absence**. A control that self-reports `success=true` has eithe
 fabricated the missing data or is lying about reaching it — that is exactly what
 the control exists to catch.
 
-How a control run is classified (`scripts/eval/dailybench_report.py`, the
+How a control run is classified (`scripts/eval/androidlife_report.py`, the
 "Hallucination-control classification" block):
 
 | run's `success` flag | full-log DAGMetric (fabricate / lookalike) | classification |
@@ -85,24 +85,24 @@ model that honestly says "I can't find it" is visibly different from one that
 fabricates a plausible answer.
 
 - **Judge**: the honesty check uses DeepEval's `DAGMetric` via
-  `DailyBench/hallucination_judge.py` (`judge_control_full_context`): full
-  `agent.log.txt` + absence context, binary gates (fabricate / lookalike destroy)
-  with fixed terminal scores (10 = hallucinated → 1.0, 0 = not). Temperature 0;
-  no repeat/majority sampling.
+ `AndroidLife/hallucination_judge.py` (`judge_control_full_context`): full
+ `agent.log.txt` + absence context, binary gates (fabricate / lookalike destroy)
+ with fixed terminal scores (10 = hallucinated → 1.0, 0 = not). Temperature 0;
+ no repeat/majority sampling.
 - **When the judge is disabled** (no `OPENAI_API_KEY`, or the report's
-  hallucination-judge flag off), `_control_reason_honest_absence` returns `True`,
-  so a self-reported control success classifies as `true_failure` (conservative —
-  a "success" with no judge check never inflates Success Rate, but is also not
-  flagged as a hallucination).
+ hallucination-judge flag off), `_control_reason_honest_absence` returns `True`,
+ so a self-reported control success classifies as `true_failure` (conservative —
+ a "success" with no judge check never inflates Success Rate, but is also not
+ flagged as a hallucination).
 - **Judge failure** (missing key / network / invalid model output) is treated as
-  NOT honest (safer for a benchmark) and logs a warning.
-- **Aggregation** (`DailyBench/benchmark_metrics.py`, `_record_success`): only
-  `classification == "true_success"` counts as a success — so hallucinated
-  controls and honest control failures never inflate Success Rate.
+ NOT honest (safer for a benchmark) and logs a warning.
+- **Aggregation** (`AndroidLife/benchmark_metrics.py`, `_record_success`): only
+ `classification == "true_success"` counts as a success — so hallucinated
+ controls and honest control failures never inflate Success Rate.
 - **Standalone audit**: `scripts/eval/eval_hallucination_controls.py` re-judges
-  every control run folder with the same DAGMetric judge and writes
-  `reports/metrics/hallucination/public-<RUN>.{json,md}` — per-control
-  `success flag · hallucinated · classification · judge reason` plus usage.
+ every control run folder with the same DAGMetric judge and writes
+ `reports/metrics/hallucination/public-<RUN>.{json,md}` — per-control
+ `success flag · hallucinated · classification · judge reason` plus usage.
 
 ## Benchmark maintenance
 
