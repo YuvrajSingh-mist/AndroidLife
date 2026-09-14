@@ -12,7 +12,7 @@
 | Single-task CLI | `androidlife_runner.py` / `uv run androidlife-runner` | `dailybench_runner.py` |
 | Report script | `scripts/eval/androidlife_report.py` | `scripts/eval/dailybench_report.py` |
 | Serial env | `ANDROIDLIFE_SERIAL` | `DAILYBENCH_SERIAL` (fallback) |
-| Dataset dir | `benchmarks/androidlife-600/` | symlink `benchmarks/dailyBench-600` → same |
+| Dataset dir | `benchmarks/androidlife-600/` | — (legacy `dailyBench-600` symlink removed) |
 | Corpus JSON | `AndroidLife_530_v1.json` / `AndroidLife_public_v2.json` | — |
 | Phoenix projects | `androidlife` / `androidlife-dayN` / `androidlife-public` | old `dailybench-*` still accepted for DB derive |
 | HF 530 corpus | [`YuvrajSingh9886/androidlife-530`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530) | legacy [`drainbench-530`](https://huggingface.co/datasets/YuvrajSingh9886/drainbench-530) redirect |
