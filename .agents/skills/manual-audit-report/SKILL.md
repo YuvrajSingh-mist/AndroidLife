@@ -1,6 +1,6 @@
 ---
 name: manual-audit-report
-description: 'Deep manual audit + full report generation for a finished DrainBench run (the "review process" drill). Covers: locating the run, completeness check (orphaned tasks), official metrics report, hallucination-control eval, organize-public, the DEEP per-trajectory manual audit with ADB on-device verification, KBIQ, and the narrative run report. USE WHEN: audit, manual audit, review the run, check the run, grade the run, generate/report a run "like the last run", per-task verdicts PASS/FAIL/HALLUCINATION, hallucination eval, KBIQ, turn-based audit, narrative run report, why did X pass/fail. DO NOT USE FOR: resetting/seeding the phone before a run (use reset-phone), launching inference (use androidlife_tasks.py), live single-task debugging, editing task prompts/data (use task-authoring).'
+description: 'Deep manual audit + full report generation for a finished AndroidLife run (the "review process" drill). Covers: locating the run, completeness check (orphaned tasks), official metrics report, hallucination-control eval, organize-public, the DEEP per-trajectory manual audit with ADB on-device verification, KBIQ, and the narrative run report. USE WHEN: audit, manual audit, review the run, check the run, grade the run, generate/report a run "like the last run", per-task verdicts PASS/FAIL/HALLUCINATION, hallucination eval, KBIQ, turn-based audit, narrative run report, why did X pass/fail. DO NOT USE FOR: resetting/seeding the phone before a run (use reset-phone), launching inference (use androidlife_tasks.py), live single-task debugging, editing task prompts/data (use task-authoring).'
 ---
 
 # Manual audit + report generation for a finished run
@@ -40,7 +40,7 @@ for d in "$R"/day*/; do for t in "$d"*/; do [ -f "$t/meta.json" ] || continue; \
  [ -n "$x" ] && echo "DONE $(basename $t) exit=$x" || echo "ORPHAN $(basename $t)"; done; done | sort
 ```
 - Decide with the user whether to (a) audit only completed, (b) resume the orphans first
- (see resume command in `/memories/drainbench-vision-models.md`), or (c) audit as-is and
+ (see resume command in `/memories/androidlife-vision-models.md`), or (c) audit as-is and
  flag the orphans. Default for a dead run: audit the finalized tasks, list orphans as
  INTERRUPTED (not graded).
 

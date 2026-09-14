@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reset the DrainBench benchmark phone to its pre-run baseline (non-rooted)."""
+"""Reset the AndroidLife benchmark phone to its pre-run baseline (non-rooted)."""
 
 from __future__ import annotations
 

@@ -290,7 +290,7 @@ else
 fi
 
 if [[ ! -f "$REPO_DIR/pyproject.toml" ]]; then
- fail "pyproject.toml not found at $REPO_DIR - run this script from inside the AndroidLife / DrainBench300 checkout"
+ fail "pyproject.toml not found at $REPO_DIR - run this script from inside the AndroidLife checkout"
 else
  pass "running from repo root ($REPO_DIR)"
 fi
