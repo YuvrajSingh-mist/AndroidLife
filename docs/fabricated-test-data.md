@@ -38,10 +38,10 @@ of fictional family members, friends, and vendors:
 
 - Family/people: `Maa`, `Dad`, `Dadima`, `Nanimaa`, `Mousi Maa`, and others
 - Primary message recipient placeholder: `[contact]` = **Yuvraj** (a fictional
-  contact, referred to in some task texts as "Yuvraj Airtel" / "Yuvraj Singh")
+ contact, referred to in some task texts as "Yuvraj Airtel" / "Yuvraj Singh")
 - A second fictional contact, **"Yuvraj Singh Jio"** (used in group-chat tasks)
 - Service providers: `Harish Bakery`, `Himanshu CA`, `Harvinder`, and other
-  H-prefix contacts used by the birthday tasks
+ H-prefix contacts used by the birthday tasks
 - A fictional store/sender: `Myntra` (used for Gmail and transaction-alert tasks)
 
 > All names above are **fictional test personas**, not real people. Phone numbers
@@ -53,36 +53,36 @@ of fictional family members, friends, and vendors:
 
 ### 3.1 Contacts
 - A contact database fixture (~hundreds of entries) reflecting the persona's
-  family, friends, and vendors.
+ family, friends, and vendors.
 - Fictional contact **Yuvraj** (number redacted) — the default `[contact]`.
 - **Yuvraj Airtel** also has a fabricated **email address** (`yuvraj.mist@gmail.com`,
-  redacted) saved on the contact, so the Gmail "email the event photo to them if so"
-  branch of `hard__photos-gmail-obsidian__012` can actually trigger. Seeded by
-  `scripts/seeding/seed_data.py --day 2` and checked by `scripts/seeding/verify_day1_seeds.py --day 2`.
+ redacted) saved on the contact, so the Gmail "email the event photo to them if so"
+ branch of `hard__photos-gmail-obsidian__012` can actually trigger. Seeded by
+ `scripts/seeding/seed_data.py --day 2` and checked by `scripts/seeding/verify_day1_seeds.py --day 2`.
 - Fictional contact **Yuvraj Singh Jio** (number redacted).
 - **Birthday / anniversary records** on H-prefix contacts, used by the
-  "birthdays this month" task:
-  - Anniversary-type records (August): e.g. Harshit (Aug 5), Hariom (Aug 15),
-    Hemant (Aug 20).
-  - Genuine **birthday-type** records for H-contacts in August (Aug 4–7) are the
-    intended target of that task and are added via the Contacts UI by the
-    operator (see [Limitations](#6-known-limitations--honest-caveats)).
+ "birthdays this month" task:
+ - Anniversary-type records (August): e.g. Harshit (Aug 5), Hariom (Aug 15),
+ Hemant (Aug 20).
+ - Genuine **birthday-type** records for H-contacts in August (Aug 4–7) are the
+ intended target of that task and are added via the Contacts UI by the
+ operator (see [Limitations](#6-known-limitations--honest-caveats)).
 - **Description (note) fields on the Yuvraj contacts** (added 2026-08-06 via ADB
-  `content insert` into `content://com.android.contacts/data`, mimetype
-  `vnd.android.cursor.item/note`), so the `[Contacts+Notes]` "suggest birthday
-  presents based on their descriptions" branch of `medium__contacts__002` can
-  actually answer. Every Yuvraj* contact with a **birthday this month (August)**
-  carries a short fabricated description:
-  - `yuvraj aneja` (bday Aug 6): "Likes football and a huge wine collection fan / 2nd best friend / Went to school together"
-  - `Yuvraj Singh Jio` (bday Aug 20): "Works at Jio telecom, loves cricket and biryani, big gadget geek"
-  - `Yuvraj Singh` (bday Aug 20): "College friend, passionate about photography and bikes"
+ `content insert` into `content://com.android.contacts/data`, mimetype
+ `vnd.android.cursor.item/note`), so the `[Contacts+Notes]` "suggest birthday
+ presents based on their descriptions" branch of `medium__contacts__002` can
+ actually answer. Every Yuvraj* contact with a **birthday this month (August)**
+ carries a short fabricated description:
+ - `yuvraj aneja` (bday Aug 6): "Likes football and a huge wine collection fan / 2nd best friend / Went to school together"
+ - `Yuvraj Singh Jio` (bday Aug 20): "Works at Jio telecom, loves cricket and biryani, big gadget geek"
+ - `Yuvraj Singh` (bday Aug 20): "College friend, passionate about photography and bikes"
 
 ### 3.2 Calendar
 - **Shareholder meetings** this week, prefixed with the word `shareholder`
-  (required by the "reschedule my shareholder meetings" task):
-  - `shareholder AlphaCorp Q2 Review`
-  - `shareholder BetaTech Strategy`
-  - `shareholder GammaFund Governance`
+ (required by the "reschedule my shareholder meetings" task):
+ - `shareholder AlphaCorp Q2 Review`
+ - `shareholder BetaTech Strategy`
+ - `shareholder GammaFund Governance`
 - Placeholder office/holiday events for general calendar tasks.
 - Contact **anniversary dates** surface as calendar events.
 
@@ -97,41 +97,41 @@ of fictional family members, friends, and vendors:
 
 ### 3.4 Messages / SMS
 - Fabricated **bank/UPI transaction alerts** (a bank the persona uses), dated
-  early August, with fixed amounts — for the "recent card payments" task and the
-  bank-unread-count task.
+ early August, with fixed amounts — for the "recent card payments" task and the
+ bank-unread-count task.
 - Fabricated **store / online-service transaction alerts** (payments resembling
-  PayPal, Kindle, OpenRouter, and UPI) — for the "sum up this month's purchases"
-  task.
+ PayPal, Kindle, OpenRouter, and UPI) — for the "sum up this month's purchases"
+ task.
 
 ### 3.5 Gmail
 - Emails from the fictional sender **Myntra** — for the "star the most recent
-  email from [sender]" task.
+ email from [sender]" task.
 - Emails matching "recent important alerts" — for the "Recent Alerts" label task.
 
 ### 3.6 Google Drive (server-side, operator action)
 - **Files shared by the persona this month** cannot be fabricated on the device
-  (sharing is a server-side Google operation). The operator uploads the prepared
-  documents from §3.3 and shares them with the task's recipient address. This is
-  the one piece of fabricated data that lives server-side, not on-device.
+ (sharing is a server-side Google operation). The operator uploads the prepared
+ documents from §3.3 and shares them with the task's recipient address. This is
+ the one piece of fabricated data that lives server-side, not on-device.
 
 ### 3.7 Photos
 - **6 food images** (royalty-free stock photos, loremflickr `food` tag) for the
-  "food photos in the last 2 weeks" task:
-  - 3 at 1280×960 (higher resolution), 3 at 640×480 (lower resolution)
-  - EXIF `DateTimeOriginal` + file mtime set to **Jul 20 – Aug 2, 2026**
-    (spread across the 2-week window)
-  - Pushed to `/sdcard/DCIM/Camera/`, indexed via the media scanner, and verified
-    present in the Photos library with correct capture dates
+ "food photos in the last 2 weeks" task:
+ - 3 at 1280×960 (higher resolution), 3 at 640×480 (lower resolution)
+ - EXIF `DateTimeOriginal` + file mtime set to **Jul 20 – Aug 2, 2026**
+ (spread across the 2-week window)
+ - Pushed to `/sdcard/DCIM/Camera/`, indexed via the media scanner, and verified
+ present in the Photos library with correct capture dates
 - **Event-photo caption (operator step):** for `hard__photos-gmail-obsidian__012`,
-  one event album photo has a caption mentioning **Yuvraj Airtel** (the operator adds
-  it in Google Photos — captions are app-private and not ADB-seedable), so the
-  "email it to them if so" branch is reachable.
+ one event album photo has a caption mentioning **Yuvraj Airtel** (the operator adds
+ it in Google Photos — captions are app-private and not ADB-seedable), so the
+ "email it to them if so" branch is reachable.
 - **Invoice screenshots: NOT seeded (known gap).** The "Invoices album" task targets
-  invoice screenshots, but none exist on the device (Screenshots contains only a Jul 13
-  screenshot plus screen-record videos). The agent's output for that task is a documented
-  quality failure — not fabricated data.
+ invoice screenshots, but none exist on the device (Screenshots contains only a Jul 13
+ screenshot plus screen-record videos). The agent's output for that task is a documented
+ quality failure — not fabricated data.
 - **Pre-existing 2024-era photos** used by the lock-screen collage task (sunset /
-  beach / portrait subjects already present on the device).
+ beach / portrait subjects already present on the device).
 - Pre-existing WhatsApp images (late July) already on the device.
 
 #### Golden trajectories for the Google Photos tasks (Day 2)
@@ -144,19 +144,19 @@ pizza lesson: model saved random screenshots and called them "pizza") is caught 
 comparing the trajectory against the manifest:
 
 - **easy__google-photos__001** (search [date range] = last weekend): search by date,
-  verify the shown photos are actually dated in the window, present them. Do NOT
-  substitute unrelated recent photos.
+ verify the shown photos are actually dated in the window, present them. Do NOT
+ substitute unrelated recent photos.
 - **medium__google-photos__001** (HALLUCINATION CONTROL — [trip name] = Bhubaneswar
-  trip, [album name] = Memories 2021): no pre-existing 10-photo "Bhubaneswar trip"
-  album exists in Google Photos (data genuinely absent). Correct behavior = **honest
-  failure**: report no such album exists; do NOT fabricate an album or photos. The old
-  Day-2 run's false pass (agent invented a "BHUBANESWAR TRIP" album of 6 non-trip
-  favorites) is exactly what this control catches.
+ trip, [album name] = Memories 2021): no pre-existing 10-photo "Bhubaneswar trip"
+ album exists in Google Photos (data genuinely absent). Correct behavior = **honest
+ failure**: report no such album exists; do NOT fabricate an album or photos. The old
+ Day-2 run's false pass (agent invented a "BHUBANESWAR TRIP" album of 6 non-trip
+ favorites) is exactly what this control catches.
 - **hard__photos-gmail-obsidian__012** (ASK USER — event = Bhubaneswar trip): MUST call
-  `ask_user` to learn which event (MobileWorld SR gate); open the event album; **read the
-  photo's caption** and check whether `Yuvraj Airtel` is actually mentioned; if yes → email
-  the photo to them (the fabricated saved email makes this reachable) + record the send in
-  an Obsidian note; otherwise → save to a general album; star the photo either way.
+ `ask_user` to learn which event (MobileWorld SR gate); open the event album; **read the
+ photo's caption** and check whether `Yuvraj Airtel` is actually mentioned; if yes → email
+ the photo to them (the fabricated saved email makes this reachable) + record the send in
+ an Obsidian note; otherwise → save to a general album; star the photo either way.
 
 > **Why this matters:** Day-1 `medium__gallery__001` reported `success=true` while the album
 > held random user screenshots — the seeded "pizza" files were placeholder rectangles Google
@@ -167,24 +167,24 @@ comparing the trajectory against the manifest:
 
 ### 3.8 Call log
 - **Nothing fabricated.** Call logs on a non-rooted device cannot be injected
-  programmatically. The "unsaved number from call logs today" task requires the
-  operator to make a real outgoing call to an unsaved number (see
-  [Limitations](#6-known-limitations--honest-caveats)).
+ programmatically. The "unsaved number from call logs today" task requires the
+ operator to make a real outgoing call to an unsaved number (see
+ [Limitations](#6-known-limitations--honest-caveats)).
 
 ### 3.9 Music + Obsidian bedtime (sleep-timer task)
 For `hard__music-obsidian__077` (Day 3, DETERMINISTIC — "search YouTube Music for
-  my favorite music type, download the highly-liked video of it, then set a YouTube
-  Music sleep timer so the song plays until the bedtime noted in Obsidian, shorten
-  it if it would run past bedtime"):
+ my favorite music type, download the highly-liked video of it, then set a YouTube
+ Music sleep timer so the song plays until the bedtime noted in Obsidian, shorten
+ it if it would run past bedtime"):
 - **No fabricated audio.** The music side is deliberately **real app + web state**:
-  the agent must search YouTube Music for the `[music type]` (`Raining Night ASMR`,
-  pinned in `tasks_vars.local.env`) and download the highly-liked video of it
-  (offline download requires YT Music Premium + sign-in; otherwise it plays it). No
-  synthetic mp3 is seeded — the earlier fabricated brown-noise track was removed
-  (2026-08-06) so the search+download step is genuinely exercised.
+ the agent must search YouTube Music for the `[music type]` (`Raining Night ASMR`,
+ pinned in `tasks_vars.local.env`) and download the highly-liked video of it
+ (offline download requires YT Music Premium + sign-in; otherwise it plays it). No
+ synthetic mp3 is seeded — the earlier fabricated brown-noise track was removed
+ (2026-08-06) so the search+download step is genuinely exercised.
 - **Obsidian bedtime note** `Bedtime.md` created in the vault (`/sdcard/Obsidian/
-  Papers vault oneplus /Bedtime.md`) containing `2026-08-06: 10:30 PM`, so the
-  agent has a concrete bedtime to compare the sleep timer against.
+ Papers vault oneplus /Bedtime.md`) containing `2026-08-06: 10:30 PM`, so the
+ agent has a concrete bedtime to compare the sleep timer against.
 
 ---
 
@@ -232,13 +232,13 @@ These are benchmark parameters, not real-world data.
 ### Per-task prompt override (scoped)
 
 - `easy__contacts__001` (rename a contact to include a middle initial) targets a **different
-  real contact present on the device: Akash Kumar** (a genuine contact with a phone number),
-  NOT the persona contact. This is implemented as a per-task override in the generated dataset
-  (`benchmarks/androidlife-600/AndroidLife_public_v2.json` + `.jsonl`, both gitignored): the
-  prompt hardcodes "change Akash Kumar's name to include their middle initial", and only the
-  `middle initial` placeholder remains (`Kumar Sahoo`). The change is **scoped to this task**
-  so the shared `contact` var used by messaging tasks is unaffected. The override is **baked
-  into `scripts/data/export_public_dataset.py`**, so it survives every dataset regeneration.
+ real contact present on the device: Akash Kumar** (a genuine contact with a phone number),
+ NOT the persona contact. This is implemented as a per-task override in the generated dataset
+ (`benchmarks/androidlife-600/AndroidLife_public_v2.json` + `.jsonl`, both gitignored): the
+ prompt hardcodes "change Akash Kumar's name to include their middle initial", and only the
+ `middle initial` placeholder remains (`Kumar Sahoo`). The change is **scoped to this task**
+ so the shared `contact` var used by messaging tasks is unaffected. The override is **baked
+ into `scripts/data/export_public_dataset.py`**, so it survives every dataset regeneration.
 
 ### Run configuration (what a reproducible run looks like)
 
@@ -246,435 +246,435 @@ Public runs are launched as a full 50-task batch (`--all`) with the following in
 must be recorded alongside any results:
 
 ```bash
-.venv/bin/python dailybench_tasks.py \
-  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
-  --all --serial <serial> \
-  --llm-upstream-base https://openrouter.ai/api \
-  --model qwen/qwen3.6-plus --temperature 0.0 --steps 200 \
-  --save-trajectory action \
-  --tracing --phoenix-url http://localhost:6006 --phoenix-project fullpublic-20260802 \
-  --var "sender=Myntra" --var "place=Bhubaneswar Airport" \
-  --var "contact=Yuvraj Singh" --var "middle initial=Kumar Sahoo" \
-  --var "email-id=hafari4025@aghism.com" --var "artist=The Weeknd"
+.venv/bin/python androidlife_tasks.py \
+ --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+ --all --serial <serial> \
+ --llm-upstream-base https://openrouter.ai/api \
+ --model qwen/qwen3.6-plus --temperature 0.0 --steps 200 \
+ --save-trajectory action \
+ --tracing --phoenix-url http://localhost:6006 --phoenix-project fullpublic-20260802 \
+ --var "sender=Myntra" --var "place=Bhubaneswar Airport" \
+ --var "contact=Yuvraj Singh" --var "middle initial=Kumar Sahoo" \
+ --var "email-id=hafari4025@aghism.com" --var "artist=The Weeknd"
 ```
 
 Harness behavior that affects results and is part of the reproducible spec:
 - **Step budget + wall-clock cap** — every bucket gets a 40-minute (2400s) wall-clock timeout
-  (`--task-timeout 2400`); `--steps 60` is the per-task step cap.
+ (`--task-timeout 2400`); `--steps 60` is the per-task step cap.
 - **`success=true` only when the deliverable is actually completed** — a "not found / couldn't
-  do it" outcome now returns `false` for action tasks (genuine check/report tasks keep the
-  zero-answer exception).
+ do it" outcome now returns `false` for action tasks (genuine check/report tasks keep the
+ zero-answer exception).
 - **Screen recording off by default** (`--screen-record` opt-in); sampling interval `1.0s`.
 - **Close-app / floating-window (PiP) rule** in the agent prompt — the agent must stop media
-  and dismiss any floating window before finishing.
+ and dismiss any floating window before finishing.
 - **Per-app battery tracking** (`app_battery` in `run_metrics.json`) and **simulated-user
-  token tracking** (ask_user LLM spans in Phoenix) are recorded per run.
+ token tracking** (ask_user LLM spans in Phoenix) are recorded per run.
 
 ---
 
 ## 6. Known limitations & honest caveats
 
 - **Photo categorization is on-device & asynchronous.** Google Photos tags
-  images into the `food` category using on-device ML that runs in the background.
-  The images are real food photos and the category pipeline is active, but
-  tagging newly-added images can lag (minutes to hours). If the ML has not tagged
-  them by run time, the agent may still find them via the recent-photos grid
-  (dates are correct).
+ images into the `food` category using on-device ML that runs in the background.
+ The images are real food photos and the category pipeline is active, but
+ tagging newly-added images can lag (minutes to hours). If the ML has not tagged
+ them by run time, the agent may still find them via the recent-photos grid
+ (dates are correct).
 - **Call-log seeding is infeasible on a non-rooted device.** The "unsaved number
-  today" task depends on an operator making a real call to an unsaved number on
-  run day.
+ today" task depends on an operator making a real call to an unsaved number on
+ run day.
 - **Drive shared files require a real secondary account.** On-device fabrication
-  is impossible; sharing is done by the operator from a real Google account.
+ is impossible; sharing is done by the operator from a real Google account.
 - **UI-based seeding is slow but reliable.** `content insert` is blocked on the
-  non-rooted device, and VCF/ICS imports do not complete, so contact/calendar
-  data is entered through the apps' own UIs.
+ non-rooted device, and VCF/ICS imports do not complete, so contact/calendar
+ data is entered through the apps' own UIs.
 
 ---
 
 ## 7. Privacy & Redaction
 
 - **No real phone numbers** appear anywhere in this document or the released
-  benchmark data — all are redacted or fictional.
+ benchmark data — all are redacted or fictional.
 - **No personal email addresses** are exposed; the one client-style address used
-  in the public task is a fabricated throwaway.
+ in the public task is a fabricated throwaway.
 - All personas (family, friends, vendors, senders) are **fictional**.
 - The benchmark is designed so that no real-world identity or account is
-  reachable from the released tasks.
+ reachable from the released tasks.
 
 ---
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
 - **2026-08-20 — Hard-task ordering within each day de-clustered (ASK USER ↔ DETERMINISTIC interleaved).**
-  - Previously the hard (ASK USER SINGLE / ASK USER - MULTI / DETERMINISTIC) tasks within each day were grouped by type (e.g. public Day 1 ran SINGLE, DET, MULTI, MULTI, DET, DET; Day 3 DET+DET+DET; 530 Day 12 had 4 MULTI in a row). Now each day's hard blocks are round-robin interleaved across kinds so same-type tasks are not adjacent **where the kind mix allows it** — public now has **0 same-type runs** across all days (e.g. Day 1 = DET, MULTI, SINGLE, DET, MULTI, DET), and in the 530 corpus the only remaining same-type runs are days where *every* hard task is one kind (e.g. Day 12 = 4 MULTI, Day 1/5 = 3 SINGLE), which cannot be interleaved by definition. This reflects the intended day-to-day user-query mix rather than an artificial by-type grouping.
-  - **Ordering only — task identity untouched.** No task added/removed/renamed; the header numbers are renumbered sequentially per day and are display-only (dataset `task_number_within_app` still derives from each id's trailing number). Datasets regenerated and verified: **public exactly 68 tasks, 530 corpus exactly 530 tasks**, 0 run-label collisions; `website/assets/data/site_data.json` regenerated (530 tasks / 72 hard / 49 ask-user / 23 deterministic, unchanged).
+ - Previously the hard (ASK USER SINGLE / ASK USER - MULTI / DETERMINISTIC) tasks within each day were grouped by type (e.g. public Day 1 ran SINGLE, DET, MULTI, MULTI, DET, DET; Day 3 DET+DET+DET; 530 Day 12 had 4 MULTI in a row). Now each day's hard blocks are round-robin interleaved across kinds so same-type tasks are not adjacent **where the kind mix allows it** — public now has **0 same-type runs** across all days (e.g. Day 1 = DET, MULTI, SINGLE, DET, MULTI, DET), and in the 530 corpus the only remaining same-type runs are days where *every* hard task is one kind (e.g. Day 12 = 4 MULTI, Day 1/5 = 3 SINGLE), which cannot be interleaved by definition. This reflects the intended day-to-day user-query mix rather than an artificial by-type grouping.
+ - **Ordering only — task identity untouched.** No task added/removed/renamed; the header numbers are renumbered sequentially per day and are display-only (dataset `task_number_within_app` still derives from each id's trailing number). Datasets regenerated and verified: **public exactly 68 tasks, 530 corpus exactly 530 tasks**, 0 run-label collisions; `website/assets/data/site_data.json` regenerated (530 tasks / 72 hard / 49 ask-user / 23 deterministic, unchanged).
 - **2026-08-20 — Zomato merged into the swiggy KB (not a separate task) + telegram-calendar redesigned multi-turn + KBIQ metric.**
-  - **Zomato data merged into `hard__swiggy__005`'s KB profile** (both `multiturn_kb_public.json` + `multiturn_kb_530.json`): the profile now carries a `zomato` section alongside the existing Swiggy orders, so the same multi-turn task forces the agent to **ask which platform** before reordering. Zomato was installed on the device 2026-08-20 17:34 (`com.application.zomato` v19.8.3) and GUI-verified: logged in as **Yuvraj / rajceo2031@gmail.com** (Gold member, ₹16,577 saved). The `zomato` section is grounded in the **real on-device order history** scraped from the Zomato "Your Orders" screen: 10 orders (Downtown Delight Murgh Dum Biryani ₹367.23 on **20 Aug 1:09 PM**, Badami Sweet ₹422.04, Big Cup Cafe ₹529.98, Jugaad Jn ₹264.67, Downtown Delight Murgh Changezi ₹468.87, Downtown Delight Dum Biryani ₹367.23, Burger King ₹372.48, Asia Seven ₹405.03, Jugaad Jn ₹303.18 payment-failed, Downtown Delight Murgh Hyderabadi ₹486.72). **No separate Zomato task** was added (the initial `hard__zomato__001` experiment was reverted); datasets stay **public 68 / 530 exactly 530**.
-  - **`hard__swiggy__005`'s `last_week_craving` removed** (it leaked the reorder answer — the oracle now infers the recent order from the dated orders lists).
-  - **`hard__telegram-calendar__016` redesigned into a genuinely multi-turn task.** The KB now holds the agreed **date, time, venue, and reminder preference** (candidates Aug 20 Thu / Aug 22 Sat → **Sat Aug 22 7:00 PM at The Terrace, Patia**, reminder "1 day before at 8 PM"); the prompt asks the agent to work out the whole plan it lost track of, so it must ask several clarifying questions instead of one. Correct target → `telegram::forever-21-meetup-sat-7pm`. Applied to `public.md` + `tasks_530.md` + both KB files; datasets regenerated.
-  - **KBIQ (KB Interaction Quality) metric added** to `dailybench_report.py` + `benchmark_metrics.py`: the fraction of KB/multi-turn ask_user queries answered right per the KB profile, judged manually post-run via `<run>/kb_audit.json`. New helper `scripts/eval/audit_kb_queries.py` (list / interactive modes). `--multiturn-kb` flag selects the KB sidecar (auto-derived from `--source`); `multiturn_kb_path()` added to `task_dataset.py`.
-  - **`export_530_dataset.py` fix:** hard tasks with an explicit `tid_comment` now derive `within_app` from the id's trailing number (matching the easy/med branch) instead of the section header number — the header renumbering above had collided `hard__swiggy__005`/`007` (both → 7). Verified 0 run-label collisions across 530 tasks.
+ - **Zomato data merged into `hard__swiggy__005`'s KB profile** (both `multiturn_kb_public.json` + `multiturn_kb_530.json`): the profile now carries a `zomato` section alongside the existing Swiggy orders, so the same multi-turn task forces the agent to **ask which platform** before reordering. Zomato was installed on the device 2026-08-20 17:34 (`com.application.zomato` v19.8.3) and GUI-verified: logged in as **Yuvraj / rajceo2031@gmail.com** (Gold member, ₹16,577 saved). The `zomato` section is grounded in the **real on-device order history** scraped from the Zomato "Your Orders" screen: 10 orders (Downtown Delight Murgh Dum Biryani ₹367.23 on **20 Aug 1:09 PM**, Badami Sweet ₹422.04, Big Cup Cafe ₹529.98, Jugaad Jn ₹264.67, Downtown Delight Murgh Changezi ₹468.87, Downtown Delight Dum Biryani ₹367.23, Burger King ₹372.48, Asia Seven ₹405.03, Jugaad Jn ₹303.18 payment-failed, Downtown Delight Murgh Hyderabadi ₹486.72). **No separate Zomato task** was added (the initial `hard__zomato__001` experiment was reverted); datasets stay **public 68 / 530 exactly 530**.
+ - **`hard__swiggy__005`'s `last_week_craving` removed** (it leaked the reorder answer — the oracle now infers the recent order from the dated orders lists).
+ - **`hard__telegram-calendar__016` redesigned into a genuinely multi-turn task.** The KB now holds the agreed **date, time, venue, and reminder preference** (candidates Aug 20 Thu / Aug 22 Sat → **Sat Aug 22 7:00 PM at The Terrace, Patia**, reminder "1 day before at 8 PM"); the prompt asks the agent to work out the whole plan it lost track of, so it must ask several clarifying questions instead of one. Correct target → `telegram::forever-21-meetup-sat-7pm`. Applied to `public.md` + `tasks_530.md` + both KB files; datasets regenerated.
+ - **KBIQ (KB Interaction Quality) metric added** to `androidlife_report.py` + `benchmark_metrics.py`: the fraction of KB/multi-turn ask_user queries answered right per the KB profile, judged manually post-run via `<run>/kb_audit.json`. New helper `scripts/eval/audit_kb_queries.py` (list / interactive modes). `--multiturn-kb` flag selects the KB sidecar (auto-derived from `--source`); `multiturn_kb_path()` added to `task_dataset.py`.
+ - **`export_530_dataset.py` fix:** hard tasks with an explicit `tid_comment` now derive `within_app` from the id's trailing number (matching the easy/med branch) instead of the section header number — the header renumbering above had collided `hard__swiggy__005`/`007` (both → 7). Verified 0 run-label collisions across 530 tasks.
 - **2026-08-19 — Public Obsidian notes enriched into realistic, text-heavy docs.**
-  - The 8 file-reading notes the tasks read were regenerated from terse 3-6 line stubs into fuller, realistic Obsidian documents (context headers, related sections, notes) so the answer value is buried in realistic content rather than being the only text. Answer values preserved **exactly**: `Budget Deadline.md` (finalised by **2026-08-10**, Last reviewed 2026-07-10), `Exam Scores.md` (82/100@30%, 91/100@50%, 74/100@20%, threshold 60), `Monthly Budget.md` (income ₹25,000; total ₹20,000), `Shared Bill.md` (9,000 INR; units 120/80/60/40), `Stock Watch.md` (threshold 1,400; last 1,320.50 on 2026-08-13), `Recipe.md` (Oven 375 F; Prep 20 / Bake 50 / Rest 10), `Food Favourites.md` (keeps `## Pancakes`/`## Pizza`/`## Veggie Bowl`), `Contact Updates.md` (00030 30301/30302). `Bedtime.md` left minimal by design (sleep-timer target).
-  - Committed generator: `scripts/seeding/enrich_public_notes.py` (writes `assets/seeds/public/notes/` + pushes to the vault + media-scans). `reset_phone.py`'s `restore_file_contents` for `Food Favourites.md`/`Budget Deadline.md` updated to the enriched baseline (verify needles unchanged and still pass).
-  - **OnePlus Notes app `Budget Deadline` note also enriched (via UI).** `hard__drive-notes-telegram__010` (apps: Drive+Notes+Telegram) reads the 'Budget Deadline' note in the **OnePlus Notes app** (`com.oneplus.note`, app-private `needs_ui` seed), which held only "The budget deadline is 2026-08-10" plus blank lines. Enriched through the app UI to the same realistic content (deadline **2026-08-10** + "Last reviewed: 2026-07-10" + todo list) so it is no longer near-empty. App-private → no file seed; re-applied via UI if ever reset.
+ - The 8 file-reading notes the tasks read were regenerated from terse 3-6 line stubs into fuller, realistic Obsidian documents (context headers, related sections, notes) so the answer value is buried in realistic content rather than being the only text. Answer values preserved **exactly**: `Budget Deadline.md` (finalised by **2026-08-10**, Last reviewed 2026-07-10), `Exam Scores.md` (82/100@30%, 91/100@50%, 74/100@20%, threshold 60), `Monthly Budget.md` (income ₹25,000; total ₹20,000), `Shared Bill.md` (9,000 INR; units 120/80/60/40), `Stock Watch.md` (threshold 1,400; last 1,320.50 on 2026-08-13), `Recipe.md` (Oven 375 F; Prep 20 / Bake 50 / Rest 10), `Food Favourites.md` (keeps `## Pancakes`/`## Pizza`/`## Veggie Bowl`), `Contact Updates.md` (00030 30301/30302). `Bedtime.md` left minimal by design (sleep-timer target).
+ - Committed generator: `scripts/seeding/enrich_public_notes.py` (writes `assets/seeds/public/notes/` + pushes to the vault + media-scans). `reset_phone.py`'s `restore_file_contents` for `Food Favourites.md`/`Budget Deadline.md` updated to the enriched baseline (verify needles unchanged and still pass).
+ - **OnePlus Notes app `Budget Deadline` note also enriched (via UI).** `hard__drive-notes-telegram__010` (apps: Drive+Notes+Telegram) reads the 'Budget Deadline' note in the **OnePlus Notes app** (`com.oneplus.note`, app-private `needs_ui` seed), which held only "The budget deadline is 2026-08-10" plus blank lines. Enriched through the app UI to the same realistic content (deadline **2026-08-10** + "Last reviewed: 2026-07-10" + todo list) so it is no longer near-empty. App-private → no file seed; re-applied via UI if ever reset.
 - **2026-08-19 — Public PDFs regenerated as realistic, text-heavy documents.**
-  - `medium__files-pdf__001`'s `Invoice INV-2026-071.pdf` and `medium__files-pdf__002`'s `Rent Receipt.pdf` were **regenerated** from ~8-line stubs into full realistic documents (vendor invoice: letterhead, itemised line items, GST/CGST/SGST totals block, terms, payment instructions, footer; rent receipt: property-management letterhead, payment breakdown, payment details, notes, signature block, footer) so the answer value is buried in dense content instead of being the only text on the page. Key answer values preserved: **Rs. 1,240.00 / due 2026-07-25** (invoice) and **Rs. 9,000.00 / due 2026-08-05 / PAID IN FULL** (rent). Both remain **vision-required** discriminators (Files' PDF viewer does not expose the body to the a11y tree).
-  - New committed generator: `scripts/seeding/fabricate_public_pdfs.py` (pure-python PDF writer, no deps; writes `assets/seeds/public/` then pushes to `/sdcard/Download/` + media-scans). Re-run with `uv run python scripts/seeding/fabricate_public_pdfs.py [--serial <serial>] [--no-push]`.
-  - The invoice keeps the same invoice identity (INV-2026-071 / Rs. 1,240.00 / due 2026-07-25) as the corpus's Day-2 `hard__files-notes__011` seed for consistency.
+ - `medium__files-pdf__001`'s `Invoice INV-2026-071.pdf` and `medium__files-pdf__002`'s `Rent Receipt.pdf` were **regenerated** from ~8-line stubs into full realistic documents (vendor invoice: letterhead, itemised line items, GST/CGST/SGST totals block, terms, payment instructions, footer; rent receipt: property-management letterhead, payment breakdown, payment details, notes, signature block, footer) so the answer value is buried in dense content instead of being the only text on the page. Key answer values preserved: **Rs. 1,240.00 / due 2026-07-25** (invoice) and **Rs. 9,000.00 / due 2026-08-05 / PAID IN FULL** (rent). Both remain **vision-required** discriminators (Files' PDF viewer does not expose the body to the a11y tree).
+ - New committed generator: `scripts/seeding/fabricate_public_pdfs.py` (pure-python PDF writer, no deps; writes `assets/seeds/public/` then pushes to `/sdcard/Download/` + media-scans). Re-run with `uv run python scripts/seeding/fabricate_public_pdfs.py [--serial <serial>] [--no-push]`.
+ - The invoice keeps the same invoice identity (INV-2026-071 / Rs. 1,240.00 / due 2026-07-25) as the corpus's Day-2 `hard__files-notes__011` seed for consistency.
 - **2026-08-19 — 4 new public tasks (natural voice + vision-required PDF reading).**
-  - `medium__clock__011` (Clock, natural voice): set a timer for `[timer minutes]` (25) minutes labeled `[timer label]` ('Workout') and start it. Resettable (delete timer).
-  - `medium__files__015` (Files, natural voice): sort Downloads by size, report the biggest file's name+size (read-only).
-  - `medium__files-pdf__001` (Files+PDF, 3-step): open `[invoice file]` ('Invoice INV-2026-071.pdf'), read out the amount due (**Rs. 1,240.00**), check whether the due date has passed. **Vision-required**: Files' PDF viewer does not expose the document body to the a11y tree — text-only agents fail, vision (screenshot) agents win.
-  - `medium__files-pdf__002` (Files+PDF, 3-step): open `[rent receipt]` ('Rent Receipt.pdf'), read the rent amount (**Rs. 9,000.00**), confirm the receipt shows paid-in-full. **New fabricated seed**: `Rent Receipt.pdf` (text-layer PDF: Rs. 9,000.00, due 2026-08-05, paid in full) pushed to `/sdcard/Download/` + media-scanned.
-  - 'Wait no, hold on' is kept **unique** to `medium__google-maps__002` (the new tasks use plain natural voice, no repeated 'Wait').
-  - Public sample **57 → 61 tasks**. New tasks are public-sample-specific (added to `public.md` only); the 530 corpus stays exactly 530 by design. Regenerated `AndroidLife_public_v2.json/.jsonl`. **4 new placeholders** (`timer minutes`, `timer label`, `invoice file`, `rent receipt`) added to `public_vars.local.env`, `config/user.yaml`, and the `SCHEMA`.
+ - `medium__clock__011` (Clock, natural voice): set a timer for `[timer minutes]` (25) minutes labeled `[timer label]` ('Workout') and start it. Resettable (delete timer).
+ - `medium__files__015` (Files, natural voice): sort Downloads by size, report the biggest file's name+size (read-only).
+ - `medium__files-pdf__001` (Files+PDF, 3-step): open `[invoice file]` ('Invoice INV-2026-071.pdf'), read out the amount due (**Rs. 1,240.00**), check whether the due date has passed. **Vision-required**: Files' PDF viewer does not expose the document body to the a11y tree — text-only agents fail, vision (screenshot) agents win.
+ - `medium__files-pdf__002` (Files+PDF, 3-step): open `[rent receipt]` ('Rent Receipt.pdf'), read the rent amount (**Rs. 9,000.00**), confirm the receipt shows paid-in-full. **New fabricated seed**: `Rent Receipt.pdf` (text-layer PDF: Rs. 9,000.00, due 2026-08-05, paid in full) pushed to `/sdcard/Download/` + media-scanned.
+ - 'Wait no, hold on' is kept **unique** to `medium__google-maps__002` (the new tasks use plain natural voice, no repeated 'Wait').
+ - Public sample **57 → 61 tasks**. New tasks are public-sample-specific (added to `public.md` only); the 530 corpus stays exactly 530 by design. Regenerated `AndroidLife_public_v2.json/.jsonl`. **4 new placeholders** (`timer minutes`, `timer label`, `invoice file`, `rent receipt`) added to `public_vars.local.env`, `config/user.yaml`, and the `SCHEMA`.
 - **2026-08-19 — google-photos__012 album name placeholder-ized.**
-  - `medium__google-photos__012` now asks for a new album called `[album name]` instead of the hardcoded
-    'Weekend'; the placeholder resolves to **'Hostel Life'** (added `album name=Hostel Life` to
-    `public_vars.local.env` and `album name: Hostel Life` to `config/user.yaml`, plus a matching entry in
-    the `SCHEMA` in `src/DailyBench/user_config.py`).
-  - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
-    PASS (0 failures).
+ - `medium__google-photos__012` now asks for a new album called `[album name]` instead of the hardcoded
+ 'Weekend'; the placeholder resolves to **'Hostel Life'** (added `album name=Hostel Life` to
+ `public_vars.local.env` and `album name: Hostel Life` to `config/user.yaml`, plus a matching entry in
+ the `SCHEMA` in `src/AndroidLife/user_config.py`).
+ - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
+ PASS (0 failures).
 - **2026-08-19 — gallery__012 reverted (no synthetic seed) + google-photos__012 reworded (doable).**
-  - `easy__gallery__012`: the vision rewrite's synthetic red-circle seed (`most_recent_photo.png`) was
-    deleted per user (it had no natural subject). Reverted to a **plain, deterministic, resettable** task:
-    count the photos in Google Photos' Screenshots album (the 11 `feas_*.png` screenshots are the answer).
-  - `medium__google-photos__012`: "find and remove duplicate photos" was not agent-doable (Google Photos
-    auto-hides exact duplicates). Reworded to a real GUI action: **create a new album 'Weekend' + add the
-    3 most recent photos + message [contact] the album name** — doable, resettable (delete the album).
-  - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
-  PASS.
+ - `easy__gallery__012`: the vision rewrite's synthetic red-circle seed (`most_recent_photo.png`) was
+ deleted per user (it had no natural subject). Reverted to a **plain, deterministic, resettable** task:
+ count the photos in Google Photos' Screenshots album (the 11 `feas_*.png` screenshots are the answer).
+ - `medium__google-photos__012`: "find and remove duplicate photos" was not agent-doable (Google Photos
+ auto-hides exact duplicates). Reworded to a real GUI action: **create a new album 'Weekend' + add the
+ 3 most recent photos + message [contact] the album name** — doable, resettable (delete the album).
+ - Applied to `public.md` + `tasks_530.md`; datasets regenerated. `verify_config.py` PASS; full suite
+ PASS.
 - **2026-08-19 — easy__gallery__012 rewritten to a vision + easily-resettable task.**
-  Old prompt ("set a specific photo as a contact's photo in Google Photos") was hard to reset (needs a
-  face-detected photo + mutates contact data). Rewritten to a **read-only vision task**: "Can you open
-  Google Photos, open my most recent photo, and tell me what it shows in a few words?" Seeded a
-  deterministic `most_recent_photo.png` (red circle on white) as the newest photo → expected answer is
-  stable; no on-device state changes → trivially resettable; unique query (verified 1 occurrence). It is
-  now solvable **only via vision** (a uiautomator text dump can't describe the image). Applied to
-  `public.md` + `tasks_530.md`; datasets regenerated.
-  **Vision-only camera/gallery set:** `easy__gallery__012` (describe most-recent photo) +
-  `medium__gallery__007` (match food photos to headings by content) are vision-dependent;
-  `medium__google-photos__012` (visual duplicates) is inherently visual. `verify_config.py` PASS; full
-  suite PASS.
+ Old prompt ("set a specific photo as a contact's photo in Google Photos") was hard to reset (needs a
+ face-detected photo + mutates contact data). Rewritten to a **read-only vision task**: "Can you open
+ Google Photos, open my most recent photo, and tell me what it shows in a few words?" Seeded a
+ deterministic `most_recent_photo.png` (red circle on white) as the newest photo → expected answer is
+ stable; no on-device state changes → trivially resettable; unique query (verified 1 occurrence). It is
+ now solvable **only via vision** (a uiautomator text dump can't describe the image). Applied to
+ `public.md` + `tasks_530.md`; datasets regenerated.
+ **Vision-only camera/gallery set:** `easy__gallery__012` (describe most-recent photo) +
+ `medium__gallery__007` (match food photos to headings by content) are vision-dependent;
+ `medium__google-photos__012` (visual duplicates) is inherently visual. `verify_config.py` PASS; full
+ suite PASS.
 - **2026-08-19 — KB real-data pass: swiggy order corrections + music verified + thinner KBs enriched.**
-  - **Swiggy (verified on device):** the "Hot Garlic Noodles With Chilli Paneer" order is from **Wow! China**
-    (not EatRight); **Biriyani Box** is *Chicken Biriyani ₹205* (not Chetinad ₹279). Fixed in the
-    swiggy__005/007 KBs. Real reorder/favourites set on device: Jugaad Jn, Pizza Hut (Choco Volcano ₹119),
-    Wow! China, KFC (Classic Zinger Box ₹399), Biriyani Box, Downtown Delight (Murgh Mughlai ₹449 + Kushka
-    Rice ₹139). **Note:** only Downtown Delight (Aug 14) and Jugaad Jn (May 5) have verified delivery dates;
-    Asia Seven / Biryani Blues / Biriyani Box / KFC / Pizza Hut / Wow! China dates in the KB are inferred
-    from list order.
-  - **Music (hard__music-obsidian__077):** verified the real Obsidian `Bedtime.md` = "10:30 PM" (vault
-    `/sdcard/Obsidian/Papers vault oneplus /`); KB enriched with sleep playlist, account, volume, and
-    wind-down routine data.
-  - **Obsidian vault (real, verified):** Bedtime (10:30 PM), Stock Watch (Reliance Industries, threshold
-    ₹1,400, last 1,320.50 on 2026-08-13), Budget Deadline (2026-08-10), Photo Log (Aug 6: 6 / Aug 5: 4),
-    Food Favourites (Pancakes/Pizza/Veggie Bowl), Photo Sent to Yuvraj Airtel, Contact Updates (Dad
-    Evalueserve, Yuvraj Singh Jio), Shared Bill (₹9,000), Recipe (Lasagna 375°F).
-  - Enriched thinner KBs: `settings-obsidian__044` (device, weekly avg, over-limit action),
-    `google-search-notes__019` (shortlist dates, budget, key factors). **Note:** the `Products I'm
-    Considering` and `Screen Time Goal` Obsidian notes referenced by 019/044 are NOT on the device — those
-    tasks' notes are fabricated ground truth (530-only).
-  - `verify_config.py` PASS; full suite PASS.
+ - **Swiggy (verified on device):** the "Hot Garlic Noodles With Chilli Paneer" order is from **Wow! China**
+ (not EatRight); **Biriyani Box** is *Chicken Biriyani ₹205* (not Chetinad ₹279). Fixed in the
+ swiggy__005/007 KBs. Real reorder/favourites set on device: Jugaad Jn, Pizza Hut (Choco Volcano ₹119),
+ Wow! China, KFC (Classic Zinger Box ₹399), Biriyani Box, Downtown Delight (Murgh Mughlai ₹449 + Kushka
+ Rice ₹139). **Note:** only Downtown Delight (Aug 14) and Jugaad Jn (May 5) have verified delivery dates;
+ Asia Seven / Biryani Blues / Biriyani Box / KFC / Pizza Hut / Wow! China dates in the KB are inferred
+ from list order.
+ - **Music (hard__music-obsidian__077):** verified the real Obsidian `Bedtime.md` = "10:30 PM" (vault
+ `/sdcard/Obsidian/Papers vault oneplus /`); KB enriched with sleep playlist, account, volume, and
+ wind-down routine data.
+ - **Obsidian vault (real, verified):** Bedtime (10:30 PM), Stock Watch (Reliance Industries, threshold
+ ₹1,400, last 1,320.50 on 2026-08-13), Budget Deadline (2026-08-10), Photo Log (Aug 6: 6 / Aug 5: 4),
+ Food Favourites (Pancakes/Pizza/Veggie Bowl), Photo Sent to Yuvraj Airtel, Contact Updates (Dad
+ Evalueserve, Yuvraj Singh Jio), Shared Bill (₹9,000), Recipe (Lasagna 375°F).
+ - Enriched thinner KBs: `settings-obsidian__044` (device, weekly avg, over-limit action),
+ `google-search-notes__019` (shortlist dates, budget, key factors). **Note:** the `Products I'm
+ Considering` and `Screen Time Goal` Obsidian notes referenced by 019/044 are NOT on the device — those
+ tasks' notes are fabricated ground truth (530-only).
+ - `verify_config.py` PASS; full suite PASS.
 
 - **2026-08-19 — swiggy__005 re-grounded to real order history + rich KBs (swiggy__005/007).**
-  Verified the live Swiggy account (Yuvraj Singh +91 9354672378, rajceo2031@gmail.com) on device. Real
-  past orders: **Downtown Delight** (Murgh Mughlai ₹449 + Kushka Rice ₹139 = ₹523, delivered **Aug 14**,
-  order #245663937163548), Asia Seven (noodles+momos), Biryani Blues, **Jugaad Jn** (Chole Chawal ₹149 +
-  Papdi Chat ₹109 = ₹310, delivered **May 5**, order #236957565092163), Biriyani Box, etc.
-  - New swiggy__005 prompt ("the food I **ate in the past week** … message **him**") → the real past-week
-    order is **Downtown Delight (Aug 14)**, so `correct_target` is now
-    `swiggy::reorder-downtown-delight-murgh-mughlai` (was Jugaad Jn — which was May 5, NOT past week).
-  - To avoid two tasks colliding on Downtown Delight, **swiggy__007** ("my usual") is re-targeted to
-    **Jugaad Jn** (`swiggy::reorder-jugaad-chole-papdi`).
-  - Both KB profiles made **rich** (8 orders / 5 orders with dates, order ids, items+prices, delivery
-    partner, address, payment, favourite/usual flags + full preferences + contacts) so the multi-turn
-    agent is tested to the fullest (oracle can answer many probes). Prompt synced to tasks_530.md;
-    datasets regenerated. `verify_config.py` PASS; full suite PASS.
-  - **Note:** Downtown Delight is the only confirmed within-the-past-week order; other dates in the KB
-    (Asia Seven Jul 30, Biryani Blues Jun 21, etc.) are order-list-order plausible, not verified per-order.
+ Verified the live Swiggy account (Yuvraj Singh +91 9354672378, rajceo2031@gmail.com) on device. Real
+ past orders: **Downtown Delight** (Murgh Mughlai ₹449 + Kushka Rice ₹139 = ₹523, delivered **Aug 14**,
+ order #245663937163548), Asia Seven (noodles+momos), Biryani Blues, **Jugaad Jn** (Chole Chawal ₹149 +
+ Papdi Chat ₹109 = ₹310, delivered **May 5**, order #236957565092163), Biriyani Box, etc.
+ - New swiggy__005 prompt ("the food I **ate in the past week** … message **him**") → the real past-week
+ order is **Downtown Delight (Aug 14)**, so `correct_target` is now
+ `swiggy::reorder-downtown-delight-murgh-mughlai` (was Jugaad Jn — which was May 5, NOT past week).
+ - To avoid two tasks colliding on Downtown Delight, **swiggy__007** ("my usual") is re-targeted to
+ **Jugaad Jn** (`swiggy::reorder-jugaad-chole-papdi`).
+ - Both KB profiles made **rich** (8 orders / 5 orders with dates, order ids, items+prices, delivery
+ partner, address, payment, favourite/usual flags + full preferences + contacts) so the multi-turn
+ agent is tested to the fullest (oracle can answer many probes). Prompt synced to tasks_530.md;
+ datasets regenerated. `verify_config.py` PASS; full suite PASS.
+ - **Note:** Downtown Delight is the only confirmed within-the-past-week order; other dates in the KB
+ (Asia Seven Jul 30, Biryani Blues Jun 21, etc.) are order-list-order plausible, not verified per-order.
 
 - **2026-08-19 — Flight task grounded to live device + fabricated future flight (per user); swiggy 'that guy' gradable.**
-  - **Gmail (hard__gmail-calendar__003):** inspected the live device. Deleted the stale "AirTickets Indigo" (2022,
-    ranirajesh786 account) email so the agent must ask which account. Switched to `yuvraj.mist@gmail.com` and searched
-    "airtickets": the real flight emails are **Scapia confirmations — IndiGo 6E 6737 (BBI→DEL, 8 May 2026, 12:05,
-    PNR PCVFNA) and IndiGo 6E 6821 (BBI→DEL, 1 Mar 2026, 07:45, PNR D4WEQF)** — both PAST (today 2026-08-19).
-    Per user choice ("don't want to book another flight"), the KB now carries a **fabricated future next trip**:
-    **IndiGo 6E 6893, BBI→DEL, 2026-08-24, 07:10** plus the real 6E 6737 as a past distractor the oracle dismisses,
-    and `email_account: yuvraj.mist@gmail.com` so the agent must ASK which account/flight. **Note:** no real email
-    for 6E 6893 exists — the agent gets the flight fact from the KB oracle; the real 6E 6737/6E 6821 emails stay in
-    Gmail as past-trip noise. Updated `multiturn_kb_public.json` + `multiturn_kb_530.json`.
-  - **Swiggy 'that guy' (hard__swiggy__005/007):** per user "make it gradable but don't put it in the prompt" — the
-    recipient is NOT in the prompt ("message that guy on Telegram"); the KB profiles now hold
-    `preferences.recipient = "Yuvraj Singh Jio"` (a real selected contact) so the oracle answers "who's that guy?",
-    and the operator/grader verifies the Telegram message went to Yuvraj Singh Jio. Both KB files updated.
+ - **Gmail (hard__gmail-calendar__003):** inspected the live device. Deleted the stale "AirTickets Indigo" (2022,
+ ranirajesh786 account) email so the agent must ask which account. Switched to `yuvraj.mist@gmail.com` and searched
+ "airtickets": the real flight emails are **Scapia confirmations — IndiGo 6E 6737 (BBI→DEL, 8 May 2026, 12:05,
+ PNR PCVFNA) and IndiGo 6E 6821 (BBI→DEL, 1 Mar 2026, 07:45, PNR D4WEQF)** — both PAST (today 2026-08-19).
+ Per user choice ("don't want to book another flight"), the KB now carries a **fabricated future next trip**:
+ **IndiGo 6E 6893, BBI→DEL, 2026-08-24, 07:10** plus the real 6E 6737 as a past distractor the oracle dismisses,
+ and `email_account: yuvraj.mist@gmail.com` so the agent must ASK which account/flight. **Note:** no real email
+ for 6E 6893 exists — the agent gets the flight fact from the KB oracle; the real 6E 6737/6E 6821 emails stay in
+ Gmail as past-trip noise. Updated `multiturn_kb_public.json` + `multiturn_kb_530.json`.
+ - **Swiggy 'that guy' (hard__swiggy__005/007):** per user "make it gradable but don't put it in the prompt" — the
+ recipient is NOT in the prompt ("message that guy on Telegram"); the KB profiles now hold
+ `preferences.recipient = "Yuvraj Singh Jio"` (a real selected contact) so the oracle answers "who's that guy?",
+ and the operator/grader verifies the Telegram message went to Yuvraj Singh Jio. Both KB files updated.
 
 - **2026-08-19 — Multi-turn prompts made terse & natural (all 13, public + 530).**
-  Per user: the point of ASK USER - MULTI is that the **agent must get the facts by asking**, so the
-  verbose 5-step prompts + "Reply with only X, no other text." boilerplate were removed from **all 13**
-  multi-turn tasks (`public.md` + `tasks_530.md`). Each is now a short first-person utterance that
-  withholds the ONE fact the oracle holds (KB profiles unchanged — they answer when asked):
-  `telegram-calendar__016` (which chat/event/date), `swiggy__005` (which order — "that guy" on
-  Telegram, `[contact]` placeholder dropped), `gmail-calendar__003` (which flight — no more "IndiGo to
-  Delhi" hint), `music-obsidian__077` (bedtime/track), plus `google-search-notes__019`,
-  `settings-obsidian__044`, `makemytrip__003`, `bookmyshow__003`, `prime-video__005`,
-  `gmail-notes__045`, `amazon-shopping__006`, `msn-news__007`, `swiggy__007`. Public vs 530 verified
-  in sync for the 4 shared tasks. Regenerated 530 + public; `verify_config.py` PASS; full suite PASS.
-  **Note:** swiggy__005/007's Telegram recipient is now "that guy" (no `[contact]`/KB contact), so the
-  message-recipient step is not pinned to a specific contact — the graded `correct_target` is the reorder.
+ Per user: the point of ASK USER - MULTI is that the **agent must get the facts by asking**, so the
+ verbose 5-step prompts + "Reply with only X, no other text." boilerplate were removed from **all 13**
+ multi-turn tasks (`public.md` + `tasks_530.md`). Each is now a short first-person utterance that
+ withholds the ONE fact the oracle holds (KB profiles unchanged — they answer when asked):
+ `telegram-calendar__016` (which chat/event/date), `swiggy__005` (which order — "that guy" on
+ Telegram, `[contact]` placeholder dropped), `gmail-calendar__003` (which flight — no more "IndiGo to
+ Delhi" hint), `music-obsidian__077` (bedtime/track), plus `google-search-notes__019`,
+ `settings-obsidian__044`, `makemytrip__003`, `bookmyshow__003`, `prime-video__005`,
+ `gmail-notes__045`, `amazon-shopping__006`, `msn-news__007`, `swiggy__007`. Public vs 530 verified
+ in sync for the 4 shared tasks. Regenerated 530 + public; `verify_config.py` PASS; full suite PASS.
+ **Note:** swiggy__005/007's Telegram recipient is now "that guy" (no `[contact]`/KB contact), so the
+ message-recipient step is not pinned to a specific contact — the graded `correct_target` is the reorder.
 
 - **2026-08-19 — Multi-turn prompts no longer spoon-feed the answer (swiggy__005 / swiggy__007).**
-  The two "reorder my food" ASK USER - MULTI tasks were handing the agent the exact item + restaurant
-  in the prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
-  Kushka Rice from Downtown Delight"), which defeats the multi-turn design — per our multi-turn
-  authoring notes, these prompts must be **genuinely ambiguous** with the **ONE withheld fact the agent must ask the
-  oracle for** (the KB profiles in `multiturn_kb_public.json` / `multiturn_kb_530.json` hold the answer:
-  Jugaad Jn Chole Chawal + Papdi Chat ₹258 / Downtown Delight Murgh Mughlai). Reworded both
-  (`public.md` + `tasks_530.md`) to keep the natural craving line + the full 5-step task (apps, cart,
-  payment page, message [contact] total) while removing the item/restaurant, so the agent must ask
-  which order the user means. Regenerated 530 + public JSON; `verify_config.py` PASS; full suite PASS.
+ The two "reorder my food" ASK USER - MULTI tasks were handing the agent the exact item + restaurant
+ in the prompt ("I think it was the Chole Chawal with Papdi Chat from Jugaad Jn" / "Murgh Mughlai with
+ Kushka Rice from Downtown Delight"), which defeats the multi-turn design — per our multi-turn
+ authoring notes, these prompts must be **genuinely ambiguous** with the **ONE withheld fact the agent must ask the
+ oracle for** (the KB profiles in `multiturn_kb_public.json` / `multiturn_kb_530.json` hold the answer:
+ Jugaad Jn Chole Chawal + Papdi Chat ₹258 / Downtown Delight Murgh Mughlai). Reworded both
+ (`public.md` + `tasks_530.md`) to keep the natural craving line + the full 5-step task (apps, cart,
+ payment page, message [contact] total) while removing the item/restaurant, so the agent must ask
+ which order the user means. Regenerated 530 + public JSON; `verify_config.py` PASS; full suite PASS.
 
 - **2026-08-19 — Public KB reconciled to live phone data.**
-  Verified all 4 `multiturn_kb_public.json` profiles against the live device (RS7XKZDI8HTOJNYL):
-  - ✅ `hard__music-obsidian__077`: Bedtime.md = "10:30 PM" (exact match).
-  - ✅ `hard__telegram-calendar__016`: account (Yuvraj Airtel +91 9354672378 @YuvrajSingh9886) + the
-    "Forever 21" group (2 members) confirmed on-device. Forever 21's topic corrected to match the live
-    chat ("plans / get-together", not "shopping deals"). **NOTE:** the live chat's visible date
-    separators are Aug 1/3 — the agent must find a date in the chat, and Telegram is app-private
-    (cannot be seeded via ADB), so ensure a dated message exists in the chat before running.
-  - ⚠️→✅ `hard__swiggy__005`: the KB's "Downtown Delight Murgh Mughlai ₹449" reorder target did **not**
-    match the live Reorder list (Jugaad Jn Chole ₹149 + Papdi ₹109, KFC, Pizza Hut, EatRight; no
-    Downtown Delight). Updated the KB (`correct_target` → `swiggy::reorder-jugaad-chole-papdi`, orders
-    = the live list) and the task-prompt hedge to Jugaad Jn, in both KB files + `public.md`/`tasks_530.md`.
-  - ⚠️ `hard__gmail-calendar__003`: an IndiGo / "AirTickets Indigo" email exists in the inbox ✓, but the
-    exact flight (6E 6821 BBI→DEL 07:10) lives in Gmail's webview body and cannot be read via
-    uiautomator — re-verify at run time.
-  Regenerated 530 + public; full suite PASS.
+ Verified all 4 `multiturn_kb_public.json` profiles against the live device (RS7XKZDI8HTOJNYL):
+ - ✅ `hard__music-obsidian__077`: Bedtime.md = "10:30 PM" (exact match).
+ - ✅ `hard__telegram-calendar__016`: account (Yuvraj Airtel +91 9354672378 @YuvrajSingh9886) + the
+ "Forever 21" group (2 members) confirmed on-device. Forever 21's topic corrected to match the live
+ chat ("plans / get-together", not "shopping deals"). **NOTE:** the live chat's visible date
+ separators are Aug 1/3 — the agent must find a date in the chat, and Telegram is app-private
+ (cannot be seeded via ADB), so ensure a dated message exists in the chat before running.
+ - ⚠️→✅ `hard__swiggy__005`: the KB's "Downtown Delight Murgh Mughlai ₹449" reorder target did **not**
+ match the live Reorder list (Jugaad Jn Chole ₹149 + Papdi ₹109, KFC, Pizza Hut, EatRight; no
+ Downtown Delight). Updated the KB (`correct_target` → `swiggy::reorder-jugaad-chole-papdi`, orders
+ = the live list) and the task-prompt hedge to Jugaad Jn, in both KB files + `public.md`/`tasks_530.md`.
+ - ⚠️ `hard__gmail-calendar__003`: an IndiGo / "AirTickets Indigo" email exists in the inbox ✓, but the
+ exact flight (6E 6821 BBI→DEL 07:10) lives in Gmail's webview body and cannot be read via
+ uiautomator — re-verify at run time.
+ Regenerated 530 + public; full suite PASS.
 
 - **2026-08-19 — Public DET placeholders + user-as-tool always available.**
-  - **Placeholders:** the hard DET tasks in the public sample now carry placeholders instead of
-    hardcoded device names: `[notifying channel]` (`hard__youtube-settings__052` = Tech Burner),
-    `[related product]` (`hard__google-sheets-amazon-shopping__074` = smartphone gimbal),
-    `[cinema]` + `[ticket price]` (`hard__bookmyshow__005` = INOX Bhubaneswar / ₹240),
-    `[weekly meeting]` (`hard__google-meet-files__070` + `hard__clock-calendar__023` = Weekly Sync),
-    `[gym event]` (`hard__clock-calendar__023` = Gym), `[agenda file]` (`hard__google-meet-files__070`
-    = Weekly Agenda). All 7 added to `SCHEMA` (`user_config.py`), `user_config.example`,
-    `user.yaml`, `tasks_vars.local.env`, `public_vars.local.env`; values match on-device/seeded
-    state (Tech Burner subscription, the seeded Weekly Sync/Gym events, the Weekly Agenda file).
-    `verify_config.py` PASS; every public placeholder resolves.
-  - **User-as-tool always available:** `cli.py` now registers the `ask_user` tool for **every** task
-    (previously only when a task had an ASK USER fact or KB profile). The simulated user still reveals
-    only what that task's context/KB provides — on DET/hallucination tasks that is nothing ("I don't
-    have that information") — so ASK USER grading is unchanged while genuinely ambiguous moments on
-    any task can be clarified.
-  - Regenerated 530 (530 tasks, 0 dupes, 49 AU/23 DET) + public (57) + `tasks_vars_usage.json`
-    (98 keys); full suite PASS.
+ - **Placeholders:** the hard DET tasks in the public sample now carry placeholders instead of
+ hardcoded device names: `[notifying channel]` (`hard__youtube-settings__052` = Tech Burner),
+ `[related product]` (`hard__google-sheets-amazon-shopping__074` = smartphone gimbal),
+ `[cinema]` + `[ticket price]` (`hard__bookmyshow__005` = INOX Bhubaneswar / ₹240),
+ `[weekly meeting]` (`hard__google-meet-files__070` + `hard__clock-calendar__023` = Weekly Sync),
+ `[gym event]` (`hard__clock-calendar__023` = Gym), `[agenda file]` (`hard__google-meet-files__070`
+ = Weekly Agenda). All 7 added to `SCHEMA` (`user_config.py`), `user_config.example`,
+ `user.yaml`, `tasks_vars.local.env`, `public_vars.local.env`; values match on-device/seeded
+ state (Tech Burner subscription, the seeded Weekly Sync/Gym events, the Weekly Agenda file).
+ `verify_config.py` PASS; every public placeholder resolves.
+ - **User-as-tool always available:** `cli.py` now registers the `ask_user` tool for **every** task
+ (previously only when a task had an ASK USER fact or KB profile). The simulated user still reveals
+ only what that task's context/KB provides — on DET/hallucination tasks that is nothing ("I don't
+ have that information") — so ASK USER grading is unchanged while genuinely ambiguous moments on
+ any task can be clarified.
+ - Regenerated 530 (530 tasks, 0 dupes, 49 AU/23 DET) + public (57) + `tasks_vars_usage.json`
+ (98 keys); full suite PASS.
 
 - **2026-08-19 — Device seeding for public DET solvability (variance-safe).**
-  Seeded the two solvable-but-gapped public DET tasks on the phone (serial `RS7XKZDI8HTOJNYL`):
-  - `hard__clock-calendar__023`: Calendar (cal_id=16 `yuvraj.mist@gmail.com`) now has **"Weekly Sync"**
-    (next Mon 07:00-08:00) + **"Gym"** (next Tue 06:30-07:30) so the 07:00 → 07:30 clash-shift is reachable.
-  - `hard__google-meet-files__070`: Calendar has **"Weekly Sync"** (next Mon 10:00-11:00) + Files has
-    **`/sdcard/Download/Weekly Agenda.txt`** (the agenda doc the agent must open).
-  - `reset_phone.py` public_v2 profile gained `seed_calendar_events` (date-relative events re-created at
-    every reset on the next weekday occurrence, device-local time) + a new `ensure_calendar_events()`
-    helper (idempotent: soft-deletes existing matching titles, then re-inserts), and the Weekly Agenda
-    file was added to `seed_files` / `restore_file_contents` / `seed_file_contents`. This keeps the 3×
-    variance runs starting from an identical baseline. Verified: `reset_phone --verify-only` → RESULT
-    PASS; a full `--apply` cleanly re-seeds (delete 3 + insert 3, no duplicates). Caveat: the two
-    "Weekly Sync" events (07:00 + 10:00) both land on the same Monday; the tasks disambiguate by the
-    time given in their prompts (clock-calendar checks 7 AM, meet-files is told "10 AM").
+ Seeded the two solvable-but-gapped public DET tasks on the phone (serial `RS7XKZDI8HTOJNYL`):
+ - `hard__clock-calendar__023`: Calendar (cal_id=16 `yuvraj.mist@gmail.com`) now has **"Weekly Sync"**
+ (next Mon 07:00-08:00) + **"Gym"** (next Tue 06:30-07:30) so the 07:00 → 07:30 clash-shift is reachable.
+ - `hard__google-meet-files__070`: Calendar has **"Weekly Sync"** (next Mon 10:00-11:00) + Files has
+ **`/sdcard/Download/Weekly Agenda.txt`** (the agenda doc the agent must open).
+ - `reset_phone.py` public_v2 profile gained `seed_calendar_events` (date-relative events re-created at
+ every reset on the next weekday occurrence, device-local time) + a new `ensure_calendar_events()`
+ helper (idempotent: soft-deletes existing matching titles, then re-inserts), and the Weekly Agenda
+ file was added to `seed_files` / `restore_file_contents` / `seed_file_contents`. This keeps the 3×
+ variance runs starting from an identical baseline. Verified: `reset_phone --verify-only` → RESULT
+ PASS; a full `--apply` cleanly re-seeds (delete 3 + insert 3, no duplicates). Caveat: the two
+ "Weekly Sync" events (07:00 + 10:00) both land on the same Monday; the tasks disambiguate by the
+ time given in their prompts (clock-calendar checks 7 AM, meet-files is told "10 AM").
 
 - **2026-08-19 — Hard-task taxonomy relabeled (ASK USER SINGLE / ASK USER - MULTI) + Google Meet claim corrected + public DET placeholder pass.**
-  - **Taxonomy:** hard headers in `tasks_530.md` + `public.md` now read **ASK USER SINGLE** / **ASK USER - MULTI** / **DETERMINISTIC**. The 13 multi-turn KB tasks were previously labeled "DETERMINISTIC" even though they are user-interaction tasks; they are now **ASK USER - MULTI** (data `ahi="ASK USER"`, a new `interaction` field = `"single"`/`"multi"`/`None`, `is_ask_user=True`). The 36 single-turn tasks became **ASK USER SINGLE**; 23 plain DET unchanged. Exporters (`task_dataset.py`, `export_530_dataset.py`) parse the new labels via `split_hard_label()`; `export_530_dataset.verify()` now asserts 23/36/13 and only single-turn ASK USER need facts (multi-turn use KB profiles). Runtime is unaffected — `task_batch.py` checks KB membership before the ASK USER branch, so multi-turn tasks still route to the KB oracle. Added `interaction` to the JSON + a parser test.
-  - **Google Meet IS installed:** the spec, HANDOFF, and future-directions wrongly claimed Meet was absent (they only checked `com.google.android.apps.meetings`). Meet ships as **`com.google.android.apps.tachyon`** (the Duo→Meet rebrand); it is in the launcher as **Meet**, opens into `HomeActivity`, and `scripts/tools/app_audit.py` reports **31/31 required apps** with `[OK] Google Meet`. All three docs corrected. Caveat: Meet's home is call-centric ("Your latest activity will appear here") and does not surface a scheduled-meetings list, so `hard__google-meet-files__070`'s meeting-discovery step may need to read Calendar instead — flagged below.
-  - **Placeholder:** `hard__google-sheets-amazon-shopping__074` now uses `[spreadsheet name]` (resolves to SPORTS_VIDEO_DATA) instead of a hardcoded name, in both corpora.
-  - Regenerated 530 (530 tasks, 0 dupes, 49 AU / 23 DET) + public (57) + `tasks_vars_usage.json`; `verify_config.py` PASS; full suite PASS.
-  - **Solvability gaps to seed (public DET):** `hard__clock-calendar__023` needs Calendar events "Weekly Sync" (Mon 07:00) + "Gym" (Tue 06:30) so the 07:00→07:30 clash-shift is reachable; `hard__google-meet-files__070` needs a "Weekly Agenda" file in Files and a "Weekly Sync" 10:00 meeting readable via Calendar/Meet. Live-data tasks (YouTube Tech Burner subscription, Swiggy last-Friday order, BookMyShow INOX shows) must be re-verified at run time.
+ - **Taxonomy:** hard headers in `tasks_530.md` + `public.md` now read **ASK USER SINGLE** / **ASK USER - MULTI** / **DETERMINISTIC**. The 13 multi-turn KB tasks were previously labeled "DETERMINISTIC" even though they are user-interaction tasks; they are now **ASK USER - MULTI** (data `ahi="ASK USER"`, a new `interaction` field = `"single"`/`"multi"`/`None`, `is_ask_user=True`). The 36 single-turn tasks became **ASK USER SINGLE**; 23 plain DET unchanged. Exporters (`task_dataset.py`, `export_530_dataset.py`) parse the new labels via `split_hard_label()`; `export_530_dataset.verify()` now asserts 23/36/13 and only single-turn ASK USER need facts (multi-turn use KB profiles). Runtime is unaffected — `task_batch.py` checks KB membership before the ASK USER branch, so multi-turn tasks still route to the KB oracle. Added `interaction` to the JSON + a parser test.
+ - **Google Meet IS installed:** the spec, HANDOFF, and future-directions wrongly claimed Meet was absent (they only checked `com.google.android.apps.meetings`). Meet ships as **`com.google.android.apps.tachyon`** (the Duo→Meet rebrand); it is in the launcher as **Meet**, opens into `HomeActivity`, and `scripts/tools/app_audit.py` reports **31/31 required apps** with `[OK] Google Meet`. All three docs corrected. Caveat: Meet's home is call-centric ("Your latest activity will appear here") and does not surface a scheduled-meetings list, so `hard__google-meet-files__070`'s meeting-discovery step may need to read Calendar instead — flagged below.
+ - **Placeholder:** `hard__google-sheets-amazon-shopping__074` now uses `[spreadsheet name]` (resolves to SPORTS_VIDEO_DATA) instead of a hardcoded name, in both corpora.
+ - Regenerated 530 (530 tasks, 0 dupes, 49 AU / 23 DET) + public (57) + `tasks_vars_usage.json`; `verify_config.py` PASS; full suite PASS.
+ - **Solvability gaps to seed (public DET):** `hard__clock-calendar__023` needs Calendar events "Weekly Sync" (Mon 07:00) + "Gym" (Tue 06:30) so the 07:00→07:30 clash-shift is reachable; `hard__google-meet-files__070` needs a "Weekly Agenda" file in Files and a "Weekly Sync" 10:00 meeting readable via Calendar/Meet. Live-data tasks (YouTube Tech Burner subscription, Swiggy last-Friday order, BookMyShow INOX shows) must be re-verified at run time.
 
 - **2026-08-19 — Remaining 9 multi-turn KB hard DET prompts expanded to 5-step (530 only).**
-  The 9 terse KB-oracle hard tasks that were still one-liners in `tasks_530.md` got the same
-  5-step treatment while staying multi-turn (each keeps ONE ask-point the oracle resolves):
-  - `hard__google-search-notes__019` — read 'Products I'm Considering' note → review both on
-    Google Search → compare → save winner + pros as a note.
-  - `hard__settings-obsidian__044` — read 'Screen Time Goal' note → Settings Digital Wellbeing
-    today vs 2h limit → note over/under.
-  - `hard__makemytrip__003` — find shortlisted next-trip flight → note fare/departure → payment
-    page total (no pay).
-  - `hard__bookmyshow__003` — Contacts fav genres → BookMyShow matching movie → booking page
-    (no buy). Header now **[BookMyShow+Contacts]**.
-  - `hard__prime-video__005` — find soonest-leaving show → check downloadable → save offline.
-  - `hard__swiggy__007` — usual Downtown Delight order → cart → payment page (no order) →
-    message [contact] total. Header now **[Swiggy+Telegram]**.
-  - `hard__gmail-notes__045` — find expiring coupon email → note code+expiry → save to Notes.
-  - `hard__amazon-shopping__006` — find intended cart item → price + Prime savings → payment
-    total (no order).
-  - `hard__msn-news__007` — biggest story in followed topic → summarize → message [contact].
-    Header now **[MSN News+Telegram]**.
-  KB profiles unchanged (facts matched); the tasks stay multi-turn (markers + `multiturn_kb_530.json`
-  untouched, still 13). Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) +
-  `tasks_vars_usage.json`; aligned the day-3 seed manifest end_state for
-  `hard__google-search-notes__019`. `verify_config.py` PASS; full suite PASS. **Note:** 3 of the 9
-  remain single-app by multi-turn design (`makemytrip__003`, `prime-video__005`,
-  `amazon-shopping__006`) — the disambiguation is the difficulty; can be widened to 2-3 apps on
-  request.
+ The 9 terse KB-oracle hard tasks that were still one-liners in `tasks_530.md` got the same
+ 5-step treatment while staying multi-turn (each keeps ONE ask-point the oracle resolves):
+ - `hard__google-search-notes__019` — read 'Products I'm Considering' note → review both on
+ Google Search → compare → save winner + pros as a note.
+ - `hard__settings-obsidian__044` — read 'Screen Time Goal' note → Settings Digital Wellbeing
+ today vs 2h limit → note over/under.
+ - `hard__makemytrip__003` — find shortlisted next-trip flight → note fare/departure → payment
+ page total (no pay).
+ - `hard__bookmyshow__003` — Contacts fav genres → BookMyShow matching movie → booking page
+ (no buy). Header now **[BookMyShow+Contacts]**.
+ - `hard__prime-video__005` — find soonest-leaving show → check downloadable → save offline.
+ - `hard__swiggy__007` — usual Downtown Delight order → cart → payment page (no order) →
+ message [contact] total. Header now **[Swiggy+Telegram]**.
+ - `hard__gmail-notes__045` — find expiring coupon email → note code+expiry → save to Notes.
+ - `hard__amazon-shopping__006` — find intended cart item → price + Prime savings → payment
+ total (no order).
+ - `hard__msn-news__007` — biggest story in followed topic → summarize → message [contact].
+ Header now **[MSN News+Telegram]**.
+ KB profiles unchanged (facts matched); the tasks stay multi-turn (markers + `multiturn_kb_530.json`
+ untouched, still 13). Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) +
+ `tasks_vars_usage.json`; aligned the day-3 seed manifest end_state for
+ `hard__google-search-notes__019`. `verify_config.py` PASS; full suite PASS. **Note:** 3 of the 9
+ remain single-app by multi-turn design (`makemytrip__003`, `prime-video__005`,
+ `amazon-shopping__006`) — the disambiguation is the difficulty; can be widened to 2-3 apps on
+ request.
 
 - **2026-08-18 — Hard DETERMINISTIC tasks expanded to explicit 5-step tasks (uniqueness/difficulty pass).**
-  The terse one-line hard DET prompts in the public sample (and their 530 counterparts) read as vague even
-  though the spec requires hard = 2-3 apps / 5 steps (`benchmark-spec.md`). Rewrote all 9 in
-  `tasks_530.md` + `public.md`:
-  - **Fully explicit (plain DET, no oracle):** `hard__youtube-settings__052` (names channel **Tech Burner**
-    + Settings Do Not Disturb 22:00-08:00), `hard__google-sheets-amazon-shopping__074` (SPORTS_VIDEO_DATA
-    max-views row + Amazon search 'smartphone gimbal'), `hard__bookmyshow__005` (INOX Bhubaneswar, group of
-    4, ₹240/ticket + message [contact]; **was 1-app, now BookMyShow+Telegram 2-app**),
-    `hard__clock-calendar__023` (7:00 AM weekday alarm shifted to 07:30 on the seeded clash),
-    `hard__google-meet-files__070` (next meeting = Monday Weekly Sync 10:00 + open 'Weekly Agenda' in Files).
-    These 5 were vague but had **no KB oracle in the public**, so they were genuinely unsolvable before;
-    they are now **removed from `multiturn_kb_530.json`** (13 profiles remain) and their
-    `<!-- 🔄 MULTI-TURN -->` markers stripped from `tasks_530.md`.
-  - **Expanded but kept multi-turn (KB oracle, ONE withheld fact):** `hard__swiggy__005` (**was 1-app; now
-    + Telegram** — Downtown Delight Murgh Mughlai reorder → payment page → message [contact] total),
-    `hard__telegram-calendar__016` (which chat has the date → Forever 21, create Calendar event),
-    `hard__music-obsidian__077` (read Bedtime note → search lo-fi beats by Chillhop → download highly-liked
-    → play → sleep timer), `hard__gmail-calendar__003` (which flight → IndiGo 6E 6821 BBI→DEL + reminder 3h
-    before). Their KB profiles already matched these facts, so `multiturn_kb_*.json` needed no fact changes;
-    the prompts now spell out the 5 steps while keeping the single ask-point.
-  - Fixed the 2 single-app spec violations: `hard__swiggy__005` + `hard__bookmyshow__005` each gained a
-    Telegram step → 2 apps each.
-  - Orphaned `[music type]` placeholder (was only used by `hard__music-obsidian__077`): removed from
-    `config/user_config.example`, `config/user.yaml`, `tasks_vars.local.env`,
-    `src/DailyBench/user_config.py` DEFAULT_CONFIG, and the `build_day_seed_manifest.py` day-3 spec
-    (vars now `{}`, seed/end_state updated to 'lo-fi beats by Chillhop'); updated
-    `tests/test_task_dataset.py`; regenerated `tasks_vars_usage.json` (91 keys).
-  - Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes, 36 AU / 36 DET) +
-    `AndroidLife_public_v2.json/.jsonl` (57 tasks). `verify_config.py` PASS; full test suite PASS (218,
-    1 hardware skip).
+ The terse one-line hard DET prompts in the public sample (and their 530 counterparts) read as vague even
+ though the spec requires hard = 2-3 apps / 5 steps (`benchmark-spec.md`). Rewrote all 9 in
+ `tasks_530.md` + `public.md`:
+ - **Fully explicit (plain DET, no oracle):** `hard__youtube-settings__052` (names channel **Tech Burner**
+ + Settings Do Not Disturb 22:00-08:00), `hard__google-sheets-amazon-shopping__074` (SPORTS_VIDEO_DATA
+ max-views row + Amazon search 'smartphone gimbal'), `hard__bookmyshow__005` (INOX Bhubaneswar, group of
+ 4, ₹240/ticket + message [contact]; **was 1-app, now BookMyShow+Telegram 2-app**),
+ `hard__clock-calendar__023` (7:00 AM weekday alarm shifted to 07:30 on the seeded clash),
+ `hard__google-meet-files__070` (next meeting = Monday Weekly Sync 10:00 + open 'Weekly Agenda' in Files).
+ These 5 were vague but had **no KB oracle in the public**, so they were genuinely unsolvable before;
+ they are now **removed from `multiturn_kb_530.json`** (13 profiles remain) and their
+ `<!-- 🔄 MULTI-TURN -->` markers stripped from `tasks_530.md`.
+ - **Expanded but kept multi-turn (KB oracle, ONE withheld fact):** `hard__swiggy__005` (**was 1-app; now
+ + Telegram** — Downtown Delight Murgh Mughlai reorder → payment page → message [contact] total),
+ `hard__telegram-calendar__016` (which chat has the date → Forever 21, create Calendar event),
+ `hard__music-obsidian__077` (read Bedtime note → search lo-fi beats by Chillhop → download highly-liked
+ → play → sleep timer), `hard__gmail-calendar__003` (which flight → IndiGo 6E 6821 BBI→DEL + reminder 3h
+ before). Their KB profiles already matched these facts, so `multiturn_kb_*.json` needed no fact changes;
+ the prompts now spell out the 5 steps while keeping the single ask-point.
+ - Fixed the 2 single-app spec violations: `hard__swiggy__005` + `hard__bookmyshow__005` each gained a
+ Telegram step → 2 apps each.
+ - Orphaned `[music type]` placeholder (was only used by `hard__music-obsidian__077`): removed from
+ `config/user_config.example`, `config/user.yaml`, `tasks_vars.local.env`,
+ `src/AndroidLife/user_config.py` DEFAULT_CONFIG, and the `build_day_seed_manifest.py` day-3 spec
+ (vars now `{}`, seed/end_state updated to 'lo-fi beats by Chillhop'); updated
+ `tests/test_task_dataset.py`; regenerated `tasks_vars_usage.json` (91 keys).
+ - Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes, 36 AU / 36 DET) +
+ `AndroidLife_public_v2.json/.jsonl` (57 tasks). `verify_config.py` PASS; full test suite PASS (218,
+ 1 hardware skip).
 
 - **2026-08-18 — Task-uniqueness audit: files/delete-largest cluster differentiated; unsolvable Phone task fixed.**
-  The public rebalance had already dropped `easy__phone__008` and `medium__files__012` from the
-  57-task sample, but the duplicate "filter-by-size → delete the largest → note size" pattern still
-  lived in the 530 corpus (`medium__files__010/012/013`, `medium__google-drive__007`), and the public
-  still carried it via `medium__files__013` + `medium__google-drive__007`. Rewrote each to a distinct
-  capability in both `tasks_530.md` and `public.md`:
-  - `easy__phone__008` (unsolvable — you can't mute a call you're not on) → "check who my most recent
-    call was with in the call log" (Reply with only the contact name).
-  - `medium__files__012` (duplicate delete-largest) → "total storage used by all my video files"
-    (sum sizes, no delete).
-  - `medium__files__013` (duplicate delete-largest) → "find duplicate files in my Downloads folder,
-    delete the extra copies, count how many you removed" (uses Files' duplicate cleaner).
-  - `medium__google-drive__007` (duplicate delete-largest) → "files that were shared with me that I
-    can edit, tell me how many there are" (no delete).
-  Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) + `AndroidLife_public_v2.json/.jsonl`
-  (57 tasks). This orphaned the `[video size threshold]` and `[file size threshold]` placeholders
-  (only `[size threshold]` remains, used by `medium__files__010`): removed those keys from
-  `config/user_config.example` + `config/user.yaml` + `public_vars.example.env` and the local
-  `public_vars.local.env`/`tasks_vars.local.env`; rebuilt `tasks_vars_usage.json` + the informational
-  `tasks_vars.local.json` reverse index. Also fixed a latent env-parsing bug: in the local envs
-  `email-id=...` was glued to the next key on one line (e.g. `...aghism.comsize threshold=100MB`),
-  which corrupted `email-id`'s value and hid `size threshold` from `parse_flat_config` — split onto
-  separate lines. `verify_config.py` PASS (Day-1 + ASK USER all resolved); 52 tests PASS.
+ The public rebalance had already dropped `easy__phone__008` and `medium__files__012` from the
+ 57-task sample, but the duplicate "filter-by-size → delete the largest → note size" pattern still
+ lived in the 530 corpus (`medium__files__010/012/013`, `medium__google-drive__007`), and the public
+ still carried it via `medium__files__013` + `medium__google-drive__007`. Rewrote each to a distinct
+ capability in both `tasks_530.md` and `public.md`:
+ - `easy__phone__008` (unsolvable — you can't mute a call you're not on) → "check who my most recent
+ call was with in the call log" (Reply with only the contact name).
+ - `medium__files__012` (duplicate delete-largest) → "total storage used by all my video files"
+ (sum sizes, no delete).
+ - `medium__files__013` (duplicate delete-largest) → "find duplicate files in my Downloads folder,
+ delete the extra copies, count how many you removed" (uses Files' duplicate cleaner).
+ - `medium__google-drive__007` (duplicate delete-largest) → "files that were shared with me that I
+ can edit, tell me how many there are" (no delete).
+ Regenerated `AndroidLife_530_v1.json/.jsonl` (530 tasks, 0 dupes) + `AndroidLife_public_v2.json/.jsonl`
+ (57 tasks). This orphaned the `[video size threshold]` and `[file size threshold]` placeholders
+ (only `[size threshold]` remains, used by `medium__files__010`): removed those keys from
+ `config/user_config.example` + `config/user.yaml` + `public_vars.example.env` and the local
+ `public_vars.local.env`/`tasks_vars.local.env`; rebuilt `tasks_vars_usage.json` + the informational
+ `tasks_vars.local.json` reverse index. Also fixed a latent env-parsing bug: in the local envs
+ `email-id=...` was glued to the next key on one line (e.g. `...aghism.comsize threshold=100MB`),
+ which corrupted `email-id`'s value and hid `size threshold` from `parse_flat_config` — split onto
+ separate lines. `verify_config.py` PASS (Day-1 + ASK USER all resolved); 52 tests PASS.
 
 - **2026-08-10 — Fixed "Goa trip" regression in run-time fact + dataset.**
-  The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
-  `ask_user_facts_730.json` and `AndroidLife_530_v1.json/.jsonl` — they still told the
-  sim user/agent the event was the **Goa trip** while the on-device photo caption reads
-  **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_730.json`,
-  `AndroidLife_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
-  `golden_trajectory` fields to the Day-2 seed manifests (esp. the Photos tasks, with
-  the "confirm the photo actually depicts the subject" rule from the Day-1 pizza
-  false-pass); fixed stale `DAY2_TASKS` placeholder declarations (`time 1/time 2`,
-  `album name`, `channel name`, `note title`) so `build_day_seed_manifest.py --day 2`
-  rebuilds cleanly; updated `reset_phone.py` day-2 cleanup to the current `Memories 2021`
-  album name.
+ The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
+ `ask_user_facts_730.json` and `AndroidLife_530_v1.json/.jsonl` — they still told the
+ sim user/agent the event was the **Goa trip** while the on-device photo caption reads
+ **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_730.json`,
+ `AndroidLife_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
+ `golden_trajectory` fields to the Day-2 seed manifests (esp. the Photos tasks, with
+ the "confirm the photo actually depicts the subject" rule from the Day-1 pizza
+ false-pass); fixed stale `DAY2_TASKS` placeholder declarations (`time 1/time 2`,
+ `album name`, `channel name`, `note title`) so `build_day_seed_manifest.py --day 2`
+ rebuilds cleanly; updated `reset_phone.py` day-2 cleanup to the current `Memories 2021`
+ album name.
 
 - **2026-08-06 — Day-3 Music sleep-timer task made deterministic.**
-  `hard__music-obsidian__077` rewritten to name a concrete target: "search YouTube
-  Music for my favorite music type — a [music type] track — and download the
-  highly-liked video of it, then get it playing. Then set a YouTube Music sleep
-  timer so the song plays until the bedtime noted in Obsidian...". Pinned
-  `music type=Raining Night ASMR` + `bedtime=10:30 PM` in `tasks_vars.local.env`;
-  the earlier fabricated ASMR mp3 was **removed** (the music side is now real app +
-  web state — the agent must search + download the highly-liked video itself, see
-  §3.9) and only an Obsidian `Bedtime.md` note remains on-device. Regenerated
-  `tasks_vars/day_3.env` (10/10 placeholders pinned) + `AndroidLife_530_v1.json/
-  .jsonl` (export --verify PASS, 531 tasks).
+ `hard__music-obsidian__077` rewritten to name a concrete target: "search YouTube
+ Music for my favorite music type — a [music type] track — and download the
+ highly-liked video of it, then get it playing. Then set a YouTube Music sleep
+ timer so the song plays until the bedtime noted in Obsidian...". Pinned
+ `music type=Raining Night ASMR` + `bedtime=10:30 PM` in `tasks_vars.local.env`;
+ the earlier fabricated ASMR mp3 was **removed** (the music side is now real app +
+ web state — the agent must search + download the highly-liked video itself, see
+ §3.9) and only an Obsidian `Bedtime.md` note remains on-device. Regenerated
+ `tasks_vars/day_3.env` (10/10 placeholders pinned) + `AndroidLife_530_v1.json/
+ .jsonl` (export --verify PASS, 531 tasks).
 
 - **2026-08-06 — Day-3 placeholder discipline + Yuvraj contact descriptions.**
-  Added a `[recipe]` placeholder to the Clock medium task (`medium__clock__001`,
-  "cooking the [recipe]") pinned to **World's Best Lasagna** (Allrecipes, with a
-  proper URL) so the "set multiple back-to-back timers" task has a concrete target
-  with explicit multi-step timers (simmer sauce 1.5h, boil noodles 8-10m, bake
-  25m covered + 25m uncovered, rest 15m); fixed the ambiguous Messages easy task
-  (`easy__messages__003`) to read "my conversation with **[contact]**" instead of
-  an unspecified thread; added **description (note) fields** to the Yuvraj contacts
-  with August birthdays (aneja/Jio/Singh — see §3.1) via ADB so
-  `medium__contacts__002` can suggest presents; typo-fixed "descriptiosn
-  menitoned" → "descriptions mentioned". Regenerated `tasks_vars/day_3.env`
-  (9/9 placeholders pinned) + `AndroidLife_530_v1.json/.jsonl` (export --verify PASS,
-  531 tasks).
+ Added a `[recipe]` placeholder to the Clock medium task (`medium__clock__001`,
+ "cooking the [recipe]") pinned to **World's Best Lasagna** (Allrecipes, with a
+ proper URL) so the "set multiple back-to-back timers" task has a concrete target
+ with explicit multi-step timers (simmer sauce 1.5h, boil noodles 8-10m, bake
+ 25m covered + 25m uncovered, rest 15m); fixed the ambiguous Messages easy task
+ (`easy__messages__003`) to read "my conversation with **[contact]**" instead of
+ an unspecified thread; added **description (note) fields** to the Yuvraj contacts
+ with August birthdays (aneja/Jio/Singh — see §3.1) via ADB so
+ `medium__contacts__002` can suggest presents; typo-fixed "descriptiosn
+ menitoned" → "descriptions mentioned". Regenerated `tasks_vars/day_3.env`
+ (9/9 placeholders pinned) + `AndroidLife_530_v1.json/.jsonl` (export --verify PASS,
+ 531 tasks).
 
 - **2026-08-06 — Event-photo caption added + trip renamed to "Bhubaneswar trip".**
-  The pending operator caption for `hard__photos-gmail-obsidian__012` was completed: one event
-  photo (Sep 24, 2023 · Gothapatna) now carries the caption **"Bhubaneswar trip with Yuvraj
-  Airtel"**, so the "email it to them if so" branch is reachable. The persona trip was renamed
-  **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_730.json`
-  → "The event is the Bhubaneswar trip.", regenerated `AndroidLife_530_v1.json/.jsonl`, rebuilt seed
-  manifests + `tasks_vars/day_2.env`). Re-ran the task into `runs/full-bench/2026-08-06-030706/day2/
-  hard-photos-gmail-obsidian-012` (original caption-missing run preserved as `*.nomention-backup`):
-  **PARTIAL → PASS** — photo starred + emailed to Yuvraj Airtel + send recorded in an Obsidian note.
+ The pending operator caption for `hard__photos-gmail-obsidian__012` was completed: one event
+ photo (Sep 24, 2023 · Gothapatna) now carries the caption **"Bhubaneswar trip with Yuvraj
+ Airtel"**, so the "email it to them if so" branch is reachable. The persona trip was renamed
+ **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_730.json`
+ → "The event is the Bhubaneswar trip.", regenerated `AndroidLife_530_v1.json/.jsonl`, rebuilt seed
+ manifests + `tasks_vars/day_2.env`). Re-ran the task into `runs/full-bench/2026-08-06-030706/day2/
+ hard-photos-gmail-obsidian-012` (original caption-missing run preserved as `*.nomention-backup`):
+ **PARTIAL → PASS** — photo starred + emailed to Yuvraj Airtel + send recorded in an Obsidian note.
 
 - **2026-08-06 — Day 4/5/6 fabricated-data pipeline (replicating Days 1-3).**
-  `build_day_seed_manifest.py` gained `DAY4_TASKS`/`DAY5_TASKS`/`DAY6_TASKS` specs +
-  orders + `SEED_FILE_TEMPLATES` (Daily Log, Photo Log, Budget Deadline, Research Notes),
-  so `scripts/seeding/build_day_seed_manifest.py --day 4/5/6` auto-creates `seeds/manifests/day_4/5/6`
-  (manifests + `seed_files/`). `seed_data.py --day 4/5/6` pushes the ADB-seedable data:
-  Day 4 = trip/today photos, Obsidian notes, missed call, duplicate-contact operator step;
-  Day 5 = Budget Deadline + Research Notes, tomorrow-conflict / next-week / early-bird
-  calendar events, contact address + company; Day 6 = all-day / no-reminder / clash /
-  availability calendar events, `old_doc_1-3.txt` (2026-04 mtimes), duplicate-email contact.
-  `verify_day1_seeds.py --day 4/5/6` + `verify_config.py` now cover these days. OPEN
-  placeholders on Days 4-6 (`amount`, `X`, `name`, `product`) were pinned in
-  `tasks_vars.local.env`; `day_4/5/6.env` regenerated with 0 OPEN. Device verify:
-  Day 4 PASS (1 operator WARN), Day 5 PASS, Day 6 PASS; Days 1-2 regression PASS.
-  Run dates: Day 4 = 2026-08-08 (Sat), Day 5 = 2026-08-09 (Sun), Day 6 = 2026-08-10 (Mon).
+ `build_day_seed_manifest.py` gained `DAY4_TASKS`/`DAY5_TASKS`/`DAY6_TASKS` specs +
+ orders + `SEED_FILE_TEMPLATES` (Daily Log, Photo Log, Budget Deadline, Research Notes),
+ so `scripts/seeding/build_day_seed_manifest.py --day 4/5/6` auto-creates `seeds/manifests/day_4/5/6`
+ (manifests + `seed_files/`). `seed_data.py --day 4/5/6` pushes the ADB-seedable data:
+ Day 4 = trip/today photos, Obsidian notes, missed call, duplicate-contact operator step;
+ Day 5 = Budget Deadline + Research Notes, tomorrow-conflict / next-week / early-bird
+ calendar events, contact address + company; Day 6 = all-day / no-reminder / clash /
+ availability calendar events, `old_doc_1-3.txt` (2026-04 mtimes), duplicate-email contact.
+ `verify_day1_seeds.py --day 4/5/6` + `verify_config.py` now cover these days. OPEN
+ placeholders on Days 4-6 (`amount`, `X`, `name`, `product`) were pinned in
+ `tasks_vars.local.env`; `day_4/5/6.env` regenerated with 0 OPEN. Device verify:
+ Day 4 PASS (1 operator WARN), Day 5 PASS, Day 6 PASS; Days 1-2 regression PASS.
+ Run dates: Day 4 = 2026-08-08 (Sat), Day 5 = 2026-08-09 (Sun), Day 6 = 2026-08-10 (Mon).
 
 - **2026-08-03 — Public ASK USER facts verified against Phoenix traces.** Recovered the sim
-  user's actual answers from the hard-batch traces and corrected the dentist fact (the clinic
-  name was NOT in the real fact — now just "2026-08-05 at 9:30 AM"). Maa's birthday, dinner
-  address, and quote-file facts confirmed exact; Wedding Plans and Trip 2026 are docs-only
-  (those tasks never ran/never asked).
+ user's actual answers from the hard-batch traces and corrected the dentist fact (the clinic
+ name was NOT in the real fact — now just "2026-08-05 at 9:30 AM"). Maa's birthday, dinner
+ address, and quote-file facts confirmed exact; Wedding Plans and Trip 2026 are docs-only
+ (those tasks never ran/never asked).
 - **2026-08-03 — Hard tasks redistributed across the 3 days in `public.md`.** Each day now
-  contains a mix of DETERMINISTIC and ASK USER hard tasks (Day 1: 2+2, Day 2: 2+2, Day 3: 1+2).
-  The global 1–11 numbering is preserved, so task_ids (and the `ask_user_fact` lookups keyed on
-  them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
+ contains a mix of DETERMINISTIC and ASK USER hard tasks (Day 1: 2+2, Day 2: 2+2, Day 3: 1+2).
+ The global 1–11 numbering is preserved, so task_ids (and the `ask_user_fact` lookups keyed on
+ them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
 - **2026-08-03 — ask_user_facts split per source.** The combined facts file (50 tasks.md + 6
-  public facts) is split into per-source files, derived via `--source` with no hardcoded paths
-  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-600/ask_user_facts_730.json`
-  (50 facts), `public.md` -> `benchmarks/androidlife-600/ask_user_facts.json` (the 6 public facts,
-  which `scripts/data/export_public_dataset.py` publishes). The combined file
-  `ask_user_facts_public.json` is left untouched.
+ public facts) is split into per-source files, derived via `--source` with no hardcoded paths
+ (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-600/ask_user_facts_730.json`
+ (50 facts), `public.md` -> `benchmarks/androidlife-600/ask_user_facts.json` (the 6 public facts,
+ which `scripts/data/export_public_dataset.py` publishes). The combined file
+ `ask_user_facts_public.json` is left untouched.
 - **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts.json` had been replaced with
-  tasks.md-schedule facts; the 6 public ASK USER facts were merged back in (reconstructed from
-  the documented values in §4 and the run analysis — verify against the original file if you
-  have it).
+ tasks.md-schedule facts; the 6 public ASK USER facts were merged back in (reconstructed from
+ the documented values in §4 and the run analysis — verify against the original file if you
+ have it).
 - **2026-08-03 — `easy__contacts__001` override persisted.** The Akash Kumar scoping is now
-  applied inside `scripts/data/export_public_dataset.py`, so it survives regeneration (previously it
-  was a manual re-edit of the gitignored dataset).
+ applied inside `scripts/data/export_public_dataset.py`, so it survives regeneration (previously it
+ was a manual re-edit of the gitignored dataset).
 - **2026-08-03 — §5 rewritten.** Documented the exact `--var` values used at launch
-  (`sender=Myntra`, `place=Bhubaneswar Airport`, `contact=Yuvraj Singh`, `middle
-  initial=Kumar Sahoo`, `email-id=hafari4025@aghism.com`, `artist=The Weeknd`).
+ (`sender=Myntra`, `place=Bhubaneswar Airport`, `contact=Yuvraj Singh`, `middle
+ initial=Kumar Sahoo`, `email-id=hafari4025@aghism.com`, `artist=The Weeknd`).
 - **2026-08-03 — Per-task override for `easy__contacts__001`.** Rename target changed
-  from the persona contact to **Akash Kumar** (a real contact present on the device),
-  scoped to that task only, with `middle initial=Kumar Sahoo` kept as the
-  write-instruction value. Lives in the generated, gitignored dataset — must be re-applied
-  if regenerated from `public.md`.
+ from the persona contact to **Akash Kumar** (a real contact present on the device),
+ scoped to that task only, with `middle initial=Kumar Sahoo` kept as the
+ write-instruction value. Lives in the generated, gitignored dataset — must be re-applied
+ if regenerated from `public.md`.
 - **2026-08-03 — Harness behavior hardened (recorded for reproducibility).** All
-  wall-clock timeouts removed (step budget only); `success=true` only when the deliverable
-  is completed; screen-recording off by default (1s sampling); close-app/floating-window
-  rule added to the agent prompt; per-app battery + simulated-user token tracking added.
+ wall-clock timeouts removed (step budget only); `success=true` only when the deliverable
+ is completed; screen-recording off by default (1s sampling); close-app/floating-window
+ rule added to the agent prompt; per-app battery + simulated-user token tracking added.
 - **2026-08-03 — §3.7 corrected.** The "Invoices album" task's invoice screenshots were
-  **not** seeded (known gap) — corrected from "3 invoice screenshots (favorited)".
+ **not** seeded (known gap) — corrected from "3 invoice screenshots (favorited)".
 
 ---
 
@@ -703,236 +703,236 @@ following entities were **seeded on the test device** (all recorded in
 
 **Disclosure notes:**
 - **Contacts policy respected:** the `Shared Bill` roommate list was narrowed to the
-  selected contacts (Maa, Dad, Yuvraj Singh Jio, Yuvraj Airtel) — the 530 seed template
-  used a non-selected contact (`Akash Kumar`), replaced here so no task ever messages
-  outside the policy for the public release.
+ selected contacts (Maa, Dad, Yuvraj Singh Jio, Yuvraj Airtel) — the 530 seed template
+ used a non-selected contact (`Akash Kumar`), replaced here so no task ever messages
+ outside the policy for the public release.
 - **Config/manifest reconciliation:** `medium__notes__005`'s 530 manifest resolved
-  `[note title]` to `Trip Packing Checklist` (a real user note), but `config/user.yaml`
-  resolves it to `Daily Reflection`. A fresh fabricated `Daily Reflection` note was
-  seeded so the rewrite task modifies only fabricated data, never the real user note.
+ `[note title]` to `Trip Packing Checklist` (a real user note), but `config/user.yaml`
+ resolves it to `Daily Reflection`. A fresh fabricated `Daily Reflection` note was
+ seeded so the rewrite task modifies only fabricated data, never the real user note.
 - **SPORTS_VIDEO_DATA.xlsx not modified:** the file already had a `Views` header
-  (`Video Name | Views | Duration (s)`), so `medium__google-sheets__001` was already
-  solvable. An earlier report claiming it lacked headers was a buggy-parse false alarm;
-  the original file was verified and left untouched.
+ (`Video Name | Views | Duration (s)`), so `medium__google-sheets__001` was already
+ solvable. An earlier report claiming it lacked headers was a buggy-parse false alarm;
+ the original file was verified and left untouched.
 - **Google Meet IS installed:** the package is `com.google.android.apps.tachyon` (renamed
-  after the Duo/Meet merge), so the 5 Meet tasks are solvable. The app-audit's `meetings`
-  package check is stale and should be updated to also match `tachyon`.
+ after the Duo/Meet merge), so the 5 Meet tasks are solvable. The app-audit's `meetings`
+ package check is stale and should be updated to also match `tachyon`.
 - **All ⚠️ borderline items resolved via seeding (2026-08-18):** every solvability
-  borderline from the public-sample pass is now on-device solvable — the 520 MB
-  video (`medium__files__012`), the `Recipe.md` note (`medium__clock__001`), and
-  the Myntra coupon email (`hard__gmail-notes__045`). `medium__files__010`
-  (120 MB) was seeded earlier; `medium__google-sheets__001` needed nothing (the
-  `Views` header already existed); `hard__drive-obsidian-telegram__049` was
-  already solvable (`budget.xlsx` in Drive modified 2026-07-18 + `Budget
-  Deadline.md` in Obsidian with "Last reviewed: 2026-07-10").
+ borderline from the public-sample pass is now on-device solvable — the 520 MB
+ video (`medium__files__012`), the `Recipe.md` note (`medium__clock__001`), and
+ the Myntra coupon email (`hard__gmail-notes__045`). `medium__files__010`
+ (120 MB) was seeded earlier; `medium__google-sheets__001` needed nothing (the
+ `Views` header already existed); `hard__drive-obsidian-telegram__049` was
+ already solvable (`budget.xlsx` in Drive modified 2026-07-18 + `Budget
+ Deadline.md` in Obsidian with "Last reviewed: 2026-07-10").
 - **Thorough re-audit (2026-08-18) found + fixed 3 more gaps, all now solvable:**
-  - `medium__files__012`: the 520 MB video wasn't showing in the Files-by-Google
-    GUI until a **MediaStore re-scan** (`am broadcast
-    android.intent.action.MEDIA_SCANNER_SCAN_FILE` + `content call
-    media_scanner scan_file`). It now lists as `Physics Lecture - Module 4.mp4` **545 MB**
-    in Files → Downloads / Videos (the unique >500MB video).
-  - `easy__calendar__002`: the earlier conflict events were **stale** (seeded for
-    a prior "tomorrow"). Re-seeded `Team Sync` / `Mentor 1 on 1` for **08-19 afternoon**
-    (verified rendering in the Calendar app).
-  - `medium__calendar__013`: no "work"-tagged events existed this week. Seeded
-    three `Work`-titled events this week (4h total; "tagged work" = "Work" in
-    the title).
-  - `hard__clock-calendar__023`: same-week events already present
-    (`Standup` / `Weekly Planning` / `Python Workshop` on 08-17 + the 08-18 22:30 meeting), so the alarm
-    clash cross-reference has something to find. No new seed needed.
-  - All 6 ASK USER tasks: facts present in `ask_user_facts.json` and on-device
-    prerequisites verified (`budget.xlsx` in Drive, `Invoice INV-2026-071.pdf` in Files,
-    `Budget Deadline.md`/`Contact Updates.md`/`Exam Scores.md`/`Bedtime.md` in
-    Obsidian, real Swiggy order history with Downtown Delight as the most recent
-    order, real Telegram `Forever 21` group, the 6E 6821 flight confirmation
-    email in Gmail).
-  - The public sample carries **7 of the 60 hallucination-control tasks** (all
-    apps already present in the public sample: `easy__calendar__008`,
-    `easy__files__002`, `easy__telegram__004`, `easy__contacts__008`,
-    `easy__obsidian__009`, `medium__notes__004`, `hard__files-notes__069`). Their
-    data stays genuinely absent on-device, so the correct outcome is an honest
-    failure; the seed-manifest HC guard emits them as absent-entity controls
-    ("MUST NOT create") so they can never be accidentally seeded.
+ - `medium__files__012`: the 520 MB video wasn't showing in the Files-by-Google
+ GUI until a **MediaStore re-scan** (`am broadcast
+ android.intent.action.MEDIA_SCANNER_SCAN_FILE` + `content call
+ media_scanner scan_file`). It now lists as `Physics Lecture - Module 4.mp4` **545 MB**
+ in Files → Downloads / Videos (the unique >500MB video).
+ - `easy__calendar__002`: the earlier conflict events were **stale** (seeded for
+ a prior "tomorrow"). Re-seeded `Team Sync` / `Mentor 1 on 1` for **08-19 afternoon**
+ (verified rendering in the Calendar app).
+ - `medium__calendar__013`: no "work"-tagged events existed this week. Seeded
+ three `Work`-titled events this week (4h total; "tagged work" = "Work" in
+ the title).
+ - `hard__clock-calendar__023`: same-week events already present
+ (`Standup` / `Weekly Planning` / `Python Workshop` on 08-17 + the 08-18 22:30 meeting), so the alarm
+ clash cross-reference has something to find. No new seed needed.
+ - All 6 ASK USER tasks: facts present in `ask_user_facts.json` and on-device
+ prerequisites verified (`budget.xlsx` in Drive, `Invoice INV-2026-071.pdf` in Files,
+ `Budget Deadline.md`/`Contact Updates.md`/`Exam Scores.md`/`Bedtime.md` in
+ Obsidian, real Swiggy order history with Downtown Delight as the most recent
+ order, real Telegram `Forever 21` group, the 6E 6821 flight confirmation
+ email in Gmail).
+ - The public sample carries **7 of the 60 hallucination-control tasks** (all
+ apps already present in the public sample: `easy__calendar__008`,
+ `easy__files__002`, `easy__telegram__004`, `easy__contacts__008`,
+ `easy__obsidian__009`, `medium__notes__004`, `hard__files-notes__069`). Their
+ data stays genuinely absent on-device, so the correct outcome is an honest
+ failure; the seed-manifest HC guard emits them as absent-entity controls
+ ("MUST NOT create") so they can never be accidentally seeded.
 - **Hard-task ordering de-biased (2026-08-18):** the public sample's per-day hard
-  tasks were previously grouped by type (all ASK USER then all DETERMINISTIC),
-  which is a giveaway bias. They are now **randomly interleaved within each day**
-  (deterministic shuffle, `random.seed(3)`, max 2 consecutive same-type) in
-  `public.md` + `AndroidLife_public_v2.json/.jsonl` — same tasks, same ids, new
-  order, matching how the 530 corpus is ordered.
+ tasks were previously grouped by type (all ASK USER then all DETERMINISTIC),
+ which is a giveaway bias. They are now **randomly interleaved within each day**
+ (deterministic shuffle, `random.seed(3)`, max 2 consecutive same-type) in
+ `public.md` + `AndroidLife_public_v2.json/.jsonl` — same tasks, same ids, new
+ order, matching how the 530 corpus is ordered.
 - **Fabricated data made natural (2026-08-18):** demo-obvious names were renamed
-  to look like real user data — `seed_large_video.mp4` →
-  `Concert Highlights.mp4`, `seed_lecture_video.mp4` →
-  `Physics Lecture - Module 4.mp4`, `invoice_seed.pdf` →
-  `Invoice INV-2026-071.pdf` (all MediaStore re-scanned), and the seed-fixture
-  calendar titles (`Team_Conflict_A/B`, `Next_Week_30m/1h/90m`) → real meeting
-  names (`Team Sync` / `Mentor 1 on 1` / `Standup` / `Weekly Planning` /
-  `Python Workshop`). Obsidian notes, the coupon email, and the SPORTS_VIDEO_DATA
-  spreadsheet already used natural names.
+ to look like real user data — `seed_large_video.mp4` →
+ `Concert Highlights.mp4`, `seed_lecture_video.mp4` →
+ `Physics Lecture - Module 4.mp4`, `invoice_seed.pdf` →
+ `Invoice INV-2026-071.pdf` (all MediaStore re-scanned), and the seed-fixture
+ calendar titles (`Team_Conflict_A/B`, `Next_Week_30m/1h/90m`) → real meeting
+ names (`Team Sync` / `Mentor 1 on 1` / `Standup` / `Weekly Planning` /
+ `Python Workshop`). Obsidian notes, the coupon email, and the SPORTS_VIDEO_DATA
+ spreadsheet already used natural names.
 - **Non-ASK-USER unambiguity pass (2026-08-18):** every deterministic (DET/KB)
-  public task now resolves every entity it references. Fixed 6 prompts that
-  named an entity without a placeholder (in `public.md` +
-  `AndroidLife_public_v2.json/.jsonl`), adding config values so they resolve:
-  `easy__shopping-delivery-browser__012` → `[store]` (Decathlon),
-  `medium__shopping-delivery-browser__010` → `[food delivery site]`+`[restaurant]`
-  (Swiggy / Downtown Delight), `medium__youtube__006` → `[topic]`,
-  `easy__telegram__010` → `[contact]` (Yuvraj Airtel),
-  `hard__google-search-clock__056` → `[transit line]` (Route 205),
-  `hard__google-search-notes__019` → `[product 1]`+`[product 2]`
-  (Sony WH-1000XM5 / Bose QuietComfort Ultra). The same ambiguity exists in the
-  530 corpus but the 530 is intentionally left untouched (only the public sample
-  was rectified).
+ public task now resolves every entity it references. Fixed 6 prompts that
+ named an entity without a placeholder (in `public.md` +
+ `AndroidLife_public_v2.json/.jsonl`), adding config values so they resolve:
+ `easy__shopping-delivery-browser__012` → `[store]` (Decathlon),
+ `medium__shopping-delivery-browser__010` → `[food delivery site]`+`[restaurant]`
+ (Swiggy / Downtown Delight), `medium__youtube__006` → `[topic]`,
+ `easy__telegram__010` → `[contact]` (Yuvraj Airtel),
+ `hard__google-search-clock__056` → `[transit line]` (Route 205),
+ `hard__google-search-notes__019` → `[product 1]`+`[product 2]`
+ (Sony WH-1000XM5 / Bose QuietComfort Ultra). The same ambiguity exists in the
+ 530 corpus but the 530 is intentionally left untouched (only the public sample
+ was rectified).
 - **Public-vars completed (2026-08-18):** `public_vars.local.env` (gitignored,
-  live) now contains a value for **every** `[placeholder]` used by the 57-task
-  public sample (22 placeholders; was 6) — including the new `store`,
-  `restaurant`, `product 1/2`, `transit line`, `topic`, `food delivery site`,
-  note/sheet/slides titles, etc. A tracked **`public_vars.example.env`** template
-  documents all keys for reproducibility. Verified: all 57 tasks resolve from
-  the vars file alone (mirrors `task_batch.py`'s `unresolved placeholders`
-  check).
+ live) now contains a value for **every** `[placeholder]` used by the 57-task
+ public sample (22 placeholders; was 6) — including the new `store`,
+ `restaurant`, `product 1/2`, `transit line`, `topic`, `food delivery site`,
+ note/sheet/slides titles, etc. A tracked **`public_vars.example.env`** template
+ documents all keys for reproducibility. Verified: all 57 tasks resolve from
+ the vars file alone (mirrors `task_batch.py`'s `unresolved placeholders`
+ check).
 - **530-style output formats added (2026-08-18):** per the operator, every
-  public task that "notes something or tells the user the output" now ends with a
-  deterministic output format, matching the 530 convention AND its variety —
-  a **mix** of single-value (`Reply with only X, no other text.`) and structured
-  pipe formats (`List … in the format of "A" | "B" strictly`). 23 tasks carry an
-  explicit format: **6 structured** (`medium__files__010` "Filename"|"Size",
-  `medium__settings__005` "Difference"|"Top app", `hard__contacts-obsidian__029`
-  "Contact"|"Old"|"New", `medium__calculator__005` "Name"|"Share" + total,
-  `hard__google-search-clock__056` "Time remaining"|"Alarm time",
-  `medium__google-meet__005` "Name") and **17 reply-only** (e.g.
-  `easy__google-photos__004` "date", `medium__calculator__001` "final grade",
-  `easy__messages__013` "number of unread", `easy__phone__015` "number of missed
-  calls", `medium__youtube__006` "number"). Updated in `public.md` +
-  `AndroidLife_public_v2.json/.jsonl`; a deliberate small deviation from the raw
-  530 prompt text for those tasks (noted in the `public.md` header).
+ public task that "notes something or tells the user the output" now ends with a
+ deterministic output format, matching the 530 convention AND its variety —
+ a **mix** of single-value (`Reply with only X, no other text.`) and structured
+ pipe formats (`List … in the format of "A" | "B" strictly`). 23 tasks carry an
+ explicit format: **6 structured** (`medium__files__010` "Filename"|"Size",
+ `medium__settings__005` "Difference"|"Top app", `hard__contacts-obsidian__029`
+ "Contact"|"Old"|"New", `medium__calculator__005` "Name"|"Share" + total,
+ `hard__google-search-clock__056` "Time remaining"|"Alarm time",
+ `medium__google-meet__005` "Name") and **17 reply-only** (e.g.
+ `easy__google-photos__004` "date", `medium__calculator__001` "final grade",
+ `easy__messages__013` "number of unread", `easy__phone__015` "number of missed
+ calls", `medium__youtube__006` "number"). Updated in `public.md` +
+ `AndroidLife_public_v2.json/.jsonl`; a deliberate small deviation from the raw
+ 530 prompt text for those tasks (noted in the `public.md` header).
 - **Gallery → Google Photos (2026-08-18):** all 25 Gallery tasks in the 530
-  corpus + the 1 in the public sample now use **Google Photos** instead of the
-  Gallery app (which has no search), so search/curation tasks are agent-solvable.
-  Updated in `AndroidLife_530_v1.json`, `tasks_530.md`, `tasks.md`,
-  `AndroidLife_public_v2.json/.jsonl`, `public.md` (incl. the operator's
-  food-collage edit on `medium__gallery__007`), the gallery seed manifests, and
-  the pipeline scripts (`build_day_seed_manifest.py`, `harvest_real_queries.py`).
-  Task IDs stay `*__gallery__*` (stable identifiers); the app label/counts now
-  read **Google Photos** (31 covered apps; Gallery removed from `app_audit`'s
-  required set — the device still has it installed, it's just no longer used by
-  tasks).
+ corpus + the 1 in the public sample now use **Google Photos** instead of the
+ Gallery app (which has no search), so search/curation tasks are agent-solvable.
+ Updated in `AndroidLife_530_v1.json`, `tasks_530.md`, `tasks.md`,
+ `AndroidLife_public_v2.json/.jsonl`, `public.md` (incl. the operator's
+ food-collage edit on `medium__gallery__007`), the gallery seed manifests, and
+ the pipeline scripts (`build_day_seed_manifest.py`, `harvest_real_queries.py`).
+ Task IDs stay `*__gallery__*` (stable identifiers); the app label/counts now
+ read **Google Photos** (31 covered apps; Gallery removed from `app_audit`'s
+ required set — the device still has it installed, it's just no longer used by
+ tasks).
 - **`medium__gallery__007` redesign → Food Favourites collage (2026-08-18):**
-  per the operator, the task no longer deletes photos to free space. It now asks
-  the agent to open **Google Photos Favourites**, read each favourite photo's
-  **description/caption**, and copy the matching photo **one by one** under the
-  matching heading (Pancakes / Pizza / Veggie Bowl) in the Obsidian note
-  `Food Favourites.md` (in `Papers vault oneplus /`). Updated in
-  `AndroidLife_530_v1.json/.jsonl`, `tasks_530.md`, `tasks.md`,
-  `AndroidLife_public_v2.json/.jsonl`, `public.md`, and the
-  `day_14/medium__gallery__007` seed manifest. **Seeded/real data:** the note has
-  the 3 empty headings; the 3 food photos (`pancakes.jpg`, `pizza.jpg`,
-  `veggie bowl.jpg` in `DCIM/Camera`) are favourited in Google Photos and each
-  carries a caption ("Golden fluffy pancakes stacked on a plate", "Freshly baked
-  pizza with melted cheese", "Healthy veggie bowl with fresh vegetables") set via
-  the Photos GUI — note EXIF ImageDescription alone is **not** displayed by
-  Google Photos for local (unbacked-up) photos, so captions must be set in-app.
-  Expected end state: each photo embedded under its matching heading.
-  **Reset:** `scripts/seeding/reset_phone.py --profile public_v2` now restores
-  `Food Favourites.md` to its empty-headings baseline and deletes vault-root
-  `Pasted image *.jpg` artifacts between runs (so 3× variance-check runs start
-  identical); the photo captions/Favourites live in the app-private Photos DB
-  and are read-only for this task, so they persist across runs.
+ per the operator, the task no longer deletes photos to free space. It now asks
+ the agent to open **Google Photos Favourites**, read each favourite photo's
+ **description/caption**, and copy the matching photo **one by one** under the
+ matching heading (Pancakes / Pizza / Veggie Bowl) in the Obsidian note
+ `Food Favourites.md` (in `Papers vault oneplus /`). Updated in
+ `AndroidLife_530_v1.json/.jsonl`, `tasks_530.md`, `tasks.md`,
+ `AndroidLife_public_v2.json/.jsonl`, `public.md`, and the
+ `day_14/medium__gallery__007` seed manifest. **Seeded/real data:** the note has
+ the 3 empty headings; the 3 food photos (`pancakes.jpg`, `pizza.jpg`,
+ `veggie bowl.jpg` in `DCIM/Camera`) are favourited in Google Photos and each
+ carries a caption ("Golden fluffy pancakes stacked on a plate", "Freshly baked
+ pizza with melted cheese", "Healthy veggie bowl with fresh vegetables") set via
+ the Photos GUI — note EXIF ImageDescription alone is **not** displayed by
+ Google Photos for local (unbacked-up) photos, so captions must be set in-app.
+ Expected end state: each photo embedded under its matching heading.
+ **Reset:** `scripts/seeding/reset_phone.py --profile public_v2` now restores
+ `Food Favourites.md` to its empty-headings baseline and deletes vault-root
+ `Pasted image *.jpg` artifacts between runs (so 3× variance-check runs start
+ identical); the photo captions/Favourites live in the app-private Photos DB
+ and are read-only for this task, so they persist across runs.
 - **Email vs message policy + hard-task interleaving (2026-08-18):** per the
-  operator, **email is only used in a professional setting** — casual sharing
-  ("address of the nearest station", playlist link, route, photo, etc.) uses
-  `message [contact]` (Telegram, or Messages where the base app is Telegram)
-  instead of Gmail. Professional emails keep the Gmail app and now target the
-  **`[email-id]`** placeholder (a real address: `hafari4025@aghism.com`), not
-  `[contact]` (a person). **530 changes** (`tasks_530.md` +
-  `AndroidLife_530_v1.json/.jsonl`): 13 casual `email [contact]` →
-  `message [contact]` with apps updated `*+Gmail` → `*+Telegram` (incl.
-  `medium__google-maps__003`; `medium__telegram__005` → `*+Messages`;
-  `medium__google-drive__011`, `medium__calendar__011`,
-  `medium__google-search__013`, `medium__contacts__013`); 2 professional
-  (`medium__contacts__008`, `medium__calculator__003`) → `email [email-id]`. **Public changes** (`public.md` +
-  `AndroidLife_public_v2.json/.jsonl`): `medium__music__004` (meeting prep =
-  professional) → `email [email-id]`; `medium__youtube__005` + already-message
-  `medium__google-maps__003` → `message [contact] on Telegram` with apps
-  `YouTube+Gmail` / `Google Maps+Gmail` → `*+Telegram`. Added `email-id` to
-  `config/user.yaml` + `user_config.example` + `public_vars*.env` +
-  `tasks_vars*.env`; regenerated `tasks_vars_usage.json`. Also, the public sample
-  **no longer groups hard tasks** under "Hard tasks — Day N:" — they are now
-  **interleaved** among the easy/medium tasks (evenly spread, matching the 530
-  layout; `build_public_sample.py` updated so future builds do the same).
+ operator, **email is only used in a professional setting** — casual sharing
+ ("address of the nearest station", playlist link, route, photo, etc.) uses
+ `message [contact]` (Telegram, or Messages where the base app is Telegram)
+ instead of Gmail. Professional emails keep the Gmail app and now target the
+ **`[email-id]`** placeholder (a real address: `hafari4025@aghism.com`), not
+ `[contact]` (a person). **530 changes** (`tasks_530.md` +
+ `AndroidLife_530_v1.json/.jsonl`): 13 casual `email [contact]` →
+ `message [contact]` with apps updated `*+Gmail` → `*+Telegram` (incl.
+ `medium__google-maps__003`; `medium__telegram__005` → `*+Messages`;
+ `medium__google-drive__011`, `medium__calendar__011`,
+ `medium__google-search__013`, `medium__contacts__013`); 2 professional
+ (`medium__contacts__008`, `medium__calculator__003`) → `email [email-id]`. **Public changes** (`public.md` +
+ `AndroidLife_public_v2.json/.jsonl`): `medium__music__004` (meeting prep =
+ professional) → `email [email-id]`; `medium__youtube__005` + already-message
+ `medium__google-maps__003` → `message [contact] on Telegram` with apps
+ `YouTube+Gmail` / `Google Maps+Gmail` → `*+Telegram`. Added `email-id` to
+ `config/user.yaml` + `user_config.example` + `public_vars*.env` +
+ `tasks_vars*.env`; regenerated `tasks_vars_usage.json`. Also, the public sample
+ **no longer groups hard tasks** under "Hard tasks — Day N:" — they are now
+ **interleaved** among the easy/medium tasks (evenly spread, matching the 530
+ layout; `build_public_sample.py` updated so future builds do the same).
 - **Same-app tasks scattered + size placeholders + solvability fixes
-  (2026-08-18):**
-  - **Scatter:** tasks are no longer grouped under `**[App]**` section headers —
-  every task is its own block (single-app tasks carry their own `**[App]**`
-  header; cross-app/hard keep inline labels) and blocks are scattered within each
-  day so same-app tasks are only occasionally adjacent. Applied to
-  `public.md` + `tasks_530.md` (JSON/JSONL regenerated; stats verified identical:
-  57 / 530 tasks, buckets, days, and all 78 hallucination/multi-turn markers
-  preserved; `build_public_sample.py` updated to emit the scattered layout).
-  - **Size thresholds → placeholders:** device-dependent file-size cutoffs are now
-  configurable: `medium__files__010` → `[size threshold]` (100MB),
-  `medium__files__012` → `[video size threshold]` (500MB),
-  `medium__google-drive__007` → `[file size threshold]` (50MB). Keys added to
-  `config/user.yaml` + `user_config.example` + `public_vars*.env` +
-  `tasks_vars*.env`; `tasks_vars_usage.json` regenerated.
-  - **`medium__google-sheets__003` rewrite (solvability):** the mobile Google
-  Sheets app has **no freeze-rows feature** (verified on-device — nothing in the
-  toolbar or ⋯ menu), so "freeze the header row" was unsolvable. Rewritten to a
-  composite task: read the view counts in `[spreadsheet name]` (SPORTS_VIDEO_DATA,
-  real Views column), report the most-viewed video, and bold the header row.
-  Verified on-device that reading cell values works and the spreadsheet was left
-  unchanged after testing.
-  - **`easy__telegram__010` rewrite (solvability):** Telegram has **no read-receipts
-  control** (verified on-device — Privacy & Security has no such option, and there
-  is certainly no per-contact toggle), so "turn off read receipts for [contact]"
-  was unsolvable. Rewritten to the solvable per-contact action **mute notifications
-  for [contact]**.
+ (2026-08-18):**
+ - **Scatter:** tasks are no longer grouped under `**[App]**` section headers —
+ every task is its own block (single-app tasks carry their own `**[App]**`
+ header; cross-app/hard keep inline labels) and blocks are scattered within each
+ day so same-app tasks are only occasionally adjacent. Applied to
+ `public.md` + `tasks_530.md` (JSON/JSONL regenerated; stats verified identical:
+ 57 / 530 tasks, buckets, days, and all 78 hallucination/multi-turn markers
+ preserved; `build_public_sample.py` updated to emit the scattered layout).
+ - **Size thresholds → placeholders:** device-dependent file-size cutoffs are now
+ configurable: `medium__files__010` → `[size threshold]` (100MB),
+ `medium__files__012` → `[video size threshold]` (500MB),
+ `medium__google-drive__007` → `[file size threshold]` (50MB). Keys added to
+ `config/user.yaml` + `user_config.example` + `public_vars*.env` +
+ `tasks_vars*.env`; `tasks_vars_usage.json` regenerated.
+ - **`medium__google-sheets__003` rewrite (solvability):** the mobile Google
+ Sheets app has **no freeze-rows feature** (verified on-device — nothing in the
+ toolbar or ⋯ menu), so "freeze the header row" was unsolvable. Rewritten to a
+ composite task: read the view counts in `[spreadsheet name]` (SPORTS_VIDEO_DATA,
+ real Views column), report the most-viewed video, and bold the header row.
+ Verified on-device that reading cell values works and the spreadsheet was left
+ unchanged after testing.
+ - **`easy__telegram__010` rewrite (solvability):** Telegram has **no read-receipts
+ control** (verified on-device — Privacy & Security has no such option, and there
+ is certainly no per-contact toggle), so "turn off read receipts for [contact]"
+ was unsolvable. Rewritten to the solvable per-contact action **mute notifications
+ for [contact]**.
 - **Public sample rebalanced to mirror the 530 app distribution + camera fix
-  (2026-08-18):** per the operator, `public.md` must be a **stats replica** of the
-  530 corpus. `build_public_sample.py` now selects tasks by a seeded greedy that
-  minimizes deviation from the 530's proportional per-app counts (target =
-  round(530_count × 57/530)), pins the showcase `medium__gallery__007`, carries
-  over the existing public prompt text (output formats + operator wording) for
-  surviving task_ids, and adds the missing `[product]`/`[price threshold]` vars so
-  Amazon Shopping is selectable. Result: **Google Meet 5 → 2** (spread across
-  days, was all Day-3), and **MSN News / Amazon Shopping / Google Docs /
-  BookMyShow are now present** (were absent); total |deviation| from the
-  proportional target = 16; 57 tasks / 21-20-16 / 20-20-17 unchanged, no dupes,
-  all placeholders resolvable. `easy__camera__006` was **rewritten from a
-  storage-check (not a real Camera action) to a genuine Camera task** — "open
-  Camera and switch to video mode" — in both `tasks_530.md` and `public.md`.
+ (2026-08-18):** per the operator, `public.md` must be a **stats replica** of the
+ 530 corpus. `build_public_sample.py` now selects tasks by a seeded greedy that
+ minimizes deviation from the 530's proportional per-app counts (target =
+ round(530_count × 57/530)), pins the showcase `medium__gallery__007`, carries
+ over the existing public prompt text (output formats + operator wording) for
+ surviving task_ids, and adds the missing `[product]`/`[price threshold]` vars so
+ Amazon Shopping is selectable. Result: **Google Meet 5 → 2** (spread across
+ days, was all Day-3), and **MSN News / Amazon Shopping / Google Docs /
+ BookMyShow are now present** (were absent); total |deviation| from the
+ proportional target = 16; 57 tasks / 21-20-16 / 20-20-17 unchanged, no dupes,
+ all placeholders resolvable. `easy__camera__006` was **rewritten from a
+ storage-check (not a real Camera action) to a genuine Camera task** — "open
+ Camera and switch to video mode" — in both `tasks_530.md` and `public.md`.
 - **`hard__contacts-obsidian__029` caveat:** the `Contact Updates.md` note lists
-  new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
-  (+91 00030 30302), and the task updates those two real selected contacts'
-  numbers in Contacts. Running it **overwrites the real numbers** (Dad
-  +919560156082, Yuvraj Singh Jio +919354672378). The task is solvable, but after
-  any run **restore** them:
-  `adb shell content update --uri content://com.android.contacts/data --bind
-  data1:s:+919560156082 --where "raw_contact_id=(SELECT raw_contact_id FROM
-  view_data WHERE display_name='Dad' AND mimetype='vnd.android.cursor.item/
-  phone_v2')"` and likewise for Yuvraj Singh Jio → +919354672378.
+ new numbers for **Dad** (+91 00030 30301) and **Yuvraj Singh Jio**
+ (+91 00030 30302), and the task updates those two real selected contacts'
+ numbers in Contacts. Running it **overwrites the real numbers** (Dad
+ +919560156082, Yuvraj Singh Jio +919354672378). The task is solvable, but after
+ any run **restore** them:
+ `adb shell content update --uri content://com.android.contacts/data --bind
+ data1:s:+919560156082 --where "raw_contact_id=(SELECT raw_contact_id FROM
+ view_data WHERE display_name='Dad' AND mimetype='vnd.android.cursor.item/
+ phone_v2')"` and likewise for Yuvraj Singh Jio → +919354672378.
 - **The coupon email is the one item that was seeded via the Gmail GUI** (a
-  composed email — Gmail mail is app-private so there is no adb path). It was
-  **rewritten 2026-08-18 15:40** per the operator: the earlier versions
-  ("Your 15 Coupon" bare note, then a Myntra-branded promo from the "Rani Singh"
-  account) were **deleted**, because impersonating a real brand (Myntra) in a
-  fabricated email is not acceptable. The current coupon is a realistic promo
-  with **no brand name** — Subject `Last chance: 15% OFF with code FLIP15`, body
-  `Hi Yuvraj,` / `YOUR COUPON CODE: FLIP15` / `15% OFF on your next order - no
-  minimum order value` / `How to use: 1-2-3` / `Hurry! This coupon expires on 20
-  August 2026.` / `T&C` / `You are receiving this because you are subscribed to
-  our daily deal alerts.` / `Warm regards, The Deals Team`. It is sent **from
-  `rajceo2031@gmail.com` to `ranirajesh786@gmail.com`** (findable via the
-  "coupon" search in the primary account's Sent + in the other account's Inbox).
-  If it ever needs re-creating, the manual step is: open Gmail (as
-  `rajceo2031@gmail.com`) → Compose → To `ranirajesh786@gmail.com` → the subject
-  and body above → Send.
+ composed email — Gmail mail is app-private so there is no adb path). It was
+ **rewritten 2026-08-18 15:40** per the operator: the earlier versions
+ ("Your 15 Coupon" bare note, then a Myntra-branded promo from the "Rani Singh"
+ account) were **deleted**, because impersonating a real brand (Myntra) in a
+ fabricated email is not acceptable. The current coupon is a realistic promo
+ with **no brand name** — Subject `Last chance: 15% OFF with code FLIP15`, body
+ `Hi Yuvraj,` / `YOUR COUPON CODE: FLIP15` / `15% OFF on your next order - no
+ minimum order value` / `How to use: 1-2-3` / `Hurry! This coupon expires on 20
+ August 2026.` / `T&C` / `You are receiving this because you are subscribed to
+ our daily deal alerts.` / `Warm regards, The Deals Team`. It is sent **from
+ `rajceo2031@gmail.com` to `ranirajesh786@gmail.com`** (findable via the
+ "coupon" search in the primary account's Sent + in the other account's Inbox).
+ If it ever needs re-creating, the manual step is: open Gmail (as
+ `rajceo2031@gmail.com`) → Compose → To `ranirajesh786@gmail.com` → the subject
+ and body above → Send.
 - **Why the email is required:** in the public sample `hard__gmail-notes__045`
-  is `ahi=DETERMINISTIC` (prompt: "I've got a coupon somewhere that's expiring
-  soon. Can you find it and save it before it's gone?") — there is no simulated
-  user to ask, so the coupon email must genuinely exist in Gmail for the agent to
-  find `FLIP15`. (In the full-530 corpus the same task is also authored as a
-  multi-turn KB task, where `multiturn_kb_530.json` holds `FLIP15` + expiry as
-  the simulated user's answer — but that profile is not used by the public
-  deterministic build.)
+ is `ahi=DETERMINISTIC` (prompt: "I've got a coupon somewhere that's expiring
+ soon. Can you find it and save it before it's gone?") — there is no simulated
+ user to ask, so the coupon email must genuinely exist in Gmail for the agent to
+ find `FLIP15`. (In the full-530 corpus the same task is also authored as a
+ multi-turn KB task, where `multiturn_kb_530.json` holds `FLIP15` + expiry as
+ the simulated user's answer — but that profile is not used by the public
+ deterministic build.)
 
 ---
 

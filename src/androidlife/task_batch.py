@@ -64,7 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-unresolved", action="store_true")
-    parser.add_argument("--serial", default=os.environ.get("ANDROIDLIFE_SERIAL") or os.environ.get("DAILYBENCH_SERIAL"))
+    parser.add_argument("--serial", default=os.environ.get("ANDROIDLIFE_SERIAL"))
     parser.add_argument("--sample-interval", type=float, default=1.0, help="Seconds between battery/thermal samples, forwarded to each task run (1.0 = every second; 0.1 = every 100ms, heavier).")
     parser.add_argument("--llm-upstream-base", default=os.environ.get("LLM_UPSTREAM"))
     parser.add_argument("--llm-proxy-port-base", type=int, default=8090)
@@ -156,11 +156,7 @@ def load_json_object(path: str | Path) -> dict[str, Any]:
 
 
 def _runner_script(repo_root: Path) -> Path:
-    """Prefer androidlife_runner.py; fall back to dailybench_runner.py."""
-    for name in ("androidlife_runner.py", "dailybench_runner.py"):
-        path = repo_root / name
-        if path.exists():
-            return path
+    """Return androidlife_runner.py under the repo root."""
     return repo_root / "androidlife_runner.py"
 
 
@@ -249,7 +245,7 @@ def build_run_command(
 
 
 def find_run_dir(label: str, runs_root: str | Path = "assets/runs") -> Path | None:
-    """Best-effort: find the run folder `dailybench_runner.py` just created for this label.
+    """Best-effort: find the run folder `androidlife_runner.py` just created for this label.
 
     Batch labels are `{day}--{rest}` stored as `<runs_root>/<day>/<slug>` when
     `--run-root` is the batch folder, or deeper under `assets/runs/**` otherwise.

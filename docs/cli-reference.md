@@ -6,7 +6,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--serial` | `$DAILYBENCH_SERIAL` | ADB serial (USB device ID or `ip:port` for wireless) |
+| `--serial` | `$ANDROIDLIFE_SERIAL` | ADB serial (USB device ID or `ip:port` for wireless) |
 | `--label` | *(required)* | Run label; used directly as the run folder name (e.g. `easy-gmail-001`) |
 | `--sample-interval` | `1.0` | Seconds between battery/thermal samples (1.0s = every second; 0.1s = every 100ms, heavier) |
 | `--screen-bit-rate` | `8M` | `scrcpy` recording bit rate |
@@ -54,7 +54,7 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--list` | off | Print the selected tasks and exit, without running anything |
 | `--dry-run` | off | Print the exact commands that would run, without executing them |
 | `--skip-unresolved` | off | Skip (rather than error on) tasks whose placeholders have no `--var` value |
-| `--serial` | `$DAILYBENCH_SERIAL` | ADB serial, forwarded to every task run |
+| `--serial` | `$ANDROIDLIFE_SERIAL` | ADB serial, forwarded to every task run |
 | `--sample-interval` | `1.0` | Forwarded to each task run |
 | `--llm-upstream-base` | `$LLM_UPSTREAM` | Forwarded to each task run |
 | `--llm-proxy-port-base` | `8090` | First proxy port; each task/repeat invocation gets `base + running index` |
@@ -91,23 +91,23 @@ when the launching terminal closes (stdin becomes invalid). **Always redirect st
 
 ```bash
 nohup uv run androidlife_tasks.py --dataset ... --all --serial ... \
-  --model <model> --save-trajectory action \
-  --run-root "assets/runs/public/<TS>" \
-  < /dev/null > "assets/runs/public/batch-<TS>.log" 2>&1 &
+ --model <model> --save-trajectory action \
+ --run-root "assets/runs/public/<TS>" \
+ < /dev/null > "assets/runs/public/batch-<TS>.log" 2>&1 &
 ```
 
 If a detached batch dies mid-run, **resume in place** (same run-root, no re-runs):
 
 ```bash
 uv run androidlife_tasks.py --dataset ... --all --serial ... \
-  --model <model> --save-trajectory action \
-  --run-root "assets/runs/public/<TS>" --resume-from "<next-task-id>" \
-  < /dev/null > "assets/runs/public/resume-<TS>.log" 2>&1 &
+ --model <model> --save-trajectory action \
+ --run-root "assets/runs/public/<TS>" --resume-from "<next-task-id>" \
+ < /dev/null > "assets/runs/public/resume-<TS>.log" 2>&1 &
 ```
 
 Find the next task id from the dead batch's log: it echoes every `label dayN--...`
 command in run order; the first label with no `output.json` in its folder is the resume point
-(the batch died while spawning it). Aliveness checks: `pgrep -af dailybench`,
+(the batch died while spawning it). Aliveness checks: `pgrep -af androidlife`,
 `lsof -nP -iTCP:<task proxy port>`, and the active `agent.log.txt` mtime advancing.
 
 ### Model compatibility notes (2026-09-01)

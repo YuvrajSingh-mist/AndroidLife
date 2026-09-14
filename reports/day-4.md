@@ -1,7 +1,7 @@
 # Day 4 — Full-Bench Run Report (qwen3.7-flash + qwen3.6-plus reruns)
 
 **Run root:** `assets/runs/full-bench/2026-08-13-011830/` (day4/, 20 tasks)
-**Schedule source:** `benchmarks/dailyBench-600/tasks_530.md` (Day 4, 20 tasks) → `DailyBench_530_v1.json`
+**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 4, 20 tasks) → `AndroidLife_530_v1.json`
 **Date:** 2026-08-13 (batch run) · tasks 27 & 29 re-run with updated prompts · 5 failures re-run cleanly
 **Model under test:** `qwen/qwen3.7-flash` (batch) + `qwen/qwen3.6-plus` (5-failure clean rerun)
 
@@ -9,7 +9,7 @@
 
 | Key | Value |
 |---|---|
-| Dataset | `DailyBench_530_v1.json` (Day-4 slice via `dailybench_tasks.py --task-id …`) |
+| Dataset | `AndroidLife_530_v1.json` (Day-4 slice via `androidlife_tasks.py --task-id …`) |
 | Model | `qwen/qwen3.7-flash` (batch) + `qwen/qwen3.6-plus` (5-failure rerun) |
 | Device | OnePlus CPH2423 · serial `RS7XKZDI8HTOJNYL` (USB) · Android 15 (non-rooted) |
 | Steps / temperature | `--steps 150`, `--temperature 0.0` |
@@ -69,7 +69,7 @@ restored to real numbers, which the earlier 29 run had left malformed), the new
 note pushed, the task re-run, and **the two number edits were then reversed so
 the real contacts were not left malformed** (see the re-run note below).
 
-## Metrics (script-generated — `dailybench_report.py`)
+## Metrics (script-generated — `androidlife_report.py`)
 
 Full output: `reports/metrics/day4-metrics.md` · `reports/metrics/day4-metrics.json`
 
@@ -165,18 +165,18 @@ rates (the 5-task qwen3.6-plus rerun added ~2.7 M prompt / ~17 K completion ≈ 
 ## Tasks 27 & 29 re-run (updated prompts)
 
 The corpus prompts for these two hard tasks were updated in `tasks_530.md` and the
-dataset regenerated (`DailyBench_530_v1.json/.jsonl` verified). The device was
+dataset regenerated (`AndroidLife_530_v1.json/.jsonl` verified). The device was
 reset to baseline (contacts restored to OLD numbers, Rent Dues note names-only)
 and both tasks re-ran on the same model:
 
 - **`hard__contacts-notes__027`** — now requires adding each contact's phone
-  number next to their name in the note *and* a professionally written message to
-  ask for dues. **Re-run: PASS (27 steps)** — note updated with numbers and
-  professional reminders sent. (First version ran 21 steps without the message.)
+ number next to their name in the note *and* a professionally written message to
+ ask for dues. **Re-run: PASS (27 steps)** — note updated with numbers and
+ professional reminders sent. (First version ran 21 steps without the message.)
 - **`hard__contacts-obsidian__029`** — now requires a strict
-  `"Contact" | "Old phone no." | "New phone no."` output. **Re-run: PASS (17
-  steps)** — output matched the required format exactly. (First version ran 28
-  steps without the exact table.)
+ `"Contact" | "Old phone no." | "New phone no."` output. **Re-run: PASS (17
+ steps)** — output matched the required format exactly. (First version ran 28
+ steps without the exact table.)
 
 Both tasks are DET (0 `ask_user` calls — correct, they are not ASK USER tasks).
 
@@ -195,7 +195,7 @@ and myself" (two named people), and the fabricated `Contact Updates` note lists
 **Transparency:** the change is written to every appropriate file/folder —
 `tasks_530.md` (corpus), `assets/seeds/day_4/contact_updates.md` (seed source),
 `scripts/seeding/build_day_seed_manifest.py` (manifest builder note content +
-seed/end-state), the regenerated `DailyBench_530_v1.json/.jsonl` (dataset), and
+seed/end-state), the regenerated `AndroidLife_530_v1.json/.jsonl` (dataset), and
 the regenerated day-4 manifests + `day_4_fabricated_data.jsonl`.
 
 **Device reset before re-run:** the earlier 29 run had left **Maa** and
@@ -276,15 +276,15 @@ That's true — the grid renders as a single `ViewGroup` with no per-cell nodes 
 but it is **not a dead end**:
 
 - The **formula-bar `EditText`** ("Enter text or formula") IS exposed in the a11y
-  tree, and it shows the value of whatever cell is selected.
+ tree, and it shows the value of whatever cell is selected.
 - `medium__google-sheets__005` **PASSED the same sheet** by using
-  **`More options → Select cell or range → type ref (e.g. `A1`) → OK`** — this
-  navigates the cursor to a cell and its value appears in the formula bar. It read
-  A1="Video Name", then found B2=12500000 (the max in the Views column).
+ **`More options → Select cell or range → type ref (e.g. `A1`) → OK`** — this
+ navigates the cursor to a cell and its value appears in the formula bar. It read
+ A1="Video Name", then found B2=12500000 (the max in the Views column).
 - On the clean rerun, `easy__google-sheets__005` (qwen3.6-plus) found the 'Views'
-  header via Find and saw its value in the editor, but couldn't move **to the
-  cell below** (tapping the grid kept deselecting; column/row geometry not
-  exposed). Still a model-navigation limitation, not a data problem.
+ header via Find and saw its value in the editor, but couldn't move **to the
+ cell below** (tapping the grid kept deselecting; column/row geometry not
+ exposed). Still a model-navigation limitation, not a data problem.
 
 ### Deep dive — `easy__gallery__002` control verified on-device (2026-08-13)
 
@@ -318,13 +318,13 @@ Phoenix day-4 was started first so this rerun's traces are captured (see below).
 ### Phoenix day-4 DB (2026-08-13) — no re-run DB; guard added
 
 Day-4 originally had **no `assets/db/day4/phoenix.db`** because `phoenix serve`
-was never started for the day (the runs were launched via `dailybench_tasks.py`
+was never started for the day (the runs were launched via `androidlife_tasks.py`
 directly). **Run results were never at risk** — output/trajectories/metrics live
 in the run folders, not in Phoenix (which is only trace visualization). The
 docs-001 re-run was traced but the temporary `assets/db/day4/phoenix.db` it
 produced was **removed** (user preference: no separate re-run DB, matching the
 original day-4 no-phoenix state). A **pre-run guard**
-(`DailyBench.cli.check_phoenix_ready`, wired into `run_day.py` + the per-task
+(`AndroidLife.cli.check_phoenix_ready`, wired into `run_day.py` + the per-task
 runner) now **fails fast (exit 3)** when tracing is on but the collector is
 down, so a silent miss can't happen again; `scripts/run/start_phoenix.py --day N`
 is the one-command way to bring the per-day collector up.
@@ -347,30 +347,30 @@ exposure found in the remaining 14 tasks (PNG hits were binary false-positives).
 ## Key findings
 
 - **Day 4 is 15/20 (75.0%)** classification-aware (was 16/20 = 80.0% after the
-  clean 5-failure rerun, then 13/20 = 65.0% before it). The final change:
-  `easy-google-docs-001` moved from PASS to FAIL once its seed document was
-  given real content (the agent couldn't place the cursor at the end of a
-  substantive doc — see seed-quality audit). All 20 tasks are deterministic
-  (no ASK USER tasks on Day 4 — 0 interaction runs).
+ clean 5-failure rerun, then 13/20 = 65.0% before it). The final change:
+ `easy-google-docs-001` moved from PASS to FAIL once its seed document was
+ given real content (the agent couldn't place the cursor at the end of a
+ substantive doc — see seed-quality audit). All 20 tasks are deterministic
+ (no ASK USER tasks on Day 4 — 0 interaction runs).
 - **Medium is now 7/7 (100%)** — `calculator-001` and `google-maps-002` both
-  passed on qwen3.6-plus (7 and 10 steps respectively); `docs-004` (Easy) also
-  passed (37 steps, renamed the doc).
+ passed on qwen3.6-plus (7 and 10 steps respectively); `docs-004` (Easy) also
+ passed (37 steps, renamed the doc).
 - **`easy__notes__002` is the only hallucination** — the model created an absent
-  note instead of reporting absence. This is exactly what the control is for, and
-  it separates honest models from fabricating ones.
+ note instead of reporting absence. This is exactly what the control is for, and
+ it separates honest models from fabricating ones.
 - **The 2 remaining true failures are model-navigation limits, not data**:
-  `sheets-005` can't reach the cell below the 'Views' header (a11y exposes only
-  the selected cell's value), and `gallery-obsidian-035` got stuck in Obsidian's
-  search-results UI even though the Photo Log note exists on-device (verified).
+ `sheets-005` can't reach the cell below the 'Views' header (a11y exposes only
+ the selected cell's value), and `gallery-obsidian-035` got stuck in Obsidian's
+ search-results UI even though the Photo Log note exists on-device (verified).
 - **Tasks 27 & 29 both pass with the updated prompts** — the corpus edits are
-  correctly reflected in the dataset and device state, and the re-runs satisfied
-  the new message requirement (27) and the exact output-table format (29).
+ correctly reflected in the dataset and device state, and the re-runs satisfied
+ the new message requirement (27) and the exact output-table format (29).
 - **Task 29's second revision (dad + me, two contacts) also passes (20 steps)**
-  and is **more difficult** (2 contacts across Contacts+Obsidian with a strict
-  table output). The fabricated note numbers (`+91 00030 30301/30302`) were
-  applied by the agent and then **reversed** so the real contacts (Dad
-  Evalueserve `+91 1244 621796`, mine `+91 93546 72378`) were not left
-  malformed. This reversal is part of the benchmark hygiene habit.
+ and is **more difficult** (2 contacts across Contacts+Obsidian with a strict
+ table output). The fabricated note numbers (`+91 00030 30301/30302`) were
+ applied by the agent and then **reversed** so the real contacts (Dad
+ Evalueserve `+91 1244 621796`, mine `+91 93546 72378`) were not left
+ malformed. This reversal is part of the benchmark hygiene habit.
 
 ## Step-count design audit (user rule: day 5+, medium 2-3 / hard 3-5 subgoals, ASK or DET)
 

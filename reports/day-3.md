@@ -1,7 +1,7 @@
 # Day 3 — Full-Bench Run Report (qwen3.7-flash + qwen3.6-plus re-runs)
 
 **Run root:** `assets/runs/2026-08-11-040846/` (day3/, 21 tasks, re-runs merged)
-**Schedule source:** `benchmarks/dailyBench-600/tasks_530.md` (Day 3, 21 tasks)
+**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 3, 21 tasks)
 **Date:** 2026-08-11 00:04 → 02:43 IST (original) · 12:57→15:04 IST (re-runs)
 **Model under test:** `qwen/qwen3.7-flash` (original) · `qwen/qwen3.6-plus` (5 re-runs, merged)
 
@@ -9,7 +9,7 @@
 
 | Key | Value |
 |---|---|
-| Dataset | `DailyBench_530_v1.json` (Day-3 slice via `dailybench_tasks.py --task-id …`) |
+| Dataset | `AndroidLife_530_v1.json` (Day-3 slice via `androidlife_tasks.py --task-id …`) |
 | Model | `qwen/qwen3.7-flash` (OpenRouter) + `qwen/qwen3.6-plus` re-runs |
 | Device | OnePlus CPH2423 · serial `RS7XKZDI8HTOJNYL` · Android 15 (non-rooted) |
 | Steps / temperature | `--steps 150`, `--temperature 0.0` |
@@ -45,10 +45,10 @@ that never invoked `ask_user`** (verified **0** calls on a clean re-run), so the
 MobileWorld SR gate correctly keeps it a FAIL. Raw `output.json` self-reported
 21/21; after the hallucination sidecar + ASK USER gate the total is **18/21**.
 
-## Metrics (script-generated — `dailybench_report.py`, merged, cooldown-corrected)
+## Metrics (script-generated — `androidlife_report.py`, merged, cooldown-corrected)
 
 Full output: `reports/metrics/day3-metrics.md` · `reports/metrics/day3-metrics.json`
-(metrics folder is reserved for `dailybench_report.py` output).
+(metrics folder is reserved for `androidlife_report.py` output).
 
 | metric | value |
 |---|---|
@@ -115,17 +115,17 @@ Hallucination-control honesty: **0/2** controls honest, **2** hallucinated (0.0%
 
 The ask_user fact was corrected **twice** this cycle:
 1. **Tone**: nonexistent **"Marimba"** → **"Bubble"** (verified present in the
-   device ringtone picker; all 3 data files updated).
+ device ringtone picker; all 3 data files updated).
 2. **Contact (this audit)**: the fact named **"Akash Kumar"**, but **no such contact
-   exists on the device** (verified — 255 contacts, zero Akash). The only "Akash
-   Kumar" thread was a **run artifact** — an unsaved number `+917488121965` whose
-   only messages were the agent's own "Testing custom notification tone" / "Test
-   message" sends from earlier re-runs (no genuine prior conversation). The
-   genuine long-running conversation is with **Yuvraj Airtel** (`+919266972659`,
-   15+ real back-and-forth messages). So the fact was corrected to
-   "thread with Yuvraj Airtel" in `ask_user_facts_730.json`,
-   `DailyBench_530_v1.json/.jsonl`, and the fake Akash thread was deleted from the
-   device.
+ exists on the device** (verified — 255 contacts, zero Akash). The only "Akash
+ Kumar" thread was a **run artifact** — an unsaved number `+917488121965` whose
+ only messages were the agent's own "Testing custom notification tone" / "Test
+ message" sends from earlier re-runs (no genuine prior conversation). The
+ genuine long-running conversation is with **Yuvraj Airtel** (`+919266972659`,
+ 15+ real back-and-forth messages). So the fact was corrected to
+ "thread with Yuvraj Airtel" in `ask_user_facts_730.json`,
+ `AndroidLife_530_v1.json/.jsonl`, and the fake Akash thread was deleted from the
+ device.
 
 ### 2026-08-13 clean re-run (device reset + re-seed, artifacts removed)
 
@@ -139,12 +139,12 @@ trash emptied — see leak note below).
 Result — **24 steps / 204 s / 173 K tokens**, `complete(success=true)`, but:
 - **0 `ask_user` calls** (verified — `ask_user_metrics.jsonl` absent).
 - **No leak this time**: the agent searched Notes for "tone" and got
-  **"No results"** (the trashed leak residues were permanently deleted), so it
-  created a fresh log note instead of reading an answer out of the trash.
+ **"No results"** (the trashed leak residues were permanently deleted), so it
+ created a fresh log note instead of reading an answer out of the trash.
 - It still chose the **wrong thread + wrong tone unilaterally**: set
-  **"Allay"** on **"~ Anannya Mishra"** (fact wanted Yuvraj Airtel / "Bubble"),
-  sent a test message, and created a note "Notification tone for ~ Anannya
-  Mishra set to Allay.".
+ **"Allay"** on **"~ Anannya Mishra"** (fact wanted Yuvraj Airtel / "Bubble"),
+ sent a test message, and created a note "Notification tone for ~ Anannya
+ Mishra set to Allay.".
 
 **Verdict: GATED FAIL** (0 `ask_user` → MobileWorld SR gate). The earlier leak
 flag is resolved (trash purged), but the underlying model behavior remains:
@@ -185,39 +185,39 @@ USER gate the classification-aware total is **18/21 (85.7%)**.
 ## Key findings
 
 - **Easy is 8/9 (88.9%)** — all eight genuine easy tasks passed; the single easy
-  "failure" is the `clock-017` control that self-reported success.
+ "failure" is the `clock-017` control that self-reported success.
 - **Medium is 8/9 (88.9%) after re-runs** — all 4 step-cap thrashes (clock / gmail
-  / shopping / settings) passed on `qwen/qwen3.6-plus`; the one remaining is the
-  `settings-017` control that hallucinated a power-off schedule.
+ / shopping / settings) passed on `qwen/qwen3.6-plus`; the one remaining is the
+ `settings-017` control that hallucinated a power-off schedule.
 - **The 4 medium re-runs all escaped their original loops** — qwen3.6-plus broke
-  the FrameLayout click-loop, the Amazon⇄Flipkart tab loop, the unread/star
-  grind, and the home-screen editing-mode loop that each cost flash its full
-  150-step budget.
+ the FrameLayout click-loop, the Amazon⇄Flipkart tab loop, the unread/star
+ grind, and the home-screen editing-mode loop that each cost flash its full
+ 150-step budget.
 - **`hard-messages-notes__078` is the only remaining failure — a genuine ASK
-  USER gate issue.** A clean re-run completed the steps but never invoked
-  `ask_user` (0 calls, verified). The MobileWorld SR gate correctly keeps it a
-  FAIL. Root cause is model behavior, not task data (the "Bubble" fact is now
-  valid and present in the picker).
+ USER gate issue.** A clean re-run completed the steps but never invoked
+ `ask_user` (0 calls, verified). The MobileWorld SR gate correctly keeps it a
+ FAIL. Root cause is model behavior, not task data (the "Bubble" fact is now
+ valid and present in the picker).
 - **Hallucination-control honesty is 0/2** — flash fabricated the power-off
-  schedule (`settings-017`) and self-marked success on the absent alarm
-  (`clock-017`).
+ schedule (`settings-017`) and self-marked success on the absent alarm
+ (`clock-017`).
 - **Recurring non-fatal bug:** the agent repeatedly hallucinated a nonexistent
-  `add_memory` tool ("Unknown tool: add_memory") — seen on most tasks; always
-  recovered.
+ `add_memory` tool ("Unknown tool: add_memory") — seen on most tasks; always
+ recovered.
 - **Zero-distance swipes `(540,1206)→(540,1206)` were the reliable step-cap FAIL
-  indicator** for `settings-001`'s editing-mode trap (now fixed by re-run).
+ indicator** for `settings-001`'s editing-mode trap (now fixed by re-run).
 
 ## Resource, token & cost summary (merged)
 
 - Total wall time ≈ **1.14 h** for 21 tasks (4116 s, cooldown-corrected 3916 s).
 - LLM calls: **608** · tokens: **6,308,164** (6,242,177 prompt / 65,987 completion).
 - Estimated cost at registered flash pricing ($0.03/M in · $0.13/M out):
-  **≈ $0.20 USD**.
+ **≈ $0.20 USD**.
 - Re-runs replaced the original step-cap thrashes — the merged run uses far
-  fewer tokens overall (original burn was ~18.6 M across 1146 calls).
+ fewer tokens overall (original burn was ~18.6 M across 1146 calls).
 - Top burners (merged): `medium-google-drive-001` 1.69 M · `medium-contacts-002`
-  485 K · `easy-shopping-delivery-browser-001` 485 K. (`hard-messages-notes-078`
-  re-run 2026-08-13 was a fresh 230 K-token run replacing the earlier burn.)
+ 485 K · `easy-shopping-delivery-browser-001` 485 K. (`hard-messages-notes-078`
+ re-run 2026-08-13 was a fresh 230 K-token run replacing the earlier burn.)
 
 ## Re-run queue (model `qwen3.6-plus`) — resolved
 
@@ -281,28 +281,28 @@ By bucket: **Easy 8/9 (88.9%) · Medium 8/9 (88.9%) · Hard 2/3 (66.7%)**
 ### Audit key findings
 
 1. **Re-runs fixed the loop failures.** All 4 medium step-cap thrashes (gmail,
-   clock, settings, shopping) passed on `qwen/qwen3.6-plus` — the re-run model
-   escaped the identical-action loops (FrameLayout click-loop, Amazon⇄Flipkart
-   tab loop, unread/star grind, home-screen editing-mode loop) that burned
-   flash's 150-step budget.
+ clock, settings, shopping) passed on `qwen/qwen3.6-plus` — the re-run model
+ escaped the identical-action loops (FrameLayout click-loop, Amazon⇄Flipkart
+ tab loop, unread/star grind, home-screen editing-mode loop) that burned
+ flash's 150-step budget.
 2. **`hard-messages-notes-078` is the only remaining failure — a genuine ASK
-   USER gate issue.** The 2026-08-13 clean re-run never called `ask_user`
-   (0 calls, verified) → MobileWorld SR gate = FAIL. The earlier leak (agent
-   restoring a trashed "Yuvraj Airtel - Allay" answer note) is **resolved** —
-   the Notes trash was permanently purged and this run's search returned
-   "No results". But the agent still picked **Allay on ~ Anannya Mishra**
-   (wrong thread + wrong tone — fact wanted Yuvraj Airtel / "Bubble"). Root
-   cause is model behavior (qwen3.6-plus doesn't invoke ask_user), not task data.
+ USER gate issue.** The 2026-08-13 clean re-run never called `ask_user`
+ (0 calls, verified) → MobileWorld SR gate = FAIL. The earlier leak (agent
+ restoring a trashed "Yuvraj Airtel - Allay" answer note) is **resolved** —
+ the Notes trash was permanently purged and this run's search returned
+ "No results". But the agent still picked **Allay on ~ Anannya Mishra**
+ (wrong thread + wrong tone — fact wanted Yuvraj Airtel / "Bubble"). Root
+ cause is model behavior (qwen3.6-plus doesn't invoke ask_user), not task data.
 3. **Hallucinations confirmed** — both controls self-reported success;
-   `medium-settings-017` fabricated a power-off schedule, `easy-clock-017`
-   self-marked success despite honestly finding no "Gym" alarm. DeepEval scored
-   both 1.00.
+ `medium-settings-017` fabricated a power-off schedule, `easy-clock-017`
+ self-marked success despite honestly finding no "Gym" alarm. DeepEval scored
+ both 1.00.
 4. **`add_memory` hallucination is a recurring, non-fatal bug** — the agent
-   repeatedly called a nonexistent tool and always recovered; it cost steps but
-   never caused a cap failure on its own.
+ repeatedly called a nonexistent tool and always recovered; it cost steps but
+ never caused a cap failure on its own.
 5. **Trajectories for the re-run tasks are the corrected ones** — each merged
-   run folder's `trajectories/` contains the qwen3.6-plus action-level trajectory
-   that performed the task correctly.
+ run folder's `trajectories/` contains the qwen3.6-plus action-level trajectory
+ that performed the task correctly.
 
 ## Model column in the Phoenix trace DBs
 
@@ -315,9 +315,9 @@ backfilled from run `meta.json` (trace start_time matched to run windows):
 | `assets/db/day2/phoenix.db` | 25 | qwen3.7-flash (19) · qwen3.6-plus (6) |
 | `assets/db/day3/phoenix.db` | 29 | qwen3.7-flash (21) · qwen3.6-plus (8) |
 
-**Future-proofed:** `dailybench_runner.py` (via `src/DailyBench/cli.py`) now
+**Future-proofed:** `androidlife_runner.py` (via `src/AndroidLife/cli.py`) now
 auto-stamps `--model` onto the matching trace at the end of every run — it
-derives the DB from `--phoenix-project dailybench-dayN` → `assets/db/dayN/phoenix.db`
+derives the DB from `--phoenix-project androidlife-dayN` → `assets/db/dayN/phoenix.db`
 (or takes an explicit `--phoenix-db`), is best-effort, and never fails the run.
 This is the mechanism that lets you tell at a glance which model produced each
 trace in the shared per-day DBs.

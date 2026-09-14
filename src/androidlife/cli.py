@@ -34,7 +34,7 @@ FAST_AGENT_SYSTEM_PROMPT = (Path(__file__).parent / "prompts" / "fast_agent_syst
 def build_parser() -> argparse.ArgumentParser:
     """Build the AndroidLife CLI parser."""
     parser = argparse.ArgumentParser(description="Run one benchmarked mobilerun task with device and LLM metrics.")
-    parser.add_argument("--serial", default=os.environ.get("ANDROIDLIFE_SERIAL") or os.environ.get("DAILYBENCH_SERIAL"))
+    parser.add_argument("--serial", default=os.environ.get("ANDROIDLIFE_SERIAL"))
     parser.add_argument("--label", required=True)
     parser.add_argument("--task-id", default=None, help="Dataset task_id this run corresponds to (recorded in meta.json for batch reporting).")
     parser.add_argument("--sample-interval", type=float, default=1.0, help="Seconds between battery/thermal samples (1.0 = every second; 0.1 = every 100ms, heavier).")
@@ -242,7 +242,7 @@ async def run_agent(args: argparse.Namespace, run_dir: Path, api_base: str) -> T
 
 
 def _phoenix_db_from_project(project: str | None) -> Path | None:
-    """Derive the Phoenix SQLite DB path from a `androidlife-dayN` / `dailybench-dayN` project name.
+    """Derive the Phoenix SQLite DB path from an `androidlife-dayN` project name.
 
     Returns ``assets/db/dayN/phoenix.db`` for those project names, else None (no
     deterministic mapping). Used to stamp this run's model onto its trace when the
@@ -250,7 +250,7 @@ def _phoenix_db_from_project(project: str | None) -> Path | None:
     """
     if not project:
         return None
-    m = re.fullmatch(r"(?:dailybench|androidlife)-day(\d+)", project)
+    m = re.fullmatch(r"androidlife-day(\d+)", project)
     if not m:
         return None
     return Path(__file__).resolve().parents[2] / "assets" / "db" / f"day{m.group(1)}" / "phoenix.db"
@@ -335,7 +335,7 @@ def main() -> int:
     """Run one fully instrumented benchmark task and write one run folder."""
     args = build_parser().parse_args()
     if not args.serial:
-        raise SystemExit("ADB serial required via --serial or ANDROIDLIFE_SERIAL / DAILYBENCH_SERIAL")
+        raise SystemExit("ADB serial required via --serial or ANDROIDLIFE_SERIAL")
     if not args.model:
         raise SystemExit("Model required via --model or MODEL")
     # Fail early when API keys are missing, so the user doesn't waste 30 min on a task

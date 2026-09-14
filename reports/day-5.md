@@ -1,7 +1,7 @@
 # Day 5 — Full-Bench Run Report (qwen3.7-flash)
 
 **Run root:** `assets/runs/full-bench/2026-08-14-031816/` (day5/, 20 tasks)
-**Schedule source:** `benchmarks/dailyBench-600/tasks_530.md` (Day 5, 20 tasks) → `DailyBench_530_v1.json`
+**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 5, 20 tasks) → `AndroidLife_530_v1.json`
 **Date:** 2026-08-13 21:48 → 2026-08-14 00:38 UTC (03:18 → 06:08 IST, 2.77 h)
 **Model under test:** `qwen/qwen3.7-flash` (OpenRouter)
 
@@ -9,7 +9,7 @@
 
 | Key | Value |
 |---|---|
-| Dataset | `DailyBench_530_v1.json` (Day-5 slice via `scripts/run/run_day.py --day 5`) |
+| Dataset | `AndroidLife_530_v1.json` (Day-5 slice via `scripts/run/run_day.py --day 5`) |
 | Model | `qwen/qwen3.7-flash` (OpenRouter, `https://openrouter.ai/api`) |
 | Device | OnePlus CPH2423 · serial `RS7XKZDI8HTOJNYL` · Android 15 (non-rooted) |
 | Steps / temperature | `--steps 150`, `--temperature 0.0` |
@@ -59,7 +59,7 @@ Bhubaneswar 751003`) but the agent gave up after one swipe → **model failure**
 telegram-049` + `calendar-telegram-notes-025` (ASK USER gate — agent never asked
 who to message/confirm with). Full metrics: `reports/metrics/day5-metrics-final.md`.
 
-## Metrics (script-generated — `dailybench_report.py`, cooldown-corrected)
+## Metrics (script-generated — `androidlife_report.py`, cooldown-corrected)
 
 **Two views.** The table below is the **original-run snapshot** (20% run, still
 contains the pre-fix ask_user counts). The corrected **final** numbers (after the
@@ -263,16 +263,16 @@ model never asked who to message/confirm with), `music-004` is the single
 
 **Task/seed fixes that were validated on-device this round:**
 - `medium__contacts-obsidian-001` → rewritten to **search contacts by company
-  `[company]=Airtel` + save list in a note** (on-device verified: Contacts search
-  by company works; the old "filter by company + export" does not exist in the
-  mobile app). **Now PASSES.**
+ `[company]=Airtel` + save list in a note** (on-device verified: Contacts search
+ by company works; the old "filter by company + export" does not exist in the
+ mobile app). **Now PASSES.**
 - `hard__drive-notes-telegram__010` + `hard__drive-obsidian-telegram__049` →
-  rewritten to **date-comparison** (check the shared spreadsheet's last-edited
-  date in Drive vs the committed deadline / last-reviewed date in the note) —
-  on-device verified: Drive exposes "Modified by me" dates, Sheets does *not*
-  expose cell contents. Both agents now **correctly read the dates and conclude
-  overdue**; they still fail the ASK USER gate (assume the Drive account holder
-  "Rani Singh" is the owner instead of asking the user who to message).
+ rewritten to **date-comparison** (check the shared spreadsheet's last-edited
+ date in Drive vs the committed deadline / last-reviewed date in the note) —
+ on-device verified: Drive exposes "Modified by me" dates, Sheets does *not*
+ expose cell contents. Both agents now **correctly read the dates and conclude
+ overdue**; they still fail the ASK USER gate (assume the Drive account holder
+ "Rani Singh" is the owner instead of asking the user who to message).
 
 ## Manual trajectory audit — `medium__telegram__002` (2026-08-14, qwen3.6-plus)
 
@@ -298,23 +298,23 @@ the actual device state (they do).
 ### What the agent actually did (from trajectory.json + macro.json)
 
 1. Opened Telegram, tapped the global search field, typed **"http"** (macro
-   actions 3–4).
+ actions 3–4).
 2. Its captured search-results ui_state (ui_states 0012/0014/0016) contained
-   only **5 old message rows**:
-   - Smoltorrent Alerts — "Received Jun 14" ×2 (`localhost:3000` links)
-   - BotFather — "Received Jun 14" (`core.telegram.org` link)
-   - Career Growth — "Received 11.08.25" (LinkedIn/Spotify/Remote links)
-   - Sourabh Rathour — "Received 10.12.24" (`whatsappj.icu` link)
+ only **5 old message rows**:
+ - Smoltorrent Alerts — "Received Jun 14" ×2 (`localhost:3000` links)
+ - BotFather — "Received Jun 14" (`core.telegram.org` link)
+ - Career Growth — "Received 11.08.25" (LinkedIn/Spotify/Remote links)
+ - Sourabh Rathour — "Received 10.12.24" (`whatsappj.icu` link)
 3. Tapped 6 rows at y = 1262 → 2352 (macro actions 5–15) — i.e. **one screen,
-   never scrolled the results list**.
+ never scrolled the results list**.
 4. Concluded (step 91): *"The search results for 'http' yielded messages from
-   June 2026, August 2025, December 2024, and September 2024, all outside the
-   specified one-month window. No messages with links from the past month were
-   found."*
+ June 2026, August 2025, December 2024, and September 2024, all outside the
+ specified one-month window. No messages with links from the past month were
+ found."*
 5. **Never opened** the recent chats it saw in its own chat list / search
-   "Recent" section (ui_state 0004): **Yuvraj Airtel** (last seen Aug 01),
-   **Yuvraj Singh | StocksX** (2,994 subs), **Anshu** (last seen Aug 06),
-   **Suman Sourav Biswal** (last seen Aug 10), **ALISHA JAIN** (7,798 members).
+ "Recent" section (ui_state 0004): **Yuvraj Airtel** (last seen Aug 01),
+ **Yuvraj Singh | StocksX** (2,994 subs), **Anshu** (last seen Aug 06),
+ **Suman Sourav Biswal** (last seen Aug 10), **ALISHA JAIN** (7,798 members).
 
 ### Manual verification on the live device (2026-08-14)
 
@@ -322,21 +322,21 @@ Opened the chats the agent skipped and dumped their content (a11y):
 
 **Yuvraj Airtel** (agent never opened) — links inside the window:
 - `https://youtube.com/playlist?list=PL590L5WQmH8d8QFM4FvihXlU2EBtjdZIp...`
-  ("This is sooo good" — **Received at 07:32**, under an **"August 9"** header)
+ ("This is sooo good" — **Received at 07:32**, under an **"August 9"** header)
 - `https://youtu.be/T3FC7qIAGZk?si=cvpAxgqE9kQTZEwX` — **Sent at 03:07**, under an
-  **"August 11"** header
+ **"August 11"** header
 
 **Yuvraj Singh | StocksX** (agent never opened) — link inside the window:
 - `https://x.com/Yuvraj_77` ("Subscribe on X & Get Premium Equity Trading Calls" —
-  **Received at 16:49**, **August 6** header), plus reaction/post content on
-  Aug 5–7.
+ **Received at 16:49**, **August 6** header), plus reaction/post content on
+ Aug 5–7.
 - Channel **Links tab**: **"46 links"** total, several **July-dated** (inside
-  Jul 14–Aug 14): `x.com/Yuvraj_77` (profile link, July), *"X — All Paid
-  Services Closed. Only X Subscription is Open!"* (July), *"X — Limited-Time
-  Offer. Only ₹450/Month"* (July), plus more `@Yuvraj_77` posts under the July
-  header. The channel also posts daily watchlists dated Aug 6/7/11 in-window.
-  This is decisive: the agent's "http" keyword search did not surface these, and
-  the agent never opened the channel.
+ Jul 14–Aug 14): `x.com/Yuvraj_77` (profile link, July), *"X — All Paid
+ Services Closed. Only X Subscription is Open!"* (July), *"X — Limited-Time
+ Offer. Only ₹450/Month"* (July), plus more `@Yuvraj_77` posts under the July
+ header. The channel also posts daily watchlists dated Aug 6/7/11 in-window.
+ This is decisive: the agent's "http" keyword search did not surface these, and
+ the agent never opened the channel.
 
 Anshu and Suman Sourav Biswal were empty chats ("No messages here yet") — no links
 there, but the Airtel + StocksX links alone are decisive.
@@ -344,20 +344,20 @@ there, but the Airtel + StocksX links alone are decisive.
 ### Root cause of the miss
 
 - The agent's single global "http" search surfaced only **old** message rows in
-  its captured ui_state (Smoltorrent/BotFather Jun 14, Career Growth 2025,
-  Sourabh 2024). It then tapped 6 rows on **one screen** and **never scrolled**
-  the results list to look for further matches — so even if the recent links
-  were present further down the search results, it never reached them. (Note:
-  the Android a11y tree does not reliably expose Telegram's custom-drawn
-  search-result message rows, so the full result count can't be enumerated via
-  `uiautomator`; the definitive check is opening the chats directly, which is
-  what the audit did.)
+ its captured ui_state (Smoltorrent/BotFather Jun 14, Career Growth 2025,
+ Sourabh 2024). It then tapped 6 rows on **one screen** and **never scrolled**
+ the results list to look for further matches — so even if the recent links
+ were present further down the search results, it never reached them. (Note:
+ the Android a11y tree does not reliably expose Telegram's custom-drawn
+ search-result message rows, so the full result count can't be enumerated via
+ `uiautomator`; the definitive check is opening the chats directly, which is
+ what the audit did.)
 - The agent also **never opened the recent chats** it could see in its own chat
-  list / search "Recent" section (ui_state 0004): Yuvraj Airtel (Aug 01), Anshu
-  (Aug 06), Suman Sourav Biswal (Aug 10), Yuvraj Singh | StocksX, ALISHA JAIN.
-  Those active chats are exactly where in-window link messages live.
+ list / search "Recent" section (ui_state 0004): Yuvraj Airtel (Aug 01), Anshu
+ (Aug 06), Suman Sourav Biswal (Aug 10), Yuvraj Singh | StocksX, ALISHA JAIN.
+ Those active chats are exactly where in-window link messages live.
 - The agent stopped at 19 steps with a confident but **false** conclusion instead
-  of verifying by opening the active recent chats.
+ of verifying by opening the active recent chats.
 
 ### Audit verdict
 
@@ -386,7 +386,7 @@ was genuine and the agent never actually downloaded anything.**
 
 > "I'm about to fly and won't have signal in the air. Could you search Music for
 > [song], download it for offline listening, and confirm it's saved to my
-> Downloads?"  (`[song]=Blinding Lights`)
+> Downloads?" (`[song]=Blinding Lights`)
 
 ### What the agent actually did (macro.json actions 0–5)
 
@@ -403,10 +403,10 @@ only action after opening the song was saving it to the Liked Music playlist.
 ### Manual verification on the live device
 
 - **YT Music → Library:** shows Recent activity, Liked Music, "jam" playlist,
-  Episodes for Later — **no "Downloads" section exists**. Scrolling the Library
-  confirmed there is no offline-download area to find.
+ Episodes for Later — **no "Downloads" section exists**. Scrolling the Library
+ confirmed there is no offline-download area to find.
 - **Liked Music playlist** does now contain Blinding Lights (4 songs) — confirming
-  the trajectory's "4th song saved to liked music" toast was real, not fabricated.
+ the trajectory's "4th song saved to liked music" toast was real, not fabricated.
 
 ### Audit verdict
 
@@ -433,7 +433,7 @@ never done.** This is an *accurate* self-report: 3 of 4 sub-tasks completed.
 
 > "There's a long unread thread I need to catch up on fast. Could you summarize
 > the unread thread (I think its from [contact]) into a single line, save that
-> summary in a note, reply and star it for me in Messages?"  (`[contact]=Yuvraj
+> summary in a note, reply and star it for me in Messages?" (`[contact]=Yuvraj
 > Airtel`)
 
 Sub-tasks: (1) summarize thread → single line, (2) save summary in a note,
@@ -442,30 +442,30 @@ Sub-tasks: (1) summarize thread → single line, (2) save summary in a note,
 ### What the agent actually did (macro.json, 76 actions)
 
 1. Opened Messages, opened the **Yuvraj Airtel** thread (tap 381,1517), read the
-   unread hangout conversation (screenshot 0009).
+ unread hangout conversation (screenshot 0009).
 2. Opened **OnePlus Notes**, created a note, pasted the summary: *"Yuvraj
-   reminisced about a great hangout day with friends, wished to do it again
-   (many couldn't come due to work), and shared a calendar invite for next
-   week's longest meeting."*
+ reminisced about a great hangout day with friends, wished to do it again
+ (many couldn't come due to work), and shared a calendar invite for next
+ week's longest meeting."*
 3. Returned to Messages, opened the More menu (tap 996,192) and **repeatedly
-   cycled** between the menu and the conversation (actions 9–65) — a thrash
-   loop, but then:
+ cycled** between the menu and the conversation (actions 9–65) — a thrash
+ loop, but then:
 4. Tapped the compose box, typed **"Sounds great! Let's plan another hangout
-   soon. Looking forward to it!"** and sent it (actions 67–69).
+ soon. Looking forward to it!"** and sent it (actions 67–69).
 5. Bounced around the More menu a few more times (actions 70–75), then stopped —
-   **never starring anything** (ui_states 0071–0075 show it only ever viewing the
-   menu, whose "Starred" entry is a navigation shortcut, not a star action).
+ **never starring anything** (ui_states 0071–0075 show it only ever viewing the
+ menu, whose "Starred" entry is a navigation shortcut, not a star action).
 
 ### Manual verification on the live device
 
 - **OnePlus Notes** (verified): the note exists, dated 8/14/2026, first line
-  *"Yuvraj reminisced about a great hangout day with friends,"* — matches the
-  agent's summary exactly.
+ *"Yuvraj reminisced about a great hangout day with friends,"* — matches the
+ agent's summary exactly.
 - **Messages → Yuvraj Airtel** (verified): the sent message *"Sounds great! Let's
-  plan another hangout soon. Looking forward to it!"* at **16:01** appears in the
-  correct thread (conversation list shows "You: …" under Yuvraj Airtel).
+ plan another hangout soon. Looking forward to it!"* at **16:01** appears in the
+ correct thread (conversation list shows "You: …" under Yuvraj Airtel).
 - **Messages → Starred view** (verified): **"No results found"** — no message was
-  ever starred.
+ ever starred.
 
 ### Audit verdict
 
@@ -502,31 +502,31 @@ are **not** task-ability):
 ### Root-cause commentary
 
 1. **Device lockout (3) — harness + agent behavior, not task data.** The run's
-   device locked mid-day-5 (`mShowingLockscreen` + "Password is required after
-   security lockout"). Critically, the agent on `medium__music__003` **tried
-   common PINs itself** (123456 / 000000 / 111111), which is what escalated to
-   the security lockout that then blocked `easy__messages__004` and
-   `medium__messages__003`. The harness does not give the agent the PIN, and the
-   agent must not guess it.
+ device locked mid-day-5 (`mShowingLockscreen` + "Password is required after
+ security lockout"). Critically, the agent on `medium__music__003` **tried
+ common PINs itself** (123456 / 000000 / 111111), which is what escalated to
+ the security lockout that then blocked `easy__messages__004` and
+ `medium__messages__003`. The harness does not give the agent the PIN, and the
+ agent must not guess it.
 2. **Malformed tool-call markup (2).** `medium__chrome__003` (03:20) and
-   `medium__telegram__002` (04:47) both hit "Malformed tool-call markup detected
-   (3/3)" and aborted. This is a model-protocol issue (qwen3.7-flash emitting
-   malformed `<invoke>` blocks), the same class of failure seen across the
-   benchmark; the day-2/3/4 qwen3.6-plus re-runs escaped these loops.
+ `medium__telegram__002` (04:47) both hit "Malformed tool-call markup detected
+ (3/3)" and aborted. This is a model-protocol issue (qwen3.7-flash emitting
+ malformed `<invoke>` blocks), the same class of failure seen across the
+ benchmark; the day-2/3/4 qwen3.6-plus re-runs escaped these loops.
 3. **ASK USER wrong-question (3) — the recurring theme.** The mechanism worked
-   (tool registered, simulated user held only the hidden fact and refused
-   off-topic questions), but qwen3.7-flash asked **the wrong clarifying
-   question**: it asked for data that the simulated user explicitly does not
-   hold (budget amount / last-reviewed date) instead of the omitted fact (who to
-   message / which spreadsheet / who to confirm with), then **repeated the same
-   question 39× and 73×** until the 150-step cap. This matches the day-3/4
-   finding that the model struggles to ask the *right* clarifying question on
-   ASK USER tasks. `hard__calendar-telegram-notes__025` went the other way —
-   0 calls at all.
+ (tool registered, simulated user held only the hidden fact and refused
+ off-topic questions), but qwen3.7-flash asked **the wrong clarifying
+ question**: it asked for data that the simulated user explicitly does not
+ hold (budget amount / last-reviewed date) instead of the omitted fact (who to
+ message / which spreadsheet / who to confirm with), then **repeated the same
+ question 39× and 73×** until the 150-step cap. This matches the day-3/4
+ finding that the model struggles to ask the *right* clarifying question on
+ ASK USER tasks. `hard__calendar-telegram-notes__025` went the other way —
+ 0 calls at all.
 4. **Step-cap thrashes (5).** Telegram sticker, calendar conflict check, Photos
-   monthly habits, Contacts company-export, Obsidian summarize+star — all ground
-   to the 150-step cap in-app. Consistent with qwen3.7-flash's known UI-looping
-   behavior that qwen3.6-plus reruns escaped on days 2-4.
+ monthly habits, Contacts company-export, Obsidian summarize+star — all ground
+ to the 150-step cap in-app. Consistent with qwen3.7-flash's known UI-looping
+ behavior that qwen3.6-plus reruns escaped on days 2-4.
 
 **Adjusted view:** if we exclude the 5 infrastructure/model-protocol failures
 (lockout ×3, malformed-markup ×2), the remaining 15 are 4 passes / 10
@@ -537,32 +537,32 @@ authoring issue (Photos exposes no library total).
 ## Final re-run outcome (2026-08-15 — all recommendations executed)
 
 - ✅ **`medium__telegram__002` — RERUN on qwen3.6-plus, now PASSES** (21 steps).
-  The earlier wrong-conclusion fail was a model issue; on retry it converged.
+ The earlier wrong-conclusion fail was a model issue; on retry it converged.
 - ✅ **`medium__music__003` — RERUN with corrected "saved for offline use"
-  prompt, now PASSES** (8 steps, actually downloads).
+ prompt, now PASSES** (8 steps, actually downloads).
 - ❌ **`medium__messages__003` — RERUN, still FAILS** (150) on the **star**
-  action (agent loops on the More-menu "Starred" shortcut, never long-presses a
-  bubble). Known model limitation; low value to retry further.
+ action (agent loops on the More-menu "Starred" shortcut, never long-presses a
+ bubble). Known model limitation; low value to retry further.
 - ✅ **All 5 step-cap thrashes — RERUN on qwen3.6-plus, all PASS**
-  (`easy-telegram-002`, `easy-calendar-002`, `medium-google-photos-calendar-001`,
-  `medium-contacts-obsidian-001` after the search-by-company reword,
-  `medium-obsidian-004`). Consistent with day-3/4: qwen3.6-plus converges where
-  qwen3.7-flash thrashed.
+ (`easy-telegram-002`, `easy-calendar-002`, `medium-google-photos-calendar-001`,
+ `medium-contacts-obsidian-001` after the search-by-company reword,
+ `medium-obsidian-004`). Consistent with day-3/4: qwen3.6-plus converges where
+ qwen3.7-flash thrashed.
 - ❌ **3 ASK USER hard tasks — RERUN on qwen3.6-plus: 0 pass / 3 ASK USER gate
-  fails.** `hard-calendar-telegram-notes-025` (7) found the 12 PM event and took
-  the "intimate the user" branch **without ever asking** who to confirm with —
-  output.success=True but the gate requires an ask_user call, so it FAILS.
-  `hard-drive-notes-telegram-010` (24) and `hard-drive-obsidian-telegram-049`
-  (29) both correctly read the spreadsheet's last-edited date (date-compare fix
-  works) but **fail the ASK USER gate**: the agent assumed the Drive account
-  holder "Rani Singh" is the budget owner and hunted for her in Telegram instead
-  of asking the user who to message. This is the recurring ASK USER question-
-  quality weakness, not a task-design issue.
+ fails.** `hard-calendar-telegram-notes-025` (7) found the 12 PM event and took
+ the "intimate the user" branch **without ever asking** who to confirm with —
+ output.success=True but the gate requires an ask_user call, so it FAILS.
+ `hard-drive-notes-telegram-010` (24) and `hard-drive-obsidian-telegram-049`
+ (29) both correctly read the spreadsheet's last-edited date (date-compare fix
+ works) but **fail the ASK USER gate**: the agent assumed the Drive account
+ holder "Rani Singh" is the budget owner and hunted for her in Telegram instead
+ of asking the user who to message. This is the recurring ASK USER question-
+ quality weakness, not a task-design issue.
 - **Harness fix (blocks future runs):** the original day-5 device hit a PIN
-  lockout and the agent tried to guess the PIN. The runner should unlock the
-  device (or be handed the PIN) before each task, and the system prompt should
-  state the PIN is never to be guessed. (Applied for the reruns — device kept
-  stay-on + 30-min timeout.)
+ lockout and the agent tried to guess the PIN. The runner should unlock the
+ device (or be handed the PIN) before each task, and the system prompt should
+ state the PIN is never to be guessed. (Applied for the reruns — device kept
+ stay-on + 30-min timeout.)
 
 **Final day-5 score: 14/20 (70.0%)** — 5 true failures (1 contacts-005 model
 miss on a real saved address, 1 star-action model miss, 3 ASK USER gate, ...) +
