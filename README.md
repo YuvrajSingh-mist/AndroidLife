@@ -1,6 +1,6 @@
 # AndroidLife
 
-Real-phone Android agent benchmark: everyday tasks on a live device, scoring **task success** and **phone cost** (battery, thermals, $$, steps). Agents are driven by [MobileRun](https://docs.mobilerun.ai/framework/sdk) (Droidrun) over ADB.
+Real-phone Android agent benchmark: everyday tasks on a live device, scoring **task success** and **phone cost** (battery, thermals, $$, steps). Agents are driven by [MobileRun](https://docs.mobilerun.ai/framework/sdk) / Droidrun over ADB — **pinned to `mobilerun==0.6.15`** (see `pyproject.toml` + `uv.lock`) for reproducible harness behavior.
 
 Built for **open-weight** models — OpenRouter / any OpenAI-compatible API today, with **on-device SLMs** as the long-term focus. Same harness either way.
 
@@ -26,6 +26,7 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 - macOS or Linux host with **Python 3.11–3.13** and [`uv`](https://docs.astral.sh/uv/)
 - `adb` (Android platform-tools); `scrcpy` recommended
 - A dedicated Android phone with USB or wireless debugging (this project’s device: OnePlus CPH2423)
+- **MobileRun / Droidrun `0.6.15`** — exact pin (`mobilerun==0.6.15`); do not float to a newer wheel unless you intentionally re-lock and re-validate
 - API keys as needed:
   - `OPENROUTER_API_KEY` — agent via OpenRouter
   - `OPENAI_API_KEY` — simulated `ask_user` (ASK USER / multi-turn KB tasks)
@@ -37,12 +38,16 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 git clone https://github.com/YuvrajSingh-mist/AndroidLife.git
 cd AndroidLife
 
-# install deps + scaffold .env / config (or: make setup)
-uv run python scripts/setup.py
-# equivalent: make sync && make setup
+# install deps from the lockfile (pins MobileRun 0.6.15) + scaffold .env / config
+uv sync --extra dev --extra tracing --extra hf   # or: make sync
+uv run python scripts/setup.py                   # or: make setup
 
 cp .env.example .env   # if setup did not already create .env
 # edit .env → OPENROUTER_API_KEY / OPENAI_API_KEY as needed
+
+# confirm the harness pin
+uv run python -c "import importlib.metadata as m; print(m.version('mobilerun'))"
+# → 0.6.15
 ```
 
 Sanity checks:
