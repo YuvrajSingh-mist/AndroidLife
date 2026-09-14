@@ -1,8 +1,16 @@
 # scripts/ — Command Index
 
-Scripts are grouped into subfolders by function. All are `uv`-managed entrypoints:
-`uv run python scripts/<group>/<name>.py ...` (or `./scripts/<group>/<name>.sh`).
-Every script carries a module docstring; run any with `--help` for its exact flags.
+Scripts are grouped into subfolders by function. **Run everything from the repo root**
+(the directory that contains `pyproject.toml` / `uv.lock`). Paths in examples are
+repo-relative so they work on any machine.
+
+```bash
+cd /path/to/AndroidLife
+uv run python scripts/<group>/<name>.py --help
+```
+
+Harness pin: **`mobilerun==0.6.15`**. Tested host installs: **MacBook Air (M1, 2020)** and
+**Mac mini (M4, 2025, 16 GB)** — see the top-level [README](../README.md).
 
 ## Layout
 
@@ -34,7 +42,9 @@ uv run python scripts/setup.py prerequisites deps env config device   # pick sta
 uv run python scripts/setup.py manifests day-vars                     # no device needed
 uv run python scripts/setup.py seed --day 1       # push fabricated seeds to the phone
 uv run python scripts/setup.py verify --day 1     # confirm seeds are on-device
-uv run python scripts/setup.py --yes --serial <id> all   # non-interactive
+# non-interactive (serial from `adb devices`, e.g. USB id or ip:port):
+export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
+uv run python scripts/setup.py --yes --serial "$S" all
 ```
 
 Stages: `prerequisites` (adb/scrcpy/uv/python) → `deps` (uv sync) → `env`
