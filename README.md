@@ -254,6 +254,28 @@ Canonical: https://androidlife-website.vercel.app/
 
 Site source is the private repo [`androidlife-website`](https://github.com/YuvrajSingh-mist/androidlife-website). Keep a local checkout at `androidlife-website/` (gitignored) and push from there.
 
+## Citation
+
+If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
+
+```bibtex
+@misc{singh2026androidlife,
+      title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
+      author={Yuvraj Singh},
+      year={2026},
+      howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
+}
+```
+
+Also see [`CITATION.cff`](CITATION.cff).
+
+## License
+
+- **Code / harness** (`src/`, scripts, tooling): [Apache License 2.0](LICENSE) — keep the copyright notice and `NOTICE` when you redistribute.
+- **Benchmark datasets & task content** (task definitions, schedules, published evaluation artifacts): [CC BY 4.0](LICENSE-DATASET) — free to use and adapt, including commercially, **with attribution** to Yuvraj Singh (name + link; indicate changes if you modify).
+
+Academic paper citation is a community norm (use the BibTeX above); CC BY is what legally requires credit when the dataset or task content is shared or adapted.
+
 ## Fuel the benches
 
 Perf benchmarking burns wall-clock, watts, and a lot of coffee. If these numbers helped you pick a board or a model, fuel the next run:
