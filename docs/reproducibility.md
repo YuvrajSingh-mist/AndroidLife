@@ -25,7 +25,7 @@ as the larger 530-task corpus.
 | Reset profile | `reset_phone.py --profile public_v2` | Undo agent side-effects → baseline |
 | Seeds | `seed_data.py --day 1..3` + enrich / PDF helpers | Fabricated notes, files, calendar, etc. |
 | Verify gates | `--verify-only` + `verify_day1_seeds.py --day N` | Do not launch on FAIL |
-| Harness | MobileRun (Droidrun) over ADB | Same agent loop every run |
+| Harness | MobileRun / Droidrun **`mobilerun==0.6.15`** (pinned in `pyproject.toml` + `uv.lock`) | Same agent loop every run — do not float the wheel |
 | Metrics | `run_metrics.json`, trajectories, reports | SR, steps, cost, battery, thermal, latency |
 
 Operator walkthrough (commands): [`device-reset-and-seed.md`](device-reset-and-seed.md).  

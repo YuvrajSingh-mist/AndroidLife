@@ -192,7 +192,7 @@ requires-dist = [
     { name = "arize-phoenix", marker = "extra == 'tracing'" },
     { name = "deepeval", specifier = ">=4.1" },
     { name = "huggingface-hub", marker = "extra == 'hf'" },
-    { name = "mobilerun", specifier = ">=0.6.15" },
+    { name = "mobilerun", specifier = "==0.6.15" },
     { name = "openai", specifier = ">=1.0" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
