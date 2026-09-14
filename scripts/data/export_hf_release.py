@@ -35,7 +35,7 @@ def _copy(out: Path, src: Path, rel: str) -> None:
 
 
 README_530 = f"""---
-license: mit
+license: cc-by-4.0
 pretty_name: AndroidLife-530 (Android agent benchmark)
 task_categories:
   - text-generation
@@ -97,10 +97,26 @@ To make deterministic tasks solvable, a controlled **fictional persona** and
 fabricated data are seeded on the device. Everything is disclosed honestly in
 `fabrication/` (machine-readable JSON + full human-readable doc). No real phone
 numbers, personal emails, or real identities appear; all personas are fictional.
+
+## License & citation
+
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — reuse allowed with attribution to **Yuvraj Singh**.
+- **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE) in the [AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) repo.
+
+If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
+
+```bibtex
+@misc{{singh2026androidlife,
+      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+      author={{Yuvraj Singh}},
+      year={{2026}},
+      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+}}
+```
 """
 
 README_SAMPLE = f"""---
-license: mit
+license: cc-by-4.0
 pretty_name: AndroidLife public sample (private companion)
 task_categories:
   - text-generation
@@ -134,10 +150,15 @@ Canonical corpus: [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO
 | `config/user.yaml` | Personal persona/device config (gitignored upstream). |
 | `fabrication/seeds/` | Fabricated seed documents. |
 | `fabrication/` | Full fabrication disclosure. |
+
+## License & citation
+
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — attribution to **Yuvraj Singh** required.
+- **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE).
 """
 
 README_LEGACY_REDIRECT = f"""---
-license: mit
+license: cc-by-4.0
 pretty_name: AndroidLife-530 (moved)
 ---
 
@@ -148,6 +169,8 @@ This dataset was renamed. **Use the canonical repo:**
 **[{HF_530_REPO}](https://huggingface.co/datasets/{HF_530_REPO})**
 
 Filenames are now `AndroidLife_530_v1.json` / `.jsonl` (formerly `DailyBench_*` / DrainBench branding).
+
+License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution to Yuvraj Singh).
 """
 
 
