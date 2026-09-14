@@ -56,7 +56,8 @@ def s_prerequisites(opts) -> int:
 
 def s_deps(opts) -> int:
     stage("deps")
-    run_uv(["sync", "--extra", "dev", "--extra", "tracing", "--extra", "hf"])
+    # Must call `uv sync` directly — `uv run sync` resolves to /bin/sync.
+    sh(["uv", "sync", "--extra", "dev", "--extra", "tracing", "--extra", "hf"])
     return 0
 
 

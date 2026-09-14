@@ -45,20 +45,31 @@ Paths below are **repo-relative** — run every command from the cloned `Android
 
 ## Setup
 
+Everything is **`uv` + `pyproject.toml` + `uv.lock`** — no `pip install -r`, no Poetry.
+Run commands from the repo root so console scripts and relative paths resolve.
+
 ```bash
 git clone https://github.com/YuvrajSingh-mist/AndroidLife.git
 cd AndroidLife   # ← stay here for all later commands
 
-# install deps from the lockfile (pins MobileRun 0.6.15) + scaffold .env / config
+# creates .venv from uv.lock (pins MobileRun 0.6.15 + transitive deps)
 uv sync --extra dev --extra tracing --extra hf   # or: make sync
-uv run python scripts/setup.py                   # or: make setup
+uv run python scripts/setup.py                   # or: make setup  (scaffolds .env / config)
 
 cp -n .env.example .env                          # skip if .env already exists
 # edit .env → OPENROUTER_API_KEY / OPENAI_API_KEY as needed
 
-# confirm the harness pin
+# confirm the harness pin from the lockfile env
 uv run python -c "import importlib.metadata as m; print(m.version('mobilerun'))"
 # → 0.6.15
+```
+
+Preferred entrypoints (defined in `pyproject.toml` `[project.scripts]`):
+
+```bash
+uv run androidlife-tasks --help
+uv run androidlife-runner --help
+# thin wrappers also work:  uv run androidlife_tasks.py …
 ```
 
 Sanity checks:
@@ -124,7 +135,7 @@ RUN_ROOT="assets/runs/public/$RUN_TS"
 # optional tracing
 # uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"
 
-uv run androidlife_tasks.py \
+uv run androidlife-tasks \
   --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --source public.md --all \
   --serial "$S" \
@@ -147,7 +158,7 @@ uv run androidlife_tasks.py \
 # example helper (64k ctx on Apple Silicon — adjust as needed)
 bash scripts/llm/serve_qwen35_4b.sh   # or your own llama-server flags
 
-uv run androidlife_tasks.py \
+uv run androidlife-tasks \
   --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --source public.md --all \
   --serial "$S" \
@@ -165,7 +176,7 @@ Detach so the run survives terminal close (from repo root):
 
 ```bash
 RUN_TS=$(date +%Y%m%d-%H%M%S)
-nohup uv run androidlife_tasks.py \
+nohup uv run androidlife-tasks \
   --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
   --source public.md --all --serial "$S" \
   --llm-upstream-base https://openrouter.ai/api --model qwen/qwen3.6-plus \
@@ -179,7 +190,7 @@ tail -f "assets/runs/public/batch-$RUN_TS.log"
 ```
 
 Resume an interrupted batch with the **same** `--run-root` and `--resume-from <task_id>` (or an explicit remaining `--task-id` list).  
-Flags: [docs/cli-reference.md](docs/cli-reference.md). (`dailybench_tasks.py` remains a supported alias — [docs/naming.md](docs/naming.md).)
+Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run dailybench-tasks` / `androidlife_tasks.py` remain supported aliases — [docs/naming.md](docs/naming.md).)
 
 ### 3. Score + file artifacts
 
@@ -205,7 +216,7 @@ Then write the narrative manual audit under `reports/public/public-<RUN_TS>.md`.
 
 ```bash
 uv run python scripts/run/start_phoenix.py --day 3
-uv run androidlife_tasks.py --serial "$S" \
+uv run androidlife-tasks --serial "$S" \
   --llm-upstream-base https://openrouter.ai/api --model "$MODEL" \
   --day 3 --vars-file benchmarks/androidlife-600/tasks_vars/day_3.env
 ```
@@ -214,7 +225,7 @@ uv run androidlife_tasks.py --serial "$S" \
 
 | Path | Role |
 |---|---|
-| `androidlife_runner.py` / `androidlife_tasks.py` | CLI entrypoints (`dailybench_*` aliases) |
+| `androidlife-tasks` / `androidlife-runner` | Console scripts from `pyproject.toml` (`dailybench-*` aliases) |
 | `src/androidlife/` | Harness |
 | `benchmarks/androidlife-600/` | Public 60 + 530 datasets, vars, KB |
 | `scripts/seeding/` | Reset / seed / verify |
