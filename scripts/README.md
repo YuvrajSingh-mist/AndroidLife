@@ -2,11 +2,14 @@
 
 Scripts are grouped into subfolders by function. **Run everything from the repo root**
 (the directory that contains `pyproject.toml` / `uv.lock`). Paths in examples are
-repo-relative so they work on any machine.
+repo-relative so they work on any machine. Dependencies come only from
+**`uv sync`** against `pyproject.toml` + `uv.lock` (no pip requirements file).
 
 ```bash
 cd /path/to/AndroidLife
+uv sync --extra dev --extra tracing --extra hf
 uv run python scripts/<group>/<name>.py --help
+uv run androidlife-tasks --help   # [project.scripts] entrypoint
 ```
 
 Harness pin: **`mobilerun==0.6.15`**. Tested host installs: **MacBook Air (M1, 2020)** and

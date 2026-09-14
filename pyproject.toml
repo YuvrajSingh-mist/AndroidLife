@@ -6,7 +6,10 @@ build-backend = "setuptools.build_meta"
 name = "androidlife"
 version = "0.1.0"
 description = "AndroidLife: real-phone Android agent benchmark harness (MobileRun / Droidrun)."
+readme = "README.md"
 requires-python = ">=3.11,<3.14"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Yuvraj Singh" }]
 dependencies = [
     "pydantic>=2.0",
     "mobilerun==0.6.15",
@@ -16,10 +19,22 @@ dependencies = [
     "sqlean-py>=3.45.1",
 ]
 
+[project.urls]
+Homepage = "https://androidlife-website.vercel.app/"
+Repository = "https://github.com/YuvrajSingh-mist/AndroidLife"
+Issues = "https://github.com/YuvrajSingh-mist/AndroidLife/issues"
+Dataset = "https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public"
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 tracing = ["arize-phoenix"]
 hf = ["huggingface_hub"]
+
+[project.scripts]
+androidlife-tasks = "androidlife.task_batch:main"
+androidlife-runner = "androidlife.cli:main"
+dailybench-tasks = "androidlife.task_batch:main"
+dailybench-runner = "androidlife.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -31,9 +46,6 @@ where = ["src"]
 testpaths = ["tests"]
 addopts = "-q"
 
-
-[project.scripts]
-androidlife-tasks = "androidlife.task_batch:main"
-androidlife-runner = "androidlife.cli:main"
-dailybench-tasks = "androidlife.task_batch:main"
-dailybench-runner = "androidlife.cli:main"
+# uv: install this project editable + lockfile-backed deps
+[tool.uv]
+package = true
