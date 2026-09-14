@@ -23,15 +23,15 @@ starts from the same state. **Full public-rerun runbook** — run in order:
 - Wired: `adb -s RS7XKZDI8HTOJNYL shell echo OK`
 - Wireless: `adb -s 100.108.15.119:5555 shell echo OK`
 - If wireless refuses ("Connection refused"), re-arm then reconnect:
- `adb -s RS7XKZDI8HTOJNYL tcpip 5555` → `adb connect 100.108.15.119:5555` (retry once — it's a race while adbd restarts).
+  `adb -s RS7XKZDI8HTOJNYL tcpip 5555` → `adb connect 100.108.15.119:5555` (retry once — it's a race while adbd restarts).
 
 ## Step 0 — Regenerate datasets (only if `public.md` / `tasks_530.md` changed)
 
 ```bash
-uv run python scripts/data/export_530_dataset.py --verify # expect: 530 tasks, 0 dupes
-uv run python scripts/data/export_public_dataset.py # expect: 68 tasks
-node website/tools/build_site_data.mjs # site data (530 tasks)
-uv run python scripts/seeding/verify_config.py # every placeholder/fact/seed resolves
+uv run python scripts/data/export_530_dataset.py --verify      # expect: 530 tasks, 0 dupes
+uv run python scripts/data/export_public_dataset.py            # expect: 68 tasks
+node website/tools/build_site_data.mjs                          # site data (530 tasks)
+uv run python scripts/seeding/verify_config.py                  # every placeholder/fact/seed resolves
 uv run python -m pytest tests/ -q -p no:cacheprovider --deselect tests/test_adb.py::test_reset_app_state_force_stops_foreground_app_and_returns_home
 ```
 > 2026-08-23 task changes (re-export picks them up): `easy__swiggy__001` reworded to
@@ -50,8 +50,8 @@ uv run python -m pytest tests/ -q -p no:cacheprovider --deselect tests/test_adb.
 ## Step 1 — Run the reset script (dry-run first, then apply)
 
 ```bash
-uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 # DRY RUN (default, safe)
-uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --apply # actually reset
+uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2          # DRY RUN (default, safe)
+uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --apply  # actually reset
 ```
 
 The script (profile `public_v2`):
@@ -77,10 +77,10 @@ exact title every reset (provider delete works — soft-deletes on the synced ca
 
 ```bash
 for t in "Get-together with friends" "IndiGo 6E-6737 Flight - BBI to DEL" "Review July Photos"; do
- adb shell content delete --uri content://com.android.calendar/events --where "'title=\"$t\"'"
+  adb shell content delete --uri content://com.android.calendar/events --where "'title=\"$t\"'"
 done
 adb shell content query --uri content://com.android.calendar/events --projection title:deleted 2>/dev/null \
- | grep -iE "Review July|Get-together|IndiGo" || echo "run events cleaned"
+  | grep -iE "Review July|Get-together|IndiGo" || echo "run events cleaned"
 ```
 These map to: `hard__telegram-calendar__016` ("Get-together with friends"),
 `hard__gmail-calendar__003` ("IndiGo 6E-6737 Flight - BBI to DEL"),
@@ -94,9 +94,9 @@ be deleted in the UI (verified working via adb GUI automation 2026-08-23):
 
 ```bash
 adb shell am start -n com.oneplus.note/com.nearme.note.main.MainActivity
-adb shell uiautomator dump /sdcard/ui.xml # find text="<note title>" -> bounds
-adb shell input swipe <x> <y> <x> <y> 900 # long-press the note row (multi-select)
-adb shell input tap <dx> <dy> # tap the bottom "Delete" button
+adb shell uiautomator dump /sdcard/ui.xml            # find text="<note title>" -> bounds
+adb shell input swipe <x> <y> <x> <y> 900            # long-press the note row (multi-select)
+adb shell input tap <dx> <dy>                        # tap the bottom "Delete" button
 # confirm dialog "Delete this note?" -> tap its "Delete"
 ```
 Rule (**clean-slate, no mix-ups**): delete **ALL notes whose date == the run day(s)**,
@@ -114,60 +114,60 @@ After Steps 1–1c, sweep **EVERY task** under the run's `day*/` folders — one
 per task, do not skip any — and clear persisted state:
 
 1. **Scan every task** (all N task folders, not a sample): for each, open the latest
- `trajectories/<ts>/trajectory.json` and list the final tool calls + any `type`
- action text. Flag:
- - `type` into a messaging compose that was never sent (→ draft to clear)
- - `type` into a search/filter box (ephemeral; dies on force-stop — verify app
- isn't mid-dialog)
- - created alarms/timers, starred items, open compose fields, unsent messages
+   `trajectories/<ts>/trajectory.json` and list the final tool calls + any `type`
+   action text. Flag:
+   - `type` into a messaging compose that was never sent (→ draft to clear)
+   - `type` into a search/filter box (ephemeral; dies on force-stop — verify app
+     isn't mid-dialog)
+   - created alarms/timers, starred items, open compose fields, unsent messages
 2. **Messaging drafts (Telegram / SMS / WhatsApp / Messages)** — open each chat the
- agent typed into and clear the compose field (tap it, select-all + delete).
- Known 2026-08-22 run: the **Yuvraj Airtel** chat had 3 unsent drafts
- (`hard__swiggy-005` "Order total: Rs. 30.00", `medium__google-maps-003`
- "Nearest EV charging station…", `medium__music-telegram-001`
- "Blinding Lights | The Weeknd"). Verify the compose EditText is empty
- (uiautomator `text=''`). Note: Telegram force-stop can drop the draft, but
- RE-CHECK every chat the agent touched — the chat list is a custom view
- uiautomator can't read, so open each chat individually.
+   agent typed into and clear the compose field (tap it, select-all + delete).
+   Known 2026-08-22 run: the **Yuvraj Airtel** chat had 3 unsent drafts
+   (`hard__swiggy-005` "Order total: Rs. 30.00", `medium__google-maps-003`
+   "Nearest EV charging station…", `medium__music-telegram-001`
+   "Blinding Lights | The Weeknd"). Verify the compose EditText is empty
+   (uiautomator `text=''`). Note: Telegram force-stop can drop the draft, but
+   RE-CHECK every chat the agent touched — the chat list is a custom view
+   uiautomator can't read, so open each chat individually.
 
- > 2026-08-22-195244 run, all-task scan → undo list (match by run-window):
- > calendar events to soft-delete: "Get-together with friends"
- > (`hard__telegram-calendar__016`), "IndiGo 6E-6737 Flight - BBI to DEL"
- > (`hard__gmail-calendar__003`), "Review July Photos"
- > (`medium__google-photos-calendar__001`). Obsidian notes to `rm`:
- > "Fastest route to Bhubaneswar Airport" (`medium__google-maps__002`),
- > "Photo sent to Yuvraj Airtel" (`hard__photos-gmail-obsidian__012`, + unstar
- > the photo + delete the Sent email). Unsent drafts to clear (Yuvraj Airtel
- > chat): "Order total: Rs. 30.00" (`hard__swiggy__005`). Clock leftover:
- > "Work Alarm" (`medium__clock__009`), stop "Workout" timer
- > (`medium__clock__011`). Maps favourite to remove: "parked here"
- > (`easy__google-maps__004`). Note `medium__contacts__009` placed a REAL call
- > (call-log gap is operator-seeded, not undone).
+   > 2026-08-22-195244 run, all-task scan → undo list (match by run-window):
+   > calendar events to soft-delete: "Get-together with friends"
+   > (`hard__telegram-calendar__016`), "IndiGo 6E-6737 Flight - BBI to DEL"
+   > (`hard__gmail-calendar__003`), "Review July Photos"
+   > (`medium__google-photos-calendar__001`). Obsidian notes to `rm`:
+   > "Fastest route to Bhubaneswar Airport" (`medium__google-maps__002`),
+   > "Photo sent to Yuvraj Airtel" (`hard__photos-gmail-obsidian__012`, + unstar
+   > the photo + delete the Sent email). Unsent drafts to clear (Yuvraj Airtel
+   > chat): "Order total: Rs. 30.00" (`hard__swiggy__005`). Clock leftover:
+   > "Work Alarm" (`medium__clock__009`), stop "Workout" timer
+   > (`medium__clock__011`). Maps favourite to remove: "parked here"
+   > (`easy__google-maps__004`). Note `medium__contacts__009` placed a REAL call
+   > (call-log gap is operator-seeded, not undone).
 
 2b. **SENT messages the agent claims it sent (NOT just drafts — 2026-08-28 lesson).**
- Clearing drafts is NOT enough: runs also SEND messages that persist on-device.
- Sweep SENT artifacts for EVERY run:
- - **SMS**: `adb shell content query --uri content://sms --projection _id:address:date:type:body --where "type=2"`
- → flag run-window `type=2` (sent) rows that aren't persona history (match body/date to the run). Delete via the
- Messages app UI (long-press message → Delete → confirm) — `content delete` on `content://sms` FAILS silently
- (shell has no WRITE_SMS). 2026-08-27: qwen `easy__messages-010` left a real sent emoji SMS (👍😊🙏🍽️👋 to
- Yuvraj Airtel, 03:29) the user caught on screen — persona history was intact after deleting only that row.
- - **Telegram**: grep agent logs for `sent successfully|message is sent|was sent|checkmark`, then OPEN the target
- chat and confirm whether a run message actually persists (chat at true bottom = NO scroll-to-bottom FAB + message
- list won't scroll; Telegram search for the message text returns no private-chat hits if it's gone). Agents'
- "sent ✓" self-reports are UNRELIABLE (gemini false-pass pattern) — always verify on-device. 2026-08-27: logs
- claimed 3 sends to Yuvraj Airtel (chrome-telegram-notes-008 Noise link + 2× music-telegram-001 "Blinding
- Lights") but the chat held none at cleanup time.
- - **Gmail**: grep agent logs for `email was sent|sent the invitation`; run-created SENT emails
- (e.g. qwen `easy-google-meet-004` Meet invites, `hard-photos-gmail-obsidian-012` email) need the Sent email
- deleted — ASK THE USER first (they may be the task's deliverable).
+    Clearing drafts is NOT enough: runs also SEND messages that persist on-device.
+    Sweep SENT artifacts for EVERY run:
+    - **SMS**: `adb shell content query --uri content://sms --projection _id:address:date:type:body --where "type=2"`
+      → flag run-window `type=2` (sent) rows that aren't persona history (match body/date to the run). Delete via the
+      Messages app UI (long-press message → Delete → confirm) — `content delete` on `content://sms` FAILS silently
+      (shell has no WRITE_SMS). 2026-08-27: qwen `easy__messages-010` left a real sent emoji SMS (👍😊🙏🍽️👋 to
+      Yuvraj Airtel, 03:29) the user caught on screen — persona history was intact after deleting only that row.
+    - **Telegram**: grep agent logs for `sent successfully|message is sent|was sent|checkmark`, then OPEN the target
+      chat and confirm whether a run message actually persists (chat at true bottom = NO scroll-to-bottom FAB + message
+      list won't scroll; Telegram search for the message text returns no private-chat hits if it's gone). Agents'
+      "sent ✓" self-reports are UNRELIABLE (gemini false-pass pattern) — always verify on-device. 2026-08-27: logs
+      claimed 3 sends to Yuvraj Airtel (chrome-telegram-notes-008 Noise link + 2× music-telegram-001 "Blinding
+      Lights") but the chat held none at cleanup time.
+    - **Gmail**: grep agent logs for `email was sent|sent the invitation`; run-created SENT emails
+      (e.g. qwen `easy-google-meet-004` Meet invites, `hard-photos-gmail-obsidian-012` email) need the Sent email
+      deleted — ASK THE USER first (they may be the task's deliverable).
 3. **Clock** — open `com.oneplus.deskclock`; delete leftover alarms (e.g.
- `medium__clock-009` "Work Alarm") and stop any running timer (`medium__clock-011`
- "Workout") so the next run's clock tasks start clean.
+   `medium__clock-009` "Work Alarm") and stop any running timer (`medium__clock-011`
+   "Workout") so the next run's clock tasks start clean.
 4. **Open apps** — return to home (`input keyevent KEYCODE_HOME`) so no app is
- left foreground in a partial state.
+   left foreground in a partial state.
 5. **Ephemeral search boxes** (Drive/Sheets/Obsidian/Files search text) — app-private,
- die on force-stop; just confirm the app isn't stuck in a dialog before the run.
+   die on force-stop; just confirm the app isn't stuck in a dialog before the run.
 
 ## Step 2 — Re-seed the fabricated task data (public rerun)
 
@@ -210,12 +210,12 @@ CAL = "content://com.android.calendar/events"
 def sh(*a): return subprocess.run(["adb","-s",S,"shell",*a], capture_output=True, text=True)
 def ms(d,h,m): return int(datetime.datetime(d.year,d.month,d.day,h,m,tzinfo=tz).timestamp()*1000)
 for t in ("Team Sync","Mentor 1 on 1","Team_Conflict_A","Team_Conflict_B"):
- for _ in range(6): sh("content","delete","--uri",CAL,"--where",f"'title=\"{t}\"'")
+    for _ in range(6): sh("content","delete","--uri",CAL,"--where",f"'title=\"{t}\"'")
 def ins(t,h0,m0,h1,m1):
- sh("content","insert","--uri",CAL,"--bind","calendar_id:i:16",
- "--bind",f"title:s:'{t}'","--bind",f"dtstart:l:{ms(tomorrow,h0,m0)}",
- "--bind",f"dtend:l:{ms(tomorrow,h1,m1)}","--bind","allDay:i:0",
- "--bind","hasAlarm:i:0","--bind","eventTimezone:s:Asia/Kolkata")
+    sh("content","insert","--uri",CAL,"--bind","calendar_id:i:16",
+       "--bind",f"title:s:'{t}'","--bind",f"dtstart:l:{ms(tomorrow,h0,m0)}",
+       "--bind",f"dtend:l:{ms(tomorrow,h1,m1)}","--bind","allDay:i:0",
+       "--bind","hasAlarm:i:0","--bind","eventTimezone:s:Asia/Kolkata")
 ins("Team Sync",14,0,15,0); ins("Mentor 1 on 1",14,30,15,30)
 print(f"seeded tomorrow ({tomorrow}) afternoon conflicts")
 PY
@@ -244,36 +244,36 @@ run-window/date), never assume a canned list from prior runs.** The reset script
 prints these; the key ones:
 
 - **Notes** (`com.oneplus.note`) — delete ALL notes dated the run day(s) (see
- Step 1c — GUI automation works; "Card Payment Due / Budget Tracker / Birthday
- Reminders / IndiGo" were PRIOR-run names, match by date not name).
+  Step 1c — GUI automation works; "Card Payment Due / Budget Tracker / Birthday
+  Reminders / IndiGo" were PRIOR-run names, match by date not name).
 - **Obsidian** — the vault IS at `/sdcard/Obsidian/<vault>` and is ADB-accessible
- (NOT app-private — corrected 2026-08-23): run-created notes (e.g.
- `Photo sent to Yuvraj Airtel.md` from `hard__photos-gmail-obsidian-012`) can be
- `adb shell rm`'d directly. Reset script already removes `Pasted image *.jpg` +
- restores seed-note contents. Verify `Exam Scores.md` has no "Final Grade" line
- (mutation from `medium__calculator__001`).
+  (NOT app-private — corrected 2026-08-23): run-created notes (e.g.
+  `Photo sent to Yuvraj Airtel.md` from `hard__photos-gmail-obsidian-012`) can be
+  `adb shell rm`'d directly. Reset script already removes `Pasted image *.jpg` +
+  restores seed-note contents. Verify `Exam Scores.md` has no "Final Grade" line
+  (mutation from `medium__calculator__001`).
 - **Photos/Gallery** — delete run-created albums: THIS run = **"Hostel Life"**
- (`medium__google-photos-012`); prior runs = "Invoices", "Trip 2026". Unstar the
- starred photos; re-add `medium__gallery__007` food-photo captions + Favourites
- if ever lost (app-private Photos DB, per-account — normally survive runs).
+  (`medium__google-photos-012`); prior runs = "Invoices", "Trip 2026". Unstar the
+  starred photos; re-add `medium__gallery__007` food-photo captions + Favourites
+  if ever lost (app-private Photos DB, per-account — normally survive runs).
 - **archive.zip.zip** — remove
- `/storage/emulated/0/Files by Google/Compressed files/archive.zip.zip`
- (created by `hard__files-notes__069`; reset script does NOT catch it).
+  `/storage/emulated/0/Files by Google/Compressed files/archive.zip.zip`
+  (created by `hard__files-notes__069`; reset script does NOT catch it).
 - **YT Music** — delete the "Chill Vibes" playlist (not created this run — verify).
 - **Telegram** — unmute the "Forever 21" group; keep the meetup thread
- **UNRESOLVED** (last message: *"22nd could work for me too, let me confirm once
- she's free"* so `hard__telegram-calendar__016` forces a multi-turn ask — don't
- re-add a settling message).
+  **UNRESOLVED** (last message: *"22nd could work for me too, let me confirm once
+  she's free"* so `hard__telegram-calendar__016` forces a multi-turn ask — don't
+  re-add a settling message).
 - **Digital Wellbeing** — remove any 30-min app timers (none set this run — verify).
 - **Camera** — delete the run-recorded "Camera Video" clip if present (none this run).
 - **Cloud (Gmail / Drive)** — NO run-created Gmail label exists this run; if a task
- emailed a photo w/ attachment (`hard__photos-gmail-obsidian-012`), delete that
- Sent email; delete `Copy of SPORTS_VIDEO_DATA` leftovers; re-download the 5
- uploaded files, then delete that Drive folder.
+  emailed a photo w/ attachment (`hard__photos-gmail-obsidian-012`), delete that
+  Sent email; delete `Copy of SPORTS_VIDEO_DATA` leftovers; re-download the 5
+  uploaded files, then delete that Drive folder.
 - **Call-log gap** — not seeded by design: the operator must make one real call
- to an unsaved number on run day (see `docs/fabricated-test-data.md`).
+  to an unsaved number on run day (see `docs/fabricated-test-data.md`).
 - Gmail "Recent Mail Searches" is NOT a reset item (personal searches, no Remove
- menu; can't leak ASK USER facts) — do NOT block a run on it.
+  menu; can't leak ASK USER facts) — do NOT block a run on it.
 
 ## Cloud account map + pre-run cloud verify (the #1 re-run confusion, 2026-08-22)
 
@@ -343,16 +343,16 @@ uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"
 
 # 2. Batch (qwen3.6-plus; --task-timeout N overrides the 40-min cap)
 uv run androidlife_tasks.py \
- --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
- --source public.md --all \
- --serial RS7XKZDI8HTOJNYL \
- --llm-upstream-base https://openrouter.ai/api \
- --model qwen/qwen3.6-plus --temperature 0.0 --steps 60 \
- --save-trajectory action \
- --vars-file benchmarks/androidlife-600/public_vars.local.env \
- --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
- --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
- --run-root "assets/runs/public/$(date +%Y-%m-%d-%H%M%S)"
+  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+  --source public.md --all \
+  --serial RS7XKZDI8HTOJNYL \
+  --llm-upstream-base https://openrouter.ai/api \
+  --model qwen/qwen3.6-plus --temperature 0.0 --steps 60 \
+  --save-trajectory action \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+  --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
+  --run-root "assets/runs/public/$(date +%Y-%m-%d-%H%M%S)"
 ```
 
 - `--save-trajectory action` is the default (kept explicit per user preference).
@@ -369,14 +369,14 @@ date-time folder + regenerates the turn-based ASK USER audits + README):
 ```bash
 RUN_ROOT=$(ls -dt assets/runs/public/2026-* | head -1); RUN_TS=$(basename "$RUN_ROOT")
 uv run scripts/eval/androidlife_report.py --runs "$RUN_ROOT" --source public.md \
- --hallucination-judge-model gpt-5.4-mini \
- --out "reports/metrics/public/public-$RUN_TS-report.json" \
- --out-md "reports/metrics/public/public-$RUN_TS-report.md"
+  --hallucination-judge-model gpt-5.4-mini \
+  --out "reports/metrics/public/public-$RUN_TS-report.json" \
+  --out-md "reports/metrics/public/public-$RUN_TS-report.md"
 uv run scripts/eval/eval_hallucination_controls.py --runs "$RUN_ROOT" --sub public \
- --model gpt-5.4-mini \
- --out "reports/metrics/hallucination/public-$RUN_TS.json" \
- --out-md "reports/metrics/hallucination/public-$RUN_TS.md"
-make organize-public # or: uv run python scripts/tools/organize_public_artifacts.py --sweep
+  --model gpt-5.4-mini \
+  --out "reports/metrics/hallucination/public-$RUN_TS.json" \
+  --out-md "reports/metrics/hallucination/public-$RUN_TS.md"
+make organize-public   # or: uv run python scripts/tools/organize_public_artifacts.py --sweep
 ```
 `organize_public_artifacts.py` is idempotent: creates `reports/public/`,
 `reports/metrics/public/`, `reports/metrics/hallucination/`,
@@ -388,38 +388,38 @@ regenerates the per-task ask-user audits from `ask_user_metrics.jsonl`, and rewr
 ## Context / gotchas (learned 2026-08-04 / 2026-08-21)
 
 - Google Calendar app only shows **`_sync_id`-backed** (Google-synced) events —
- events seeded on the local account are invisible to it. Seeds must live on the
- Google account (`cal_id=16` `yuvraj.mist@gmail.com`), not `cal_id=1`.
+  events seeded on the local account are invisible to it. Seeds must live on the
+  Google account (`cal_id=16` `yuvraj.mist@gmail.com`), not `cal_id=1`.
 - `content insert/delete` on this non-rooted device: CALENDAR + CALL-LOG WORK
- (verified 2026-08-05) — but quoting matters: wrap `rrule` values AND title
- where-clauses in single quotes so the device shell doesn't split on `;`/spaces
- (`--bind rrule:s:'FREQ=WEEKLY;BYDAY=WE;COUNT=52'`, `--where 'title="X"'`).
- SMS insert is genuinely BLOCKED (silently no-ops). New seeds → content provider
- or UI automation.
+  (verified 2026-08-05) — but quoting matters: wrap `rrule` values AND title
+  where-clauses in single quotes so the device shell doesn't split on `;`/spaces
+  (`--bind rrule:s:'FREQ=WEEKLY;BYDAY=WE;COUNT=52'`, `--where 'title="X"'`).
+  SMS insert is genuinely BLOCKED (silently no-ops). New seeds → content provider
+  or UI automation.
 - Calendar "shareholder" visibility miss root cause + fix: see
- `/memories/repo/device-audit.md`.
+  `/memories/repo/device-audit.md`.
 - **Food-photo captions are only visible by OPENING the photo.** Google Photos search is
- content-based, NOT caption-based — searching "pancake"/"veggie" returns old personal
- photos, not the captioned seeds. To verify `medium__gallery__007`: Collections → Favourites
- and scroll to the BOTTOM (3 items, all below the fold): **Pancakes** = Jul 26 photo,
- **Pizza** = Aug 8 collage, **Veggie Bowl** = Jul 23 photo — each shows its caption when opened.
+  content-based, NOT caption-based — searching "pancake"/"veggie" returns old personal
+  photos, not the captioned seeds. To verify `medium__gallery__007`: Collections → Favourites
+  and scroll to the BOTTOM (3 items, all below the fold): **Pancakes** = Jul 26 photo,
+  **Pizza** = Aug 8 collage, **Veggie Bowl** = Jul 23 photo — each shows its caption when opened.
 - **Destructive ops removed from the public tasks** (2026-08-21): delete/dedup/
- merge tasks were replaced with doable, non-destructive daily-user tasks
- (count/report/search/verify) so runs are easy to restore between rounds — the
- reset no longer has to restore deleted data. Hallucination-control tasks are
- untouched (their delete/empty targets genuinely absent data → honest failure).
+  merge tasks were replaced with doable, non-destructive daily-user tasks
+  (count/report/search/verify) so runs are easy to restore between rounds — the
+  reset no longer has to restore deleted data. Hallucination-control tasks are
+  untouched (their delete/empty targets genuinely absent data → honest failure).
 - For the full 730-task dataset, prefer an **emulator + AVD snapshot** (cold-boot
- from snapshot = exact state, zero provisioning). This skill is for the real
- phone (public 68).
+  from snapshot = exact state, zero provisioning). This skill is for the real
+  phone (public 68).
 - **Telegram Send-button failure (harness/UI bug, recurring):** tapping Send in the
- Telegram app leaves the text in the compose input, no bubble sent — even when the
- agent claims "it now appears in chat history" (verify against the post-action
- ui_state). Affected the 2026-08-22 run: `hard__swiggy-005`, `medium__google-maps-003`
- (false PASS), `medium__music-telegram-001`. Any task whose deliverable is "message
- X on Telegram" may keep failing until this is fixed (try `--vision` / an alternate
- send interaction).
+  Telegram app leaves the text in the compose input, no bubble sent — even when the
+  agent claims "it now appears in chat history" (verify against the post-action
+  ui_state). Affected the 2026-08-22 run: `hard__swiggy-005`, `medium__google-maps-003`
+  (false PASS), `medium__music-telegram-001`. Any task whose deliverable is "message
+  X on Telegram" may keep failing until this is fixed (try `--vision` / an alternate
+  send interaction).
 - **Clean-slate principle (2026-08-23):** remove artifacts by RUN-WINDOW (dates the
- run touched), never by a hardcoded list — lists go stale between runs.
+  run touched), never by a hardcoded list — lists go stale between runs.
 - **Obsidian vault is ADB-accessible** at `/sdcard/Obsidian/<vault>/` — run-created
- notes can be `adb shell rm`'d; no need for in-app deletion. Only Photos captions /
- favourites are app-private AND per-account.
+  notes can be `adb shell rm`'d; no need for in-app deletion. Only Photos captions /
+  favourites are app-private AND per-account.
