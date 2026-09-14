@@ -3,6 +3,10 @@
 **AndroidLife** measures Android agents on a real phone (OnePlus CPH2423) — open-weight LLMs via API and a path to on-device SLMs, driven by MobileRun (Droidrun)
 over everyday apps. Read this page first, then dive into the linked docs.
 
+Commands use **repo-relative paths** — `cd` into your clone first. Resolve the phone with
+`export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"` (no hard-coded host IP).
+Harness install exercised on **MacBook Air (M1, 2020)** and **Mac mini (M4, 2025, 16 GB)**.
+
 ## What to learn (in order)
 
 1. **[README.md](../README.md)** — what the harness is, quick start, public vs 530.

@@ -26,6 +26,7 @@ as the larger 530-task corpus.
 | Seeds | `seed_data.py --day 1..3` + enrich / PDF helpers | Fabricated notes, files, calendar, etc. |
 | Verify gates | `--verify-only` + `verify_day1_seeds.py --day N` | Do not launch on FAIL |
 | Harness | MobileRun / Droidrun **`mobilerun==0.6.15`** (pinned in `pyproject.toml` + `uv.lock`) | Same agent loop every run — do not float the wheel |
+| Host (dev) | MacBook Air M1 2020 · Mac mini M4 2025 16 GB | Where the harness/setup path is exercised |
 | Metrics | `run_metrics.json`, trajectories, reports | SR, steps, cost, battery, thermal, latency |
 
 Operator walkthrough (commands): [`device-reset-and-seed.md`](device-reset-and-seed.md).  
@@ -33,11 +34,13 @@ Skill with edge cases: [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills
 
 ## Reset → seed → verify (before every public run)
 
-1. **Connect** the OnePlus CPH2423 over ADB (canonical Tailscale serial in the reset doc).
+1. **Connect** the phone over ADB and set `export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"` (see [README](../README.md) — no hard-coded host IP).
 2. **Reset** with `public_v2` so prior agent writes (calendar junk, drafts, etc.) are cleared.
 3. **Seed** days 1–3 fabricated data, then public Notes enrich + PDFs, plus date-relative calendar conflicts as needed.
 4. **Verify** baseline + each day — expect **RESULT PASS** before launching a batch.
 5. **Run** the 60-task batch; grade with the same report / manual-audit path as published leaderboard rows.
+
+Host installs used in development: **MacBook Air (M1, 2020)** and **Mac mini (M4, 2025, 16 GB)**.
 
 Anyone following that checklist is on the same *protocol*. That is what “reproducible”
 means here — not that two runs will print the same screenshots.

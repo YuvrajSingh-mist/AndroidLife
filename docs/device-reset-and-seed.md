@@ -1,7 +1,17 @@
 # Device reset + seed (public 60-task)
 
-Return the OnePlus CPH2423 to a known baseline, then push fabricated seeds before a public run.
-Canonical serial (Tailscale): `100.108.15.119:5555`. Never use the Xiaomi Pad.
+Return the benchmark phone (reference: OnePlus CPH2423) to a known baseline, then push fabricated seeds before a public run.
+
+**Run every command from the repo root** (`cd` into your `AndroidLife` clone). Paths are relative; the only host-specific value is your ADB serial.
+
+```bash
+# pick the connected phone (USB or wireless) — works on any machine
+export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
+test -n "$S" || { echo "No adb device in 'device' state — connect/pair first"; exit 1; }
+echo "Using serial: $S"
+```
+
+Maintainer note: wireless debugging ports change after re-pair; Tailscale / LAN IPs are **not** portable — always resolve `$S` from `adb devices` on your machine.
 
 Operator skill with edge cases / UI-only checks:
 [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md) ·
@@ -10,8 +20,7 @@ GUI checklist: [pre-run-checklist.md](pre-run-checklist.md).
 ## 1. Connect
 
 ```bash
-S=100.108.15.119:5555
-adb connect "$S"
+adb devices -l
 adb -s "$S" shell echo OK
 ```
 
@@ -46,10 +55,10 @@ uv run python scripts/seeding/fabricate_public_pdfs.py --serial "$S" # Invoice +
 Re-seed **tomorrow afternoon** conflicts (`easy__calendar__002`):
 
 ```bash
-uv run python - <<'PY'
-import datetime, subprocess
+uv run python - <<PY
+import datetime, os, subprocess
 from zoneinfo import ZoneInfo
-S = "100.108.15.119:5555"
+S = os.environ["S"]
 tz = ZoneInfo("Asia/Kolkata")
 tomorrow = datetime.date.today() + datetime.timedelta(days=1)
 CAL = "content://com.android.calendar/events"
@@ -67,7 +76,7 @@ def ins(t, h0, m0, h1, m1):
        "--bind", "hasAlarm:i:0", "--bind", "eventTimezone:s:Asia/Kolkata")
 ins("Team Sync", 14, 0, 15, 0)
 ins("Mentor 1 on 1", 14, 30, 15, 30)
-print("seeded", tomorrow)
+print("seeded", tomorrow, "on", S)
 PY
 ```
 

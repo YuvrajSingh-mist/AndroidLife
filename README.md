@@ -25,24 +25,35 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 
 - macOS or Linux host with **Python 3.11–3.13** and [`uv`](https://docs.astral.sh/uv/)
 - `adb` (Android platform-tools); `scrcpy` recommended
-- A dedicated Android phone with USB or wireless debugging (this project’s device: OnePlus CPH2423)
+- A dedicated Android phone with USB or wireless debugging (reference device: OnePlus CPH2423)
 - **MobileRun / Droidrun `0.6.15`** — exact pin (`mobilerun==0.6.15`); do not float to a newer wheel unless you intentionally re-lock and re-validate
 - API keys as needed:
   - `OPENROUTER_API_KEY` — agent via OpenRouter
   - `OPENAI_API_KEY` — simulated `ask_user` (ASK USER / multi-turn KB tasks)
   - omit OpenRouter key if you point `--llm-upstream-base` at a **local** OpenAI-compatible server (e.g. llama.cpp)
 
+### Tested hosts
+
+Harness install + public runs have been exercised on:
+
+| Host | Notes |
+|---|---|
+| **MacBook Air (M1, 2020)** | Apple Silicon, local + cloud LLM |
+| **Mac mini (M4, 2025, 16 GB)** | Apple Silicon, local llama.cpp (e.g. Qwen3.5-4B) + cloud LLM |
+
+Paths below are **repo-relative** — run every command from the cloned `AndroidLife/` root. The only machine-specific value is your ADB serial (`$S`).
+
 ## Setup
 
 ```bash
 git clone https://github.com/YuvrajSingh-mist/AndroidLife.git
-cd AndroidLife
+cd AndroidLife   # ← stay here for all later commands
 
 # install deps from the lockfile (pins MobileRun 0.6.15) + scaffold .env / config
 uv sync --extra dev --extra tracing --extra hf   # or: make sync
 uv run python scripts/setup.py                   # or: make setup
 
-cp .env.example .env   # if setup did not already create .env
+cp -n .env.example .env                          # skip if .env already exists
 # edit .env → OPENROUTER_API_KEY / OPENAI_API_KEY as needed
 
 # confirm the harness pin
@@ -62,13 +73,19 @@ make smoke-test         # LLM + ADB + one real task (optional)
 
 ```bash
 adb devices -l
-# USB: use the device serial from `adb devices`
-# Wireless (example Tailscale IP — your port changes after re-pair):
-adb pair <phone-ip>:<pairing-port>   # one-time, with the 6-digit code
-adb connect <phone-ip>:<connect-port>
-S=<phone-ip>:<connect-port>          # export or paste into commands below
+# USB: enable debugging, plug in, accept the RSA prompt
+# Wireless: Developer options → Wireless debugging → Pair / Connect
+#   adb pair <phone-ip>:<pairing-port>     # 6-digit code (pairing port)
+#   adb connect <phone-ip>:<connect-port>  # different port from the IP & port line
+
+# pick the first online device (works on any machine)
+export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
+test -n "$S" || { echo "No adb device in 'device' state"; exit 1; }
+echo "Using serial: $S"
 adb -s "$S" shell echo OK
 ```
+
+Keep `$S` exported in that shell (or paste the serial into `--serial` flags).
 
 ## Run the public 60 (operator path)
 
@@ -144,13 +161,21 @@ uv run androidlife_tasks.py \
   --run-root "assets/runs/public/$(date +%Y%m%d-%H%M%S)"
 ```
 
-Detach so the run survives terminal close (macOS-friendly):
+Detach so the run survives terminal close (from repo root):
 
 ```bash
 RUN_TS=$(date +%Y%m%d-%H%M%S)
-nohup uv run androidlife_tasks.py ... --run-root "assets/runs/public/$RUN_TS" \
+nohup uv run androidlife_tasks.py \
+  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+  --source public.md --all --serial "$S" \
+  --llm-upstream-base https://openrouter.ai/api --model qwen/qwen3.6-plus \
+  --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --save-trajectory action \
+  --vars-file benchmarks/androidlife-600/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+  --run-root "assets/runs/public/$RUN_TS" \
   < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
-# or double-fork / start_new_session from a launcher script
+tail -f "assets/runs/public/batch-$RUN_TS.log"
 ```
 
 Resume an interrupted batch with the **same** `--run-root` and `--resume-from <task_id>` (or an explicit remaining `--task-id` list).  
