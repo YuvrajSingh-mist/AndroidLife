@@ -100,7 +100,7 @@ numbers, personal emails, or real identities appear; all personas are fictional.
 
 ## License & citation
 
-- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — reuse allowed with attribution to **Yuvraj Singh**.
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — free to use and adapt (including commercially) **with attribution** to **Yuvraj Singh**. Do not remove credit.
 - **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE) in the [AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) repo.
 
 If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
@@ -153,8 +153,19 @@ Canonical corpus: [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO
 
 ## License & citation
 
-- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — attribution to **Yuvraj Singh** required.
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — free to use and adapt (including commercially) **with attribution** to **Yuvraj Singh**. Do not remove credit.
 - **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE).
+
+If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
+
+```bibtex
+@misc{{singh2026androidlife,
+      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+      author={{Yuvraj Singh}},
+      year={{2026}},
+      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+}}
+```
 """
 
 README_LEGACY_REDIRECT = f"""---
@@ -170,7 +181,16 @@ This dataset was renamed. **Use the canonical repo:**
 
 Filenames are now `AndroidLife_530_v1.json` / `.jsonl` (formerly `DailyBench_*` / DrainBench branding).
 
-License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution to Yuvraj Singh).
+License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution to Yuvraj Singh required).
+
+```bibtex
+@misc{{singh2026androidlife,
+      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
+      author={{Yuvraj Singh}},
+      year={{2026}},
+      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
+}}
+```
 """
 
 

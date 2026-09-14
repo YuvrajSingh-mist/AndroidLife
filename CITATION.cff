@@ -1,12 +1,11 @@
 cff-version: 1.2.0
-message: If you use AndroidLife (benchmark, leaderboard, tasks, or results), please cite it as below.
+message: If you use AndroidLife (benchmark, leaderboard, tasks, datasets, or results), please cite it as below.
 title: "AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs"
 type: software
 authors:
   - family-names: Singh
     given-names: Yuvraj
 date-released: "2026-01-01"
-year: 2026
 url: "https://github.com/YuvrajSingh-mist/AndroidLife"
 repository-code: "https://github.com/YuvrajSingh-mist/AndroidLife"
 license: Apache-2.0
@@ -18,4 +17,3 @@ preferred-citation:
       given-names: Yuvraj
   year: 2026
   url: "https://github.com/YuvrajSingh-mist/AndroidLife"
-  howpublished: "\\url{https://github.com/YuvrajSingh-mist/AndroidLife}"
