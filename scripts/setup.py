@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-command setup / onboarding for DrainBench on a new machine + phone."""
+"""One-command setup / onboarding for AndroidLife on a new machine + phone."""
 
 from __future__ import annotations
 
@@ -174,7 +174,7 @@ FULL_FLOW = ["prerequisites", "deps", "env", "config", "device", "manifests", "d
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="One-command DrainBench setup / onboarding.")
+    ap = argparse.ArgumentParser(description="One-command AndroidLife setup / onboarding.")
     ap.add_argument("stages", nargs="*", choices=STAGES + ["all"],
                     help="Stages to run (default: full guided flow = " + " ".join(FULL_FLOW) + " + seed/verify for --day).")
     ap.add_argument("--day", type=int, default=1, help="Day for seed/verify stages (default 1).")

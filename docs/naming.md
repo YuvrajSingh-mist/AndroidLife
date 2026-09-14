@@ -18,10 +18,6 @@
 | HF public runs | [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public) |
 | HF trajectories | [`YuvrajSingh9886/androidlife-trajectories`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-trajectories) |
 
-## Local workspace folder
-
-The checkout directory may still be named `DrainBench300` on disk. That folder name is local only and is not the product name.
-
 ## Process watchers
 
 ```bash

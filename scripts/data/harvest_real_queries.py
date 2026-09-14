@@ -12,9 +12,9 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SE_API = "https://api.stackexchange.com/2.3"
-UA = {"User-Agent": "DrainBench-task-sourcing/0.1 (benchmark authoring)"}
+UA = {"User-Agent": "AndroidLife-task-sourcing/0.1 (benchmark authoring)"}
 
-# DrainBench's 32 apps -> Stack Exchange tag(s) + a subreddit-like search hint.
+# AndroidLife's 32 apps -> Stack Exchange tag(s) + a subreddit-like search hint.
 # Tags are the authoritative source on the android SE site; fall back to free
 # text search when a tag doesn't exist.
 APP_TAGS = {
