@@ -52,7 +52,7 @@ def main() -> int:
             task["task_number_within_dataset_app"] = ordinal_seen[key]
     elif real_ids:
         print(f"warning: {len(real_ids)} id comments but {len(dataset['tasks'])} parsed tasks - ignoring comments", file=sys.stderr)
-    # Stays on the PUBLIC facts file (ask_user_facts.json, via ask_user_facts_path) - never the
+    # Stays on the PUBLIC facts file (ask_user_facts_public.json, via ask_user_facts_path) - never the
     # 530 corpus' ask_user_facts_530.json, since the preview is fine to publish with answers.
     merge_ask_user_facts(dataset, ROOT / ask_user_facts_path("public.md"))
     # Per-task prompt overrides that survive regeneration (the datasets are gitignored and
@@ -66,7 +66,7 @@ def main() -> int:
             task["placeholders"] = ["middle initial"]
             task["placeholder_count"] = 1
         # medium__google-search__008 is a deliberately promoted MEDIUM ASK USER SINGLE task:
-        # it carries a withheld route fact (in ask_user_facts.json) but the markdown parser only
+        # it carries a withheld route fact (in ask_user_facts_public.json) but the markdown parser only
         # marks HARD headers as ASK USER, so its `ahi`/`is_ask_user` would be lost on every
         # regeneration and the fact would never reach --ask-user-context at run time. Force the
         # flags so the oracle is given the route fact (see docs/benchmark-spec-public.md).

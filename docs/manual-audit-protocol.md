@@ -10,7 +10,7 @@ really went through the trajectories and ADB-verified device facts.
 1. **Ground truth** — read the schedule markdown task text (`public.md` / `tasks_530.md`)
  incl. `🔮 HALLUCINATION CONTROL` markers, the real placeholder values
  (`*_vars.local.env`), the dataset JSON (`ahi` / `is_ask_user`), plus the sidecars
- `hallucination_controls.json`, `ask_user_facts.json`, `multiturn_kb_public.json`.
+ `hallucination_controls.json`, `ask_user_facts_public.json`, `multiturn_kb_public.json`.
 2. **Per task** — read `output.json` (success/reason), `output.txt` (final answer),
  `agent.log.txt` (full step log), `ask_user_metrics.jsonl` / `run_metrics.json`
  (ask_user count).

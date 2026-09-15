@@ -41,7 +41,7 @@ uv run python -m pytest tests/ -q -p no:cacheprovider --deselect tests/test_adb.
 > `hard__photos-gmail-obsidian__012` fact now = photo + recipient email
 > (`hafari4025@aghism.com`). **Public set trimmed 68 → 60 (20/20/20 per day)** — 8
 > duplicate tasks removed (see `docs/benchmark-spec-public.md`).
-> `ask_user_facts.json` was patched by hand — keep it in sync with the dataset.
+> `ask_user_facts_public.json` was patched by hand — keep it in sync with the dataset.
 ```
 > Note: `test_openrouter_live.py` needs a real network to OpenRouter — it fails
 > with `RemoteDisconnected`/`403` when the sandbox blocks outbound; ignore it (or

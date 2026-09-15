@@ -32,7 +32,7 @@ and [`docs/fabricated-test-data.md`](fabricated-test-data.md) for the machinery 
 | Distinct apps | **30** of 31 in the corpus (Weather, MakeMyTrip not sampled) |
 | Placeholders used | 44 uses across **32 distinct keys** (most-used: `[contact]`, 11 uses) |
 | Duplicate task_ids | 0 |
-| Sidecars | `ask_user_facts.json` (7 SINGLE), `multiturn_kb_public.json` (4 MULTI), `hallucination_controls.json` (7 HC) |
+| Sidecars | `ask_user_facts_public.json` (7 SINGLE), `multiturn_kb_public.json` (4 MULTI), `hallucination_controls.json` (7 HC) |
 
 ## Composition & distribution (per day)
 
@@ -68,7 +68,7 @@ Every public task is drawn from the 530 with the same text, so the public set is
 
 ### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
 
-Fact source: `benchmarks/androidlife-530/ask_user_facts.json`.
+Fact source: `benchmarks/androidlife-530/ask_user_facts_public.json`.
 
 These are the **7 single-query ask tasks**: the 1–2 facts the task needs (recipient, place,
 item, route, threshold, …) are deliberately withheld from the model and given to the simulated
@@ -248,7 +248,7 @@ uv run androidlife_tasks.py \
  --run-root "assets/runs/public/$RUN_TS"
 ```
 
-`--source public.md` is what selects the public `ask_user_facts.json` sidecar. Per-day subsets
+`--source public.md` is what selects the public `ask_user_facts_public.json` sidecar. Per-day subsets
 use `--day 1|2|3`; individual tasks use `--task-id`. Model sampling (`top_p 0.95`, `seed 42`)
 and the 2400 s task cap are runner defaults — see
 [`docs/cli-reference.md`](cli-reference.md) for the full flag set.

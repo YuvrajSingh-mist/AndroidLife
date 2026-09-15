@@ -74,7 +74,7 @@ This repo ships the **530-task corpus** plus everything needed to reproduce runs
 | `data/tasks_530.md` | Human-readable source (canonical prompt text). |
 | `data/tasks.md` | Wider task list (superset). |
 | `data/multiturn_kb_530.json` | Knowledge-base profiles for **ASK USER - MULTI** tasks. |
-| `data/ask_user_facts.json` | Facts for **ASK USER SINGLE** tasks. |
+| `data/ask_user_facts_530.json` | Facts for **ASK USER SINGLE** tasks. |
 | `data/hallucination_controls.json` | Hallucination-control tasks. |
 | `vars/` | 530-corpus run-time variable values (resolve every `[placeholder]`). |
 | `config/user_config.example` | Documented default persona/device config. |
@@ -180,7 +180,7 @@ def build_530_public(out: Path) -> None:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["tasks_530.md", "tasks.md"]:
         _copy(out, BENCH / f, f"data/{f}")
-    for f in ["multiturn_kb_530.json", "ask_user_facts.json", "hallucination_controls.json"]:
+    for f in ["multiturn_kb_530.json", "ask_user_facts_530.json", "hallucination_controls.json"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["tasks_vars.local.env", "tasks_vars.local.json"]:
         _copy(out, BENCH / f, f"vars/{f}")
@@ -195,7 +195,7 @@ def build_public_sample(out: Path) -> None:
     print(f"[2/2] public-sample (private) -> {out}")
     for f in ["AndroidLife_public_v2.json", "AndroidLife_public_v2.jsonl"]:
         _copy(out, BENCH / f, f"data/{f}")
-    for f in ["public.md", "multiturn_kb_public.json"]:
+    for f in ["public.md", "multiturn_kb_public.json", "ask_user_facts_public.json"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["public_vars.local.env", "public_vars.example.env"]:
         _copy(out, BENCH / f, f"vars/{f}")

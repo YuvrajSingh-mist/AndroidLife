@@ -342,7 +342,7 @@ def load_dataset(path: str | Path) -> dict[str, Any]:
 # a path. scripts/export_public_dataset.py must keep publishing from the public file.
 _ASK_USER_FACTS_BY_SOURCE = {
     "tasks.md": "ask_user_facts_530.json",
-    "public.md": "ask_user_facts.json",
+    "public.md": "ask_user_facts_public.json",
 }
 
 # Multi-turn KB profiles are likewise keyed by source: tasks.md -> the 530-corpus KB,
@@ -377,7 +377,7 @@ def ask_user_facts_path(source: str) -> str:
     `--source tasks.md|public.md` and get the right file with no hardcoded path:
 
       tasks.md  -> benchmarks/androidlife-530/ask_user_facts_530.json  (530-task corpus)
-      public.md -> benchmarks/androidlife-530/ask_user_facts.json      (3-day public preview)
+      public.md -> benchmarks/androidlife-530/ask_user_facts_public.json (3-day public preview)
     """
     facts_file = _ASK_USER_FACTS_BY_SOURCE.get(Path(source).name)
     if facts_file is None:

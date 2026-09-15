@@ -18,7 +18,7 @@ from androidlife.task_dataset import save_dataset_files  # noqa: E402
 BENCH = ROOT / "benchmarks" / "androidlife-530"
 S530 = BENCH / "AndroidLife_530_v1.json"
 FACTS_530 = BENCH / "ask_user_facts_530.json"
-FACTS_PUB = BENCH / "ask_user_facts.json"
+FACTS_PUB = BENCH / "ask_user_facts_public.json"
 HC = BENCH / "hallucination_controls.json"
 PUBLIC_VARS = BENCH / "public_vars.local.env"
 USER_YAML = ROOT / "config" / "user.yaml"
@@ -208,7 +208,7 @@ def main() -> int:
         public_tasks.append(row)
     public_tasks.sort(key=lambda r: (r["day"], r["bucket"] != "hard", r["app_slug"], r["task_id"]))
 
-    # --- write ask_user_facts.json (public sidecar) for the chosen AU tasks ---
+    # --- write ask_user_facts_public.json (public sidecar) for the chosen AU tasks ---
     pub_facts = {
         t["task_id"]: facts530.get(t["task_id"], t.get("ask_user_fact") or "")
         for t in public_tasks
