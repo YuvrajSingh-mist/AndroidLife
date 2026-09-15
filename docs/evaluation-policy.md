@@ -26,6 +26,7 @@ Comparable leaderboard runs must freeze the evaluation surface:
 | Flags | Fixed agent / runner flags (same tool set, same vision mode) |
 | Task text | Fixed schedule text + resolved placeholders (`*_vars.local.env`) |
 | Action budget | Default **50 steps** per task unless the experiment is explicitly about budget sensitivity |
+| Timeout | Default **2400 s (40 min)** wall-clock per task (`--task-timeout 2400`); same cap across buckets unless the experiment is explicitly about timeout sensitivity. `0` = no wall-clock limit (step budget only) |
 | Connectivity | Wireless ADB preferred for measured (battery / thermal) runs |
 | Drift | Document environment changes (OS, apps, seeds, network) when they affect comparability |
 
