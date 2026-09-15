@@ -1,0 +1,11 @@
+{
+  "queries": [
+    {
+      "question": "I've re-ordered the 14-Aug food (Downtown Delight: Kushka Rice + Murgh Mughlai) and the current order total is \u20b9616. But",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "Send it to **Yuvraj Airtel** on Telegram.",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

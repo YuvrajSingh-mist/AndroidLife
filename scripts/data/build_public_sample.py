@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from androidlife.task_dataset import save_dataset_files  # noqa: E402
 
-BENCH = ROOT / "benchmarks" / "androidlife-600"
+BENCH = ROOT / "benchmarks" / "androidlife-530"
 S530 = BENCH / "AndroidLife_530_v1.json"
 FACTS_730 = BENCH / "ask_user_facts_730.json"
 FACTS_PUB = BENCH / "ask_user_facts.json"
@@ -302,7 +302,7 @@ def main() -> int:
     dataset = {
         "dataset_name": "AndroidLife-Public",
         "dataset_version": "v2",
-        "source_path": "benchmarks/androidlife-600/public.md",
+        "source_path": "benchmarks/androidlife-530/public.md",
         "task_count": len(public_tasks),
         "bucket_counts": dict(Counter(t["bucket"] for t in public_tasks)),
         "tasks": public_tasks,

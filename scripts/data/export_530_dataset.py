@@ -22,11 +22,11 @@ from androidlife.task_dataset import (  # noqa: E402
     to_prompt_template,
 )
 
-SRC = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_530.md"
-OUT_JSON = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
-OUT_JSONL = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.jsonl"
-FACTS = REPO_ROOT / "benchmarks" / "androidlife-600" / "ask_user_facts_730.json"
-HALLUCINATIONS = REPO_ROOT / "benchmarks" / "androidlife-600" / "hallucination_controls.json"
+SRC = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_530.md"
+OUT_JSON = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.json"
+OUT_JSONL = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.jsonl"
+FACTS = REPO_ROOT / "benchmarks" / "androidlife-530" / "ask_user_facts_730.json"
+HALLUCINATIONS = REPO_ROOT / "benchmarks" / "androidlife-530" / "hallucination_controls.json"
 
 DAY_RE = re.compile(r"^### Day (\d+)$")
 SECTION_RE = re.compile(r"^\*\*\[(.+?)\]\*\*$")

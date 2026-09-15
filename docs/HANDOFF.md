@@ -112,7 +112,7 @@
 
 ## 0b. PREVIOUS STATE (2026-08-29) — Public 3-day runs + music-obsidian-077 reruns
 
-- **Active benchmark:** the PUBLIC 3-day sample — `benchmarks/androidlife-600/AndroidLife_public_v2.json` (60 tasks) + `public.md` + `multiturn_kb_public.json` + `public_vars.local.env`. Three target runs under `assets/runs/public/`:
+- **Active benchmark:** the PUBLIC 3-day sample — `benchmarks/androidlife-530/AndroidLife_public_v2.json` (60 tasks) + `public.md` + `multiturn_kb_public.json` + `public_vars.local.env`. Three target runs under `assets/runs/public/`:
  - `2026-08-26-184934` — **qwen3.8-27b VISION-ONLY** · manual **22 PASS / 37 FAIL / 1 HC** · official **23/36/1 = 38.3%**
  - `20260826-105200` — **gemini-3.1-flash-lite** · manual **25 PASS / 34 FAIL / 1 HC** · official **37/22/1 = 61.7%** (post music-obsidian merge; hard-swiggy-005 = 12th false pass)
  - `2026-08-28-002424` — **qwen3.8-27b TEXT** · manual **37 PASS / 23 FAIL / 0 HC** · official **31/29/0 = 51.7%**
@@ -177,7 +177,7 @@
 ## 3b. Day-1 task rewordings (DONE 2026-08-09 — data already regenerated)
 
 The following tasks failed on data/device preconditions, so they were reworded to be
-achievable and re-seeded. All changes are in `benchmarks/androidlife-600/tasks_530.md`
+achievable and re-seeded. All changes are in `benchmarks/androidlife-530/tasks_530.md`
 (source of truth) and the regenerated `AndroidLife_530_v1.json/.jsonl` + day-1 seed
 manifest + `website/assets/data/site_data.json` (site auto-deploys on push):
 

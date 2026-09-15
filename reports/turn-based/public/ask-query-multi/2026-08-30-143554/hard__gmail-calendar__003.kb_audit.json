@@ -1,0 +1,11 @@
+{
+  "queries": [
+    {
+      "question": "I couldn't find a valid upcoming flight confirmation email with your actual booked flight details in the search results.",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "Use the ticket email account: rajceo2031@gmail.com. The upcoming trip is BBI\u2192DEL on 2026-10-16 (Fri).",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

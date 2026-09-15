@@ -47,7 +47,7 @@ DEFAULT_SOURCE = "tasks.md"
 def build_parser() -> argparse.ArgumentParser:
     """Build the batch runner CLI parser."""
     parser = argparse.ArgumentParser(description="Run AndroidLife task slices from an exported dataset.")
-    parser.add_argument("--dataset", default="benchmarks/androidlife-600/AndroidLife_530_v1.json")
+    parser.add_argument("--dataset", default="benchmarks/androidlife-530/AndroidLife_530_v1.json")
     parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the dataset was exported from; selects the ask_user_facts sidecar for Hard/ASK USER fallback facts (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json). Default: {DEFAULT_SOURCE}.")
     parser.add_argument("--bucket", choices=["easy", "medium", "hard", "hard-deterministic", "open-ended"])
     parser.add_argument("--app")
@@ -56,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--config", default=str(Path(__file__).resolve().parents[2] / "config" / "user.yaml"),
                         help="Flat user config (config/user.yaml) that resolves prompt placeholders, ASK USER fact templates ({...}) and seed values. CLI --var overrides it.")
     parser.add_argument("--vars-file", default=None, metavar="PATH",
-                        help="Optional per-day 'key=value' vars file (e.g. benchmarks/androidlife-600/tasks_vars/day_1.env); merged under --var.")
+                        help="Optional per-day 'key=value' vars file (e.g. benchmarks/androidlife-530/tasks_vars/day_1.env); merged under --var.")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--run-root", default=None, help="Run folder root to continue into (e.g. runs/2026-08-03-162853) instead of creating a fresh dated folder. Pair with --resume-from to continue an interrupted batch in place.")
     parser.add_argument("--resume-from", default=None, metavar="TASK_ID", help="Skip every selected task whose task_id comes before TASK_ID and start at TASK_ID (inclusive), so an interrupted batch can resume without re-running earlier tasks.")
@@ -88,7 +88,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
-                        help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-600/multiturn_kb_530.json.")
+                        help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-530/multiturn_kb_530.json.")
     return parser
 
 

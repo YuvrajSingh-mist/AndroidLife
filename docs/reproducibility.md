@@ -18,7 +18,7 @@ as the larger 530-task corpus.
 
 | Piece | Where | Role |
 |---|---|---|
-| Task definitions | `benchmarks/androidlife-600/public.md` + `AndroidLife_public_v2.json` | Fixed prompts, placeholders, buckets |
+| Task definitions | `benchmarks/androidlife-530/public.md` + `AndroidLife_public_v2.json` | Fixed prompts, placeholders, buckets |
 | Vars / persona | `public_vars.local.env` | Device-pinned placeholder values |
 | ASK USER / multi-turn | `ask_user_facts.json`, `multiturn_kb_public.json` | Withheld facts + KB profiles |
 | Hallucination controls | `hallucination_controls.json` | Known-absent targets (honest fail) |

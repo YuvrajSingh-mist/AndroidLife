@@ -1,0 +1,18 @@
+{
+  "queries": [
+    {
+      "question": "I need two details to complete your request: 1) Which food delivery or ordering app did you use to place the order on 14",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "1) Swiggy 2) Yuvraj Airtel",
+      "source": "graded-from-turn-based"
+    },
+    {
+      "question": "I can't see the placement dates of your past orders in the Swiggy reorder list. Could you tell me which restaurant your ",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "Downtown Delight.",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

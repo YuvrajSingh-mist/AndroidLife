@@ -20,13 +20,13 @@ STRIP_COMMENTS = re.compile(r"<!--.*?-->")
 
 
 def main() -> int:
-    """Parse benchmarks/androidlife-600/public.md (the 3-day public sample) and write the dataset artifacts.
+    """Parse benchmarks/androidlife-530/public.md (the 3-day public sample) and write the dataset artifacts.
 
     This is a structural preview, not the real held-out eval, so unlike the private benchmark it's
     fine to publish each ASK USER task's `ask_user_fact` right in the dataset (see
     docs/evaluation-policy.md).
     """
-    source_path = "benchmarks/androidlife-600/public.md"
+    source_path = "benchmarks/androidlife-530/public.md"
     source = ROOT / source_path
     raw = source.read_text(encoding="utf-8")
     real_ids = TASK_ID_COMMENT.findall(raw)  # in file order, one per task line
@@ -76,7 +76,7 @@ def main() -> int:
             task["is_ask_user"] = True
     dataset["dataset_name"] = "AndroidLife-Public"
     dataset["dataset_version"] = "v2"
-    save_dataset_files(dataset, ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_public_v2.json", ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_public_v2.jsonl")
+    save_dataset_files(dataset, ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_public_v2.json", ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_public_v2.jsonl")
     print(f"Exported {dataset['task_count']} tasks.")
     return 0
 

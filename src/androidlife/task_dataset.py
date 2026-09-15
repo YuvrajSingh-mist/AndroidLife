@@ -361,13 +361,13 @@ def multiturn_kb_path(source: str) -> str:
     Derived from the source's filename (repo-root-relative), so callers pass
     `--source tasks.md|public.md` and get the right file with no hardcoded path:
 
-      tasks.md  -> benchmarks/androidlife-600/multiturn_kb_530.json   (530-corpus KB)
-      public.md -> benchmarks/androidlife-600/multiturn_kb_public.json (public-sample KB)
+      tasks.md  -> benchmarks/androidlife-530/multiturn_kb_530.json   (530-corpus KB)
+      public.md -> benchmarks/androidlife-530/multiturn_kb_public.json (public-sample KB)
     """
     kb_file = _MULTITURN_KB_BY_SOURCE.get(Path(source).name)
     if kb_file is None:
         raise ValueError(f"Unknown task source {source!r}: expected tasks.md or public.md")
-    return f"benchmarks/androidlife-600/{kb_file}"
+    return f"benchmarks/androidlife-530/{kb_file}"
 
 
 def ask_user_facts_path(source: str) -> str:
@@ -376,13 +376,13 @@ def ask_user_facts_path(source: str) -> str:
     Derived from the source's filename (repo-root-relative), so callers pass
     `--source tasks.md|public.md` and get the right file with no hardcoded path:
 
-      tasks.md  -> benchmarks/androidlife-600/ask_user_facts_730.json  (730-task benchmark)
-      public.md -> benchmarks/androidlife-600/ask_user_facts.json      (3-day public preview)
+      tasks.md  -> benchmarks/androidlife-530/ask_user_facts_730.json  (730-task benchmark)
+      public.md -> benchmarks/androidlife-530/ask_user_facts.json      (3-day public preview)
     """
     facts_file = _ASK_USER_FACTS_BY_SOURCE.get(Path(source).name)
     if facts_file is None:
         raise ValueError(f"Unknown task source {source!r}: expected tasks.md or public.md")
-    return f"benchmarks/androidlife-600/{facts_file}"
+    return f"benchmarks/androidlife-530/{facts_file}"
 
 
 def merge_ask_user_facts(dataset: dict[str, Any], facts_path: str | Path) -> None:

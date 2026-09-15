@@ -1,0 +1,11 @@
+{
+  "queries": [
+    {
+      "question": "I've searched your messages for keywords like \"get-together,\" \"plans,\" and \"friends,\" but I couldn't find a group chat w",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "It\u2019s the Telegram group **\u201cForever 21.\u201d**",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

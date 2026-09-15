@@ -25,6 +25,7 @@ Harness pin: **`mobilerun==0.6.15`**. Tested host installs: **MacBook Air (M1, 2
 | [`data/`](data/) | Dataset export (`tasks_530.md` → JSON/JSONL + public preview) |
 | [`eval/`](eval/) | Metrics, hallucination eval, e2e check |
 | [`tools/`](tools/) | Infrastructure: LLM proxy, device health, provider guard, pricing, app audit |
+| [`llm/`](llm/) | Local llama.cpp: model-agnostic `serve_gguf.sh`, `download_ggufs.sh` — see [`llm/README.md`](llm/README.md) |
 
 ## ▶️ `run/` — entrypoints
 

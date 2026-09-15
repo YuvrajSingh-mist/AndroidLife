@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate benchmarks/androidlife-600/tasks_vars_usage.json from the 530 dataset (AndroidLife_530_v1.json) and tasks_vars.local.env."""
+"""Regenerate benchmarks/androidlife-530/tasks_vars_usage.json from the 530 dataset (AndroidLife_530_v1.json) and tasks_vars.local.env."""
 from __future__ import annotations
 
 import json
@@ -7,9 +7,9 @@ from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DATASET = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
-VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars.local.env"
-OUT = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars_usage.json"
+DATASET = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.json"
+VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_vars.local.env"
+OUT = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_vars_usage.json"
 
 
 def parse_flat_env(text: str) -> dict[str, str]:

@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BENCH = REPO_ROOT / "benchmarks" / "androidlife-600"
+BENCH = REPO_ROOT / "benchmarks" / "androidlife-530"
 DOCS = REPO_ROOT / "docs"
 CONFIG = REPO_ROOT / "config"
 SEEDS_PUBLIC = REPO_ROOT / "assets" / "seeds" / "public"
@@ -17,6 +17,8 @@ DEFAULT_OUT = REPO_ROOT / "hf_release"
 # Canonical HF dataset ids (upload targets).
 HF_530_REPO = "YuvrajSingh9886/androidlife-530"
 HF_SAMPLE_REPO = "YuvrajSingh9886/androidlife-public-sample"
+# Legacy id kept as a redirect card only.
+HF_530_LEGACY = "YuvrajSingh9886/drainbench-530"
 
 
 def _copy(out: Path, src: Path, rel: str) -> None:
@@ -56,8 +58,9 @@ AndroidLife runs Android agent tasks against a **real phone** (via ADB/MobileRun
 and a real LLM, and grades the agent on reaching a verifiable device end-state.
 This repo ships the **530-task corpus** plus everything needed to reproduce runs.
 
-> Canonical dataset id:
+> Formerly published as `DrainBench-530` / DailyBench. Canonical dataset id:
 > [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
+> Legacy [`{HF_530_LEGACY}`](https://huggingface.co/datasets/{HF_530_LEGACY}) redirects here.
 
 > The **public sample** (runnable tasks + hallucination controls; personal/device-specific
 > vars + seeds) is kept in a separate private companion; this public repo carries only
@@ -97,7 +100,7 @@ numbers, personal emails, or real identities appear; all personas are fictional.
 
 ## License & citation
 
-- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — free to use and adapt (including commercially) **with attribution** to **Yuvraj Singh**. Do not remove credit.
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — reuse allowed with attribution to **Yuvraj Singh**.
 - **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE) in the [AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) repo.
 
 If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
@@ -150,19 +153,24 @@ Canonical corpus: [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO
 
 ## License & citation
 
-- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — free to use and adapt (including commercially) **with attribution** to **Yuvraj Singh**. Do not remove credit.
+- **Dataset / task content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — attribution to **Yuvraj Singh** required.
 - **Harness code:** [Apache-2.0](https://github.com/YuvrajSingh-mist/AndroidLife/blob/master/LICENSE).
+"""
 
-If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
+README_LEGACY_REDIRECT = f"""---
+license: cc-by-4.0
+pretty_name: AndroidLife-530 (moved)
+---
 
-```bibtex
-@misc{{singh2026androidlife,
-      title={{AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs}},
-      author={{Yuvraj Singh}},
-      year={{2026}},
-      howpublished={{\\url{{https://github.com/YuvrajSingh-mist/AndroidLife}}}},
-}}
-```
+# Moved → AndroidLife-530
+
+This dataset was renamed. **Use the canonical repo:**
+
+**[{HF_530_REPO}](https://huggingface.co/datasets/{HF_530_REPO})**
+
+Filenames are now `AndroidLife_530_v1.json` / `.jsonl` (formerly `DailyBench_*` / DrainBench branding).
+
+License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution to Yuvraj Singh).
 """
 
 
@@ -215,12 +223,14 @@ def main() -> int:
     build_530_public(out / "530-public")
     print()
     build_public_sample(out / "public-sample")
+    (out / "LEGACY_REDIRECT_README.md").write_text(README_LEGACY_REDIRECT, encoding="utf-8")
 
     n530 = sum(1 for _ in (out / "530-public").rglob("*") if _.is_file())
     nps = sum(1 for _ in (out / "public-sample").rglob("*") if _.is_file())
     print(f"\nstaged 530-public ({n530} files) + public-sample ({nps} files) under {out}")
     print(f"next: upload 530 -> {HF_530_REPO}")
     print(f"      upload sample -> {HF_SAMPLE_REPO} (private)")
+    print(f"      redirect card -> {HF_530_LEGACY}")
     return 0
 
 

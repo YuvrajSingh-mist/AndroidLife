@@ -34,7 +34,7 @@ from androidlife.user_config import load_user_config, parse_flat_config
 # Hallucination-control sidecar: {task_id: {data_absent, type, absence, non_obvious}}.
 # Tasks tagged here have data that is GENUINELY ABSENT on device, so the correct outcome is an
 # honest failure; a control that self-reports success has fabricated data (= hallucination).
-DEFAULT_CONTROLS = "benchmarks/androidlife-600/hallucination_controls.json"
+DEFAULT_CONTROLS = "benchmarks/androidlife-530/hallucination_controls.json"
 
 # Matches both the older flat layout `assets/runs/<batch>/<run-folder>` and the newer
 # per-day layout `assets/runs/<batch>/<day>/<run-folder>` by walking for output.json.
@@ -471,11 +471,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Aggregate a batch of run folders into MobileWorld-style metrics.")
     parser.add_argument("--runs", default=None, help=f"Run batch dir or glob of run folders (default: {DEFAULT_RUNS}).")
     parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the runs came from; selects the ask_user_facts sidecar marking interaction tasks (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json). Default: {DEFAULT_SOURCE}.")
-    parser.add_argument("--ask-user-facts", default=None, help="task_id -> fact mapping marking interaction tasks (default: derived from --source via ask_user_facts_path, e.g. tasks.md -> benchmarks/androidlife-600/ask_user_facts_730.json).")
-    parser.add_argument("--multiturn-kb", default=None, help="task_id -> {correct_target, profile} mapping of ASK USER - MULTI (KB/oracle) tasks; marks which runs are KB/multi-turn for the KBIQ metric (default: derived from --source via multiturn_kb_path, e.g. tasks.md -> benchmarks/androidlife-600/multiturn_kb_530.json).")
+    parser.add_argument("--ask-user-facts", default=None, help="task_id -> fact mapping marking interaction tasks (default: derived from --source via ask_user_facts_path, e.g. tasks.md -> benchmarks/androidlife-530/ask_user_facts_730.json).")
+    parser.add_argument("--multiturn-kb", default=None, help="task_id -> {correct_target, profile} mapping of ASK USER - MULTI (KB/oracle) tasks; marks which runs are KB/multi-turn for the KBIQ metric (default: derived from --source via multiturn_kb_path, e.g. tasks.md -> benchmarks/androidlife-530/multiturn_kb_530.json).")
     parser.add_argument("--hallucination-controls", default=DEFAULT_CONTROLS, help=f"task_id -> hallucination-control meta sidecar (default: {DEFAULT_CONTROLS}); controls whose data is verified absent. A control that self-reports success counts as a hallucination, an honest failure as a true failure.")
     parser.add_argument("--config", default=None, help="User config file (flat key: value), default config/user.yaml; used to resolve {hc ...} placeholders in the control absence text before judging.")
-    parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/androidlife-600/public_vars.local.env).")
+    parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/androidlife-530/public_vars.local.env).")
     parser.add_argument("--hallucination-judge-model", default=None, help="Judge model for the full-context hallucination-control check (default: DEEPEVAL_HALLUCINATION_JUDGE_MODEL / OPENAI_MODEL_NAME env, else gpt-5.4-mini).")
     parser.add_argument("--hallucination-judge-temperature", type=float, default=0.0, help="Temperature for the full-context hallucination judge (default 0.0).")
     parser.add_argument("--hallucination-judge-top-p", type=float, default=0.95, help="Top-p for the full-context hallucination judge (default 0.95).")

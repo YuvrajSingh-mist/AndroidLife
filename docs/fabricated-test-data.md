@@ -216,7 +216,7 @@ and are answered only if the agent asks:
 
 Every `[placeholder]` in `public.md` is filled at launch with a persona value via repeated
 `--var key=value` flags. These are the exact values used for the public runs (also recorded
-in `benchmarks/androidlife-600/public_vars.local.env`, gitignored):
+in `benchmarks/androidlife-530/public_vars.local.env`, gitignored):
 
 | Var | Value | Notes |
 |---|---|---|
@@ -234,7 +234,7 @@ These are benchmark parameters, not real-world data.
 - `easy__contacts__001` (rename a contact to include a middle initial) targets a **different
   real contact present on the device: Akash Kumar** (a genuine contact with a phone number),
   NOT the persona contact. This is implemented as a per-task override in the generated dataset
-  (`benchmarks/androidlife-600/AndroidLife_public_v2.json` + `.jsonl`, both gitignored): the
+  (`benchmarks/androidlife-530/AndroidLife_public_v2.json` + `.jsonl`, both gitignored): the
   prompt hardcodes "change Akash Kumar's name to include their middle initial", and only the
   `middle initial` placeholder remains (`Kumar Sahoo`). The change is **scoped to this task**
   so the shared `contact` var used by messaging tasks is unaffected. The override is **baked
@@ -247,7 +247,7 @@ must be recorded alongside any results:
 
 ```bash
 .venv/bin/python androidlife_tasks.py \
-  --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+  --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
   --all --serial <serial> \
   --llm-upstream-base https://openrouter.ai/api \
   --model qwen/qwen3.6-plus --temperature 0.0 --steps 200 \
@@ -650,8 +650,8 @@ Harness behavior that affects results and is part of the reproducible spec:
   them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
 - **2026-08-03 — ask_user_facts split per source.** The combined facts file (50 tasks.md + 6
   public facts) is split into per-source files, derived via `--source` with no hardcoded paths
-  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-600/ask_user_facts_730.json`
-  (50 facts), `public.md` -> `benchmarks/androidlife-600/ask_user_facts.json` (the 6 public facts,
+  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-530/ask_user_facts_730.json`
+  (50 facts), `public.md` -> `benchmarks/androidlife-530/ask_user_facts.json` (the 6 public facts,
   which `scripts/data/export_public_dataset.py` publishes). The combined file
   `ask_user_facts_public.json` is left untouched.
 - **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts.json` had been replaced with

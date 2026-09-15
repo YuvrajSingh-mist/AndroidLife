@@ -26,7 +26,7 @@ that fabricates a plausible-sounding answer.
 
 ## Benchmark at a glance (as of 2026-08-14)
 
-**Corpus (source of truth: `benchmarks/androidlife-600/tasks_530.md`):**
+**Corpus (source of truth: `benchmarks/androidlife-530/tasks_530.md`):**
 
 | metric | value |
 |---|---|
@@ -176,7 +176,7 @@ to "Meet"); it appears in the launcher as **Meet** and opens into its HomeActivi
 
 ## Public sample (3-day preview) — spec & distribution
 
-`benchmarks/androidlife-600/public.md` (`AndroidLife_public_v2.json`/`.jsonl`) is a **true sample** drawn from
+`benchmarks/androidlife-530/public.md` (`AndroidLife_public_v2.json`/`.jsonl`) is a **true sample** drawn from
 the 530 corpus — every task keeps its real 530 `task_id`, exact prompt text, and placeholder slots — rebuilt
 as a 3-day (Day 1-3) preview. It is **not** the eval set; it exists so the pipeline, seeds, and grading can be
 exercised on a small, self-contained slice before full-corpus runs.
@@ -244,7 +244,7 @@ The 530-task schedule spans **28 days** (`day` field on every dataset row, 15-22
 
 ```bash
 uv run androidlife_tasks.py --serial "$ANDROIDLIFE_SERIAL" --llm-upstream-base "$LLM_UPSTREAM" \
- --model "$MODEL" --day 3 --vars-file benchmarks/androidlife-600/tasks_vars/day_3.env
+ --model "$MODEL" --day 3 --vars-file benchmarks/androidlife-530/tasks_vars/day_3.env
 ```
 
 `--day N` (any 1..28) is a first-class selector and combines with `--bucket`/`--app`/`--task-id`. See [cli-reference.md](cli-reference.md) and the README.
@@ -476,7 +476,7 @@ The benchmark has exactly **two runnable task sets** — the **530-task corpus**
 - **medium** — 1-2 apps, 3 steps
 - **hard** — 2-3 apps, 5 steps, split into **DETERMINISTIC** · **ASK USER SINGLE** · **ASK USER - MULTI**
 
-The canonical runnable task list lives in [benchmarks/androidlife-600/tasks_530.md](../benchmarks/androidlife-600/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC), laid out as a 28-day schedule. `tasks_530.md` is the source of truth: edit it and regenerate `AndroidLife_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`. The public preview (`public.md` → `AndroidLife_public_v2.json`/`.jsonl`) is documented in its own **Public sample** section above.
+The canonical runnable task list lives in [benchmarks/androidlife-530/tasks_530.md](../benchmarks/androidlife-530/tasks_530.md) — the runnable corpus (530 dataset rows: 216 easy / 242 medium / 72 hard = 36 ASK USER SINGLE / 13 ASK USER - MULTI / 23 DETERMINISTIC), laid out as a 28-day schedule. `tasks_530.md` is the source of truth: edit it and regenerate `AndroidLife_530_v1.json`/`.jsonl` with `scripts/data/export_530_dataset.py`. The public preview (`public.md` → `AndroidLife_public_v2.json`/`.jsonl`) is documented in its own **Public sample** section above.
 
 ## Days, seeds, and manifests
 
