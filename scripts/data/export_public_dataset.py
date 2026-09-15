@@ -53,7 +53,7 @@ def main() -> int:
     elif real_ids:
         print(f"warning: {len(real_ids)} id comments but {len(dataset['tasks'])} parsed tasks - ignoring comments", file=sys.stderr)
     # Stays on the PUBLIC facts file (ask_user_facts.json, via ask_user_facts_path) - never the
-    # 730 benchmark's ask_user_facts_730.json, since the preview is fine to publish with answers.
+    # 530 corpus' ask_user_facts_530.json, since the preview is fine to publish with answers.
     merge_ask_user_facts(dataset, ROOT / ask_user_facts_path("public.md"))
     # Per-task prompt overrides that survive regeneration (the datasets are gitignored and
     # rebuilt from this script). easy__contacts__001 is scoped to a different real device

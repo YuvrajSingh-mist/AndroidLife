@@ -23,7 +23,7 @@ from androidlife.user_config import (  # noqa: E402
 # runnable source of truth (530 tasks, all 28 days), and the verifier checks
 # that config resolves every placeholder/fact/seed it needs.
 DATASET_530 = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.json"
-FACTS = REPO_ROOT / "benchmarks" / "androidlife-530" / "ask_user_facts_730.json"
+FACTS = REPO_ROOT / "benchmarks" / "androidlife-530" / "ask_user_facts_530.json"
 MANIFEST_SCRIPT = REPO_ROOT / "scripts" / "seeding" / "build_day_seed_manifest.py"
 CONFIG_PATH = REPO_ROOT / "config" / "user.yaml"
 VARS_LOCAL = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_vars.local.env"

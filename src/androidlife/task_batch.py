@@ -40,7 +40,7 @@ TRANSIENT_FAILURE_MARKERS = ("Request timed out", "Empty response content")
 # `ask_user_fact` of its own (only the public dataset publishes it inline - see
 # docs/evaluation-policy.md). The facts file is never hardcoded
 # here: --source picks the source markdown and ask_user_facts_path(source) derives the
-# right file (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json).
+# right file (tasks.md -> ask_user_facts_530.json, public.md -> ask_user_facts.json).
 DEFAULT_SOURCE = "tasks.md"
 
 
@@ -48,7 +48,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build the batch runner CLI parser."""
     parser = argparse.ArgumentParser(description="Run AndroidLife task slices from an exported dataset.")
     parser.add_argument("--dataset", default="benchmarks/androidlife-530/AndroidLife_530_v1.json")
-    parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the dataset was exported from; selects the ask_user_facts sidecar for Hard/ASK USER fallback facts (tasks.md -> ask_user_facts_730.json, public.md -> ask_user_facts.json). Default: {DEFAULT_SOURCE}.")
+    parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the dataset was exported from; selects the ask_user_facts sidecar for Hard/ASK USER fallback facts (tasks.md -> ask_user_facts_530.json, public.md -> ask_user_facts.json). Default: {DEFAULT_SOURCE}.")
     parser.add_argument("--bucket", choices=["easy", "medium", "hard", "hard-deterministic", "open-ended"])
     parser.add_argument("--app")
     parser.add_argument("--task-id", action="append", default=[])

@@ -577,9 +577,9 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 - **2026-08-10 — Fixed "Goa trip" regression in run-time fact + dataset.**
   The 2026-08-06 rename `Goa trip → Bhubaneswar trip` (see below) had been lost in
-  `ask_user_facts_730.json` and `AndroidLife_530_v1.json/.jsonl` — they still told the
+  `ask_user_facts_530.json` and `AndroidLife_530_v1.json/.jsonl` — they still told the
   sim user/agent the event was the **Goa trip** while the on-device photo caption reads
-  **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_730.json`,
+  **"Bhubaneswar trip with Yuvraj Airtel"**. Restored `ask_user_facts_530.json`,
   `AndroidLife_530_v1.json/.jsonl` to "The event is the Bhubaneswar trip."; added
   `golden_trajectory` fields to the Day-2 seed manifests (esp. the Photos tasks, with
   the "confirm the photo actually depicts the subject" rule from the Day-1 pizza
@@ -618,7 +618,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   The pending operator caption for `hard__photos-gmail-obsidian__012` was completed: one event
   photo (Sep 24, 2023 · Gothapatna) now carries the caption **"Bhubaneswar trip with Yuvraj
   Airtel"**, so the "email it to them if so" branch is reachable. The persona trip was renamed
-  **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_730.json`
+  **Goa trip → Bhubaneswar trip** everywhere (`tasks_vars.local.env` → `trip name`, `ask_user_facts_530.json`
   → "The event is the Bhubaneswar trip.", regenerated `AndroidLife_530_v1.json/.jsonl`, rebuilt seed
   manifests + `tasks_vars/day_2.env`). Re-ran the task into `runs/full-bench/2026-08-06-030706/day2/
   hard-photos-gmail-obsidian-012` (original caption-missing run preserved as `*.nomention-backup`):
@@ -650,7 +650,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
 - **2026-08-03 — ask_user_facts split per source.** The combined facts file (50 tasks.md + 6
   public facts) is split into per-source files, derived via `--source` with no hardcoded paths
-  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-530/ask_user_facts_730.json`
+  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-530/ask_user_facts_530.json`
   (50 facts), `public.md` -> `benchmarks/androidlife-530/ask_user_facts.json` (the 6 public facts,
   which `scripts/data/export_public_dataset.py` publishes). The combined file
   `ask_user_facts_public.json` is left untouched.

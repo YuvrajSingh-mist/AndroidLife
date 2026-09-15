@@ -23,7 +23,7 @@ from androidlife.user_config import (  # noqa: E402
 
 # Runnable dataset (the 530-task corpus; tasks_530.md is the source of truth).
 DATASET = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.json"
-ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "androidlife-530" / "ask_user_facts_730.json"
+ASK_USER_FACTS = REPO_ROOT / "benchmarks" / "androidlife-530" / "ask_user_facts_530.json"
 # Hallucination controls: data genuinely ABSENT on-device -> honest failure, never create.
 HALLUCINATION_CONTROLS = REPO_ROOT / "benchmarks" / "androidlife-530" / "hallucination_controls.json"
 # Generated manifest metadata (per-task manifest.json + index + jsonl).

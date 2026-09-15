@@ -322,7 +322,7 @@ def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, A
         append_task(current_bucket, task_index, task_body, app_name, cross_app_label, current_day)
 
     return {
-        "dataset_name": "AndroidLife-730",
+        "dataset_name": "AndroidLife-530",
         "dataset_version": "v3",
         "source_path": source_path,
         "task_count": len(tasks),
@@ -336,12 +336,12 @@ def load_dataset(path: str | Path) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-# Facts files are keyed by source markdown, never hardcoded in consumers: the 730-task
-# benchmark (tasks.md) and the 3-day public preview (public.md) each own a separate file,
+# Facts files are keyed by source markdown, never hardcoded in consumers: the 530-task
+# corpus (tasks.md / tasks_530.md) and the 3-day public preview (public.md) each own a separate file,
 # and every consumer derives the path via ask_user_facts_path(source) instead of embedding
 # a path. scripts/export_public_dataset.py must keep publishing from the public file.
 _ASK_USER_FACTS_BY_SOURCE = {
-    "tasks.md": "ask_user_facts_730.json",
+    "tasks.md": "ask_user_facts_530.json",
     "public.md": "ask_user_facts.json",
 }
 
@@ -376,7 +376,7 @@ def ask_user_facts_path(source: str) -> str:
     Derived from the source's filename (repo-root-relative), so callers pass
     `--source tasks.md|public.md` and get the right file with no hardcoded path:
 
-      tasks.md  -> benchmarks/androidlife-530/ask_user_facts_730.json  (730-task benchmark)
+      tasks.md  -> benchmarks/androidlife-530/ask_user_facts_530.json  (530-task corpus)
       public.md -> benchmarks/androidlife-530/ask_user_facts.json      (3-day public preview)
     """
     facts_file = _ASK_USER_FACTS_BY_SOURCE.get(Path(source).name)
