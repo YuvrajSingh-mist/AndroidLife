@@ -293,10 +293,10 @@ Task changes (all benchmark files updated, dataset re-exported at 68 tasks):
  (sum July-2026 Swiggy order totals in-app). `public.md` + `AndroidLife_public_v2.json` updated.
 - `hard__google-search-telegram-clock__018` fact fixed → recipient added:
  "The place is the SBI ATM. The person to message is Yuvraj Singh Jio."
- (`ask_user_facts.json` + dataset).
+ (`ask_user_facts_public.json` + dataset).
 - `medium__google-search__008` promoted to **ASK USER** with route fact:
  "The route is from IIIT Bhubaneswar to Bhubaneswar Airport."
- (`ask_user_facts.json` + dataset). It already asked for origin/dest in the last run.
+ (`ask_user_facts_public.json` + dataset). It already asked for origin/dest in the last run.
 - `medium__contacts__009` = **model issue** (agent gave up; should scroll-and-count), not a solvability wall.
 
 Device reset (`reset_phone.py --profile public_v2 --apply`) DONE + re-seeded

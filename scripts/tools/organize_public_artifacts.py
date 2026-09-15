@@ -26,7 +26,7 @@ TB = REPORTS / "turn-based" / "public"
 SINGLE = TB / "ask-query-single"
 MULTI = TB / "ask-query-multi"
 BENCH = REPO / "benchmarks" / "androidlife-530"
-FACTS = BENCH / "ask_user_facts.json"
+FACTS = BENCH / "ask_user_facts_public.json"
 KB = BENCH / "multiturn_kb_public.json"
 DATASET = BENCH / "AndroidLife_public_v2.json"
 

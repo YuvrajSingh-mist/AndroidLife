@@ -80,7 +80,7 @@ Files public-run artifacts into per-run folders + rebuilds `reports/turn-based/a
 ## Step 4 — DEEP MANUAL AUDIT (the core; user mandates this)
 1. **Ground truth**: task text + `🔮 HALLUCINATION CONTROL` markers in `public.md`,
  `public_vars.local.env` (real placeholder values), the dataset JSON (`ahi`, `is_ask_user`),
- `hallucination_controls.json`, `ask_user_facts.json`, `multiturn_kb_public.json`.
+ `hallucination_controls.json`, `ask_user_facts_public.json`, `multiturn_kb_public.json`.
 2. **Per task read**: `output.json` (success/reason), `output.txt` (final answer),
  `agent.log.txt`, `ask_user_metrics.jsonl` / `run_metrics.json` (ask_user count).
 3. **THEN read the trajectory artifacts directly for EVERY task** (not just samples):

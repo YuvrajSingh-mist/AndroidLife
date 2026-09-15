@@ -27,7 +27,7 @@ users know exactly what was synthetic. **No real personal details are exposed**
 The hard-task battery explicitly marks which tasks are ASK USER by noting in the
 prompt that "no X exists anywhere on the test device" (see `public.md`). Those
 facts are held only by the simulated user and answered only when asked
-(`ask_user_facts.json`).
+(`ask_user_facts_public.json`).
 
 ---
 
@@ -190,7 +190,7 @@ For `hard__music-obsidian__077` (Day 3, DETERMINISTIC — "search YouTube Music 
 
 ## 4. What was deliberately NOT seeded (ASK USER facts)
 
-These facts exist **only** in `ask_user_facts.json` (held by the simulated user)
+These facts exist **only** in `ask_user_facts_public.json` (held by the simulated user)
 and are answered only if the agent asks:
 
 | Task | Withheld fact |
@@ -648,13 +648,12 @@ Harness behavior that affects results and is part of the reproducible spec:
   contains a mix of DETERMINISTIC and ASK USER hard tasks (Day 1: 2+2, Day 2: 2+2, Day 3: 1+2).
   The global 1–11 numbering is preserved, so task_ids (and the `ask_user_fact` lookups keyed on
   them) are unchanged. `public.md` and the generated datasets are gitignored (local-only).
-- **2026-08-03 — ask_user_facts split per source.** The combined facts file (50 tasks.md + 6
-  public facts) is split into per-source files, derived via `--source` with no hardcoded paths
-  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-530/ask_user_facts_530.json`
-  (50 facts), `public.md` -> `benchmarks/androidlife-530/ask_user_facts.json` (the 6 public facts,
-  which `scripts/data/export_public_dataset.py` publishes). The combined file
-  `ask_user_facts_public.json` is left untouched.
-- **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts.json` had been replaced with
+- **2026-08-03 — ask_user_facts split per source.** The combined facts file (tasks.md + public
+  facts) is split into per-source files, derived via `--source` with no hardcoded paths
+  (`task_dataset.ask_user_facts_path`): `tasks.md` -> `benchmarks/androidlife-530/ask_user_facts_530.json`,
+  `public.md` -> `benchmarks/androidlife-530/ask_user_facts_public.json` (which
+  `scripts/data/export_public_dataset.py` publishes).
+- **2026-08-03 — Public ASK USER facts restored.** `ask_user_facts_public.json` had been replaced with
   tasks.md-schedule facts; the 6 public ASK USER facts were merged back in (reconstructed from
   the documented values in §4 and the run analysis — verify against the original file if you
   have it).
@@ -740,7 +739,7 @@ following entities were **seeded on the test device** (all recorded in
   - `hard__clock-calendar__023`: same-week events already present
     (`Standup` / `Weekly Planning` / `Python Workshop` on 08-17 + the 08-18 22:30 meeting), so the alarm
     clash cross-reference has something to find. No new seed needed.
-  - All 6 ASK USER tasks: facts present in `ask_user_facts.json` and on-device
+  - All 6 ASK USER tasks: facts present in `ask_user_facts_public.json` and on-device
     prerequisites verified (`budget.xlsx` in Drive, `Invoice INV-2026-071.pdf` in Files,
     `Budget Deadline.md`/`Contact Updates.md`/`Exam Scores.md`/`Bedtime.md` in
     Obsidian, real Swiggy order history with Downtown Delight as the most recent

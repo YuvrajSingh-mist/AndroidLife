@@ -2,7 +2,7 @@
 
 **Run root:** `/Users/yuvrajsingh1/Data/DrainBench300/assets/runs/public/20260914-061846/day1/`  
 **Protocol:** `docs/manual-audit-protocol.md`  
-**Ground truth:** `benchmarks/androidlife-530/{AndroidLife_public_v2.json,ask_user_facts.json,multiturn_kb_public.json,public_vars.local.env}`  
+**Ground truth:** `benchmarks/androidlife-530/{AndroidLife_public_v2.json,ask_user_facts_public.json,multiturn_kb_public.json,public_vars.local.env}`  
 **ADB:** phone battery DEAD — **no on-device verification** this pass. Evidence = trajectory.json + ui_states + screenshots (Read).  
 **Auditor slice:** 6 hard tasks only.
 
@@ -25,7 +25,7 @@
 
 For each task:
 1. Loaded prompt + placeholders from `AndroidLife_public_v2.json` + `public_vars.local.env`.
-2. Checked `ahi` / `is_ask_user` / `interaction`, `ask_user_facts.json`, `multiturn_kb_public.json`.
+2. Checked `ahi` / `is_ask_user` / `interaction`, `ask_user_facts_public.json`, `multiturn_kb_public.json`.
 3. Read `output.json`, `output.txt`, `meta.json`, `ask_user_metrics.jsonl`, `run_metrics.json`.
 4. Parsed full `trajectories/*/trajectory.json` (all FastAgent thoughts + ToolExecutionEvents).
 5. Cross-checked `ui_states/NNNN.json` text + **Read** multiple screenshots.

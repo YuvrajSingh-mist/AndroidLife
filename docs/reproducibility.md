@@ -20,7 +20,7 @@ as the larger 530-task corpus.
 |---|---|---|
 | Task definitions | `benchmarks/androidlife-530/public.md` + `AndroidLife_public_v2.json` | Fixed prompts, placeholders, buckets |
 | Vars / persona | `public_vars.local.env` | Device-pinned placeholder values |
-| ASK USER / multi-turn | `ask_user_facts.json`, `multiturn_kb_public.json` | Withheld facts + KB profiles |
+| ASK USER / multi-turn | `ask_user_facts_public.json`, `multiturn_kb_public.json` | Withheld facts + KB profiles |
 | Hallucination controls | `hallucination_controls.json` | Known-absent targets (honest fail) |
 | Reset profile | `reset_phone.py --profile public_v2` | Undo agent side-effects → baseline |
 | Seeds | `seed_data.py --day 1..3` + enrich / PDF helpers | Fabricated notes, files, calendar, etc. |

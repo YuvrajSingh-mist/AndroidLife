@@ -41,7 +41,7 @@ line on which apps get MCP servers?
 
 **Today:** tasks are mostly one-shot — the agent gets a prompt, acts, and (for
 ASK USER) asks a single clarifying question. There is a simulated user
-(`ask_user_facts.json`) that answers facts only when asked.
+(`ask_user_facts_public.json`) that answers facts only when asked.
 
 **Proposal:** make the agent genuinely **multi-turn** with a conversational user:
 

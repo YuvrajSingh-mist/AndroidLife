@@ -5,7 +5,7 @@
 **Auditor note:** Phone battery DEAD — **no ADB on-device verification**. Evidence = `meta` / `output` / `run_metrics` / `ask_user_metrics` + full `trajectory.json` + multiple screenshots (Read) + `ui_states`.  
 **Do not grade** `_stale_resume_*` copies as primary (noted only for orphan narrative where the live folder was overwritten by a resume).
 
-**Ground truth sources:** `AndroidLife_public_v2.json`, `ask_user_facts.json`, `multiturn_kb_public.json`, `public_vars.local.env`, `public.md`.
+**Ground truth sources:** `AndroidLife_public_v2.json`, `ask_user_facts_public.json`, `multiturn_kb_public.json`, `public_vars.local.env`, `public.md`.
 
 ---
 
