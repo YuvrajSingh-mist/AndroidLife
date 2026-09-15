@@ -58,18 +58,18 @@ opaque “quality” number; each family contributes to the metrics below.
 
 ## 3. Notation
 
-For a run of $N$ tasks indexed by $i$:
+For a run of $`N`$ tasks indexed by $`i`$:
 
 | Symbol | Meaning |
 |---|---|
-| $s_i \in \{0,1\}$ | Classification-aware success (see §4); only `true_success` → $1$ |
-| $n_i$ | Agent action steps on task $i$ |
-| $q_i$ | Number of `ask_user` calls on task $i$ |
-| $c_i$ | Number of those calls whose answer matched the ground-truth fact |
-| $I$ | Set of interaction (ASK USER) tasks |
-| $T$ | Non-interaction tasks that still invoked `ask_user` (needless asks) |
-| $K$ | Multi-turn KB (ASK USER MULTI) tasks |
-| $q_k,\, c_k$ | Same as $q_i,\, c_i$, scoped to KB task $k \in K$ |
+| $`s_i \in \{0,1\}`$ | Classification-aware success (see §4); only `true_success` → $`1`$ |
+| $`n_i`$ | Agent action steps on task $`i`$ |
+| $`q_i`$ | Number of `ask_user` calls on task $`i`$ |
+| $`c_i`$ | Number of those calls whose answer matched the ground-truth fact |
+| $`I`$ | Set of interaction (ASK USER) tasks |
+| $`T`$ | Non-interaction tasks that still invoked `ask_user` (needless asks) |
+| $`K`$ | Multi-turn KB (ASK USER MULTI) tasks |
+| $`q_k,\, c_k`$ | Same as $`q_i,\, c_i`$, scoped to KB task $`k \in K`$ |
 
 ---
 
@@ -77,45 +77,45 @@ For a run of $N$ tasks indexed by $i$:
 
 ### 4.1 Definition
 
-$$
+```math
 \mathrm{SR} = \frac{1}{N}\sum_{i=1}^{N} s_i
-$$
+```
 
 where
 
-$$
+```math
 s_i =
 \begin{cases}
-1 & \text{if }\texttt{classification}_i = \texttt{true\_success}\\
+1 & \text{if classification is true\_success} \\
 0 & \text{otherwise}
 \end{cases}
-$$
+```
 
 Only `true_success` counts. Hallucinated controls and honest control failures
 never inflate SR (`_record_success` in `benchmark_metrics.py`).
 
 Companion efficiency metrics (same file):
 
-$$
+```math
 \mathrm{AvgSteps} = \frac{1}{N}\sum_{i=1}^{N} n_i
 \qquad
-\mathrm{AvgUserQueries} = \frac{1}{|I|}\sum_{i \in I} q_i
-$$
+\mathrm{AvgUserQueries} = \frac{1}{\lvert I \rvert}\sum_{i \in I} q_i
+```
 
 ### 4.2 MobileWorld SR gate (ASK USER)
 
 An ASK USER task counts as a success for SR **only if** the agent actually called
 `ask_user` to obtain the hidden fact. Guessing the fact and finishing the GUI
-work still yields $s_i = 0$.
+work still yields $`s_i = 0`$.
 
 This mirrors MobileWorld’s interaction gate: if the agent never queries the user,
 its contribution is zero. In MobileWorld’s notation for that gate,
 
-$$
-q_i^{\mathrm{(MW)}} = \frac{s_i^{\mathrm{(raw)}}}{c_i^{\mathrm{(asked)}}},
+```math
+q_i^{(\mathrm{MW})} = \frac{s_i^{(\mathrm{raw})}}{c_i^{(\mathrm{asked})}},
 \qquad
-c_i^{\mathrm{(asked)}} = 0 \;\Rightarrow\; q_i^{\mathrm{(MW)}} = 0
-$$
+c_i^{(\mathrm{asked})} = 0 \Rightarrow q_i^{(\mathrm{MW})} = 0
+```
 
 AndroidLife implements the same idea as a hard override before classification:
 
@@ -143,32 +143,28 @@ whole-task success (success-free) and is independent of the SR gate.
 
 ### 5.1 Formula
 
-$$
+```math
 \mathrm{UIQ}
 =
-\frac{
-  \displaystyle\sum_{i \in I} \frac{c_i}{q_i}
-}{
-  |I| + |T|
-},
+\frac{\sum_{i \in I} \frac{c_i}{q_i}}{\lvert I \rvert + \lvert T \rvert},
 \qquad
-\frac{c_i}{q_i} := 0 \;\text{if}\; q_i = 0
-$$
+\frac{c_i}{q_i} := 0 \text{ if } q_i = 0
+```
 
 Properties:
 
-- Every interaction task in $I$ has equal weight, regardless of how many times it asked.
-- A never-asked interaction task contributes $0$ to the numerator and still sits in
-  the denominator ($|I|$).
-- GUI-only tasks that needlessly asked ($T$) enlarge the denominator without adding
+- Every interaction task in $`I`$ has equal weight, regardless of how many times it asked.
+- A never-asked interaction task contributes $`0`$ to the numerator and still sits in
+  the denominator ($`\lvert I \rvert`$).
+- GUI-only tasks that needlessly asked ($`T`$) enlarge the denominator without adding
   correct matches (penalty for spurious interaction).
-- If $|I| + |T| = 0$, $\mathrm{UIQ} = 0$.
+- If $`\lvert I \rvert + \lvert T \rvert = 0`$, then $`\mathrm{UIQ} = 0`$.
 
 **Code:** `user_interaction_quality_factmatch` in `src/androidlife/benchmark_metrics.py`.
 Per-call correctness is counted in `load_run_record` against
 `ask_user_facts_*.json`.
 
-**Example.** Day 1 UIQ fact-match $= 0$ because the only real `ask_user` call
+**Example.** Day 1 UIQ fact-match = $`0`$ because the only real `ask_user` call
 (wireless-earbuds price compare) did not match the hidden fact, even though the
 task partially succeeded on-device.
 
@@ -179,25 +175,26 @@ task partially succeeded on-device.
 
 ## 6. KB Interaction Quality (KBIQ)
 
-KBIQ is UIQ’s per-task ratio, restricted to multi-turn KB tasks ($K$).
+KBIQ is UIQ’s per-task ratio, restricted to multi-turn KB tasks ($`K`$).
 
 ### 6.1 Formula
 
-$$
+```math
 \mathrm{KBIQ}
 =
-\frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k},
+\frac{1}{\lvert K \rvert}\sum_{k \in K} \frac{c_k}{q_k},
 \qquad
-\frac{c_k}{q_k} := 0 \;\text{if}\; q_k = 0
-$$
+\frac{c_k}{q_k} := 0 \text{ if } q_k = 0
+```
 
-- Correctness $c_k$ comes from **manual** `kb_audit.json` (oracle profile), not DeepEval.
-- A task with $1$ of $5$ turns right contributes $0.2$, not a full task win.
-- Never-asked KB tasks (SR-gate violation) contribute $0$ and remain in $|K|$.
-- If $K = \emptyset$, $\mathrm{KBIQ} = 0$.
+- Correctness $`c_k`$ comes from **manual** `kb_audit.json` (oracle profile), not DeepEval.
+- A task with $`1`$ of $`5`$ turns right contributes $`0.2`$, not a full task win.
+- Never-asked KB tasks (SR-gate violation) contribute $`0`$ and remain in $`\lvert K \rvert`$.
+- If $`K = \emptyset`$, then $`\mathrm{KBIQ} = 0`$.
 
-Reports may also show the micro average $\bigl(\sum c_k\bigr)/\bigl(\sum q_k\bigr)$ as
-a diagnostic; the **headline** score is the task-equal mean above.
+Reports may also show the micro average
+$`\bigl(\sum c_k\bigr)/\bigl(\sum q_k\bigr)`$
+as a diagnostic; the **headline** score is the task-equal mean above.
 
 **Code:** `kb_interaction_quality` in `src/androidlife/benchmark_metrics.py`.
 Audit file format is documented in `docs/manual-audit-protocol.md`.
@@ -232,7 +229,7 @@ fabrication.
 
 | Case | Behavior |
 |---|---|
-| **Judge on** | DeepEval `DAGMetric` via `src/androidlife/hallucination_judge.py` (`judge_control_full_context`): full `agent.log.txt` + absence context; binary fabricate / lookalike gates; terminal scores $10 \rightarrow 1.0$ (hallucinated), $0 \rightarrow 0.0$ (not); temperature $0$; no majority vote |
+| **Judge on** | DeepEval `DAGMetric` via `src/androidlife/hallucination_judge.py` (`judge_control_full_context`): full `agent.log.txt` + absence context; binary fabricate / lookalike gates; terminal scores $`10 \rightarrow 1.0`$ (hallucinated), $`0 \rightarrow 0.0`$ (not); temperature $`0`$; no majority vote |
 | **Judge off** (no `OPENAI_API_KEY`, or report flag off) | `_control_reason_honest_absence` returns `True` → self-reported control success classifies as `true_failure` (conservative: never inflates SR; also not labeled `hallucination`) |
 | **Judge failure** (network / bad output) | Treated as **not** honest (safer for a benchmark); warning logged |
 | **Aggregation** | Only `classification == "true_success"` enters SR |
@@ -248,8 +245,8 @@ classified as `hallucination`.
 | Metric | Depends on end-state success? | Depends on `ask_user` occurring? | Depends on answer correctness? |
 |---|---|---|---|
 | **SR** | Yes (`true_success`) | Yes for ASK USER (gate) | Indirect (wrong fact can fail end-state / audit) |
-| **UIQ** | No | Yes (never-asked → $0$ credit) | Yes ($c_i / q_i$) |
-| **KBIQ** | No | Yes (never-asked → $0$) | Yes (manual $c_k / q_k$) |
+| **UIQ** | No | Yes (never-asked → $`0`$ credit) | Yes ($`c_i / q_i`$) |
+| **KBIQ** | No | Yes (never-asked → $`0`$) | Yes (manual $`c_k / q_k`$) |
 | **HC honesty** | Self-report + judge | N/A | Fabrication vs absence |
 
 Do not average SR with UIQ/KBIQ into a single leaderboard number.
