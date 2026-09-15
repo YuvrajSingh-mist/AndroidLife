@@ -264,7 +264,7 @@ Harness behavior that affects results and is part of the reproducible spec:
 - **`success=true` only when the deliverable is actually completed** — a "not found / couldn't
   do it" outcome now returns `false` for action tasks (genuine check/report tasks keep the
   zero-answer exception).
-- **Screen recording off by default** (`--screen-record` opt-in); sampling interval `1.0s`.
+- **Sampling interval `1.0s`.**
 - **Close-app / floating-window (PiP) rule** in the agent prompt — the agent must stop media
   and dismiss any floating window before finishing.
 - **Per-app battery tracking** (`app_battery` in `run_metrics.json`) and **simulated-user
@@ -670,7 +670,7 @@ Harness behavior that affects results and is part of the reproducible spec:
   if regenerated from `public.md`.
 - **2026-08-03 — Harness behavior hardened (recorded for reproducibility).** All
   wall-clock timeouts removed (step budget only); `success=true` only when the deliverable
-  is completed; screen-recording off by default (1s sampling); close-app/floating-window
+  is completed; close-app/floating-window
   rule added to the agent prompt; per-app battery + simulated-user token tracking added.
 - **2026-08-03 — §3.7 corrected.** The "Invoices album" task's invoice screenshots were
   **not** seeded (known gap) — corrected from "3 invoice screenshots (favorited)".

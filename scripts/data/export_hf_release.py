@@ -50,6 +50,12 @@ language:
   - en
 size_categories:
   - 1K<n<10K
+configs:
+  - config_name: tasks
+    data_files: data/tasks_preview.jsonl
+    default: true
+  - config_name: tasks_full
+    data_files: data/AndroidLife_530_v1.jsonl
 ---
 
 # AndroidLife-530 — Android agent benchmark (real phone, real LLM)
@@ -62,15 +68,24 @@ This repo ships the **530-task corpus** plus everything needed to reproduce runs
 > [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
 > Legacy [`{HF_530_LEGACY}`](https://huggingface.co/datasets/{HF_530_LEGACY}) redirects here.
 
-> The **public sample** (runnable tasks + hallucination controls; personal/device-specific
-> vars + seeds) is kept in a separate private companion; this public repo carries only
-> the 530 corpus + its run-time variables + fabrication disclosure.
+> Public run trajectories + the **60-task preview** live in
+> [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public).
+
+## Dataset preview (tasks)
+
+Open the **Dataset Viewer** above (config `tasks`) for a table of all 530 tasks.
+
+| Config | File | What you see |
+|---|---|---|
+| `tasks` (default) | `data/tasks_preview.jsonl` | Compact preview columns for browsing |
+| `tasks_full` | `data/AndroidLife_530_v1.jsonl` | Full per-task records |
 
 ## Files
 
 | File | Content |
 |---|---|
 | `data/AndroidLife_530_v1.json` / `.jsonl` | The 530-task corpus (Easy 1pt / Medium 3pt / Hard 5pt). |
+| `data/tasks_preview.jsonl` | Compact rows for the HF Dataset Viewer. |
 | `data/tasks_530.md` | Human-readable source (canonical prompt text). |
 | `data/tasks.md` | Wider task list (superset). |
 | `data/multiturn_kb_530.json` | Knowledge-base profiles for **ASK USER - MULTI** tasks. |
@@ -174,13 +189,32 @@ License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (attribution 
 """
 
 
+def _ensure_530_tasks_preview() -> None:
+    """Write data/tasks_preview.jsonl for the HF Dataset Viewer (scalar columns)."""
+    import json
+
+    src = BENCH / "AndroidLife_530_v1.json"
+    dst = BENCH / "tasks_preview.jsonl"
+    tasks = json.loads(src.read_text(encoding="utf-8"))["tasks"]
+    cols = [
+        "task_id", "day", "bucket", "difficulty", "points", "app",
+        "ahi", "interaction", "is_ask_user", "cross_app_required", "prompt_text",
+    ]
+    with dst.open("w", encoding="utf-8") as f:
+        for t in tasks:
+            row = {k: t.get(k) for k in cols}
+            row["apps"] = ", ".join(t.get("apps") or [])
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
 def build_530_public(out: Path) -> None:
     print(f"[1/2] 530-public -> {out}")
     for f in ["AndroidLife_530_v1.json", "AndroidLife_530_v1.jsonl"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["tasks_530.md", "tasks.md"]:
         _copy(out, BENCH / f, f"data/{f}")
-    for f in ["multiturn_kb_530.json", "ask_user_facts_530.json", "hallucination_controls.json"]:
+    _ensure_530_tasks_preview()
+    for f in ["multiturn_kb_530.json", "ask_user_facts_530.json", "hallucination_controls.json", "tasks_preview.jsonl"]:
         _copy(out, BENCH / f, f"data/{f}")
     for f in ["tasks_vars.local.env", "tasks_vars.local.json"]:
         _copy(out, BENCH / f, f"vars/{f}")

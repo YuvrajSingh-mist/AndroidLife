@@ -4,7 +4,7 @@ mobilerun's own agentic loop (real function-calling against a real LLM) is out o
 harness's tests - that's mobilerun's own test suite's job. These tests stub only the MobileAgent SDK
 boundary itself (`cli.MobileAgent`), exactly mirroring how the pre-SDK version of this test stubbed out
 the external `mobilerun` binary with a stand-in script - everything AndroidLife owns (adb sampling, the
-real proxy subprocess, scrcpy wiring, file writes) stays real.
+real proxy subprocess, file writes) stays real.
 """
 
 from __future__ import annotations

@@ -283,12 +283,6 @@ require_cmd adb "install Android platform-tools"
 require_cmd curl "install curl"
 require_cmd uv "install uv: https://docs.astral.sh/uv/getting-started/installation/"
 
-if command -v scrcpy >/dev/null 2>&1; then
-  pass "scrcpy found ($(command -v scrcpy))"
-else
-  warn "scrcpy not found - screen recording will be unavailable (not required for this smoke test)"
-fi
-
 if [[ ! -f "$REPO_DIR/pyproject.toml" ]]; then
   fail "pyproject.toml not found at $REPO_DIR - run this script from inside the AndroidLife / AndroidLife300 checkout"
 else
