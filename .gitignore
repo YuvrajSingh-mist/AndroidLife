@@ -58,3 +58,6 @@ website/assets/data/trajectories/public/
 # Private website checkout (own git remote → Vercel). Do not commit into AndroidLife.
 androidlife-website/
 website-src/
+
+# Manual per-run audit working notes (keep local; not for GitHub)
+reports/public/audit-*/
