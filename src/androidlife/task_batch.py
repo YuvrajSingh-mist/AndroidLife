@@ -73,7 +73,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--steps", type=int, default=60, help="Step budget for each task run (60 default - the 50-60 step consensus cap for agentic benchmarks).")
     parser.add_argument("--task-timeout", type=int, default=None, help="Wall-clock timeout in seconds for every task run (0 = no wall-clock cap, step budget only). Default: per-bucket 2400s (40 min).")
     parser.add_argument("--repeats", type=int, default=1, help="Run each selected task this many times (opt-in; runs are already deterministic at temperature=0).")
-    parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
     vision_group = parser.add_mutually_exclusive_group()
     vision_group.add_argument("--vision", action="store_true", help="Enable vision (screenshots) for the agent: the agent sees the accessibility UI tree PLUS a screenshot on every step. Off by default for this harness.")
     vision_group.add_argument("--vision-only", action="store_true", help="Screenshots ONLY: drop the accessibility tree and drive the device from screenshots alone (mobilerun vision_only). The framework auto-enables the coordinate tools this mode requires. Implies --vision but without the UI tree.")
@@ -196,8 +195,6 @@ def build_run_command(
     # to timeout=None. (Omitting the flag would fall back to the runner's own 1000s default and
     # silently cap hard tasks - smoke-test finding.)
     command.extend(["--task-timeout", "0" if timeout is None else str(timeout)])
-    if args.screen_record:
-        command.append("--screen-record")
     if args.vision_only:
         command.append("--vision-only")
     elif args.vision:

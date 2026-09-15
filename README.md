@@ -24,7 +24,7 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 ## Requirements
 
 - macOS or Linux host with **Python 3.11–3.13** and [`uv`](https://docs.astral.sh/uv/)
-- `adb` (Android platform-tools); `scrcpy` recommended
+- `adb` (Android platform-tools)
 - A dedicated Android phone with USB or wireless debugging (reference device: OnePlus CPH2423)
 - **MobileRun / Droidrun `0.6.15`** — exact pin (`mobilerun==0.6.15`); do not float to a newer wheel unless you intentionally re-lock and re-validate
 - API keys as needed:

@@ -9,9 +9,6 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--serial` | `$ANDROIDLIFE_SERIAL` | ADB serial (USB device ID or `ip:port` for wireless) |
 | `--label` | *(required)* | Run label; used directly as the run folder name (e.g. `easy-gmail-001`) |
 | `--sample-interval` | `1.0` | Seconds between battery/thermal samples (1.0s = every second; 0.1s = every 100ms, heavier) |
-| `--screen-bit-rate` | `8M` | `scrcpy` recording bit rate |
-| `--screen-size` | *(none)* | `scrcpy` `--max-size` cap, if set |
-| `--screen-record` | off | Record `screen.mp4` via `scrcpy` — **off by default** (a single task can produce 10–70MB of mp4, which adds real disk/CPU load); opt in when you need video evidence |
 | `--llm-upstream-base` | *(none)* | Real model server base URL; when set, the harness starts a local logging proxy in front of it |
 | `--llm-proxy-port` | `8090` | Preferred local proxy port (falls back to a free port if taken) |
 | `--goal` | *(required)* | The task prompt/instruction for the agent |
@@ -64,7 +61,6 @@ Full flag tables for the two harness entry points. See [README.md](../README.md)
 | `--seed` | `42` | Fixed sampling seed, forwarded to each task run (agent + `ask_user`), for run-to-run reproducibility |
 | `--steps` | `50` | Fixed step budget for every task, regardless of bucket (see [Step-budget policy](#step-budget-policy)) |
 | `--repeats` | `1` | Run each selected task this many times; opt-in since runs are already deterministic at temperature 0 (see caveat below) |
-| `--screen-record` | off | Record `screen.mp4` for every task in the batch — **off by default** (see single-run flag for why); opt in when you need video evidence |
 | `--vision` | off | Enable vision: the agent sees the accessibility UI tree **plus** a screenshot on every step (mutually exclusive with `--vision-only`) |
 | `--vision-only` | off | **Screenshots only**: drop the accessibility tree and drive from screenshots alone (mobilerun `vision_only`); the framework auto-enables the coordinate tools this mode requires. Implies `--vision` but without the UI tree (mutually exclusive with `--vision`) |
 | `--reasoning` | off | Use mobilerun's manager/executor planning workflow instead of the fast-agent loop |

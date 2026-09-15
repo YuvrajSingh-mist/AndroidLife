@@ -1,4 +1,4 @@
-"""Background process helpers for recording and proxy services."""
+"""Background process helpers for the LLM proxy and related services."""
 
 from __future__ import annotations
 
@@ -27,22 +27,6 @@ def find_free_tcp_port() -> int:
         sock.bind(("127.0.0.1", 0))
         sock.listen(1)
         return int(sock.getsockname()[1])
-
-
-def start_scrcpy(serial: str, run_dir: Path, bit_rate: str, size: str | None) -> BackgroundProcess:
-    """Start scrcpy screen recording for one run."""
-    stdout_path = run_dir / "screenrecord.stdout.txt"
-    stderr_path = run_dir / "screenrecord.stderr.txt"
-    video_path = run_dir / "screen.mp4"
-    cmd = [
-        "scrcpy", "-s", serial, "--record", str(video_path), "--record-format", "mp4",
-        "--no-window", "--no-audio", "--stay-awake", "--show-touches",
-        "--video-bit-rate", bit_rate, "--max-fps", "30",
-    ]
-    if size:
-        cmd.extend(["--max-size", size])
-    process = subprocess.Popen(cmd, stdout=stdout_path.open("w"), stderr=stderr_path.open("w"))
-    return BackgroundProcess(process=process, stdout_path=stdout_path, stderr_path=stderr_path)
 
 
 def start_llm_proxy(

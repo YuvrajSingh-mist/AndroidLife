@@ -51,7 +51,7 @@ export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
 uv run python scripts/setup.py --yes --serial "$S" all
 ```
 
-Stages: `prerequisites` (adb/scrcpy/uv/python) → `deps` (uv sync) → `env`
+Stages: `prerequisites` (adb/uv/python) → `deps` (uv sync) → `env`
 (scaffold `.env`) → `config` (scaffold `config/user.yaml` + verify) → `device`
 (pick serial + audit the 22 required apps) → `manifests` (per-day seed
 manifests) → `day-vars` (per-day `tasks_vars/day_N.env`) → `seed`/`verify`

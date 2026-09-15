@@ -22,7 +22,7 @@ from mobilerun import AgentConfig, DeviceConfig, FastAgentConfig, LoggingConfig,
 from .adb import capture_app_battery, capture_sample, read_jsonl, reset_app_state, utc_now
 from .custom_tools import CUSTOM_TOOLS, DEFAULT_ASK_USER_MODEL, build_ask_user_tool
 from .files import default_batch_run_dir, run_dir_for_label, write_json, write_text
-from .processes import ProxyStartupError, start_llm_proxy, start_scrcpy, stop_process, wait_for_proxy_ready
+from .processes import ProxyStartupError, start_llm_proxy, stop_process, wait_for_proxy_ready
 from .sampler import Sampler
 from .summary import TaskOutcome, summarize, summarize_app_battery
 
@@ -38,9 +38,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--label", required=True)
     parser.add_argument("--task-id", default=None, help="Dataset task_id this run corresponds to (recorded in meta.json for batch reporting).")
     parser.add_argument("--sample-interval", type=float, default=1.0, help="Seconds between battery/thermal samples (1.0 = every second; 0.1 = every 100ms, heavier).")
-    parser.add_argument("--screen-bit-rate", default="8M")
-    parser.add_argument("--screen-size", default=None)
-    parser.add_argument("--screen-record", action="store_true", help="Record screen.mp4 via scrcpy (OFF by default — saves significant disk/CPU; a single task can produce 10-70MB of mp4).")
     parser.add_argument("--llm-upstream-base", default=None)
     parser.add_argument("--llm-proxy-port", type=int, default=8090)
     parser.add_argument("--goal", required=True, help="The task prompt/instruction for the agent.")
@@ -392,7 +389,6 @@ def main() -> int:
         api_base = f"http://127.0.0.1:{port}/v1"
         meta.update({"llm_proxy_port": port, "llm_proxy_base": api_base, "llm_proxy_upstream_base": args.llm_upstream_base, "llm_log_jsonl": str(llm_log)})
         write_json(run_dir / "meta.json", meta)
-    recording = start_scrcpy(args.serial, run_dir, args.screen_bit_rate, args.screen_size) if args.screen_record else None
     sampler = Sampler(args.serial, args.sample_interval, run_dir / "samples.ndjson")
     sampler.start()
     # Phoenix pre-run guard: if tracing is on but the collector is down, fail fast
@@ -407,8 +403,6 @@ def main() -> int:
     elapsed = time.monotonic() - start_monotonic
     return_code = 0 if outcome.success else 1
     sampler.stop()
-    if recording is not None:
-        meta["screenrecord_exit_code"] = stop_process(recording, sigint=True)
     if llm_proxy is not None:
         meta["llm_proxy_exit_code"] = stop_process(llm_proxy)
         llm_entries = read_jsonl(meta["llm_log_jsonl"], 0)

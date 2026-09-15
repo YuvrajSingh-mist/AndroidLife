@@ -70,7 +70,6 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seed", type=int)
     ap.add_argument("--repeats", type=int)
     ap.add_argument("--vision", action="store_true")
-    ap.add_argument("--screen-record", action="store_true")
     ap.add_argument("--reasoning", action="store_true")
     ap.add_argument("--thinking", action="store_true", help="Leave the model's reasoning/thinking mode ON (default off: harness sends reasoning-off switches).")
     ap.add_argument("--no-debug", action="store_true")
@@ -152,7 +151,7 @@ def main() -> int:
         val = getattr(args, flag.lstrip("-").replace("-", "_"))
         if val is not None:
             cmd += [flag, str(val)]
-    for flag in ("--vision", "--screen-record", "--reasoning", "--thinking", "--no-debug", "--no-tracing"):
+    for flag in ("--vision", "--reasoning", "--thinking", "--no-debug", "--no-tracing"):
         if getattr(args, flag.lstrip("-").replace("-", "_")):
             cmd.append(flag)
     if args.save_trajectory:

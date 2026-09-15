@@ -44,7 +44,7 @@ def run_uv(args: list[str]) -> subprocess.CompletedProcess[str]:
 def s_prerequisites(opts) -> int:
     stage("prerequisites")
     ok = True
-    for tool in ("adb", "scrcpy", "uv", "python3"):
+    for tool in ("adb", "uv", "python3"):
         path = shutil.which(tool)
         print(f"  {tool}: {path or 'MISSING'}")
         ok = ok and path is not None

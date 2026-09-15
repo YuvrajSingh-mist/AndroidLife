@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import shutil
 import socket
 import subprocess
 import sys
@@ -178,15 +177,3 @@ def test_stop_process_terminates_a_real_long_running_subprocess() -> None:
     elapsed = time.monotonic() - started
     assert returncode is not None
     assert elapsed < 5.0
-
-
-@pytest.mark.skipif(shutil.which("scrcpy") is None, reason="scrcpy binary not installed")
-def test_start_scrcpy_invokes_the_real_binary(tmp_path: Path) -> None:
-    """start_scrcpy launches the actual scrcpy binary; against a nonexistent serial it fails fast with a real error."""
-    background = processes.start_scrcpy("no-such-device:5555", tmp_path, "8M", None)
-    try:
-        background.process.wait(timeout=10)
-        assert background.process.returncode != 0
-        assert background.stderr_path.read_text().strip() != ""
-    finally:
-        processes.stop_process(background)
