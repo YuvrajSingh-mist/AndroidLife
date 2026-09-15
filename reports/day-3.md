@@ -123,7 +123,7 @@ The ask_user fact was corrected **twice** this cycle:
  message" sends from earlier re-runs (no genuine prior conversation). The
  genuine long-running conversation is with **Yuvraj Airtel** (`+919266972659`,
  15+ real back-and-forth messages). So the fact was corrected to
- "thread with Yuvraj Airtel" in `ask_user_facts_730.json`,
+ "thread with Yuvraj Airtel" in `ask_user_facts_530.json`,
  `AndroidLife_530_v1.json/.jsonl`, and the fake Akash thread was deleted from the
  device.
 

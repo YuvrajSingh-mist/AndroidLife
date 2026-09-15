@@ -17,7 +17,7 @@ from androidlife.task_dataset import save_dataset_files  # noqa: E402
 
 BENCH = ROOT / "benchmarks" / "androidlife-530"
 S530 = BENCH / "AndroidLife_530_v1.json"
-FACTS_730 = BENCH / "ask_user_facts_730.json"
+FACTS_530 = BENCH / "ask_user_facts_530.json"
 FACTS_PUB = BENCH / "ask_user_facts.json"
 HC = BENCH / "hallucination_controls.json"
 PUBLIC_VARS = BENCH / "public_vars.local.env"
@@ -71,7 +71,7 @@ def main() -> int:
 
     tasks = json.loads(S530.read_text())["tasks"]
     by_id = {t["task_id"]: t for t in tasks}
-    facts730 = json.loads(FACTS_730.read_text())
+    facts530 = json.loads(FACTS_530.read_text())
     hc = set(json.loads(HC.read_text())) if HC.exists() else set()
     keys = load_placeholder_keys()
 
@@ -210,7 +210,7 @@ def main() -> int:
 
     # --- write ask_user_facts.json (public sidecar) for the chosen AU tasks ---
     pub_facts = {
-        t["task_id"]: facts730.get(t["task_id"], t.get("ask_user_fact") or "")
+        t["task_id"]: facts530.get(t["task_id"], t.get("ask_user_fact") or "")
         for t in public_tasks
         if t.get("ahi") == "ASK USER"
     }

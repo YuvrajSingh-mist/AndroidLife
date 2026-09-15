@@ -408,7 +408,7 @@ regenerates the per-task ask-user audits from `ask_user_metrics.jsonl`, and rewr
   (count/report/search/verify) so runs are easy to restore between rounds — the
   reset no longer has to restore deleted data. Hallucination-control tasks are
   untouched (their delete/empty targets genuinely absent data → honest failure).
-- For the full 730-task dataset, prefer an **emulator + AVD snapshot** (cold-boot
+- For the full 530-task dataset, prefer an **emulator + AVD snapshot** (cold-boot
   from snapshot = exact state, zero provisioning). This skill is for the real
   phone (public 68).
 - **Telegram Send-button failure (harness/UI bug, recurring):** tapping Send in the

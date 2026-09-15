@@ -11,7 +11,7 @@
 # ASK USER fact templates ({...}) and by the seed scripts.
 #
 # Run `uv run python scripts/verify_config.py` after editing to confirm every
-# placeholder, fact, and seed across all 730 tasks resolves.
+# placeholder, fact, and seed across all 530 tasks resolves.
 
 # ---- people -------------------------------------------------------------
 # The person the agent messages / forwards to for any `[contact]` task.

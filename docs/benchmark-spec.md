@@ -40,7 +40,7 @@ that fabricates a plausible-sounding answer.
 | Single-app tasks | **352 (66.4%)** |
 | Cross-app tasks | **178 (33.6%)** — 153 two-app + 25 three-app |
 | Hallucination controls | **60** (every day 3-28 has ≥2; day 2 has 3; day 1 has 0 by design) |
-| ASK USER fact sidecars | 36 single-turn (`ask_user_facts_730.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
+| ASK USER fact sidecars | 36 single-turn (`ask_user_facts_530.json`) + 13 multi-turn profiles (`multiturn_kb_530.json`) |
 | Placeholders used | 238 uses across **87 distinct keys** (pinned in `config/user.yaml` + `tasks_vars.local.env`) |
 | Public preview | **68-task sample** (61 runnable + 7 hallucination-control, `public.md`) — see the public-sample section below |
 
