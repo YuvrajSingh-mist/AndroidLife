@@ -11,7 +11,7 @@
 | Single-task CLI | `androidlife_runner.py` / `uv run androidlife-runner` |
 | Report script | `scripts/eval/androidlife_report.py` |
 | Serial env | `ANDROIDLIFE_SERIAL` |
-| Dataset dir | `benchmarks/androidlife-600/` |
+| Dataset dir | `benchmarks/androidlife-530/` |
 | Corpus JSON | `AndroidLife_530_v1.json` / `AndroidLife_public_v2.json` |
 | Phoenix projects | `androidlife` / `androidlife-dayN` / `androidlife-public` |
 | HF 530 corpus | [`YuvrajSingh9886/androidlife-530`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530) |

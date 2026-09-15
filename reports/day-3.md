@@ -1,7 +1,7 @@
 # Day 3 — Full-Bench Run Report (qwen3.7-flash + qwen3.6-plus re-runs)
 
 **Run root:** `assets/runs/2026-08-11-040846/` (day3/, 21 tasks, re-runs merged)
-**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 3, 21 tasks)
+**Schedule source:** `benchmarks/androidlife-530/tasks_530.md` (Day 3, 21 tasks)
 **Date:** 2026-08-11 00:04 → 02:43 IST (original) · 12:57→15:04 IST (re-runs)
 **Model under test:** `qwen/qwen3.7-flash` (original) · `qwen/qwen3.6-plus` (5 re-runs, merged)
 

@@ -13,11 +13,11 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 
 ## What you get
 
-- **60-task public benchmark** — fully executed on a OnePlus CPH2423. Each task ships trajectory, screenshots/GIF, telemetry, and a **manual-audit** verdict (ground truth for the leaderboard). 
- Sources: `benchmarks/androidlife-600/AndroidLife_public_v2.json`, `public.md`, `public_vars.local.env`, `multiturn_kb_public.json`.
+- **60-task public benchmark** — fully executed on a OnePlus CPH2423. Each task ships trajectory, screenshots/GIF, telemetry, and a **manual-audit** verdict (ground truth for the leaderboard).  
+  Sources: `benchmarks/androidlife-530/AndroidLife_public_v2.json`, `public.md`, `public_vars.local.env`, `multiturn_kb_public.json`.
 
-- **530-task dataset** — 216 easy / 242 medium / 72 hard on a fixed **28-day** schedule across **31 apps**. The schedule is dataset shape (≈10 apps/day), not wall-clock run length. Public 60 is sampled from this set. 
- Sources: `AndroidLife_530_v1.json`, `tasks_530.md`. Spec: [docs/benchmark-spec.md](docs/benchmark-spec.md).
+- **530-task dataset** — 216 easy / 242 medium / 72 hard on a fixed **28-day** schedule across **31 apps**. The schedule is dataset shape (≈10 apps/day), not wall-clock run length. Public 60 is sampled from this set.  
+  Sources: `AndroidLife_530_v1.json`, `tasks_530.md`. Spec: [docs/benchmark-spec.md](docs/benchmark-spec.md).
 
 **TEXT** (default) = accessibility tree only. **VISION** = add `--vision` (a11y + screenshot each step). Report them as separate rows.
 
@@ -28,9 +28,9 @@ Built for **open-weight** models — OpenRouter / any OpenAI-compatible API toda
 - A dedicated Android phone with USB or wireless debugging (reference device: OnePlus CPH2423)
 - **MobileRun / Droidrun `0.6.15`** — exact pin (`mobilerun==0.6.15`); do not float to a newer wheel unless you intentionally re-lock and re-validate
 - API keys as needed:
- - `OPENROUTER_API_KEY` — agent via OpenRouter
- - `OPENAI_API_KEY` — simulated `ask_user` (ASK USER / multi-turn KB tasks)
- - omit OpenRouter key if you point `--llm-upstream-base` at a **local** OpenAI-compatible server (e.g. llama.cpp)
+  - `OPENROUTER_API_KEY` — agent via OpenRouter
+  - `OPENAI_API_KEY` — simulated `ask_user` (ASK USER / multi-turn KB tasks)
+  - omit OpenRouter key if you point `--llm-upstream-base` at a **local** OpenAI-compatible server (e.g. llama.cpp)
 
 ### Tested hosts
 
@@ -50,13 +50,13 @@ Run commands from the repo root so console scripts and relative paths resolve.
 
 ```bash
 git clone https://github.com/YuvrajSingh-mist/AndroidLife.git
-cd AndroidLife # ← stay here for all later commands
+cd AndroidLife   # ← stay here for all later commands
 
 # creates .venv from uv.lock (pins MobileRun 0.6.15 + transitive deps)
-uv sync --extra dev --extra tracing --extra hf # or: make sync
-uv run python scripts/setup.py # or: make setup (scaffolds .env / config)
+uv sync --extra dev --extra tracing --extra hf   # or: make sync
+uv run python scripts/setup.py                   # or: make setup  (scaffolds .env / config)
 
-cp -n .env.example .env # skip if .env already exists
+cp -n .env.example .env                          # skip if .env already exists
 # edit .env → OPENROUTER_API_KEY / OPENAI_API_KEY as needed
 
 # confirm the harness pin from the lockfile env
@@ -69,15 +69,15 @@ Preferred entrypoints (defined in `pyproject.toml` `[project.scripts]`):
 ```bash
 uv run androidlife-tasks --help
 uv run androidlife-runner --help
-# thin wrappers also work: uv run androidlife_tasks.py …
+# thin wrappers also work:  uv run androidlife_tasks.py …
 ```
 
 Sanity checks:
 
 ```bash
-make test-fast # unit smoke
-make app-audit # phone has the expected apps
-make smoke-test # LLM + ADB + one real task (optional)
+make test-fast          # unit smoke
+make app-audit          # phone has the expected apps
+make smoke-test         # LLM + ADB + one real task (optional)
 ```
 
 ### Connect the phone
@@ -86,8 +86,8 @@ make smoke-test # LLM + ADB + one real task (optional)
 adb devices -l
 # USB: enable debugging, plug in, accept the RSA prompt
 # Wireless: Developer options → Wireless debugging → Pair / Connect
-# adb pair <phone-ip>:<pairing-port> # 6-digit code (pairing port)
-# adb connect <phone-ip>:<connect-port> # different port from the IP & port line
+#   adb pair <phone-ip>:<pairing-port>     # 6-digit code (pairing port)
+#   adb connect <phone-ip>:<connect-port>  # different port from the IP & port line
 
 # pick the first online device (works on any machine)
 export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
@@ -100,7 +100,7 @@ Keep `$S` exported in that shell (or paste the serial into `--serial` flags).
 
 ## Run the public 60 (operator path)
 
-Full reset/seed runbook: **[docs/device-reset-and-seed.md](docs/device-reset-and-seed.md)**. 
+Full reset/seed runbook: **[docs/device-reset-and-seed.md](docs/device-reset-and-seed.md)**.  
 GUI-only seeds (Chrome history, Photos captions, Gmail, …): **[docs/pre-run-checklist.md](docs/pre-run-checklist.md)**.
 
 ### 1. Reset + seed
@@ -118,7 +118,7 @@ uv run python scripts/seeding/fabricate_public_pdfs.py --serial "$S"
 
 uv run python scripts/seeding/reset_phone.py --serial "$S" --profile public_v2 --verify-only
 for d in 1 2 3; do
- uv run python scripts/seeding/verify_day1_seeds.py --serial "$S" --day "$d"
+  uv run python scripts/seeding/verify_day1_seeds.py --serial "$S" --day "$d"
 done
 ```
 
@@ -136,40 +136,48 @@ RUN_ROOT="assets/runs/public/$RUN_TS"
 # uv run python scripts/run/start_phoenix.py --public --run-ts "$RUN_TS"
 
 uv run androidlife-tasks \
- --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
- --source public.md --all \
- --serial "$S" \
- --llm-upstream-base https://openrouter.ai/api \
- --model qwen/qwen3.6-plus \
- --ask-user-model gpt-5.4-mini \
- --temperature 0.0 --steps 60 --task-timeout 2400 \
- --save-trajectory action \
- --vars-file benchmarks/androidlife-600/public_vars.local.env \
- --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
- --run-root "$RUN_ROOT"
- # add --vision for VISION mode
- # add --phoenix-url http://localhost:6006 --phoenix-project androidlife-public if Phoenix is up
- # add --no-tracing to skip tracing entirely
+  --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
+  --source public.md --all \
+  --serial "$S" \
+  --llm-upstream-base https://openrouter.ai/api \
+  --model qwen/qwen3.6-plus \
+  --ask-user-model gpt-5.4-mini \
+  --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --save-trajectory action \
+  --vars-file benchmarks/androidlife-530/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-530/multiturn_kb_public.json \
+  --run-root "$RUN_ROOT"
+  # add --vision for VISION mode
+  # add --phoenix-url http://localhost:6006 --phoenix-project androidlife-public if Phoenix is up
+  # add --no-tracing to skip tracing entirely
 ```
 
 **Local llama.cpp** (OpenAI-compatible server on `:8088`):
 
-```bash
-# example helper (64k ctx on Apple Silicon — adjust as needed)
-bash scripts/llm/serve_qwen35_4b.sh # or your own llama-server flags
+Model-agnostic launcher + flag table: [`scripts/llm/README.md`](scripts/llm/README.md).
 
-uv run androidlife-tasks \
- --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
- --source public.md --all \
- --serial "$S" \
- --llm-upstream-base http://127.0.0.1:8088 \
- --model Qwen3.5-4B \
- --ask-user-model gpt-5.4-mini \
- --temperature 0.0 --steps 60 --task-timeout 2400 \
- --save-trajectory action --no-tracing \
- --vars-file benchmarks/androidlife-600/public_vars.local.env \
- --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
- --run-root "assets/runs/public/$(date +%Y%m%d-%H%M%S)"
+```bash
+export PATH="$HOME/local/bin:/opt/homebrew/bin:$PATH"
+# any preset: qwen3.5-4b | gemma4-e2b | mai-ui-2b | gui-owl-1.5-2b
+# or: bash scripts/llm/serve_gguf.sh /path/to/model.gguf --alias MyModel
+bash scripts/llm/serve_gguf.sh qwen3.5-4b
+# shared Metal args: -ngl 99 -fa on -c 65536 -b 2048 -ub 512 -ctk/-ctv q8_0 --jinja -np 1
+# Qwen also gets --reasoning off; vision presets auto-attach --mmproj
+# back-compat: bash scripts/llm/serve_qwen35_4b.sh
+
+uv run androidlife_tasks.py \
+  --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
+  --source public.md --all \
+  --serial "$S" \
+  --llm-upstream-base http://127.0.0.1:8088 \
+  --model Qwen3.5-4B \
+  --ask-user-model gpt-5.4-mini \
+  --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --save-trajectory action --no-tracing \
+  --vars-file benchmarks/androidlife-530/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-530/multiturn_kb_public.json \
+  --run-root "assets/runs/public/$(date +%Y%m%d-%H%M%S)"
+# --model must match the server -a alias; add --vision for mmproj models
 ```
 
 Detach so the run survives terminal close (from repo root):
@@ -177,20 +185,20 @@ Detach so the run survives terminal close (from repo root):
 ```bash
 RUN_TS=$(date +%Y%m%d-%H%M%S)
 nohup uv run androidlife-tasks \
- --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
- --source public.md --all --serial "$S" \
- --llm-upstream-base https://openrouter.ai/api --model qwen/qwen3.6-plus \
- --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
- --save-trajectory action \
- --vars-file benchmarks/androidlife-600/public_vars.local.env \
- --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
- --run-root "assets/runs/public/$RUN_TS" \
- < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
+  --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
+  --source public.md --all --serial "$S" \
+  --llm-upstream-base https://openrouter.ai/api --model qwen/qwen3.6-plus \
+  --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --save-trajectory action \
+  --vars-file benchmarks/androidlife-530/public_vars.local.env \
+  --ask-user-kb benchmarks/androidlife-530/multiturn_kb_public.json \
+  --run-root "assets/runs/public/$RUN_TS" \
+  < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
 tail -f "assets/runs/public/batch-$RUN_TS.log"
 ```
 
-Resume an interrupted batch with the **same** `--run-root` and `--resume-from <task_id>` (or an explicit remaining `--task-id` list). 
-Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run androidlife-tasks` / `androidlife_tasks.py` remain supported aliases — [docs/naming.md](docs/naming.md).)
+Resume an interrupted batch with the **same** `--run-root` and `--resume-from <task_id>` (or an explicit remaining `--task-id` list).  
+Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run dailybench-tasks` / `androidlife_tasks.py` remain supported aliases — [docs/naming.md](docs/naming.md).)
 
 ### 3. Score + file artifacts
 
@@ -198,14 +206,14 @@ Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run androidlife-task
 RUN_ROOT=assets/runs/public/<RUN_TS>
 
 uv run scripts/eval/androidlife_report.py --runs "$RUN_ROOT" --source public.md \
- --hallucination-judge-model gpt-5.4-mini \
- --out "reports/metrics/public/public-<RUN_TS>-report.json" \
- --out-md "reports/metrics/public/public-<RUN_TS>-report.md"
+  --hallucination-judge-model gpt-5.4-mini \
+  --out "reports/metrics/public/public-<RUN_TS>-report.json" \
+  --out-md "reports/metrics/public/public-<RUN_TS>-report.md"
 
 uv run scripts/eval/eval_hallucination_controls.py --runs "$RUN_ROOT" --sub public \
- --model gpt-5.4-mini \
- --out "reports/metrics/hallucination/public-<RUN_TS>.json" \
- --out-md "reports/metrics/hallucination/public-<RUN_TS>.md"
+  --model gpt-5.4-mini \
+  --out "reports/metrics/hallucination/public-<RUN_TS>.json" \
+  --out-md "reports/metrics/hallucination/public-<RUN_TS>.md"
 
 make organize-public
 ```
@@ -217,17 +225,17 @@ Then write the narrative manual audit under `reports/public/public-<RUN_TS>.md`.
 ```bash
 uv run python scripts/run/start_phoenix.py --day 3
 uv run androidlife-tasks --serial "$S" \
- --llm-upstream-base https://openrouter.ai/api --model "$MODEL" \
- --day 3 --vars-file benchmarks/androidlife-600/tasks_vars/day_3.env
+  --llm-upstream-base https://openrouter.ai/api --model "$MODEL" \
+  --day 3 --vars-file benchmarks/androidlife-530/tasks_vars/day_3.env
 ```
 
 ## Repository layout
 
 | Path | Role |
 |---|---|
-| `androidlife-tasks` / `androidlife-runner` | Console scripts from `pyproject.toml` (`androidlife-*` aliases) |
+| `androidlife-tasks` / `androidlife-runner` | Console scripts from `pyproject.toml` (`dailybench-*` aliases) |
 | `src/androidlife/` | Harness |
-| `benchmarks/androidlife-600/` | Public 60 + 530 datasets, vars, KB |
+| `benchmarks/androidlife-530/` | Public 60 + 530 datasets, vars, KB |
 | `scripts/seeding/` | Reset / seed / verify |
 | `scripts/eval/` | Reports, HC judge, KB audit |
 | `scripts/llm/` | Local GGUF download / serve helpers |
@@ -238,18 +246,18 @@ uv run androidlife-tasks --serial "$S" \
 
 ## Docs
 
-- [docs/getting-started.md](docs/getting-started.md) — mental model + artifact map 
-- [docs/device-reset-and-seed.md](docs/device-reset-and-seed.md) — reset + seed commands 
-- [docs/pre-run-checklist.md](docs/pre-run-checklist.md) — UI/cloud seeds ADB cannot plant 
-- [docs/cli-reference.md](docs/cli-reference.md) — flags, detach / resume 
-- [docs/benchmark-spec-public.md](docs/benchmark-spec-public.md) — public 60 
-- [docs/benchmark-spec.md](docs/benchmark-spec.md) — 530 corpus 
-- [docs/evaluation-policy.md](docs/evaluation-policy.md) — grading 
-- [docs/reproducibility.md](docs/reproducibility.md) — what “reproducible” means here 
+- [docs/getting-started.md](docs/getting-started.md) — mental model + artifact map  
+- [docs/device-reset-and-seed.md](docs/device-reset-and-seed.md) — reset + seed commands  
+- [docs/pre-run-checklist.md](docs/pre-run-checklist.md) — UI/cloud seeds ADB cannot plant  
+- [docs/cli-reference.md](docs/cli-reference.md) — flags, detach / resume  
+- [docs/benchmark-spec-public.md](docs/benchmark-spec-public.md) — public 60  
+- [docs/benchmark-spec.md](docs/benchmark-spec.md) — 530 corpus  
+- [docs/evaluation-policy.md](docs/evaluation-policy.md) — grading  
+- [docs/reproducibility.md](docs/reproducibility.md) — what “reproducible” means here  
 
 ## Website
 
-Canonical: https://androidlife-website.vercel.app/ 
+Canonical: https://androidlife-website.vercel.app/  
 (GitHub Pages redirects: https://yuvrajsingh-mist.github.io/AndroidLife/)
 
 Site source is the private repo [`androidlife-website`](https://github.com/YuvrajSingh-mist/androidlife-website). Keep a local checkout at `androidlife-website/` (gitignored) and push from there.
@@ -260,10 +268,10 @@ If you use AndroidLife — the benchmark, leaderboard, tasks, or results — ple
 
 ```bibtex
 @misc{singh2026androidlife,
- title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
- author={Yuvraj Singh},
- year={2026},
- howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
+      title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
+      author={Yuvraj Singh},
+      year={2026},
+      howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
 }
 ```
 

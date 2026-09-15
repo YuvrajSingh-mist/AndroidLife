@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 
 # This file lives in scripts/run/, so the repo root is two levels up.
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SCHEDULE = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_530.md"
-VARS_DIR = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_vars"
+SCHEDULE = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_530.md"
+VARS_DIR = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_vars"
 
 DAY_RE = re.compile(r"^### Day (\d+)$")
 

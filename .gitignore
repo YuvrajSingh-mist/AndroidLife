@@ -9,11 +9,11 @@ datasets/
 config/user.yaml
 backups/
 .fabricated_test_data.json
-benchmarks/androidlife-600/tasks_vars.local.env
-benchmarks/androidlife-600/tasks_vars.local.json
-benchmarks/androidlife-600/tasks_vars/
-benchmarks/androidlife-600/public_vars.local.env
-benchmarks/androidlife-600/tasks-private/
+benchmarks/androidlife-530/tasks_vars.local.env
+benchmarks/androidlife-530/tasks_vars.local.json
+benchmarks/androidlife-530/tasks_vars/
+benchmarks/androidlife-530/public_vars.local.env
+benchmarks/androidlife-530/tasks-private/
 report_wireless.json
 report_wireless.md
 

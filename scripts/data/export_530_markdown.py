@@ -13,8 +13,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 from androidlife.task_dataset import parse_tasks_markdown  # noqa: E402
 
-SRC = REPO_ROOT / "benchmarks" / "androidlife-600" / "AndroidLife_530_v1.json"
-OUT = REPO_ROOT / "benchmarks" / "androidlife-600" / "tasks_530.md"
+SRC = REPO_ROOT / "benchmarks" / "androidlife-530" / "AndroidLife_530_v1.json"
+OUT = REPO_ROOT / "benchmarks" / "androidlife-530" / "tasks_530.md"
 
 HEADER = """# AndroidLife: The 28-Day Survival Schedule — runnable 530-task set
 

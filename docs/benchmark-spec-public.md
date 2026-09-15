@@ -16,7 +16,7 @@ and [`docs/fabricated-test-data.md`](fabricated-test-data.md) for the machinery 
 
 ## Benchmark at a glance (as of 2026-08-23)
 
-**Source of truth:** `benchmarks/androidlife-600/public.md`
+**Source of truth:** `benchmarks/androidlife-530/public.md`
 (`AndroidLife_public_v2.json`/`.jsonl`)
 
 | metric | value |
@@ -68,7 +68,7 @@ Every public task is drawn from the 530 with the same text, so the public set is
 
 ### ASK USER SINGLE (7) — 1–2 deliberately withheld facts the agent must ask for
 
-Fact source: `benchmarks/androidlife-600/ask_user_facts.json`.
+Fact source: `benchmarks/androidlife-530/ask_user_facts.json`.
 
 These are the **7 single-query ask tasks**: the 1–2 facts the task needs (recipient, place,
 item, route, threshold, …) are deliberately withheld from the model and given to the simulated
@@ -97,7 +97,7 @@ withheld fact(s), and the same answer comes back each time. Guessing without ask
 
 ### ASK USER MULTI (4) — KB-oracle multi-turn dialogue with a deterministic, verifiable outcome
 
-Profile source: `benchmarks/androidlife-600/multiturn_kb_public.json`. These are exactly the 4
+Profile source: `benchmarks/androidlife-530/multiturn_kb_public.json`. These are exactly the 4
 multi-turn profiles that ship in the public sidecar; the other 9 live in
 `multiturn_kb_530.json` for the full corpus.
 
@@ -146,7 +146,7 @@ seeding this data (see the seed-advice rule in memory).
 | `medium__notes__004` | 3 | medium |
 | `hard__files-notes__069` | 3 | hard (also DET) |
 
-Source: `benchmarks/androidlife-600/hallucination_controls.json`. Graded by
+Source: `benchmarks/androidlife-530/hallucination_controls.json`. Graded by
 `scripts/eval/eval_hallucination_controls.py` (DeepEval DAGMetric + manual confirmation).
 
 ## Grading model
@@ -206,13 +206,13 @@ runs can be published openly without ToS risk.
 ## Placeholders
 
 32 distinct keys, 44 uses across the 60 tasks — pinned per-device in
-`benchmarks/androidlife-600/public_vars.local.env` (the public equivalent of
+`benchmarks/androidlife-530/public_vars.local.env` (the public equivalent of
 `tasks_vars.local.env`). Most-used: `[contact]` (11), `[contact name]` (2), `[weekly meeting]` (2). Open (unpinned) placeholders are left verbatim in the prompt and are
 part of what the agent must resolve or ask about.
 
 ## Data & seeds
 
-- **Vars:** `benchmarks/androidlife-600/public_vars.local.env` (pass with `--vars-file`).
+- **Vars:** `benchmarks/androidlife-530/public_vars.local.env` (pass with `--vars-file`).
 - **Seed manifests:** generated for the 3 public days from the same
  `scripts/seeding/build_day_seed_manifest.py` pipeline as the corpus (see
  `docs/fabricated-test-data.md`).
@@ -235,15 +235,15 @@ Run all 60 tasks:
 
 ```bash
 uv run androidlife_tasks.py \
- --dataset benchmarks/androidlife-600/AndroidLife_public_v2.json \
+ --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
  --source public.md --all \
  --serial RS7XKZDI8HTOJNYL \
  --llm-upstream-base https://openrouter.ai/api \
  --model qwen/qwen3.6-plus \
  --temperature 0.0 \
  --steps 60 --task-timeout 2400 --save-trajectory action \
- --vars-file benchmarks/androidlife-600/public_vars.local.env \
- --ask-user-kb benchmarks/androidlife-600/multiturn_kb_public.json \
+ --vars-file benchmarks/androidlife-530/public_vars.local.env \
+ --ask-user-kb benchmarks/androidlife-530/multiturn_kb_public.json \
  --phoenix-url http://localhost:6006 --phoenix-project androidlife-public \
  --run-root "assets/runs/public/$RUN_TS"
 ```

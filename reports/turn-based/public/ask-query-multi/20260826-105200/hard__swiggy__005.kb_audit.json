@@ -1,0 +1,18 @@
+{
+  "queries": [
+    {
+      "question": "I couldn't find any food order details from August 14, 2026, in your messages. Could you please provide the name of the ",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "Downtown Delight \u2014 Murgh Mughlai and Kushka Rice, total \u20b9523.",
+      "source": "graded-from-turn-based"
+    },
+    {
+      "question": "I've searched your Telegram chats but couldn't find a contact named \"Him.\" Could you please provide the exact name of th",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "Yuvraj Airtel.",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

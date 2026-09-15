@@ -325,7 +325,7 @@ def test_build_run_command_forwards_ask_user_kb_for_kb_tasks_only() -> None:
     parser = task_batch.build_parser()
     args = parser.parse_args(
         ["--serial", "device-1", "--llm-upstream-base", "http://mini2:8081/v1", "--model", "m",
-         "--ask-user-kb", "benchmarks/androidlife-600/multiturn_kb_530.json"]
+         "--ask-user-kb", "benchmarks/androidlife-530/multiturn_kb_530.json"]
     )
     kb_task = {"bucket": "hard", "app_slug": "swiggy", "task_number_within_app": 5, "task_id": "hard__swiggy__005", "ahi": "DETERMINISTIC", "placeholders": []}
     plain_task = {"bucket": "hard", "app_slug": "maps-notes", "task_number_within_app": 5, "task_id": "hard__google-maps-notes__005", "ahi": "DETERMINISTIC", "placeholders": []}
@@ -335,7 +335,7 @@ def test_build_run_command_forwards_ask_user_kb_for_kb_tasks_only() -> None:
     plain_command, _ = task_batch.build_run_command(args, plain_task, "Find it", 8090, ask_user_kb=kb)
 
     assert "--ask-user-kb" in kb_command
-    assert kb_command[kb_command.index("--ask-user-kb") + 1] == "benchmarks/androidlife-600/multiturn_kb_530.json"
+    assert kb_command[kb_command.index("--ask-user-kb") + 1] == "benchmarks/androidlife-530/multiturn_kb_530.json"
     assert "--ask-user-context" not in kb_command
     assert "--ask-user-kb" not in plain_command
 

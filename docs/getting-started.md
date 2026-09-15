@@ -29,7 +29,7 @@ Harness install exercised on **MacBook Air (M1, 2020)** and **Mac mini (M4, 2025
 
 | Tier | Size | Source | Runs land in |
 |---|---|---|---|
-| **Public benchmark** | 60 tasks (3 days × 20) | `benchmarks/androidlife-600/AndroidLife_public_v2.json` + `public.md` | `assets/runs/public/<RUN_TS>/` |
+| **Public benchmark** | 60 tasks (3 days × 20) | `benchmarks/androidlife-530/AndroidLife_public_v2.json` + `public.md` | `assets/runs/public/<RUN_TS>/` |
 | **Full dataset** | 530 tasks (28-day schedule) | `AndroidLife_530_v1.json` + `tasks_530.md` | `assets/runs/full-bench/…` or dated roots |
 
 The website leaderboard and trajectory browser are built from **public** runs only.

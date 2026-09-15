@@ -1,0 +1,18 @@
+{
+  "queries": [
+    {
+      "question": "I checked the default Messages app and WhatsApp on your device, and I can't find a personal friend group chat with plans",
+      "correct": true,
+      "kb_answer": "(profile)",
+      "response": "It\u2019s in Telegram, and the group name is Forever 21.",
+      "source": "graded-from-turn-based"
+    },
+    {
+      "question": "I checked the \"Forever 21\" Telegram group with your friends. The only finalized (but since canceled) plans were an Augus",
+      "correct": false,
+      "kb_answer": "(profile)",
+      "response": "I don\u2019t have that information beyond what you just said.",
+      "source": "graded-from-turn-based"
+    }
+  ]
+}

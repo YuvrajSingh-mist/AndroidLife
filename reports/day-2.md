@@ -1,7 +1,7 @@
 # Day 2 — Full-Bench Run Report (qwen3.7-flash)
 
 **Run root:** `assets/runs/full-bench/2026-08-10-234158/` (day2/, 18 tasks)
-**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 2, 18 tasks)
+**Schedule source:** `benchmarks/androidlife-530/tasks_530.md` (Day 2, 18 tasks)
 **Date:** 2026-08-10 23:41 → 2026-08-11 01:56 IST
 **Model under test:** `qwen/qwen3.7-flash` (OpenRouter)
 

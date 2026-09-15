@@ -1,7 +1,7 @@
 # Day 4 — Full-Bench Run Report (qwen3.7-flash + qwen3.6-plus reruns)
 
 **Run root:** `assets/runs/full-bench/2026-08-13-011830/` (day4/, 20 tasks)
-**Schedule source:** `benchmarks/androidlife-600/tasks_530.md` (Day 4, 20 tasks) → `AndroidLife_530_v1.json`
+**Schedule source:** `benchmarks/androidlife-530/tasks_530.md` (Day 4, 20 tasks) → `AndroidLife_530_v1.json`
 **Date:** 2026-08-13 (batch run) · tasks 27 & 29 re-run with updated prompts · 5 failures re-run cleanly
 **Model under test:** `qwen/qwen3.7-flash` (batch) + `qwen/qwen3.6-plus` (5-failure clean rerun)
 
