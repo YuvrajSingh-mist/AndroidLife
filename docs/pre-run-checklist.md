@@ -17,6 +17,12 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☑ Reset baseline `--verify-only` → **PASS**
 - ☑ Day-1 / Day-2 / Day-3 seed verify → **PASS** (all three)
 - ☑ Tomorrow-conflict events re-seeded (`Team Sync` + `Mentor 1 on 1`) for **tomorrow**
+  - 🔴 **Re-check on the RUN day.** The §3 snippet anchors the pair to `today + 1` **at seed
+    time**, so a run that crosses midnight leaves them on the run day and
+    `easy__calendar__002` becomes unsolvable — this happened on **16 Sep** (seeded 15 Sep,
+    batch started 16 Sep 01:13 → `ui_states/0004` showed both events on Wed 16, Thu 17 empty).
+    Re-run the snippet on the day the batch actually starts, then confirm the pair reads
+    **run-day + 1**.
 - ☑ Weekly Sync + Gym date-relative seeds (next Mon / Tue)
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)

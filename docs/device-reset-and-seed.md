@@ -1,8 +1,23 @@
-# Device reset + seed (public 60-task)
+# Device reset + seed
 
-Return the benchmark phone (reference: OnePlus CPH2423) to a known baseline, then push fabricated seeds before a public run.
+Return the benchmark phone (reference: OnePlus CPH2423) to a known baseline, then push fabricated seeds before a scored run.
 
 **Run every command from the repo root** (`cd` into your `AndroidLife` clone). Paths are relative; the only host-specific value is your ADB serial.
+
+## Which protocol?
+
+| Tier | When | Profile / seeds | Launch |
+|---|---|---|---|
+| **Public benchmark (60)** | Before every scored public batch | `public_v2` + days **1–3** + enrich notes + public PDFs + verify (§2–§4 below) | [README · Run the public 60](../README.md#run-the-public-60-operator-path) |
+| **Full dataset (530)** | Before each day / campaign slice on the 28-day schedule | Reset to undo agent side-effects, then `seed_data.py --day N` + day verify — **not** the public enrich/PDF path | [README · 530-day schedule](../README.md#530-day-schedule-optional) |
+
+`public_v2` is for the **public benchmark only**. Do not treat public enrich/PDF steps as a stand-in for the full 530 corpus.
+
+---
+
+## Public benchmark (60-task) — full sequence
+
+The sections below are the public-60 operator path.
 
 ```bash
 # pick the connected phone (USB or wireless) — works on any machine
@@ -99,3 +114,23 @@ rm -rf "assets/runs/public/<RUN_TS>" "assets/db/public/<RUN_TS>"
 rm -f "assets/runs/public/batch-<RUN_TS>.log" "assets/runs/public/phoenix-<RUN_TS>.log"
 # then repeat §2–§4 before the next launch
 ```
+
+---
+
+## Full dataset (530) — per-day outline
+
+For a day `N` on the 28-day schedule (details / edge cases: [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md)):
+
+```bash
+export S="$(adb devices | awk '/\tdevice$/{print $1; exit}')"
+
+# undo prior agent side-effects (same script; avoid public-only enrich/PDF unless that day needs them)
+uv run python scripts/seeding/reset_phone.py --serial "$S" --profile public_v2 --apply
+
+uv run python scripts/seeding/seed_data.py --serial "$S" --day "$N"
+uv run python scripts/seeding/verify_day1_seeds.py --serial "$S" --day "$N"
+# finish any UI/cloud seeds for that day’s tasks (pre-run-checklist.md), then launch:
+#   README → “530-day schedule (optional)”
+```
+
+Date-relative calendar events and app-private seeds still need the same operator care as public runs; only the **scope of days** and **launch flags** change.

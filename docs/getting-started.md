@@ -18,7 +18,9 @@ Harness install exercised on **MacBook Air (M1, 2020)** and **Mac mini (M4, 2025
 5. **[docs/fabricated-test-data.md](fabricated-test-data.md)** — why seeds exist and what
  ADB can vs cannot plant.
 6. **[docs/device-reset-and-seed.md](device-reset-and-seed.md)** — reset + seed **commands**
- (public run). Edge cases: [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
+   (public **benchmark** vs full **dataset** called out separately). Edge cases:
+   [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
+   Batch launch lives in the [README](../README.md#run-the-public-60-operator-path) (not the site).
 7. **[docs/reproducibility.md](reproducibility.md)** — what “reproducible” means here
  (protocol, not bitwise-identical live-phone runs).
 8. **[docs/cli-reference.md](cli-reference.md)** — flags, detach/resume, model notes.
