@@ -1,0 +1,46 @@
+---
+description: Canonical section skeleton every reports/public/*.md run report must follow (reference public-20260906-063336.md)
+globs: reports/public/*.md
+alwaysApply: false
+---
+
+# Public run-report format
+
+`reports/public/public-20260906-063336.md` is the reference. Every newer run report
+(`public-<YYYYMMDD>-<HHMMSS>.md`) must reproduce this H2 skeleton **in this order**.
+Counts inside headings are run-specific — keep the shape, change the numbers.
+
+1. `## Config`
+2. `## Result summary (classification-aware)` — incl. `### ✅ Manual audit is the ground truth (headline numbers)` and the `### Metrics (manual audit = ground truth)` comparison
+3. `## Manual audit verdicts (<N>, evidence-based)` — one `### Day <n> — X PASS / Y FAIL / Z HALLUCINATION` per day
+4. `## Totals (manual audit)`
+5. `## Interaction (ASK USER) — SINGLE (<n> tasks)`
+6. `## Interaction (ASK USER) — MULTI (<n> tasks) + KBIQ`
+7. `## Hallucination controls (<n> tasks) — standalone` — incl. `### DeepEval vs manual audit (HC setup check)` and `### DeepEval HC judge compute stats (this run only)`
+8. `## Failure analysis (<n> FAIL)`
+9. `## Device telemetry & cost`
+10. `## Sensitive-info scan (privacy habit)`
+11. `## Audit methodology & on-device verification` — incl. `### Limitations`
+12. `## Artifacts`
+
+## A missing section means "go find the data", not "drop the heading"
+
+Fill it from the run's own artifacts:
+
+- Verdicts / totals / failure analysis → `assets/runs/public/<run>/day*/` (`meta.json`, `output.json`, `trajectory.json`, `ui_states/`) and `benchmarks/androidlife-530/` (`public.md`, `ask_user_facts_public.json`, `multiturn_kb_public.json`, `hallucination_controls.json`)
+- KBIQ → the run's `kb_audit.json`
+- Telemetry → `run_metrics.json`, `samples.ndjson` (1 Hz battery/thermal), `llm_proxy_metrics.jsonl` (per-request tokens)
+- HC → `reports/metrics/hallucination/<run>.{json,md}`
+- Official scores → `reports/metrics/public/<run>-report.{json,md}`
+
+If the artifacts are not local, mirror the non-image files from
+[YuvrajSingh9886/androidlife-public](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public)
+under `runs/<run>/` first. GIFs and screenshots are not required.
+
+## Rules
+
+- Manual audit is the ground truth: the headline number is the manual verdict, never the official self-reported one. Show both.
+- The telemetry table must carry every `063336` row: agent LLM cost + request count, `ask_user` cost + calls, grand total, agent tokens (prompt/completion/total), battery Δ-pct sum, `app_battery` mAh total, max CPU/GPU/NPU temp, max power-amp/skin temp, max battery/vendor-phone temp, thermal status, wall-clock.
+- Extra sections are allowed (e.g. `## Discrepancies vs official report`, a `## 🔄 Single-task re-runs` block). A **missing** canonical section is not.
+- Any verdict superseded by a re-run must say so inline, with the date.
+- Verify before shipping: `grep -n '^## ' reports/public/<report>.md`
