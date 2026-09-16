@@ -64,6 +64,14 @@ AndroidLife runs Android agent tasks against a **real phone** (via ADB/MobileRun
 and a real LLM, and grades the agent on reaching a verifiable device end-state.
 This repo ships the **530-task corpus** plus everything needed to reproduce runs.
 
+> **Benchmark, or template — your call.** The 530 tasks are an **extended version
+> of the benchmark**, usable as a larger evaluation set for further benchmarking of
+> models beyond the 60-task preview. They are also usable as a **template for
+> producing synthetic data**: 530 data points are nowhere near enough to train a
+> model, but each record ships its `prompt_template`, placeholder slots, and
+> `vars/` pin files, so the slots can be re-resolved (or regenerated) into many
+> more concrete instances per task without rewriting the corpus.
+
 > Formerly published as `DrainBench-530` / DailyBench. Canonical dataset id:
 > [`{HF_530_REPO}`](https://huggingface.co/datasets/{HF_530_REPO}).
 > Legacy [`{HF_530_LEGACY}`](https://huggingface.co/datasets/{HF_530_LEGACY}) redirects here.
