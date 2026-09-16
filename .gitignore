@@ -61,3 +61,7 @@ website-src/
 
 # Manual per-run audit working notes (keep local; not for GitHub)
 reports/public/audit-*/
+
+# benchmark runner scratch state (local only)
+.drain_*
+benchmarks/androidlife-600

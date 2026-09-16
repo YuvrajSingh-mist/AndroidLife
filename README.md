@@ -180,25 +180,31 @@ uv run androidlife_tasks.py \
 # --model must match the server -a alias; add --vision for mmproj models
 ```
 
-Detach so the run survives terminal close (from repo root):
+#### Public 60-task batch (detached)
+
+Detach so the run survives terminal close (from repo root). Prefer `androidlife-tasks`; `androidlife_tasks.py` is an equivalent alias.
 
 ```bash
 RUN_TS=$(date +%Y%m%d-%H%M%S)
-nohup uv run androidlife-tasks \
+nohup uv run androidlife_tasks.py \
   --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \
   --source public.md --all --serial "$S" \
-  --llm-upstream-base https://openrouter.ai/api --model qwen/qwen3.6-plus \
-  --ask-user-model gpt-5.4-mini --temperature 0.0 --steps 60 --task-timeout 2400 \
+  --llm-upstream-base https://openrouter.ai/api --model <model> \
+  --ask-user-model gpt-5.4-mini --temperature 0.0 \
+  --steps 60 --task-timeout 2400 \
   --save-trajectory action \
   --vars-file benchmarks/androidlife-530/public_vars.local.env \
   --ask-user-kb benchmarks/androidlife-530/multiturn_kb_public.json \
   --run-root "assets/runs/public/$RUN_TS" \
   < /dev/null > "assets/runs/public/batch-$RUN_TS.log" 2>&1 &
 tail -f "assets/runs/public/batch-$RUN_TS.log"
+
+# optional: add --vision for screenshot-driven runs
+# resume: same --run-root + --resume-from <task_id>
 ```
 
 Resume an interrupted batch with the **same** `--run-root` and `--resume-from <task_id>` (or an explicit remaining `--task-id` list).  
-Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run dailybench-tasks` / `androidlife_tasks.py` remain supported aliases — [docs/naming.md](docs/naming.md).)
+Flags: [docs/cli-reference.md](docs/cli-reference.md). (`uv run dailybench-tasks` / `androidlife-tasks` remain supported aliases — [docs/naming.md](docs/naming.md).)
 
 ### 3. Score + file artifacts
 
