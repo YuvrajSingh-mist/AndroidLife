@@ -274,6 +274,29 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 6. Known limitations & honest caveats
 
+- **`seed_data.py` calendar inserts are UTC-shifted by +5:30 (IST).** `day0` is
+  built as *UTC* midnight (`ms - (ms % 86_400_000)`) and every event is placed at
+  `day0 + Nh`, so on an `Asia/Kolkata` device all of its calendar seeds land 5h30m
+  later than the label suggests:
+
+  | Seed event | Intended | Actual on device |
+  |---|---|---|
+  | `Lunch with Maa` | 11:00 | **16:30** |
+  | `Weekly_Standup` (recurring) | 09:00 | **14:30** |
+  | `meeting title` = `1 on 1 with Yuvraj Airtel` | 08:30 | **14:00** |
+  | `Old_Gym_Class` | 07:00 | **12:30** |
+
+  **Affects the graded outcome only once, and only in the 530 corpus:**
+  `hard__calendar-telegram-obsidian__002` (530-only — *not* in the public 60) asks
+  whether the meeting is **before 9 am**; at 14:00 the correct branch flips from
+  "reschedule" to "confirm". Every other task that reads these events matches on
+  **title**, not clock time (`easy__calendar__002` overlaps either way, and
+  `hard__clock-calendar__023` reads `Weekly Sync`/`Gym`, which are seeded by
+  `ensure_calendar_events` with a real `ZoneInfo` and are correct).
+  `easy__calendar__002`'s `Team Sync` / `Mentor 1 on 1` pair is not created by this
+  function either (see the re-seed snippet in `docs/device-reset-and-seed.md`).
+  Verified on-device 2026-09-16; the shift does **not** change any public-sample
+  verdict.
 - **Photo categorization is on-device & asynchronous.** Google Photos tags
   images into the `food` category using on-device ML that runs in the background.
   The images are real food photos and the category pipeline is active, but
