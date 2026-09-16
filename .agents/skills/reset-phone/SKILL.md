@@ -168,6 +168,40 @@ per task, do not skip any — and clear persisted state:
    left foreground in a partial state.
 5. **Ephemeral search boxes** (Drive/Sheets/Obsidian/Files search text) — app-private,
    die on force-stop; just confirm the app isn't stuck in a dialog before the run.
+   ⚠️ **Google Maps is the exception — do NOT assume force-stop clears it (learned 2026-09-16).**
+
+6. **Google Maps leftover state (persists across force-stop — must be cleared in-UI).**
+   `medium__google-maps__002` starts with the search box; if a prior run left its
+   destination in *Recent*, the agent never has to search. Confirmed 2026-09-16: a leftover
+   `Biju Patnaik International Airport` recent row made **7 of 13 runs skip typing the
+   destination** (`qwen-28`/`qwen-0909v`/`seed-30` say so aloud — *"in recent history … I'll
+   tap it"*, *"a pre-existing suggestion … faster"*). That doesn't invalidate their end-state
+   (they still compared the modes), but it **leaks comparability** — run N inherits run N-1's
+   hints. Clear it before any graded rerun:
+   - Open Maps → tap the search box (`Search here`).
+   - **Long-press** a *Recent* row → dialog **"Delete suggested search?"** → tap **Delete**.
+     Repeat per row.
+   - 🚫 **Do NOT tap the row to delete it** — a plain tap opens the place page *and adds
+     another recent entry* (did exactly that on 16 Sep: the `Treebo Aasma Downtown` page
+     re-entered history). Only the long-press → Delete path removes a row.
+   - **Leftover route/place page**: a run can leave Maps on a live route (*Your location →
+     Airport Wireless Road*, Drive 36 min / 13 km) or an open place page. Force-stop Maps,
+     relaunch, and confirm it lands on the **home/search** state.
+   - **Saved places**: re-checked 16 Sep — *Favourites = 0 places*, "All saved" holds only
+     `AI4Bharat`. Keep `Bali Cafe` **absent** (530 HC tasks `easy__google-maps__008/009/014`);
+     do not let `hard__google-maps-notes__005`'s "SUM Hospital – 2.8 km" note or the
+     `parked here` note survive (they are Notes, not Maps).
+   - Also remove the **home-screen Notes widget** the `easy__google-maps__004` runs add.
+
+7. **OnePlus Notes — the "last-edited note" trap (why leftover notes cost real steps).**
+   The Notes app **reopens the last-edited note** on launch, so a leftover note drops the
+   next agent *inside* an existing note. Confirmed 2026-09-16: a leftover `parked here` /
+   `Fastest Route to Bhubaneswar Airport` / `To Buy` note made **`qwen-26` and `kimi-30v`
+   burn all 60 steps in a "+-tap loop inside an existing note" and FAIL**
+   (`easy__google-maps__004`), `mimo-0901` bail after malforming, and **`gemini-26` PASS
+   on the pre-existing note** ("the note is already there") — a genuinely vacuous PASS,
+   since it never created the deliverable. Delete run notes (Step 1c) and verify the next
+   launch lands on the **notes list**, not inside a note.
 
 ## Step 2 — Re-seed the fabricated task data (public rerun)
 
