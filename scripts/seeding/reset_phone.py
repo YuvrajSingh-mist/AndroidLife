@@ -304,7 +304,13 @@ def unblock_numbers(serial: str, numbers: list[str], apply: bool) -> None:
             print(f"  [dry] unblock {num} (present={bool(present)})")
 
 
-def remove_calendar_events(serial: str, titles: list[str], apply: bool) -> None:
+def _calendar_ids_for_titles(serial: str, titles: list[str]) -> list[str]:
+    """Return the `_id` of every LIVE (deleted=0) event whose title matches.
+
+    One coherent query (colon-separated projection) so the parsed fields always
+    belong to the same row — zipping separate per-column queries silently
+    misaligns when the provider reorders rows.
+    """
     rows = sh(serial, f"content query --uri {CAL_URI} --projection _id:title:deleted")
     ids: list[str] = []
     for line in rows.splitlines():
@@ -314,18 +320,40 @@ def remove_calendar_events(serial: str, titles: list[str], apply: bool) -> None:
         if not (m and t and d):
             continue
         if d.group(1) == "1":
-            continue  # already deleted
-        title = t.group(1).strip()
-        if any(title == want for want in titles):
+            continue  # already soft-deleted; nothing to clean up
+        if t.group(1).strip() in titles:
             ids.append(m.group(1))
-    if apply and ids:
-        where = ",".join(ids)
-        sh(serial, f"content delete --uri {CAL_URI} --where \"_id IN ({where})\"", check=True)
-        print(f"  [ok]  soft-deleted {len(ids)} run-artifact events: {ids}")
-    elif apply:
-        print("  [--]  no run-artifact calendar events to delete")
-    else:
+    return ids
+
+
+def remove_calendar_events(serial: str, titles: list[str], apply: bool) -> None:
+    """Soft-delete every LIVE event whose title matches, then assert none remain.
+
+    The events provider clears **one row per `content delete` call**, so a single
+    `--where "title=..."` (or a fixed 6x retry loop) leaves extras behind whenever
+    a previous reset inserted more copies than the loop runs for. Runs are also
+    known to leave duplicate copies, and `verify()` only checks presence, not
+    count — so the duplicates pass the gate and then confuse later audits.
+    Deleting each matched `_id` individually and re-querying makes the cleanup
+    actually idempotent.
+    """
+    if not titles:
+        return
+    ids = _calendar_ids_for_titles(serial, titles)
+    if not apply:
         print(f"  [dry] soft-delete run-artifact events (matched ids): {ids or 'none'}")
+        return
+    if not ids:
+        print("  [--]  no run-artifact calendar events to delete")
+        return
+    for eid in ids:
+        sh(serial, f"content delete --uri {CAL_URI} --where \"_id={eid}\"", check=True)
+    left = _calendar_ids_for_titles(serial, titles)
+    msg = f"  [ok]  soft-deleted {len(ids)} run-artifact events: {ids}"
+    if left:
+        # Do not fail the reset: the re-seed below still inserts a clean copy.
+        msg += f"  [warn] still live after delete: {left}"
+    print(msg)
 
 
 def restore_contact(serial: str, prof: dict, apply: bool) -> None:
@@ -483,6 +511,16 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         )
         sh(serial, cmd, check=True)
         print(f"  [ok]  seeded calendar event '{ev['title']}' {d} {ev['start']}-{ev['end']} ({tz_name})")
+
+    # Two identical titles (e.g. "Weekly Sync" 07:00 + 10:00) are legitimate, so
+    # compare against the expected count per title rather than asserting 1.
+    expected: dict[str, int] = {}
+    for ev in events:
+        expected[ev["title"]] = expected.get(ev["title"], 0) + 1
+    for title, want in expected.items():
+        got = len(_calendar_ids_for_titles(serial, [title]))
+        flag = "ok" if got == want else "WARN"
+        print(f"  [{flag}]  calendar seed '{title}': {got} live event(s) (want {want})")
 
 
 def verify(serial: str, prof: dict) -> bool:
