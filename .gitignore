@@ -65,3 +65,6 @@ reports/public/audit-*/
 # benchmark runner scratch state (local only)
 .drain_*
 benchmarks/androidlife-600
+
+# X / tweet series drafts for AndroidLife (local only, not for GitHub)
+androidlife-tweets/
