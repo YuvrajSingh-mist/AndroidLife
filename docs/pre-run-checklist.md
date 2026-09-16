@@ -123,12 +123,24 @@ Canonical operator runbook (ADB reset + manual seeds table):
   existing 'To Buy' note"); **`gemini-26` PASSED on a pre-existing `parked here` note**
   ("the note is already there", 1 min old) rather than creating one, so its PASS is vacuous.
   Also delete the **home-screen Notes widget** those runs add.
-- ☐ **Google Maps left in a directions/navigation state** — a prior run leaves Maps open on a
-  route (seen 16 Sep: *Your location → Airport Wireless Road*, Drive 36 min / 13 km, with
-  Save/Start showing). Back out to the Maps home/search state so
-  `medium__google-maps__002` starts from a clean search rather than a live route sheet.
-- ☐ Google Maps saved places: confirm nightly leftovers removed (`Bali Cafe` must stay
-  **absent** for the 530 HC tasks `easy__google-maps__008/009/014`).
+- ☐ **Google Maps run state cleared — this is the big one.** Leftovers let agents *skip the search entirely*:
+  - **Search history / Recent searches.** A leftover `Biju Patnaik International Airport` row in the search box's
+    *Recent* list let **7 of 13 runs never type the destination** — `qwen-28`, `qwen-0909v`, `seed-30` even say so
+    out loud (*"in recent history … I'll tap it"*, *"a pre-existing suggestion … faster"*) and **all three PASSED
+    vacuously**; `mimo-0901` did the same and failed. So **5 of 12** graded passes for
+    `medium__google-maps__002` came from tappable leftovers (also `gemini-26` off an open place page, and
+    `qwen35-0914` off a live route) instead of a real search.
+    → In Maps: tap the search box → **clear the Recent list** (per-row ⋮ / `Clear`). Mid-task leftovers exist now
+    from the 530 Maps tasks: `pharmacy`, `general physician clinic near me`, `hospital near me open now`,
+    `Chennai International Airport (MAA)`, `RG Residency`, `Le Dazzle`.
+  - **Leftover route / place page.** Maps was left showing *Your location → Airport Wireless Road* with
+    Drive 36 min / 13 km (a prior run's directions state). Force-stop Maps and reopen on the **home/search** state.
+  - **Saved places** — re-checked 16 Sep: *Favourites = 0 places*, "All saved" holds only `AI4Bharat` (non-
+    public task), so no public Maps pass came from a pre-saved/starred place; `Bali Cafe` stays **absent** for the
+    530 HC tasks `easy__google-maps__008/009/014`.
+  - **Home-screen Notes widget** added by `easy__google-maps__004` runs — remove it.
+- ☐ **Notes app: "New note" vs "last-edited note".** Prefer deleting notes via the app's own list so Notes
+  doesn't reopen a stale note on the next run (see the `parked here` bullet above).
 - ☐ Obsidian: run notes deleted (e.g. **Birthday Reminders**).
 - ☐ Notes: **storage-limit note must be ABSENT** for `hard__files-notes__069` (hallucination control — the agent must honestly report there is no limit note; do NOT create one).
 
