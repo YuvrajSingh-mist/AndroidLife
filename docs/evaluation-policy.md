@@ -262,3 +262,38 @@ Do not average SR with UIQ/KBIQ into a single leaderboard number.
 - Keep regression tests for parsers, scorers, and the SR / UIQ / KBIQ / HC paths.
 - Manual audit remains authoritative when automated judges disagree (e.g. HC
   false-positives on honest failures that merely name the absent entity).
+
+### 9.1 Publication gate (`make verify-leaderboard`)
+
+Every number the site publishes must be traceable to the run's own report. That
+invariant is enforced by a deterministic script rather than by review:
+
+```bash
+make verify-leaderboard            # or: uv run python scripts/tools/verify_leaderboard.py
+```
+
+It reads `androidlife-website/assets/js/leaderboard.js` (via `node`) and each
+report matched by the row's `runRoot` field, then compares every published field
+against the exact column the board promises (see `COL_DEFS` in `leaderboard.js`):
+
+| Board field | Report source |
+|---|---|
+| `success`, `askUser`, `guiOnly`, `hc`, `buckets` | manual-audit column |
+| `steps`, `queries`, `uiq`, `kbiq`, `elapsed` | official/derived column |
+| `cost`, `askUserCost` | report telemetry, cross-checked against `llm_proxy_metrics.jsonl` / `ask_user_metrics.jsonl` |
+| `cpuTemp`, `powerSkinTemp` | **peak** of the reported CPU/GPU/NPU and power-amp/skin values |
+| `batteryTemp`, `batteryDrain` | report telemetry (`batteryDrain` compared as a magnitude) |
+
+The script exits non-zero on any disagreement, so it can gate a release; wire it
+into CI/pre-push if the leaderboard is ever updated by hand. **Add `runRoot` to a
+new row and the rest is automatic** — a row without a resolvable report or a field
+the script cannot parse is a hard error, never a silent skip.
+
+Two deliberate exceptions, reported separately rather than failing:
+
+- **Third-source drift.** `reports/metrics/**` is git-ignored and regenerated
+  locally by `androidlife_report.py`, so a machine JSON can disagree with the
+  hand-verified report. The report wins; the script prints these as warnings.
+- **Interrupted runs.** Rows with an `interrupted` block publish the relaxed
+  `passed / 60` figure, so the script re-derives it from the block *and* checks the
+  report's reached-denominator figure against `passed / finished`.

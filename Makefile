@@ -30,6 +30,10 @@ smoke-test:
 organize-public:
 	uv run python scripts/tools/organize_public_artifacts.py --sweep
 
+.PHONY: verify-leaderboard
+verify-leaderboard:
+	uv run python scripts/tools/verify_leaderboard.py
+
 .PHONY: help
 help:
 	@printf "Targets:\n"
@@ -41,3 +45,4 @@ help:
 	@printf "  make test-cli    Run harness CLI/process coverage\n"
 	@printf "  make smoke-test  Pre-flight check: LLM server, wired/wireless ADB + mobilerun, one real task\n"
 	@printf "  make organize-public  File all public-run artifacts into per-run folders + rebuild turn-based audits\n"
+	@printf "  make verify-leaderboard  Gate: every published leaderboard number must match its run report\n"
