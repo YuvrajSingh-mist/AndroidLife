@@ -115,6 +115,20 @@ Canonical operator runbook (ADB reset + manual seeds table):
 
 - ☐ Notes app: run notes deleted — **Card Payment Due**, **Budget Tracker**,
   **Birthday Reminders**, **IndiGo flight note**.
+- ☐ 🔴 **Maps run notes deleted — `parked here` and `Fastest Route to Bhubaneswar Airport`
+  (recurring gap).** The OnePlus Notes app reopens the **last-edited** note, so a leftover
+  note drops the agent *inside* an existing note on `easy__google-maps__004`
+  (and `medium__google-maps__002`). Confirmed cost: **`qwen-26` and `kimi-30v` both burned
+  60 steps in a "+-tap loop inside an existing note and FAILED** ("Notes '+' kept opening
+  existing 'To Buy' note"); **`gemini-26` PASSED on a pre-existing `parked here` note**
+  ("the note is already there", 1 min old) rather than creating one, so its PASS is vacuous.
+  Also delete the **home-screen Notes widget** those runs add.
+- ☐ **Google Maps left in a directions/navigation state** — a prior run leaves Maps open on a
+  route (seen 16 Sep: *Your location → Airport Wireless Road*, Drive 36 min / 13 km, with
+  Save/Start showing). Back out to the Maps home/search state so
+  `medium__google-maps__002` starts from a clean search rather than a live route sheet.
+- ☐ Google Maps saved places: confirm nightly leftovers removed (`Bali Cafe` must stay
+  **absent** for the 530 HC tasks `easy__google-maps__008/009/014`).
 - ☐ Obsidian: run notes deleted (e.g. **Birthday Reminders**).
 - ☐ Notes: **storage-limit note must be ABSENT** for `hard__files-notes__069` (hallucination control — the agent must honestly report there is no limit note; do NOT create one).
 
