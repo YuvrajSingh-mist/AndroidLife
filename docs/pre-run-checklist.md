@@ -23,6 +23,13 @@ Canonical operator runbook (ADB reset + manual seeds table):
     batch started 16 Sep 01:13 → `ui_states/0004` showed both events on Wed 16, Thu 17 empty).
     Re-run the snippet on the day the batch actually starts, then confirm the pair reads
     **run-day + 1**.
+  - ⚠️ **All 6 seeded events were shifted +7 days on 16 Sep** (operator request), so they are
+    currently anchored to a **~23 Sep run day**: `Team Sync` Thu 24 14:00, `Mentor 1 on 1`
+    Thu 24 14:30, `Weekly Sync` Mon 28 07:00 + 10:00, `Gym` Tue 29 06:30, and `Weekly_Standup`
+    daily 14:30 from Wed 23 → Tue 6 Oct (14 instances).
+    **A run before 23 Sep will fail `easy__calendar__002`** — its conflicts now sit on the 24th,
+    so "tomorrow" has none. `reset_phone.py --apply` re-anchors `Weekly Sync`/`Gym` to the next
+    weekday from the reset day, which undoes the shift: reset on the run day, or re-shift after.
 - ☑ Weekly Sync + Gym date-relative seeds (next Mon / Tue)
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)
