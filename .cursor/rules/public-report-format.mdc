@@ -41,6 +41,17 @@ under `runs/<run>/` first. GIFs and screenshots are not required.
 
 - Manual audit is the ground truth: the headline number is the manual verdict, never the official self-reported one. Show both.
 - The telemetry table must carry every `063336` row: agent LLM cost + request count, `ask_user` cost + calls, grand total, agent tokens (prompt/completion/total), battery Δ-pct sum, `app_battery` mAh total, max CPU/GPU/NPU temp, max power-amp/skin temp, max battery/vendor-phone temp, thermal status, wall-clock.
-- Extra sections are allowed (e.g. `## Discrepancies vs official report`, a `## 🔄 Single-task re-runs` block). A **missing** canonical section is not.
+- **No extra H2/H3 headings.** The skeleton above is the whole outline. Extra content that
+  used to get its own section (a re-run record, an official-vs-manual discrepancy table, a
+  false-pass callout table, seed/leftover findings, death/resume notes) must be folded into the
+  relevant canonical section as prose, a bold label paragraph, a blockquote or a table. A
+  **missing** canonical section is not allowed either.
+  - re-run records / superseded verdicts → end of `## Totals (manual audit)`
+  - official-vs-manual discrepancies → the `### Metrics` blockquote (they are usually already there)
+  - false-pass / classification callouts → end of `## Failure analysis`
+  - seed, leftover-state, death/resume findings → `## Audit methodology & on-device verification`
+- Keep the `### Day <n> — X PASS / Y FAIL / Z HALLUCINATION (…)` heading shape; run-specific
+  counts and suffixes go in the parentheses, never in a new heading.
 - Any verdict superseded by a re-run must say so inline, with the date.
-- Verify before shipping: `grep -n '^## ' reports/public/<report>.md`
+- Verify before shipping: `grep -n '^#\{2,3\} ' reports/public/<report>.md` — the output must
+  match the 12-H2 skeleton above with no additions.
