@@ -37,9 +37,9 @@ TRANSIENT_FAILURE_MAX_STEPS = 3
 TRANSIENT_FAILURE_MARKERS = ("Request timed out", "Empty response content")
 
 # A preflight that couldn't reach the phone writes a DEVICE_UNREACHABLE marker (see
-# cli._capture_device_snapshot). That aborts the whole batch immediately: the phone is
-# the benchmark's subject, so a run that cannot reach it has no valid result to record,
-# and silently retrying would paper over an outage instead of reporting it.
+# cli.main). That aborts the whole batch immediately: the phone is the benchmark's
+# subject, so a run that cannot reach it has no valid result to record, and silently
+# retrying would paper over an outage instead of reporting it.
 
 # Fallback {task_id: fact} mapping for Hard/ASK USER tasks whose dataset row has no
 # `ask_user_fact` of its own (only the public dataset publishes it inline - see
@@ -90,7 +90,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
-    parser.add_argument("--device-reconnect-timeout", type=float, default=45.0, help="Forwarded to each task run: seconds the runner spends re-probing/reconnecting ADB after a `device offline` snapshot failure before giving up (0 = fail immediately).")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
                         help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-530/multiturn_kb_530.json.")
@@ -159,7 +158,6 @@ def load_json_object(path: str | Path) -> dict[str, Any]:
     return json.loads(facts_path.read_text(encoding="utf-8"))
 
 
-
 def _runner_script(repo_root: Path) -> Path:
     """Return androidlife_runner.py under the repo root."""
     return repo_root / "androidlife_runner.py"
@@ -220,8 +218,6 @@ def build_run_command(
     command.extend(["--save-trajectory", args.save_trajectory])
     if args.no_app_reset:
         command.append("--no-app-reset")
-    if getattr(args, "device_reconnect_timeout", None) is not None:
-        command.extend(["--device-reconnect-timeout", str(args.device_reconnect_timeout)])
     if ask_user_kb and task.get("task_id") in ask_user_kb:
         # Multi-turn KB mode (these are DETERMINISTIC tasks carrying a KB profile):
         # the simulated user is an honest oracle over the profile with rolling
@@ -290,10 +286,10 @@ def is_transient_failure(run_dir: Path | None) -> bool:
 def device_unreachable_marker(run_dir: Path | None) -> str | None:
     """Return the DEVICE_UNREACHABLE marker text for a run, or None.
 
-    The runner writes this when preflight couldn't reach the phone even after its
-    ADB reconnect budget (see ``cli._capture_device_snapshot``). It means "the task
-    never got to run", so the batch aborts rather than counting it as a failure -
-    the task is not at fault, and there is no result to record.
+    The runner writes this when preflight couldn't reach the phone (see
+    ``cli.main``). It means "the task never got to run", so the batch aborts rather
+    than counting it as a failure - the task is not at fault, and there is no result
+    to record.
     """
     if run_dir is None:
         return None
