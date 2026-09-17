@@ -38,8 +38,17 @@ organize-public:
 verify-leaderboard:
 	uv run python scripts/tools/verify_leaderboard.py
 
+.PHONY: verify-trajectories
+verify-trajectories:
+	uv run python scripts/tools/audit_trajectories.py
 
+.PHONY: blog
+blog:
+	uv run python scripts/tools/build_blog.py
 
+.PHONY: sync-reports
+sync-reports:
+	uv run python scripts/tools/sync_reports_hf.py
 
 .PHONY: help
 help:
@@ -54,3 +63,6 @@ help:
 	@printf "  make harden-device  Keep the Tailscale ADB transport alive across screen-off/Doze\n"
 	@printf "  make organize-public  File all public-run artifacts into per-run folders + rebuild turn-based audits\n"
 	@printf "  make verify-leaderboard  Gate: every published leaderboard number must match its run report\n"
+	@printf "  make verify-trajectories  Gate: every public run's trajectory is present + loadable on the site and HF\n"
+	@printf "  make blog        Rebuild the website blog from reports/public/*.md\n"
+	@printf "  make sync-reports  Upload any changed reports/ file to the androidlife-public HF dataset\n"
