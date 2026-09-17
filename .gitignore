@@ -66,6 +66,9 @@ reports/public/audit-*/
 .drain_*
 benchmarks/androidlife-600
 
+# Redo queue: tasks whose recorded results aren't trustworthy (local only)
+redo.md
+
 # X / tweet series drafts for AndroidLife (local only, not for GitHub)
 androidlife-tweets/
 
