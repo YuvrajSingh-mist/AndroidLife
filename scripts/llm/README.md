@@ -49,19 +49,29 @@ this after a failed action — keeps generating until the context window fills: 
 With `-np 1` (single slot) that also blocks every later request behind it, so retries
 pile up and time out too.
 
-`-n 2048` is the evidence-based value. Across **5,804 logged completions** (157 proxy logs):
+`-n 2048` is scoped to **this server only** — the flag governs the local GGUF models
+(`Qwen3.5-4B`, `gemma-4-E2B-it`). OpenRouter-hosted models are unaffected by it.
+Across every logged **local** completion, neither has come close to the cap:
 
-| | completion tokens |
-|---|---|
-| p50 | 88 |
-| p90 | 180 |
-| p99 | 428 |
-| p99.9 | 807 |
-| max ever | **2,016** |
+| Local model | completions | p50 | p99 | max |
+|---|---|---|---|---|
+| `Qwen3.5-4B` | 948 | 81 | 256 | **907** |
+| `gemma-4-E2B-it` | 702 | 107 | 507 | **965** |
+| combined | 1,650 | — | — | **965** |
 
-Only 20 completions exceeded 512 and only 2 exceeded 1024, so `-n 2048` has never
-truncated a legitimate GUI-agent response, while a runaway now ends in ~1.5 min instead
-of ~20. Override with `--n-predict N` or `LLAMA_N_PREDICT=N`; `-1`/`0` opts back out.
+So `-n 2048` (≈2.1× the highest local response on record) has never truncated a local
+GUI-agent response, while a runaway now ends in ~1.5 min instead of ~20.
+
+> **Corrected 2026-09-18.** An earlier version of this note cited "5,804 logged
+> completions … max ever 2,016", which conflated local and OpenRouter traffic. Over the
+> **full public corpus** (21,493 completions across 718 proxy logs) there are in fact
+> **6 completions over 2048** — but every one is `moonshotai/kimi-k2.6` on OpenRouter,
+> four of them 65,536-token runaways with `finish_reason=length` (and only 2 of the 6
+> ended normally: 9,874 and 3,219 tokens). Those are a **remote-backend** problem that
+> `-n` cannot reach, and they are excluded from the local table above. If you ever serve
+> kimi-class models from this script, revisit the cap.
+
+Override with `--n-predict N` or `LLAMA_N_PREDICT=N`; `-1`/`0` opts back out.
 
 > **`--context-shift` is NOT the culprit** (corrected 2026-09-17). On this build
 > (`version 1 (8c146a836)`) it already defaults to **disabled**, and `serve_gguf.sh`
