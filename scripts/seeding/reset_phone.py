@@ -541,9 +541,14 @@ def verify(serial: str, prof: dict) -> bool:
         print(f"  {'PASS' if gone else 'FAIL'} blocked {num} absent")
     ev = sh(serial, f"content query --uri {CAL_URI} --projection _id:title:_sync_id:deleted")
     for title in prof.get("seed_calendar_titles", []):
-        present = title in ev and "deleted=1" not in _line_for(ev, title)
+        # A seed counts as present only if a LIVE (deleted=0) row exists. Testing
+        # `title in ev and "deleted=1" not in _line_for(...)` false-PASSed when every
+        # copy was soft-deleted: _line_for returns "" and `"deleted=1" not in ""` is
+        # True. Derive both presence and sync-state from the live row instead.
+        live = _line_for(ev, title)
+        present = bool(live)
         ok &= present
-        synced = bool(re.search(rf"title={re.escape(title)}[^,]*, _sync_id=[^,]", ev))
+        synced = bool(re.search(r"_sync_id=[^,]", live))
         print(f"  {'PASS' if present else 'FAIL'} calendar seed '{title}' present (synced={synced})")
     for path in prof.get("seed_files", []):
         has = sh(serial, f"ls {quote(path)}").strip() != ""
@@ -564,8 +569,17 @@ def verify(serial: str, prof: dict) -> bool:
 
 
 def _line_for(haystack: str, title: str) -> str:
+    """Return the LIVE (deleted=0) query line for an event whose title matches EXACTLY.
+
+    Two false-PASS traps this avoids:
+      * substring matching — a seed titled "Gym" also matched the live
+        "Old_Gym_Class" event, so the gate passed with the real seed soft-deleted;
+      * returning "" for "no live row" — callers then saw `"deleted=1" not in ""`
+        as True and reported the seed present.
+    """
     for line in haystack.splitlines():
-        if title in line and "deleted=1" not in line:
+        match = re.search(r"title=([^,]*),", line)
+        if match and match.group(1).strip() == title and "deleted=1" not in line:
             return line
     return ""
 
