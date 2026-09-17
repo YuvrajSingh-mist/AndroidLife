@@ -384,20 +384,9 @@ def test_parser_has_no_device_unreachable_abort_after_flag() -> None:
     result. Parking the task and continuing would mask an outage, so the knob is gone.
     """
     args = task_batch.build_parser().parse_args([])
-    assert args.device_reconnect_timeout == 45.0
     assert not hasattr(args, "device_unreachable_abort_after")
+    assert not hasattr(args, "device_reconnect_timeout")
     assert not hasattr(task_batch, "DEVICE_UNREACHABLE_ABORT_AFTER")
-
-
-def test_build_run_command_forwards_the_device_reconnect_timeout() -> None:
-    """Each task run gets the runner's ADB reconnect budget so a flap is absorbed in-process."""
-    parser = task_batch.build_parser()
-    args = parser.parse_args(["--serial", "device-1", "--llm-upstream-base", "http://mini2:8081/v1", "--model", "m"])
-    task = {"bucket": "easy", "app_slug": "camera", "task_number_within_app": 6, "task_id": "easy__camera__006"}
-
-    command, _ = task_batch.build_run_command(args, task, "Take a photo", 8090)
-
-    assert command[command.index("--device-reconnect-timeout") + 1] == "45.0"
 
 
 def test_find_run_dir_globs_for_label_match_under_runs(tmp_path) -> None:
