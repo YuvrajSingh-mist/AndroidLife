@@ -465,15 +465,43 @@ def remove_calendar_by_ids(serial: str, ids: list[int], apply: bool) -> None:
         print(f"  [dry] soft-delete calendar events by id: {ids}")
 
 
+def _live_calendar_events(serial: str, titles: list[str]) -> list[tuple[str, str, int | None]]:
+    """Return `(id, title, dtstart_ms)` for LIVE events whose title matches exactly.
+
+    Exact-title matching avoids the `Old_Gym_Class` / `Gym` substring trap, and
+    dtstart is carried alongside the id so the caller can match a seed to the
+    existing copy that holds *that* time slot.
+    """
+    rows = sh(serial, f"content query --uri {CAL_URI} --projection _id:title:dtstart:deleted")
+    found: list[tuple[str, str, int | None]] = []
+    for line in rows.splitlines():
+        m = re.search(r"_id=(\d+),", line)
+        t = re.search(r"title=([^,]*),", line)
+        s = re.search(r"dtstart=(\d+)", line)
+        d = re.search(r"deleted=([01])", line)
+        if not (m and t and d) or d.group(1) == "1":
+            continue
+        if t.group(1).strip() in titles:
+            found.append((m.group(1), t.group(1).strip(), int(s.group(1)) if s else None))
+    return found
+
+
 def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None:
     """(Re)create date-relative calendar seeds so clash/agenda meetings exist at
     every reset (variance-safe for the 3x public runs).
 
-    Removes any existing events with the same titles (idempotent), then inserts
-    each event on its next weekday occurrence at the device's local time on
-    calendar _id=16 (the Google-synced primary). Used by hard__clock-calendar__023
-    (Weekly Sync Mon 07:00 + Gym Tue 06:30 -> clash shift to 07:30) and
-    hard__google-meet-files__070 (Weekly Sync Mon 10:00 agenda meeting).
+    Shifts an existing copy in place when one already holds that title and time
+    slot, and only inserts when there is nothing to shift. Used by
+    hard__clock-calendar__023 (Weekly Sync Mon 07:00 + Gym Tue 06:30 -> clash
+    shift to 07:30) and hard__google-meet-files__070 (Weekly Sync Mon 10:00
+    agenda meeting).
+
+    In-place shifting matters because a Meet conference link lives in Google
+    sync-adapter columns that the non-rooted `content` CLI cannot write (bind
+    values reject ':', and a Meet URL always contains '://'). The old
+    delete-then-insert therefore silently dropped any conferencing link on every
+    reset, which is why hard__google-meet-files__070 could never see its meeting
+    in Meet. Shifting dates preserves it.
     """
     if not events:
         return
@@ -488,11 +516,17 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
     weekday_index = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
                      "friday": 4, "saturday": 5, "sunday": 6}
     titles = [e["title"] for e in events]
-    remove_calendar_events(serial, titles, apply)
+    existing = _live_calendar_events(serial, titles)
     if not apply:
         print(f"  [dry] ensure date-relative calendar seeds: {titles}")
+        print(f"  [dry] would date-shift {len(existing)} live seed event(s) in place")
         return
+
+    def hhmm(ms: int) -> str:
+        return datetime.datetime.fromtimestamp(ms / 1000, tz=tz).strftime("%H:%M")
+
     today = datetime.date.today()
+    used: set[str] = set()
     for ev in events:
         target = weekday_index[ev["weekday"]]
         days_ahead = (target - today.weekday()) % 7
@@ -500,19 +534,41 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
             days_ahead = 7  # next week's occurrence, never today
         d = today + datetime.timedelta(days=days_ahead)
 
-        def epoch(hhmm: str) -> int:
-            h, m = map(int, hhmm.split(":"))
+        def epoch(hhmm_str: str) -> int:
+            h, m = map(int, hhmm_str.split(":"))
             return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=tz).timestamp() * 1000)
 
         dtstart, dtend = epoch(ev["start"]), epoch(ev["end"])
-        cmd = (
-            f"content insert --uri {CAL_URI} --bind title:s:{quote(ev['title'])} "
-            f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
-            f"--bind calendar_id:i:16 --bind allDay:i:0 "
-            f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0"
-        )
-        sh(serial, cmd, check=True)
-        print(f"  [ok]  seeded calendar event '{ev['title']}' {d} {ev['start']}-{ev['end']} ({tz_name})")
+        # Match on time-of-day so the two "Weekly Sync" seeds (07:00 / 10:00) stay
+        # distinct, and so a stale copy from an older week still matches.
+        match = next((eid for eid, etitle, eds in existing
+                      if eid not in used and etitle == ev["title"]
+                      and eds is not None and hhmm(eds) == ev["start"]), None)
+        if match:
+            sh(serial, f"content update --uri {CAL_URI} "
+                       f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
+                       f"--where \"_id={match}\"", check=True)
+            used.add(match)
+            print(f"  [ok]  shifted calendar event '{ev['title']}' to {d} "
+                  f"{ev['start']}-{ev['end']} in place (_id={match}, conferencing kept)")
+        else:
+            cmd = (
+                f"content insert --uri {CAL_URI} --bind title:s:{quote(ev['title'])} "
+                f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
+                f"--bind calendar_id:i:16 --bind allDay:i:0 "
+                f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0"
+            )
+            sh(serial, cmd, check=True)
+            print(f"  [ok]  seeded calendar event '{ev['title']}' {d} "
+                  f"{ev['start']}-{ev['end']} ({tz_name})")
+
+    # Live copies we did not shift are stale duplicates or run artifacts. Delete
+    # one id at a time: the provider clears a single row per `content delete`.
+    leftovers = [eid for eid, _t, _s in existing if eid not in used]
+    for eid in leftovers:
+        sh(serial, f"content delete --uri {CAL_URI} --where \"_id={eid}\"", check=True)
+    if leftovers:
+        print(f"  [ok]  soft-deleted {len(leftovers)} stale seed cop(y/ies): {leftovers}")
 
     # Two identical titles (e.g. "Weekly Sync" 07:00 + 10:00) are legitimate, so
     # compare against the expected count per title rather than asserting 1.
