@@ -72,5 +72,8 @@ redo.md
 # X / tweet series drafts for AndroidLife (local only, not for GitHub)
 androidlife-tweets/
 
+# Long-form blog drafts for AndroidLife (local only; published into the SmolHub site repo)
+blogs/
+
 # Local run/plan caches (e.g. scripts/hf/upload_530_ui_states.py)
 .cache/

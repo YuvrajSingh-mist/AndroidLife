@@ -17,6 +17,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "deepeval>=4.1",
     "sqlean-py>=3.45.1",
+    "markdown>=3.5",
 ]
 
 [project.urls]
