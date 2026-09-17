@@ -145,6 +145,83 @@ def test_reset_app_state_force_stops_foreground_app_and_returns_home() -> None:
 
 
 
+def test_is_tcp_serial_detects_host_port_only() -> None:
+    """Only `host:port` serials are treated as reconnectable TCP transports; USB serials are not."""
+    assert adb.is_tcp_serial("100.108.15.119:5555") is True
+    assert adb.is_tcp_serial("localhost:5555") is True
+    assert adb.is_tcp_serial("RS7XKZDI1234") is False
+    assert adb.is_tcp_serial("emulator-5554") is False
+
+
+def test_probe_device_true_only_when_adb_reports_device_state(monkeypatch) -> None:
+    """`device offline` (rc=1) is not healthy; only an explicit `device` state is."""
+    monkeypatch.setattr(adb.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a[0], 0, "device\n", ""))
+    assert adb.probe_device("device-1") is True
+
+    monkeypatch.setattr(adb.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a[0], 1, "", "error: device offline"))
+    assert adb.probe_device("device-1") is False
+
+
+def test_probe_device_false_when_adb_hangs(monkeypatch) -> None:
+    """A frozen transport must fail the probe, not block the caller's retry budget."""
+
+    def _hang(*_args: object, **_kwargs: object) -> object:
+        raise subprocess.TimeoutExpired("adb", 5)
+
+    monkeypatch.setattr(adb.subprocess, "run", _hang)
+    assert adb.probe_device("device-1") is False
+
+
+def test_adb_connect_rearms_tcp_serials_only(monkeypatch) -> None:
+    """adb_connect issues `adb connect host:port` for TCP serials and is a no-op for USB ones."""
+    calls: list[list[str]] = []
+
+    def _run(cmd: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0, f"connected to {cmd[-1]}", "")
+
+    monkeypatch.setattr(adb.subprocess, "run", _run)
+
+    assert adb.adb_connect("RS7XKZDI1234") is False
+    assert calls == []
+
+    assert adb.adb_connect("100.108.15.119:5555") is True
+    assert calls == [["adb", "connect", "100.108.15.119:5555"]]
+
+
+def test_wait_for_device_recovers_after_reconnect(monkeypatch) -> None:
+    """A drop that comes back after a single `adb connect` is reported healthy (the Tailscale flap)."""
+    probes = {"n": 0}
+
+    def _probe(_serial: str, **_kwargs: object) -> bool:
+        probes["n"] += 1
+        return probes["n"] > 1  # dead on the first probe, alive after the reconnect
+
+    connects: list[str] = []
+    monkeypatch.setattr(adb, "probe_device", _probe)
+    monkeypatch.setattr(adb, "adb_connect", lambda serial, **_k: bool(connects.append(serial)) or True)
+    monkeypatch.setattr(adb.time, "sleep", lambda _seconds: None)
+
+    assert adb.wait_for_device("100.108.15.119:5555", timeout=30.0) is True
+    assert connects == ["100.108.15.119:5555"]
+
+
+def test_wait_for_device_gives_up_once_the_budget_elapses(monkeypatch) -> None:
+    """A genuinely dead device returns False after the timeout instead of looping forever."""
+    clock = {"t": -100.0}
+
+    def _monotonic() -> float:
+        clock["t"] += 100.0
+        return clock["t"]
+
+    monkeypatch.setattr(adb, "probe_device", lambda *_a, **_k: False)
+    monkeypatch.setattr(adb, "adb_connect", lambda *_a, **_k: False)
+    monkeypatch.setattr(adb.time, "monotonic", _monotonic)
+    monkeypatch.setattr(adb.time, "sleep", lambda _seconds: None)
+
+    assert adb.wait_for_device("100.108.15.119:5555", timeout=5.0) is False
+
+
 @pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
 def test_capture_sample_against_real_attached_device() -> None:
     """capture_sample runs real `adb shell` calls against whatever device is attached and returns sane, parsed values.

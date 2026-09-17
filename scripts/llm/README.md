@@ -29,14 +29,45 @@ curl -sS http://127.0.0.1:8088/v1/models
 ```text
 -ngl 99  -fa on  -c 65536  -b 2048  -ub 512
 -ctk q8_0  -ctv q8_0  --jinja  -np 1
---host 127.0.0.1  --port 8088
+-n 2048  --host 127.0.0.1  --port 8088
 ```
 
 | Extra | When |
 |-------|------|
 | `-a <alias>` | Always — MobileRun `--model` must match |
+| `-n 2048` | Always — **generation cap**. See below. |
 | `--reasoning off` | Qwen3.5 preset (thinking off for tool use) |
 | `--mmproj …` | Auto for Gemma / MAI / Owl (vision) |
+
+### `-n` / `--n-predict` (generation cap) — do not remove
+
+`llama-server` defaults to `-n -1`, i.e. **unlimited tokens per response**. There is no
+cap on the harness side either (the proxy only *logs* `max_tokens`; the OpenAI client
+sends none). So a model that fails to emit EOS in a degenerate loop — Gemma 4 E2B does
+this after a failed action — keeps generating until the context window fills: ~20 min at
+~30 tok/s, well past the LLM client's 300s timeout, which surfaces as `APITimeoutError`.
+With `-np 1` (single slot) that also blocks every later request behind it, so retries
+pile up and time out too.
+
+`-n 2048` is the evidence-based value. Across **5,804 logged completions** (157 proxy logs):
+
+| | completion tokens |
+|---|---|
+| p50 | 88 |
+| p90 | 180 |
+| p99 | 428 |
+| p99.9 | 807 |
+| max ever | **2,016** |
+
+Only 20 completions exceeded 512 and only 2 exceeded 1024, so `-n 2048` has never
+truncated a legitimate GUI-agent response, while a runaway now ends in ~1.5 min instead
+of ~20. Override with `--n-predict N` or `LLAMA_N_PREDICT=N`; `-1`/`0` opts back out.
+
+> **`--context-shift` is NOT the culprit** (corrected 2026-09-17). On this build
+> (`version 1 (8c146a836)`) it already defaults to **disabled**, and `serve_gguf.sh`
+> never passed it. Context shift was never enabled — the runaway was purely `n_predict=-1`.
+> (Disabling it does mean a runaway self-limits at `-c` rather than looping forever, but
+> 32k tokens of generation is still ~20 min, so it is not a substitute for `-n`.)
 
 ### CLI / env overrides
 

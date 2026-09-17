@@ -13,7 +13,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from .adb import capture_sample
+from .adb import capture_sample, wait_for_device
 from .custom_tools import DEFAULT_ASK_USER_MODEL
 from .files import dated_out_dir, slugify, write_json
 from .task_dataset import app_slug, ask_user_facts_path, load_dataset, select_tasks
@@ -35,6 +35,14 @@ HARD_TASK_TIMEOUT_SECONDS = 2400
 # this early, so a real multi-step failure never gets mistaken for a transient one.
 TRANSIENT_FAILURE_MAX_STEPS = 3
 TRANSIENT_FAILURE_MARKERS = ("Request timed out", "Empty response content")
+
+# A preflight that couldn't reach the phone writes a DEVICE_UNREACHABLE marker (see
+# cli._capture_device_snapshot). Historically that aborted the whole batch on the first
+# hit, which turned one Tailscale tunnel flap into a discarded benchmark (35 occurrences
+# across 2026-09-17 alone). Instead we park the task for a retry at the end of the batch
+# and only give up once this many tasks in a row fail the same way - so a real dead device
+# still fail-fasts after a bounded number of wasted tasks, while a blip costs one.
+DEVICE_UNREACHABLE_ABORT_AFTER = 3
 
 # Fallback {task_id: fact} mapping for Hard/ASK USER tasks whose dataset row has no
 # `ask_user_fact` of its own (only the public dataset publishes it inline - see
@@ -85,6 +93,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
+    parser.add_argument("--device-reconnect-timeout", type=float, default=45.0, help="Forwarded to each task run: seconds the runner spends re-probing/reconnecting ADB after a `device offline` snapshot failure before giving up (0 = fail immediately).")
+    parser.add_argument("--device-unreachable-abort-after", type=int, default=DEVICE_UNREACHABLE_ABORT_AFTER, help="Abort the batch only after this many *consecutive* tasks fail preflight with DEVICE_UNREACHABLE. Those tasks are parked and rerun at the end of the batch, so a single ADB/Tailscale flap costs one task instead of the whole benchmark. 0 = never abort (run the queue to completion).")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
                         help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-530/multiturn_kb_530.json.")
@@ -214,6 +224,8 @@ def build_run_command(
     command.extend(["--save-trajectory", args.save_trajectory])
     if args.no_app_reset:
         command.append("--no-app-reset")
+    if getattr(args, "device_reconnect_timeout", None) is not None:
+        command.extend(["--device-reconnect-timeout", str(args.device_reconnect_timeout)])
     if ask_user_kb and task.get("task_id") in ask_user_kb:
         # Multi-turn KB mode (these are DETERMINISTIC tasks carrying a KB profile):
         # the simulated user is an honest oracle over the profile with rolling
@@ -279,6 +291,22 @@ def is_transient_failure(run_dir: Path | None) -> bool:
     return any(marker in reason for marker in TRANSIENT_FAILURE_MARKERS)
 
 
+def device_unreachable_marker(run_dir: Path | None) -> str | None:
+    """Return the DEVICE_UNREACHABLE marker text for a run, or None.
+
+    The runner writes this when preflight couldn't reach the phone even after its
+    ADB reconnect budget (see ``cli._capture_device_snapshot``). It means "the task
+    never got to run", so the batch parks it for a retry rather than counting it as
+    a failure - the task is not at fault.
+    """
+    if run_dir is None:
+        return None
+    marker_path = run_dir / "DEVICE_UNREACHABLE"
+    if not marker_path.exists():
+        return None
+    return marker_path.read_text(encoding="utf-8").strip()
+
+
 def write_initial_device_sample(serial: str, batch_dir: Path) -> None:
     """Write one battery+thermal snapshot into the batch run folder before any task runs."""
     batch_dir.mkdir(parents=True, exist_ok=True)
@@ -316,11 +344,13 @@ def main() -> int:
     ask_user_facts = load_json_object(ask_user_facts_path(args.source))
     ask_user_kb = load_json_object(args.ask_user_kb) if args.ask_user_kb else None
     unresolved_failures: list[str] = []
-    retry_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id)
+    retry_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id) - transient LLM blips
+    parked_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id) - device was offline; never ran
+    consecutive_device_failures = 0
     invocation = 0
 
     def run_once(command: list[str], label: str, task_id: str) -> None:
-        nonlocal invocation
+        nonlocal invocation, consecutive_device_failures
         invocation += 1
         print(" ".join(command))
         if args.dry_run:
@@ -332,13 +362,31 @@ def main() -> int:
                 marker = (run_dir / "PROXY_STARTUP_FAILED").read_text(encoding="utf-8").strip()
                 print(f"\nABORTING benchmark: LLM proxy failed to start for {task_id} ({label}) after all retries.\n{marker}", file=sys.stderr)
                 raise SystemExit(2)
-            if run_dir is not None and (run_dir / "DEVICE_UNREACHABLE").exists():
-                marker = (run_dir / "DEVICE_UNREACHABLE").read_text(encoding="utf-8").strip()
+            device_marker = device_unreachable_marker(run_dir)
+            if device_marker is not None:
+                # The task never ran, so don't count it against the model: park it for a
+                # retry at the end of the batch, exactly like the transient-LLM path.
+                consecutive_device_failures += 1
                 print(
-                    f"\nABORTING benchmark: device/ADB unreachable during preflight for {task_id} ({label}).\n{marker}",
+                    f"\nDevice/ADB unreachable during preflight for {task_id} ({label}) "
+                    f"[{consecutive_device_failures} consecutive] - parking it for a retry at the end of the batch.\n"
+                    f"{device_marker}",
                     file=sys.stderr,
                 )
-                raise SystemExit(4)
+                parked_queue.append((command, label, task_id))
+                if args.device_unreachable_abort_after and consecutive_device_failures >= args.device_unreachable_abort_after:
+                    print(
+                        f"\nABORTING benchmark: {consecutive_device_failures} consecutive DEVICE_UNREACHABLE preflights - "
+                        f"the phone/ADB transport looks genuinely down, not flapping.\n{device_marker}",
+                        file=sys.stderr,
+                    )
+                    raise SystemExit(4)
+                # Give the transport a chance to come back before the next task's preflight,
+                # so a real flap doesn't cost every remaining task in the queue.
+                if wait_for_device(args.serial, timeout=args.device_reconnect_timeout):
+                    print(f"Device {args.serial} is answering again; continuing.", file=sys.stderr)
+                    consecutive_device_failures = 0
+                return
             if run_dir is not None and (run_dir / "PHOENIX_NOT_READY").exists():
                 marker = (run_dir / "PHOENIX_NOT_READY").read_text(encoding="utf-8").strip()
                 print(
@@ -351,6 +399,9 @@ def main() -> int:
                 retry_queue.append((command, label, task_id))
             else:
                 unresolved_failures.append(task_id)
+        else:
+            # A clean task proves the transport is healthy again.
+            consecutive_device_failures = 0
         if args.cooldown_seconds > 0:
             time.sleep(args.cooldown_seconds)
 
@@ -383,6 +434,37 @@ def main() -> int:
         print(f"Error: --resume-from {args.resume_from} was not found among the selected tasks - nothing was run.", file=sys.stderr)
         return 2
 
+    def rerun_parked() -> None:
+        """Final pass for tasks whose preflight found the phone unreachable.
+
+        They're retried last because the transport may well have recovered by then -
+        the point of parking instead of aborting is that an outage costs one task, not
+        the benchmark. A task that is *still* unreachable stays unresolved but is
+        reported as infra, not as a model failure.
+        """
+        nonlocal invocation
+        if not parked_queue or args.dry_run:
+            return
+        if not wait_for_device(args.serial, timeout=args.device_reconnect_timeout):
+            print(f"Device {args.serial} still not answering - skipping the {len(parked_queue)} parked task(s).")
+            unresolved_failures.extend(task_id for _, _, task_id in parked_queue)
+            return
+        print(f"=== Rerunning {len(parked_queue)} task(s) parked by a device/ADB outage ===")
+        for command, label, task_id in list(parked_queue):
+            invocation += 1
+            print(" ".join(command))
+            result = subprocess.run(command, check=False)
+            if result.returncode == 0:
+                continue
+            run_dir = find_run_dir(label, args.run_root if args.run_root else "assets/runs")
+            if device_unreachable_marker(run_dir) is not None:
+                print(f"{task_id} ({label}) is still DEVICE_UNREACHABLE after its retry - infra failure, not counted against the model.")
+            else:
+                print(f"{task_id} ({label}) ran on retry but failed - counting as a real failure.")
+                unresolved_failures.append(task_id)
+            if args.cooldown_seconds > 0:
+                time.sleep(args.cooldown_seconds)
+
     if retry_queue and not args.dry_run:
         print(f"=== Rerunning {len(retry_queue)} task(s) flagged as transient failures ===")
         for command, label, task_id in retry_queue:
@@ -392,5 +474,7 @@ def main() -> int:
             if result.returncode != 0:
                 print(f"{task_id} ({label}) failed again on retry - counting as a real failure this time.")
                 unresolved_failures.append(task_id)
+
+    rerun_parked()
 
     return 1 if unresolved_failures else 0

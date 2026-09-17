@@ -10,6 +10,7 @@ real proxy subprocess, file writes) stays real.
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import threading
 import time
@@ -56,6 +57,63 @@ def test_check_phoenix_ready_true_when_server_up() -> None:
         server.shutdown()
         thread.join(timeout=5)
 
+
+
+def test_capture_device_snapshot_returns_sample_when_device_is_healthy(monkeypatch) -> None:
+    """The happy path costs no reconnect wait at all."""
+    monkeypatch.setattr(cli, "capture_sample", lambda serial: {"battery": {"level_pct": 61}, "thermal": {}})
+    monkeypatch.setattr(cli, "wait_for_device", lambda *_a, **_k: pytest.fail("must not reconnect a healthy device"))
+
+    sample, error = cli._capture_device_snapshot("device-1", reconnect_timeout=45.0)
+
+    assert error is None
+    assert sample == {"battery": {"level_pct": 61}, "thermal": {}}
+
+
+def test_capture_device_snapshot_retries_snapshot_after_reconnect(monkeypatch) -> None:
+    """A `device offline` blip that the transport recovers from yields a real snapshot, not an error."""
+    attempts = {"n": 0}
+
+    def _capture(_serial: str) -> dict:
+        attempts["n"] += 1
+        if attempts["n"] == 1:
+            raise subprocess.CalledProcessError(1, ["adb", "-s", "device-1", "shell", "dumpsys battery"])
+        return {"battery": {"level_pct": 60}, "thermal": {}}
+
+    monkeypatch.setattr(cli, "capture_sample", _capture)
+    monkeypatch.setattr(cli, "wait_for_device", lambda *_a, **_k: True)
+
+    sample, error = cli._capture_device_snapshot("device-1", reconnect_timeout=45.0)
+
+    assert error is None
+    assert sample["battery"]["level_pct"] == 60
+    assert attempts["n"] == 2
+
+
+def test_capture_device_snapshot_reports_error_when_device_stays_offline(monkeypatch) -> None:
+    """When the transport never comes back, the helper reports an error instead of raising."""
+
+    def _capture(_serial: str) -> dict:
+        raise subprocess.CalledProcessError(1, ["adb"], stderr="error: device offline")
+
+    monkeypatch.setattr(cli, "capture_sample", _capture)
+    monkeypatch.setattr(cli, "wait_for_device", lambda *_a, **_k: False)
+
+    sample, error = cli._capture_device_snapshot("device-1", reconnect_timeout=45.0)
+
+    assert sample is None
+    assert error is not None and "still offline after" in error
+
+
+def test_capture_device_snapshot_skips_reconnect_when_timeout_is_zero(monkeypatch) -> None:
+    """--device-reconnect-timeout 0 fails fast (useful when adb itself is known-broken)."""
+    monkeypatch.setattr(cli, "capture_sample", lambda _serial: (_ for _ in ()).throw(subprocess.CalledProcessError(1, ["adb"])))
+    monkeypatch.setattr(cli, "wait_for_device", lambda *_a, **_k: pytest.fail("timeout 0 must not wait"))
+
+    sample, error = cli._capture_device_snapshot("device-1", reconnect_timeout=0.0)
+
+    assert sample is None
+    assert error is not None
 
 
 def _newest_run_dir(label: str) -> Path:

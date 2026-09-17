@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 from llama_index.llms.openai_like import OpenAILike
 from mobilerun import AgentConfig, DeviceConfig, FastAgentConfig, LoggingConfig, MobileAgent, MobileConfig, TracingConfig
 
-from .adb import capture_app_battery, capture_sample, read_jsonl, reset_app_state, utc_now
+from .adb import capture_app_battery, capture_sample, read_jsonl, reset_app_state, utc_now, wait_for_device
 from .custom_tools import CUSTOM_TOOLS, DEFAULT_ASK_USER_MODEL, build_ask_user_tool
 from .files import default_batch_run_dir, run_dir_for_label, write_json, write_text
 from .processes import ProxyStartupError, start_llm_proxy, stop_process, wait_for_proxy_ready
@@ -29,6 +29,35 @@ from .summary import TaskOutcome, summarize, summarize_app_battery
 load_dotenv()  # picks up .env from the repo root (or any parent dir) - see README's Setup section
 
 FAST_AGENT_SYSTEM_PROMPT = (Path(__file__).parent / "prompts" / "fast_agent_system.jinja2").read_text(encoding="utf-8")
+
+
+def _capture_device_snapshot(serial: str, reconnect_timeout: float) -> tuple[dict | None, str | None]:
+    """Capture one battery/thermal snapshot, waiting out a dropped ADB transport.
+
+    Returns ``(snapshot, error)``: exactly one of the two is None. The device rides a
+    Tailscale/WiFi ADB transport (~108ms RTT) that periodically freezes, at which point
+    every call fails with `device offline` until something re-issues `adb connect`.
+    So a failed capture first gets ``reconnect_timeout`` seconds of probe/connect
+    retries (``adb.wait_for_device``) before it is reported as a real failure.
+
+    Never raises: callers decide how fatal a missing snapshot is (preflight aborts the
+    task, postflight must not — a device blip must never discard an already-finished run).
+    """
+    try:
+        return capture_sample(serial), None
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as first:
+        if reconnect_timeout <= 0:
+            return None, f"{first}"
+        logging.getLogger("mobilerun").warning(
+            "device snapshot failed (%s) - reconnecting ADB for up to %.0fs", first, reconnect_timeout
+        )
+        if wait_for_device(serial, timeout=reconnect_timeout):
+            logging.getLogger("mobilerun").info("ADB reconnected after a dropped transport; retrying snapshot")
+            try:
+                return capture_sample(serial), None
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as retry_exc:
+                return None, f"{first}; after reconnect: {retry_exc}"
+        return None, f"{first}; still offline after {reconnect_timeout:.0f}s of reconnect attempts"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -63,6 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
     parser.add_argument("--ask-user-kb", default="", help="Path to a JSON knowledge-base profile for the simulated user (multi-turn mode): the user answers whatever the agent asks, from the profile, with rolling memory across turns. When set, takes precedence over --ask-user-context.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="OpenAI model used to play the simulated user for the ask_user tool.")
+    parser.add_argument("--device-reconnect-timeout", type=float, default=45.0, help="Seconds to spend re-probing/reconnecting ADB (adb connect + get-state, see adb.wait_for_device) when a battery/thermal snapshot fails with the device offline. 45s covers a Tailscale tunnel flap at ~108ms RTT; 0 disables the wait and fails immediately.")
     parser.add_argument("--run-root", default=None, help="Optional shared run directory created by the batch; the task's run folder is created inside it (instead of assets/runs/full-bench/<timestamp>/<label>).")
     return parser
 
@@ -362,18 +392,14 @@ def main() -> int:
         "temperature": args.temperature, "top_p": args.top_p, "seed": args.seed,
     }
     write_json(run_dir / "meta.json", meta)
-    try:
-        preflight = capture_sample(args.serial)
-        preflight["app_battery_mah"] = capture_app_battery(args.serial)
-    except subprocess.CalledProcessError as exc:
-        # Device/ADB gone — leave a marker so task_batch fail-fasts instead of
-        # burning the rest of the queue with the same preflight crash.
-        write_text(
-            run_dir / "DEVICE_UNREACHABLE",
-            f"preflight ADB failed: {exc.cmd!r} rc={exc.returncode}\n{(exc.stderr or '')[:500]}",
-        )
-        logging.error("ABORTING run: device unreachable during preflight (%s)", exc.cmd)
+    preflight, preflight_error = _capture_device_snapshot(args.serial, args.device_reconnect_timeout)
+    if preflight is None:
+        # Device/ADB gone even after the reconnect budget — leave a marker so the batch
+        # can park/retry this task instead of burning the rest of the queue.
+        write_text(run_dir / "DEVICE_UNREACHABLE", f"preflight ADB failed: {preflight_error}")
+        logging.error("ABORTING run: device unreachable during preflight (%s)", preflight_error)
         return 4
+    preflight["app_battery_mah"] = capture_app_battery(args.serial)
     write_json(run_dir / "preflight.json", preflight)
     llm_entries: list[dict] = []
     llm_proxy = None
@@ -407,9 +433,21 @@ def main() -> int:
         meta["llm_proxy_exit_code"] = stop_process(llm_proxy)
         llm_entries = read_jsonl(meta["llm_log_jsonl"], 0)
         write_json(run_dir / "llm_metrics.json", llm_entries)
-    postflight = capture_sample(args.serial)
-    postflight["app_battery_mah"] = capture_app_battery(args.serial)
-    write_json(run_dir / "postflight.json", postflight)
+    postflight, postflight_error = _capture_device_snapshot(args.serial, args.device_reconnect_timeout)
+    if postflight is not None:
+        try:
+            postflight["app_battery_mah"] = capture_app_battery(args.serial)
+        except Exception as exc:  # noqa: BLE001 - per-app battery is a nice-to-have; never lose the run over it
+            postflight["app_battery_mah"] = {}
+            logging.error("postflight app-battery capture failed (run preserved): %s", exc)
+        write_json(run_dir / "postflight.json", postflight)
+    else:
+        # A device blip here must never discard a finished run: the agent already did its
+        # work and produced output.json, so we record the miss and keep going. Before
+        # 2026-09-17 this call was unguarded, so an unplugged phone crashed the runner
+        # *after* the task completed and the run folder was left with no summary at all.
+        write_text(run_dir / "POSTFLIGHT_FAILED", f"postflight ADB failed: {postflight_error}")
+        logging.error("postflight snapshot failed (run preserved): %s", postflight_error)
     app_reset_stopped_package = None
     if not args.no_app_reset:
         try:
@@ -419,13 +457,14 @@ def main() -> int:
     meta.update({
         "ended_at_utc": utc_now(), "elapsed_seconds": elapsed, "command_exit_code": return_code,
         "sampler_errors": sampler.errors, "app_reset_stopped_package": app_reset_stopped_package,
+        "postflight_error": postflight_error,
     })
     write_json(run_dir / "meta.json", meta)
     write_text(run_dir / "output.txt", outcome.reason)
     write_json(run_dir / "output.json", outcome.model_dump())
     summary = summarize(sampler.samples, meta, llm_entries)
     summary["ask_user_call_count"] = len(read_jsonl(run_dir / "ask_user_metrics.jsonl", 0))
-    summary["app_battery"] = summarize_app_battery(preflight, postflight)
+    summary["app_battery"] = summarize_app_battery(preflight, postflight or {})
     write_json(run_dir / "run_metrics.json", summary)
     # Future-proofing: stamp this run's model onto its Phoenix trace (best-effort).
     # `--phoenix-db` wins; otherwise auto-derive from `--phoenix-project` (androidlife-dayN).
