@@ -3,15 +3,17 @@
 to every Hugging Face repo README under the account.
 
 Two variants:
-  * AndroidLife repos  -> full project blurb + leaderboard/code/dataset links
+  * AndroidLife repos  -> short project blurb + leaderboard / collection / code links
   * everything else    -> short "support the work" footer
 
 Idempotent: a repo whose README already carries the `ad-footer` marker is
-skipped, so re-running never stacks footers.
+skipped, so re-running never stacks footers. Pass --force to *replace* an
+existing footer (e.g. after the wording was tightened) instead of skipping it.
 
 Usage (from the repo root):
-    python3 scripts/hf/add_support_footer.py            # dry run: plan only
-    python3 scripts/hf/add_support_footer.py --push     # write the READMEs
+    python3 scripts/hf/add_support_footer.py                # dry run: plan only
+    python3 scripts/hf/add_support_footer.py --push         # write new footers
+    python3 scripts/hf/add_support_footer.py --push --force # rewrite existing ones
     python3 scripts/hf/add_support_footer.py --push --only androidlife-530
 """
 from __future__ import annotations
@@ -27,13 +29,15 @@ AUTHOR = "YuvrajSingh9886"
 MARKER = "<!-- ad-footer -->"
 SITE = "https://androidlife-website.vercel.app/"
 CODE = "https://github.com/YuvrajSingh-mist/AndroidLife"
+COLLECTION = ("https://huggingface.co/collections/YuvrajSingh9886/"
+              "androidlife-can-llm-agents-survive-a-day-in-your-life")
 KOFI = "https://ko-fi.com/O7W120DR8R"
 SPONSORS = "https://github.com/sponsors/YuvrajSingh-mist"
 KOFI_BADGE = "https://storage.ko-fi.com/cdn/kofi2.png?v=3"
 SPONSOR_BADGE = ("https://img.shields.io/badge/Sponsor-GitHub-ea4aaa"
                  "?logo=githubsponsors&logoColor=white")
 
-# Repos that are part of AndroidLife and get the full blurb.
+# Repos that are part of AndroidLife and get the project blurb.
 ANDROIDLIFE = {
     "dataset:androidlife-530",
     "dataset:androidlife-public",
@@ -47,34 +51,17 @@ SUPPORT_LINKS = (
     f"[![GitHub Sponsors]({SPONSOR_BADGE})]({SPONSORS})"
 )
 
+# Kept deliberately short: link out for detail, don't paste an essay.
 FOOTER_ANDROIDLIFE = f"""
 {MARKER}
 ---
 
-## About AndroidLife
+**AndroidLife** — a real-phone Android agent benchmark. 530 tasks, graded on the
+on-device end state: not a simulator, not a mock API.
 
-**AndroidLife** is a real-phone Android agent benchmark. **530 tasks** (Easy 1pt /
-Medium 3pt / Hard 5pt) run against an actual handset over ADB + MobileRun and are
-graded on a verifiable **on-device end state** — not a simulator, not a mock API.
-Tasks span Gmail, Calendar, Meet, Maps, Drive, Files, Contacts, Photos, YouTube,
-Telegram, Swiggy, Amazon and more, and the corpus deliberately separates:
+[Leaderboard + step-by-step replays]({SITE}) · [All models & datasets]({COLLECTION}) · [Code]({CODE})
 
-- **deterministic** tasks, where everything needed is seeded on the device;
-- **ASK USER** tasks, where one load-bearing fact is withheld and the agent must ask a simulated user;
-- **hallucination controls**, where the honest answer is "this does not exist", so a confident false success is caught.
-
-Every run is manual-audited against the device end state, and reports disclose cost,
-tokens, per-app battery drain and CPU/GPU/NPU thermals for each row.
-
-- 🌐 **Leaderboard + live step-by-step trajectories:** <{SITE}>
-- 💻 **Code:** <{CODE}>
-- 📚 **All datasets & models:** <https://huggingface.co/{AUTHOR}>
-
-## Fuel the bench
-
-A full 60-task suite is ~6.5 h of wall-clock on a phone that runs hot enough to
-throttle, plus real API spend. If these numbers helped you pick a model or a board,
-fuel the next run:
+*Fuel the next run — a full 60-task suite is ~6.5 h of phone time plus real API spend:*
 
 {SUPPORT_LINKS}
 """
@@ -83,13 +70,11 @@ FOOTER_GENERIC = f"""
 {MARKER}
 ---
 
-## Support the work
-
-Released freely — if it saved you some time, you can support more experiments like it:
+*Released freely — support more experiments like it:*
 
 {SUPPORT_LINKS}
 
-More of my work: <https://huggingface.co/{AUTHOR}>
+More: <https://huggingface.co/{AUTHOR}>
 """
 
 
@@ -110,6 +95,11 @@ def fetch_readme(api: HfApi, repo_id: str, repo_type: str) -> str | None:
     return Path(p).read_text(encoding="utf-8")
 
 
+def strip_footer(body: str) -> str:
+    """Drop everything from the marker on, so a new footer can replace it."""
+    return body[:body.index(MARKER)].rstrip() + "\n"
+
+
 def title_for(name: str, is_al: bool) -> str:
     if is_al:
         return f"# {name}\n\nPart of the AndroidLife real-phone Android agent benchmark.\n"
@@ -119,6 +109,8 @@ def title_for(name: str, is_al: bool) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--push", action="store_true", help="Write the READMEs (default: dry run).")
+    ap.add_argument("--force", action="store_true",
+                    help="Replace an existing footer instead of skipping the repo.")
     ap.add_argument("--only", nargs="*", help="Limit to these repo names.")
     args = ap.parse_args()
 
@@ -133,7 +125,7 @@ def main() -> int:
         want = set(args.only)
         targets = [t for t in targets if t[2] in want]
 
-    print(f"repos: {len(targets)}  (push={args.push})\n")
+    print(f"repos: {len(targets)}  (push={args.push}, force={args.force})\n")
     todo, skipped, fresh = [], [], []
     for repo_type, repo_id, name in sorted(targets, key=lambda t: t[1]):
         is_al = f"{repo_type}:{name}" in ANDROIDLIFE
@@ -142,8 +134,10 @@ def main() -> int:
             fresh.append((repo_type, repo_id, is_al))
             continue
         if MARKER in body:
-            skipped.append(name)
-            continue
+            if not args.force:
+                skipped.append(name)
+                continue
+            body = strip_footer(body)
         todo.append((repo_type, repo_id, body.rstrip() + "\n", is_al))
 
     print(f"to update : {len(todo)}")
@@ -164,7 +158,7 @@ def main() -> int:
             repo_id=repo_id, repo_type=repo_type,
             operations=[CommitOperationAdd(path_in_repo="README.md",
                                            path_or_fileobj=new.encode("utf-8"))],
-            commit_message="docs: add support footer (project info + Ko-fi + sponsors)",
+            commit_message="docs: tighten the support footer (project info + Ko-fi + sponsors)",
         )
         print(f"   updated  {repo_id}")
 
