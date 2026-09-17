@@ -35,14 +35,9 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def run_checked(cmd: list[str], *, text: bool = True, timeout: float | None = None) -> subprocess.CompletedProcess[str]:
-    """Run a subprocess and raise if it fails (or if it exceeds ``timeout`` seconds).
-
-    A bounded ``timeout`` matters for ADB against a frozen transport: a bare
-    ``subprocess.run`` on a dead TCP device can block far longer than the caller
-    expects, which would stall the caller's own retry/abort budget.
-    """
-    return subprocess.run(cmd, check=True, text=text, capture_output=True, timeout=timeout)
+def run_checked(cmd: list[str], *, text: bool = True) -> subprocess.CompletedProcess[str]:
+    """Run a subprocess and raise if it fails."""
+    return subprocess.run(cmd, check=True, text=text, capture_output=True)
 
 
 def adb_cmd(serial: str, *parts: str) -> list[str]:
