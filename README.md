@@ -80,6 +80,19 @@ make app-audit          # phone has the expected apps
 make smoke-test         # LLM + ADB + one real task (optional)
 ```
 
+`make test-fast` never touches the handset. Tests that *drive* it — launching or
+force-stopping apps, or anything that reaches `reset_app_state` — are skipped
+unless you opt in:
+
+```bash
+ANDROIDLIFE_DEVICE_TESTS=1 make test-fast   # only when no benchmark batch is running
+```
+
+That default exists because the phone is exclusive to the run: a stray
+`am force-stop` / `input keyevent HOME` steals the foreground from the task in
+flight, corrupting the benchmark and looking like a flaky test rather than the
+interference it is.
+
 ### Connect the phone
 
 ```bash

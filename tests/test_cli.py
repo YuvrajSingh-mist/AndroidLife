@@ -19,7 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import pytest
-from conftest import first_adb_device
+from conftest import first_adb_device, requires_device_drive
 
 from androidlife import cli, processes
 
@@ -186,7 +186,7 @@ def _build_fake_agent_class(created_configs: list) -> type:
     return _FakeMobileAgent
 
 
-@pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
+@requires_device_drive
 def test_cli_main_writes_run_artifacts(monkeypatch, tmp_path: Path) -> None:
     """A real CLI run: real device sampling, a real proxy subprocess, and a stand-in MobileAgent."""
     upstream = ThreadingHTTPServer(("127.0.0.1", 0), _StubUpstreamHandler)
@@ -245,7 +245,7 @@ def test_cli_main_writes_run_artifacts(monkeypatch, tmp_path: Path) -> None:
     assert created_configs[0].logging.trajectory_path == str(run_dir.resolve() / "trajectories")
 
 
-@pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
+@requires_device_drive
 def test_cli_main_records_failure_when_agent_raises(monkeypatch, tmp_path: Path) -> None:
     """When MobileAgent.run() raises, main() still writes a complete run folder with success=False."""
 
