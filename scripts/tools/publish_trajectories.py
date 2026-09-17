@@ -40,19 +40,43 @@ def _rewrite_entry(entry: dict, base: str) -> None:
 
 
 def rewrite_index(index: dict, base: str) -> dict:
-    """Rewrite every gif/data path to an absolute HF resolve URL.
+    """Point remote media at HF, keeping the *public* step JSON local.
 
-    Local paths are site-root-relative (e.g. assets/trajectories/...) but the
-    HF repo stores media under trajectories/... and data under
-    data/trajectories/... (the assets/ prefix is dropped on upload), so the
-    prefix is stripped here. Multi-run public entries carry a nested `runs`
-    array that is rewritten too.
+    Only the 530 set (`tasks`) is fully remote: its condensed step JSON lives in
+    this HF dataset because the corpus is far too big to ship inside the website
+    repo.
+
+    The public set (`public`) is the opposite by design - its step JSON is a few
+    hundred small files that the website bundles under
+    `assets/data/trajectories/public/`, and only the heavy media (trajectory.gif +
+    per-step screenshots) streams from HF. Rewriting the public `data` fields to
+    absolute URLs here silently moved that JSON off-repo, which also made
+    `scripts/tools/audit_trajectories.py` (it resolves `WEBSITE / data`) report
+    every task as `data_missing`. So the public section only gets its media
+    rewritten; `data` stays site-root-relative.
+
+    Local media paths are site-root-relative (e.g. assets/trajectories/...) while
+    the HF repo stores media under trajectories/... (the `assets/` prefix is
+    dropped on upload), hence the strip. Multi-run public entries carry a nested
+    `runs` array that is rewritten too.
     """
     out = copy.deepcopy(index)
-    for section in ("tasks", "public"):
-        for entry in out.get(section, {}).values():
-            _rewrite_entry(entry, base)
+    for entry in out.get("tasks", {}).values():
+        _rewrite_entry(entry, base)
+    for entry in out.get("public", {}).values():
+        _rewrite_media_only(entry, base)
     return out
+
+
+def _rewrite_media_only(entry: dict, base: str) -> None:
+    """Rewrite gif + screenshot_base (+ nested runs[]) but leave `data` local."""
+    for run in [entry] + (entry.get("runs") or []):
+        gif = run.get("gif")
+        if gif and gif.startswith("assets/"):
+            run["gif"] = f"{base}/{gif[len('assets/'):]}"
+        sb = run.get("screenshot_base")
+        if sb and sb.startswith("assets/"):
+            run["screenshot_base"] = f"{base}/{sb[len('assets/'):]}"
 
 
 def rewrite_screenshot_base(data: dict, base: str) -> dict:
@@ -84,7 +108,9 @@ def main() -> int:
     # 1) Rewrite the index manifest (kept in git: it's small metadata).
     index = json.loads(INDEX.read_text())
     rewritten = rewrite_index(index, base)
-    INDEX.write_text(json.dumps(rewritten, indent=1) + "\n")
+    # indent must match build_public_traj_from_hf.py (indent=2), else every
+    # publish rewrites the whole file and the git diff is pure whitespace churn.
+    INDEX.write_text(json.dumps(rewritten, indent=2) + "\n")
     n = sum(len(rewritten.get(s, {})) for s in ("tasks", "public"))
     print(f"index rewritten: {n} entries -> absolute HF URLs")
 
@@ -99,7 +125,7 @@ def main() -> int:
         dst = staged_data / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
         data = json.loads(p.read_text())
-        dst.write_text(json.dumps(rewrite_screenshot_base(data, base), indent=1) + "\n")
+        dst.write_text(json.dumps(rewrite_screenshot_base(data, base), indent=2) + "\n")
         n_data += 1
     print(f"staged {n_data} per-task data JSONs (screenshot_base -> HF)")
 
