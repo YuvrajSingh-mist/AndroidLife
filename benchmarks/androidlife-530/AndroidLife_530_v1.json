@@ -7796,7 +7796,7 @@
       "is_ask_user": false,
       "task_number_within_app": 70,
       "task_number_within_dataset_app": 1,
-      "prompt_text": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
+      "prompt_text": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
       "prompt_template": "Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday {{ weekly meeting }} at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '{{ agenda file }}', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text.",
       "placeholders": [
         "weekly meeting",

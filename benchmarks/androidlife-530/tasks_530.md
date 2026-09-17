@@ -814,7 +814,7 @@ Resync from the JSON with `scripts/export_530_markdown.py`.
 - Easy (1pt): I'm looking for something fun happening nearby. Can you search for a nearby holiday or public event on Google Search? <!--easy__google-search__007-->
 
 **1. [Google Meet+Files] — DETERMINISTIC**
-- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
+- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Chrome]**
 - Easy (1pt): I keep running into a word I don't know. Can you look up a word's definition in Chrome? <!--easy__chrome__008-->

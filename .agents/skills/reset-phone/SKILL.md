@@ -58,7 +58,7 @@ The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
 - Unblocks numbers the agent blocked (keeps pre-existing blocks).
 - Deletes agent-created calendar events (marker/title/creation-window matched) and restores the mangled `Akash Kumar` contact.
-- **(Re)creates date-relative calendar seeds** at EVERY reset: `Weekly Sync` (next Mon 07:00 + 10:00) + `Gym` (next Tue 06:30) on `cal_id=16` — powers `hard__clock-calendar__023` clash-shift + `hard__google-meet-files__070` agenda meeting. Idempotent (drops same-title first).
+- **(Re)creates date-relative calendar seeds** at EVERY reset on `cal_id=16`: `Weekly Sync` (next Mon 07:00) + `Weekly Sync` (today+1 and today+2, 10:00) + `Gym` (next Tue 06:30) — powers `hard__clock-calendar__023` clash-shift + `hard__google-meet-files__070` agenda meeting. Anchors are declared per entry as `weekday` or `offset_days`. The agenda meeting is **offset-anchored on purpose**: Google Meet's "Scheduled" list only surfaces meetings within ~48h, so a Monday-anchored meeting is 3-6 days out whenever a run starts midweek and Meet showed nothing. Idempotent (shifts a matching copy in place, drops same-title leftovers).
 - Removes run-created files from Downloads/DCIM + Obsidian `Pasted image *.jpg` artifacts.
 - **Restores mutated seed-note contents to their exact baseline** (`Food Favourites.md`, `Budget Deadline.md`, `Weekly Agenda.txt`, `Stock Watch.md`).
 - Prints the manual UI-only cleanups ADB can't reach (see Step 4).
@@ -67,6 +67,14 @@ The script (profile `public_v2`):
 > (soft-deleted) calendar rows when checking seed presence — otherwise the verify
 > false-FAILs `Weekly Sync` when a freshly re-seeded (non-synced, `_sync_id=NULL`)
 > copy coexists with an older soft-deleted one.
+>
+> **Meet conference link (one-time manual step).** Both 10:00 `Weekly Sync` seeds
+> need a Google Meet link or they never appear in Meet at all. It can only be
+> added by hand — `content insert --bind` splits bind values on ':' so a
+> `https://` URL is rejected. Calendar app → open the event → **Edit → Add video
+> conferencing → Google Meet → Save**. `reset_phone.py` then **shifts those events
+> in place** (never delete+insert) so the link survives every reset. If a seed is
+> ever torn down and re-inserted, re-add the link the same way.
 
 ## Step 1b — Soft-delete run-created CALENDAR events (synced calendar — reset script MISSES these)
 
@@ -320,6 +328,7 @@ others):
 | App | Where its seed data lives |
 |---|---|
 | Calendar (cal_id=16) | `yuvraj.mist@gmail.com` — Google Calendar only shows `_sync_id` events |
+| Google Meet | `yuvraj.mist@gmail.com` — must match the Calendar account, or its "Scheduled" list is empty. Only lists meetings with a **Meet conference link**, and only within ~**48h** (measured: today/+1/+2 visible, +3/+4 hidden) |
 | Gmail / Drive / Docs / Slides | `ranirajesh786@gmail.com` — Scapia flight email, `Q3_Report` + shared files, `Student Project Tracker` doc, `Q3 Review` deck |
 | Google Photos | `rajeshceo2015@gmail.com` (backup ON) — most-recent photo has location + "Backed up" |
 | Contacts / SMS / Notes / Obsidian / Telegram | device-local (no account) — ADB-seeded |
