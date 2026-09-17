@@ -173,16 +173,18 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☑ **Wireless ADB = Tailscale serial** `100.108.15.119:5555` (phone roams subnets; the LAN IP
   is unreliable). Reconnect: `adb kill-server` (if "No route to host" persists despite ping
   working), then `adb connect 100.108.15.119:5555`. Phone has `com.tailscale.ipn` on `tun0`.
-- ☑ **Keep the Tailscale transport alive (`make harden-device`)** — run
-  `scripts/run/harden_device_transport.sh 100.108.15.119:5555`. OxygenOS virtual-freezes
-  `com.tailscale.ipn` once the screen sleeps (nothing keeps it alive while the phone is
-  *unplugged* — `stay_on_while_plugged_in` doesn't apply), the WireGuard tunnel dies, and adb
-  starts saying `device offline`. That was the real cause of the 2026-09-17 Gemma run losing
-  `medium__google-drive__001`: 19/31/35 `device offline` hits on 09-15/09-16/09-17 respectively.
-  The harness now absorbs the rest: a failed snapshot first spends `--device-reconnect-timeout`
-  (45s) re-issuing `adb connect` + probing, postflight can no longer discard a finished run, and
-  a `DEVICE_UNREACHABLE` preflight parks the task for a retry instead of aborting the batch
-  (it aborts only after `--device-unreachable-abort-after`, default 3, *consecutive* hits).
+- ☐ **Know the transport's failure mode.** OxygenOS virtual-freezes `com.tailscale.ipn` once the
+  screen sleeps (nothing keeps it alive while the phone is *unplugged* —
+  `stay_on_while_plugged_in` doesn't apply), the WireGuard tunnel dies, and adb starts saying
+  `device offline`. The harness deliberately does **not** work around this: it re-probes for
+  `--device-reconnect-timeout` (45s) and then **aborts** on a `DEVICE_UNREACHABLE` preflight,
+  because the phone is the benchmark's subject and a run that cannot reach it has no valid
+  result. Do not whitelist apps from Doze or otherwise change device settings to mask this —
+  the benchmark must run on stock device state, or the runs stop being comparable.
+- ☐ **Keep the phone charged.** Battery drain across a full 60-task run measured **-93%**, so a
+  run started below ~15% will die mid-day and take the rest of the queue with it (see
+  2026-09-17: `easy__settings__014` started at 3%, hit 0% at 21:00, and ADB died 23s later).
+  Nothing in the harness will stop a task from launching on a nearly-dead phone.
 - ☐ **Launch detached with stdin from `/dev/null`** — `nohup uv run androidlife_tasks.py ... < /dev/null > log 2>&1 &`.
   Without `< /dev/null` the batch dies with `Fatal Python error: init_sys_streams ... Bad file
   descriptor` when the launching terminal closes (this killed the 2026-09-01 mimo run mid-day1).

@@ -395,7 +395,7 @@ def main() -> int:
     preflight, preflight_error = _capture_device_snapshot(args.serial, args.device_reconnect_timeout)
     if preflight is None:
         # Device/ADB gone even after the reconnect budget — leave a marker so the batch
-        # can park/retry this task instead of burning the rest of the queue.
+        # can abort with a clear cause instead of recording the task as a model failure.
         write_text(run_dir / "DEVICE_UNREACHABLE", f"preflight ADB failed: {preflight_error}")
         logging.error("ABORTING run: device unreachable during preflight (%s)", preflight_error)
         return 4
