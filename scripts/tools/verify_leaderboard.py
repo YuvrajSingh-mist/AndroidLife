@@ -472,7 +472,13 @@ def check_row(idx: int, row: dict, report: Report, official: dict | None, verbos
         )
         reached = round(inter["passed"] / inter["finished"] * 100, 1)
         rep_reached = first_pct(
-            report.m("success rate", exclude=("ask user", "gui-only", "comparable", "interaction"))
+            report.m(
+                "success rate",
+                # The canonical metrics table labels the ÷60 figure "Success Rate
+                # (60 runs)" and the audited one "Success Rate (N finalized)"; the
+                # "reached" check wants the latter, so drop the ÷60 row by name.
+                exclude=("ask user", "gui-only", "comparable", "interaction", "60 runs"),
+            )
         )
         out.append(
             FieldResult(
