@@ -6,7 +6,7 @@ import subprocess
 import time
 
 import pytest
-from conftest import first_adb_device
+from conftest import first_adb_device, requires_device, requires_device_drive
 
 from androidlife import adb
 from androidlife.adb import adb_cmd, adb_shell, capture_sample, get_foreground_package, parse_battery_output, parse_thermal_output, reset_app_state, should_force_stop
@@ -91,7 +91,7 @@ def test_adb_cmd_passes_through_wireless_ip_port_serial_verbatim() -> None:
     ]
 
 
-@pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
+@requires_device
 def test_adb_shell_raises_for_unreachable_serial() -> None:
     """A real `adb` invocation against a serial that doesn't exist fails loudly instead of hanging or returning junk."""
     with pytest.raises(subprocess.CalledProcessError):
@@ -126,7 +126,7 @@ def test_get_foreground_package_returns_none_when_unparseable(monkeypatch) -> No
     assert get_foreground_package("device-1") is None
 
 
-@pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
+@requires_device_drive
 def test_reset_app_state_force_stops_foreground_app_and_returns_home() -> None:
     """Against a real device: launch YouTube, confirm it's foreground, then reset_app_state force-stops it and lands on the launcher."""
     assert DEVICE_SERIAL is not None
@@ -222,7 +222,7 @@ def test_wait_for_device_gives_up_once_the_budget_elapses(monkeypatch) -> None:
     assert adb.wait_for_device("100.108.15.119:5555", timeout=5.0) is False
 
 
-@pytest.mark.skipif(DEVICE_SERIAL is None, reason="No ADB device attached (wired or wireless)")
+@requires_device
 def test_capture_sample_against_real_attached_device() -> None:
     """capture_sample runs real `adb shell` calls against whatever device is attached and returns sane, parsed values.
 

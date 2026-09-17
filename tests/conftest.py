@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -56,3 +59,29 @@ def first_wireless_adb_device() -> str | None:
         if ":" in serial:
             return serial
     return None
+
+
+def device_tests_enabled() -> bool:
+    """Whether tests that touch the real handset are allowed to run (opt-in).
+
+    Enabled by ANDROIDLIFE_DEVICE_TESTS=1. A bare `pytest` must never drive the
+    phone: a benchmark batch is usually mid-run against it, and launching or
+    force-stopping apps steals the foreground from the task in flight. That
+    corrupts the run *and* then presents as a mysteriously flaky test rather than
+    the interference it actually is.
+    """
+    return os.environ.get("ANDROIDLIFE_DEVICE_TESTS") == "1"
+
+
+# For tests that only read from the device: run whenever one is attached.
+requires_device = pytest.mark.skipif(
+    first_adb_device() is None,
+    reason="No ADB device attached (wired or wireless)",
+)
+
+# For tests that drive the phone (launch/force-stop apps, send key events).
+requires_device_drive = pytest.mark.skipif(
+    first_adb_device() is None or not device_tests_enabled(),
+    reason="Drives the handset: needs an attached device AND ANDROIDLIFE_DEVICE_TESTS=1 "
+           "(never run these while a benchmark batch is running)",
+)
