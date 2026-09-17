@@ -176,7 +176,7 @@ aren't grouped or predictable by position.**
 - Easy (1pt): I want to know what's big in [topic] right now. Can you open MSN News and read me the headline of the top story in the '[topic]' section? Reply with only the top story, no other text. <!--easy__msn-news__002-->
 
 **3. [Google Meet+Files] — DETERMINISTIC**
-- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the Monday [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
+- Got my next meeting coming up and the agenda needs prepping. Can you open Google Meet, find my next scheduled meeting — I think it's the [weekly meeting] at 10 AM — and note its title, time, and number of attendees? Then open Files, find the agenda document called '[agenda file]', and open it so it's ready. Reply with only the meeting title and the agenda file name, no other text. <!--hard__google-meet-files__070-->
 
 **[Messages]**
 - Easy (1pt): Words aren't enough for this reply. Can you send an appropriate string of emojis to [contact] in Messages? Don't be too snarky or cheeky! <!--easy__messages__010-->

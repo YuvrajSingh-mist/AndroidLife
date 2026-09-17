@@ -328,6 +328,37 @@ Harness behavior that affects results and is part of the reproducible spec:
 
 ## 8. Revision history (prompt-input / data changes affecting reproducibility)
 
+- **2026-09-17 — `hard__google-meet-files__070` made actually solvable (Meet link + 48h window + prompt).**
+  The task had failed in **all 11 public runs** (best case 1/11). Two independent causes, both fixed:
+  - **The seed had no Meet conference link.** Meet's "Scheduled" list only lists *conferenced*
+    meetings, so the seeded `Weekly Sync` was invisible no matter what the agent did. A link is
+    added by hand (Calendar app → the event → **Edit → Add video conferencing**): `content
+    insert --bind` splits bind values on `:`, so a `https://` URL can never be written through the
+    content CLI. `ensure_calendar_events()` now **shifts an existing seed in place** instead of
+    delete+insert, because the link lives in Google sync-adapter columns that `content update`
+    cannot touch either — delete+insert silently dropped it on every reset. Verified: the link
+    survives `reset_phone.py --apply`.
+  - **Meet only lists meetings within ~48h.** Measured by walking a conferenced seed through date
+    offsets: today/+1/+2 are listed, +3/+4 are not. A *Monday*-anchored meeting is 3-6 days out
+    whenever a run starts midweek (observed day-3 offsets from reset: same-day and +1), so Meet
+    showed nothing. The agenda meeting is therefore **offset-anchored** (`offset_days` 1 and 2) so
+    one occurrence is always inside the window on run day. The Monday **07:00** seed stays as-is —
+    `hard__clock-calendar__023` reads it via Calendar, where no window applies, and its prompt asks
+    about **7 AM** weekdays so the 10:00 copies do not disturb it.
+  - **Prompt no longer hardcodes the day:** "I think it's the **Monday** `[weekly meeting]` at 10 AM"
+    → "I think it's the `[weekly meeting]` at 10 AM". Propagated to both corpora, their JSON/JSONL
+    exports, `hf_release/`, and the website data. Grading was never day-dependent (the reply is
+    "meeting title + agenda file name"), so this closes a prompt/reality mismatch rather than
+    changing the answer.
+  - Also fixed a **false-PASS in the calendar-seed gate**: all-copies-soft-deleted and
+    substring-title matches (`Gym` satisfied by `Old_Gym_Class`) both passed. Regression tests in
+    `tests/test_reset_phone_calendar_gate.py` pin the gate and the in-place-shift behaviour.
+  - **Repro note:** `scripts/data/export_530_markdown.py` re-renders `tasks_530.md` *from*
+    `AndroidLife_530_v1.json`, but the committed pair does not round-trip (the md carries
+    hand-curated ordering/labels the JSON lacks), so running the exporters rewrites ~1.3k
+    unrelated lines. This change was applied surgically to the committed artifacts instead;
+    the md↔json drift is pre-existing and unresolved.
+
 - **2026-08-20 — Hard-task ordering within each day de-clustered (ASK USER ↔ DETERMINISTIC interleaved).**
   - Previously the hard (ASK USER SINGLE / ASK USER - MULTI / DETERMINISTIC) tasks within each day were grouped by type (e.g. public Day 1 ran SINGLE, DET, MULTI, MULTI, DET, DET; Day 3 DET+DET+DET; 530 Day 12 had 4 MULTI in a row). Now each day's hard blocks are round-robin interleaved across kinds so same-type tasks are not adjacent **where the kind mix allows it** — public now has **0 same-type runs** across all days (e.g. Day 1 = DET, MULTI, SINGLE, DET, MULTI, DET), and in the 530 corpus the only remaining same-type runs are days where *every* hard task is one kind (e.g. Day 12 = 4 MULTI, Day 1/5 = 3 SINGLE), which cannot be interleaved by definition. This reflects the intended day-to-day user-query mix rather than an artificial by-type grouping.
   - **Ordering only — task identity untouched.** No task added/removed/renamed; the header numbers are renumbered sequentially per day and are display-only (dataset `task_number_within_app` still derives from each id's trailing number). Datasets regenerated and verified: **public exactly 68 tasks, 530 corpus exactly 530 tasks**, 0 run-label collisions; `website/assets/data/site_data.json` regenerated (530 tasks / 72 hard / 49 ask-user / 23 deterministic, unchanged).
@@ -552,7 +583,7 @@ Harness behavior that affects results and is part of the reproducible spec:
     max-views row + Amazon search 'smartphone gimbal'), `hard__bookmyshow__005` (INOX Bhubaneswar, group of
     4, ₹240/ticket + message [contact]; **was 1-app, now BookMyShow+Telegram 2-app**),
     `hard__clock-calendar__023` (7:00 AM weekday alarm shifted to 07:30 on the seeded clash),
-    `hard__google-meet-files__070` (next meeting = Monday Weekly Sync 10:00 + open 'Weekly Agenda' in Files).
+    `hard__google-meet-files__070` (next meeting = a **conferenced** Weekly Sync 10:00 **within 2 days** + open 'Weekly Agenda' in Files).
     These 5 were vague but had **no KB oracle in the public**, so they were genuinely unsolvable before;
     they are now **removed from `multiturn_kb_530.json`** (13 profiles remain) and their
     `<!-- 🔄 MULTI-TURN -->` markers stripped from `tasks_530.md`.

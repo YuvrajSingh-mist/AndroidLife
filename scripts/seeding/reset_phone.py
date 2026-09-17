@@ -50,13 +50,22 @@ PROFILES: dict[str, dict] = {
             "Weekly Sync",
             "Gym",
         ],
-        # Date-relative calendar seeds re-created at EVERY reset (next weekday
-        # occurrence, cal_id=16, device-local time) so the clock-calendar clash
-        # shift (07:00 -> 07:30) and the meet-files "Weekly Sync 10 AM" meeting
-        # are always present for the 3x variance runs.
+        # Date-relative calendar seeds re-created at EVERY reset (cal_id=16,
+        # device-local time) so the clock-calendar clash shift (07:00 -> 07:30)
+        # and the meet-files "Weekly Sync 10 AM" meeting are always present for
+        # the 3x variance runs.
+        #
+        # An entry is anchored either by "weekday" (next occurrence of that
+        # weekday) or by "offset_days" (today + N). The meet-files meeting uses
+        # offsets because Google Meet's "Scheduled" list only surfaces meetings
+        # within ~48h: a Monday-anchored meeting is 3-6 days out whenever a run
+        # starts midweek, so Meet showed nothing and hard__google-meet-files__070
+        # could never pass. Seeding it at +1 and +2 keeps one occurrence inside
+        # that window on the day the task actually runs.
         "seed_calendar_events": [
             {"title": "Weekly Sync", "weekday": "monday", "start": "07:00", "end": "08:00"},
-            {"title": "Weekly Sync", "weekday": "monday", "start": "10:00", "end": "11:00"},
+            {"title": "Weekly Sync", "offset_days": 1, "start": "10:00", "end": "11:00"},
+            {"title": "Weekly Sync", "offset_days": 2, "start": "10:00", "end": "11:00"},
             {"title": "Gym", "weekday": "tuesday", "start": "06:30", "end": "07:30"},
         ],
         # the contact that runs mangle (easy-contacts-001) - restored to this name
@@ -493,8 +502,13 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
     Shifts an existing copy in place when one already holds that title and time
     slot, and only inserts when there is nothing to shift. Used by
     hard__clock-calendar__023 (Weekly Sync Mon 07:00 + Gym Tue 06:30 -> clash
-    shift to 07:30) and hard__google-meet-files__070 (Weekly Sync Mon 10:00
-    agenda meeting).
+    shift to 07:30) and hard__google-meet-files__070 (Weekly Sync 10:00 agenda
+    meeting).
+
+    An entry carries either `weekday` (next occurrence of that weekday) or
+    `offset_days` (today + N); the meet-files agenda meeting uses offsets so at
+    least one occurrence lands inside Google Meet's ~48h "Scheduled" window on
+    the day the task runs.
 
     In-place shifting matters because a Meet conference link lives in Google
     sync-adapter columns that the non-rooted `content` CLI cannot write (bind
@@ -525,25 +539,34 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
     def hhmm(ms: int) -> str:
         return datetime.datetime.fromtimestamp(ms / 1000, tz=tz).strftime("%H:%M")
 
+    def day_of(ms: int) -> datetime.date:
+        return datetime.datetime.fromtimestamp(ms / 1000, tz=tz).date()
+
     today = datetime.date.today()
     used: set[str] = set()
     for ev in events:
-        target = weekday_index[ev["weekday"]]
-        days_ahead = (target - today.weekday()) % 7
-        if days_ahead == 0:
-            days_ahead = 7  # next week's occurrence, never today
-        d = today + datetime.timedelta(days=days_ahead)
+        if "offset_days" in ev:
+            d = today + datetime.timedelta(days=int(ev["offset_days"]))
+        else:
+            target = weekday_index[ev["weekday"]]
+            days_ahead = (target - today.weekday()) % 7
+            if days_ahead == 0:
+                days_ahead = 7  # next week's occurrence, never today
+            d = today + datetime.timedelta(days=days_ahead)
 
         def epoch(hhmm_str: str) -> int:
             h, m = map(int, hhmm_str.split(":"))
             return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=tz).timestamp() * 1000)
 
         dtstart, dtend = epoch(ev["start"]), epoch(ev["end"])
-        # Match on time-of-day so the two "Weekly Sync" seeds (07:00 / 10:00) stay
-        # distinct, and so a stale copy from an older week still matches.
+        # Match on time-of-day AND date. Time-of-day alone separates the 07:00
+        # clash seed from the 10:00 agenda seed, but the agenda seed now exists at
+        # 10:00 on two consecutive days -- without the date check the second copy
+        # would look like a stale duplicate and be deleted on every reset.
         match = next((eid for eid, etitle, eds in existing
                       if eid not in used and etitle == ev["title"]
-                      and eds is not None and hhmm(eds) == ev["start"]), None)
+                      and eds is not None and hhmm(eds) == ev["start"]
+                      and day_of(eds) == d), None)
         if match:
             sh(serial, f"content update --uri {CAL_URI} "
                        f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "

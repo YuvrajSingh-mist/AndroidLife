@@ -30,7 +30,7 @@ Canonical operator runbook (ADB reset + manual seeds table):
     **A run before 23 Sep will fail `easy__calendar__002`** — its conflicts now sit on the 24th,
     so "tomorrow" has none. `reset_phone.py --apply` re-anchors `Weekly Sync`/`Gym` to the next
     weekday from the reset day, which undoes the shift: reset on the run day, or re-shift after.
-- ☑ Weekly Sync + Gym date-relative seeds (next Mon / Tue)
+- ☑ Weekly Sync + Gym date-relative seeds (Mon 07:00 for the clash task; **10:00 on today+1 and today+2** for the Meet task; next Tue for Gym)
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)
 - ☑ All public Obsidian notes present (Bedtime, Budget Deadline, Exam Scores, Monthly Budget,
@@ -77,8 +77,9 @@ Canonical operator runbook (ADB reset + manual seeds table):
 
 - ☐ **Google Slides deck** exists (`easy__google-slides__001`) — slide count queryable.
 - ☐ **Google Docs doc** exists to rename (`easy__google-docs__004`).
-- ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and **Weekly Sync Mon 10 AM**
-  with attendees (`hard__google-meet-files__070`).
+- ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and a conferenced **Weekly Sync
+  10:00 within the next 2 days** with attendees `hard__google-meet-files__070` — Meet only lists
+  conferenced meetings, signed in as `yuvraj.mist@gmail.com`, and only ~48h out.
 
 ## §5 — Chrome
 
