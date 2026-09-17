@@ -365,7 +365,7 @@ def test_is_transient_failure_true_only_for_early_dropped_request_errors(tmp_pat
 
 
 def test_device_unreachable_marker_reads_the_preflight_marker(tmp_path) -> None:
-    """A run the phone never reached is identifiable so the batch can park (not fail) it."""
+    """A run the phone never reached is identifiable so the batch can abort (not fail) it."""
     offline = tmp_path / "offline"
     offline.mkdir()
     assert task_batch.device_unreachable_marker(offline) is None
@@ -377,11 +377,16 @@ def test_device_unreachable_marker_reads_the_preflight_marker(tmp_path) -> None:
     assert task_batch.device_unreachable_marker(tmp_path / "does-not-exist") is None
 
 
-def test_parser_defaults_park_device_failures_before_aborting() -> None:
-    """Defaults: reconnect for 45s, tolerate 3 consecutive DEVICE_UNREACHABLE preflights."""
+def test_parser_has_no_device_unreachable_abort_after_flag() -> None:
+    """An unreachable phone aborts the batch on the first hit - there is no tolerance window.
+
+    The benchmark's subject is the phone, so a preflight that cannot reach it yields no valid
+    result. Parking the task and continuing would mask an outage, so the knob is gone.
+    """
     args = task_batch.build_parser().parse_args([])
     assert args.device_reconnect_timeout == 45.0
-    assert args.device_unreachable_abort_after == task_batch.DEVICE_UNREACHABLE_ABORT_AFTER == 3
+    assert not hasattr(args, "device_unreachable_abort_after")
+    assert not hasattr(task_batch, "DEVICE_UNREACHABLE_ABORT_AFTER")
 
 
 def test_build_run_command_forwards_the_device_reconnect_timeout() -> None:
