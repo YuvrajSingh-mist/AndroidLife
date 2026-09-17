@@ -34,6 +34,12 @@ USB_SERIAL="${USB_SERIAL:-}"
 WIRELESS_SERIAL="${WIRELESS_SERIAL:-${ANDROIDLIFE_SERIAL:-${ANDROIDLIFE_SERIAL:-}}}"
 WIRELESS_PORT="${WIRELESS_PORT:-5555}"
 CURL_TIMEOUT="${SMOKE_TIMEOUT:-10}"
+# The device checks are not curl calls: they ride the phone's own ADB transport, which
+# over wireless/Tailscale takes ~11s for the four checks (the screenshot alone is a few
+# MB at ~108ms RTT). Reusing CURL_TIMEOUT here made the check fail on a healthy phone
+# roughly half the time, so it gets its own, wider budget - matching the 30s default
+# that device_health_check.py itself uses.
+DEVICE_TIMEOUT="${SMOKE_DEVICE_TIMEOUT:-30}"
 SMOKE_PROXY_PORT="${SMOKE_PROXY_PORT:-18099}"
 SMOKE_STEPS="${SMOKE_STEPS:-3}"
 SMOKE_GOAL="${SMOKE_GOAL:-Go to the home screen}"
@@ -69,6 +75,10 @@ Options:
                           (env: WIRELESS_SERIAL or ANDROIDLIFE_SERIAL / ANDROIDLIFE_SERIAL)
   --wireless-port PORT    Port to use when enabling `adb tcpip` mode (default: 5555)
   --timeout SECONDS       curl/network timeout in seconds (default: 10)
+  --device-timeout SECONDS
+                          Budget for the on-device health check (default: 30; env:
+                          SMOKE_DEVICE_TIMEOUT). Separate from --timeout because the
+                          wireless ADB transport is far slower than a curl round-trip.
   --steps N               Step budget for the end-to-end agent smoke run (default: 3)
   --goal TEXT             Prompt for the end-to-end agent smoke run
                           (default: "Go to the home screen")
@@ -111,6 +121,7 @@ while [[ $# -gt 0 ]]; do
     --wireless-serial) WIRELESS_SERIAL="$2"; shift 2 ;;
     --wireless-port) WIRELESS_PORT="$2"; shift 2 ;;
     --timeout) CURL_TIMEOUT="$2"; shift 2 ;;
+    --device-timeout) DEVICE_TIMEOUT="$2"; shift 2 ;;
     --steps) SMOKE_STEPS="$2"; shift 2 ;;
     --goal) SMOKE_GOAL="$2"; shift 2 ;;
     --skip-llm) RUN_LLM=0; shift ;;
@@ -247,7 +258,7 @@ run_device_health_check() {
   log_path="$(mktemp)"
   # device_health_check.py bounds its own checks internally via --timeout; the outer
   # with_timeout here is defense-in-depth against `uv run` startup itself hanging.
-  with_timeout "$((${CURL_TIMEOUT%.*} + 15))" uv run python scripts/tools/device_health_check.py --serial "$serial" --timeout "$CURL_TIMEOUT" >"$log_path" 2>&1
+  with_timeout "$((DEVICE_TIMEOUT + 15))" uv run python scripts/tools/device_health_check.py --serial "$serial" --timeout "$DEVICE_TIMEOUT" >"$log_path" 2>&1
   while IFS= read -r line; do
     [[ "$line" == "CHECK "* ]] || continue
     name="$(awk '{print $2}' <<<"$line")"
