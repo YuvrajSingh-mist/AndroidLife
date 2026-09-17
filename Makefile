@@ -48,7 +48,7 @@ blog:
 
 .PHONY: sync-reports
 sync-reports:
-	uv run python scripts/tools/sync_reports_hf.py
+	uv run --extra hf python scripts/tools/sync_reports_hf.py
 
 .PHONY: help
 help:
