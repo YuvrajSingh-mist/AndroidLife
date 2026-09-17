@@ -200,10 +200,21 @@ cmd=(
 # until the context window fills — ~20 min at ~30 tok/s, far past the LLM
 # client's 300s timeout -> APITimeoutError, and with -np 1 it blocks the single
 # slot for every later request too. That was the 2026-09-17 runaway.
-# 2048 is the evidence-based ceiling: across 5804 logged completions the max
-# ever seen was 2016 tokens (p50 88 / p99 428 / p99.9 807), so this cap has
-# never truncated a legitimate GUI-agent response while ending a runaway in
-# ~1.5 min instead of ~20. Pass 0 or -1 to opt back out.
+#
+# 2048 is scoped to THIS server. The flag governs only the local GGUF models
+# (Qwen3.5-4B, gemma-4-E2B-it); OpenRouter-hosted models are unaffected by it.
+# Across every logged local completion, neither has come close: n=1650 with a
+# max of 965 tokens (Qwen3.5-4B n=948 max 907; gemma-4-E2B-it n=702 max 965).
+# So 2048 has never truncated a local response, and a runaway now ends in
+# ~1.5 min instead of ~20.
+#
+# Corrected 2026-09-18: an earlier note here claimed "5804 completions, max
+# 2016", which conflated local and OpenRouter traffic. Over the full public
+# corpus (21,493 completions) there are 6 over 2048 — but every one is
+# moonshotai/kimi-k2.6 on OpenRouter, four of them 65536-token runaways with
+# finish_reason=length. Those are a remote-backend problem this flag cannot
+# reach, and they are excluded from the local evidence above. Pass 0 or -1 to
+# opt back out.
 if [[ "$N_PREDICT" != "0" && "$N_PREDICT" != "-1" ]]; then
   cmd+=(-n "$N_PREDICT")
 fi
