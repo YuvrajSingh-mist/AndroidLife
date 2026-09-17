@@ -12,9 +12,13 @@ from pathlib import Path
 from huggingface_hub import HfApi
 
 ROOT = Path(__file__).resolve().parents[2]
-INDEX = ROOT / "website" / "assets" / "data" / "trajectories" / "index.json"
-DATA_DIR = ROOT / "website" / "assets" / "data" / "trajectories"
-MEDIA_DIR = ROOT / "website" / "assets" / "trajectories"
+# The published site lives in its own repo/dir. `website/` is a legacy stub that
+# holds only .nojekyll/404.html, so pointing here used to fail with "index not
+# found" on the next publish.
+WEBSITE = ROOT / "androidlife-website"
+INDEX = WEBSITE / "assets" / "data" / "trajectories" / "index.json"
+DATA_DIR = WEBSITE / "assets" / "data" / "trajectories"
+MEDIA_DIR = WEBSITE / "assets" / "trajectories"
 
 DEFAULT_REPO = "YuvrajSingh9886/androidlife-trajectories"
 LFS_THRESHOLD = 5 * 1024 * 1024  # upload_folder handles LFS automatically
