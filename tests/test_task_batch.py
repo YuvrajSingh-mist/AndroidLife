@@ -364,6 +364,37 @@ def test_is_transient_failure_true_only_for_early_dropped_request_errors(tmp_pat
     assert task_batch.is_transient_failure(tmp_path / "does-not-exist") is False
 
 
+def test_device_unreachable_marker_reads_the_preflight_marker(tmp_path) -> None:
+    """A run the phone never reached is identifiable so the batch can park (not fail) it."""
+    offline = tmp_path / "offline"
+    offline.mkdir()
+    assert task_batch.device_unreachable_marker(offline) is None
+
+    (offline / "DEVICE_UNREACHABLE").write_text("preflight ADB failed: device offline\n")
+    assert task_batch.device_unreachable_marker(offline) == "preflight ADB failed: device offline"
+
+    assert task_batch.device_unreachable_marker(None) is None
+    assert task_batch.device_unreachable_marker(tmp_path / "does-not-exist") is None
+
+
+def test_parser_defaults_park_device_failures_before_aborting() -> None:
+    """Defaults: reconnect for 45s, tolerate 3 consecutive DEVICE_UNREACHABLE preflights."""
+    args = task_batch.build_parser().parse_args([])
+    assert args.device_reconnect_timeout == 45.0
+    assert args.device_unreachable_abort_after == task_batch.DEVICE_UNREACHABLE_ABORT_AFTER == 3
+
+
+def test_build_run_command_forwards_the_device_reconnect_timeout() -> None:
+    """Each task run gets the runner's ADB reconnect budget so a flap is absorbed in-process."""
+    parser = task_batch.build_parser()
+    args = parser.parse_args(["--serial", "device-1", "--llm-upstream-base", "http://mini2:8081/v1", "--model", "m"])
+    task = {"bucket": "easy", "app_slug": "camera", "task_number_within_app": 6, "task_id": "easy__camera__006"}
+
+    command, _ = task_batch.build_run_command(args, task, "Take a photo", 8090)
+
+    assert command[command.index("--device-reconnect-timeout") + 1] == "45.0"
+
+
 def test_find_run_dir_globs_for_label_match_under_runs(tmp_path) -> None:
     """find_run_dir locates the newest matching folder under a runs root."""
     (tmp_path / "2026-07-30-090000" / "easy-gmail-001").mkdir(parents=True, exist_ok=True)

@@ -16,18 +16,20 @@
 #   LLAMA_CTX              default 65536
 #   LLAMA_ALIAS            override -a alias (MobileRun --model must match)
 #   LLAMA_MMPROJ           force mmproj path (or auto-detect beside weights)
+#   LLAMA_N_PREDICT        max generated tokens per response (default 2048; 0/-1 = uncapped)
 #   LLAMA_EXTRA_ARGS       extra raw args appended to llama-server
 set -euo pipefail
 
 ROOT="${ANDROIDLIFE_GGUF_ROOT:-$HOME/models/androidlife-gguf}"
 PORT="${LLAMA_PORT:-8088}"
 CTX="${LLAMA_CTX:-65536}"
+N_PREDICT="${LLAMA_N_PREDICT:-2048}"
 BIN="${LLAMA_SERVER_BIN:-$(command -v llama-server || true)}"
 HOST="${LLAMA_HOST:-127.0.0.1}"
 
 usage() {
   cat <<'EOF' >&2
-Usage: serve_gguf.sh <preset|path-to.gguf> [--alias NAME] [--mmproj PATH] [--port N] [--ctx N]
+Usage: serve_gguf.sh <preset|path-to.gguf> [--alias NAME] [--mmproj PATH] [--port N] [--ctx N] [--n-predict N]
 
 Presets (under $ANDROIDLIFE_GGUF_ROOT):
   qwen3.5-4b       Qwen3.5-4B-Q4_K_M.gguf          alias Qwen3.5-4B
@@ -134,6 +136,7 @@ while [[ $# -gt 0 ]]; do
     --mmproj) MMPROJ="$2"; shift 2 ;;
     --port) PORT="$2"; shift 2 ;;
     --ctx) CTX="$2"; shift 2 ;;
+    --n-predict) N_PREDICT="$2"; shift 2 ;;
     --host) HOST="$2"; shift 2 ;;
     --reasoning-off) REASONING_OFF=1; shift ;;
     --no-reasoning-off) REASONING_OFF=0; shift ;;
@@ -192,6 +195,19 @@ cmd=(
   -np 1
 )
 
+# Cap generation PER RESPONSE. Without this, llama-server defaults to -n -1
+# (infinity), so a model that fails to emit EOS in a degenerate loop generates
+# until the context window fills — ~20 min at ~30 tok/s, far past the LLM
+# client's 300s timeout -> APITimeoutError, and with -np 1 it blocks the single
+# slot for every later request too. That was the 2026-09-17 runaway.
+# 2048 is the evidence-based ceiling: across 5804 logged completions the max
+# ever seen was 2016 tokens (p50 88 / p99 428 / p99.9 807), so this cap has
+# never truncated a legitimate GUI-agent response while ending a runaway in
+# ~1.5 min instead of ~20. Pass 0 or -1 to opt back out.
+if [[ "$N_PREDICT" != "0" && "$N_PREDICT" != "-1" ]]; then
+  cmd+=(-n "$N_PREDICT")
+fi
+
 if [[ "$REASONING_OFF" -eq 1 ]]; then
   cmd+=(--reasoning off)
 fi
@@ -210,6 +226,11 @@ echo "Serving $MODEL"
 echo "  alias:  $ALIAS   (use --model $ALIAS with MobileRun)"
 echo "  listen: http://${HOST}:${PORT}"
 echo "  ctx:    $CTX"
+if [[ "$N_PREDICT" != "0" && "$N_PREDICT" != "-1" ]]; then
+  echo "  n_predict: $N_PREDICT tokens/response (cap; set LLAMA_N_PREDICT=-1 to disable)"
+else
+  echo "  n_predict: UNCAPPED (-n -1) - a degenerate generation loop will run until the context fills"
+fi
 [[ -n "$MMPROJ" ]] && echo "  mmproj: $MMPROJ"
 [[ "$REASONING_OFF" -eq 1 ]] && echo "  reasoning: off"
 echo "  tip:    --llm-upstream-base http://${HOST}:${PORT}   # no /v1"

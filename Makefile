@@ -26,6 +26,10 @@ app-audit:
 smoke-test:
 	./scripts/run/smoke_test.sh
 
+.PHONY: harden-device
+harden-device:
+	./scripts/run/harden_device_transport.sh
+
 .PHONY: organize-public
 organize-public:
 	uv run python scripts/tools/organize_public_artifacts.py --sweep
@@ -33,6 +37,9 @@ organize-public:
 .PHONY: verify-leaderboard
 verify-leaderboard:
 	uv run python scripts/tools/verify_leaderboard.py
+
+
+
 
 .PHONY: help
 help:
@@ -44,5 +51,6 @@ help:
 	@printf "  make test-fast   Run fast parser/helper coverage\n"
 	@printf "  make test-cli    Run harness CLI/process coverage\n"
 	@printf "  make smoke-test  Pre-flight check: LLM server, wired/wireless ADB + mobilerun, one real task\n"
+	@printf "  make harden-device  Keep the Tailscale ADB transport alive across screen-off/Doze\n"
 	@printf "  make organize-public  File all public-run artifacts into per-run folders + rebuild turn-based audits\n"
 	@printf "  make verify-leaderboard  Gate: every published leaderboard number must match its run report\n"
