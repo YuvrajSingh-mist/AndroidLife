@@ -170,14 +170,22 @@ Canonical operator runbook (ADB reset + manual seeds table):
 
 ## §11 — 🔴 RUN-DAY actions (do these ON the run day, not now)
 
-- 🔴 **Make one real outgoing call to an unsaved number** (call log can't be seeded) —
-  powers `easy__phone__005` ("calls made today") + the call branches of
-  `medium__contacts__009`, `medium__contacts__012`, `medium__google-photos__008`.
-  (If you don't want an actual call, at minimum ensure there's at least one call
-  logged today so "calls made today" isn't a zero-answer edge case.)
-- 🔴 Re-confirm device **date = run day** and that the **tomorrow-conflict events
-  (Team Sync 14:00 + Mentor 1 on 1 14:30)** are still on **tomorrow** — if a day has
-  passed, re-run Step 2b of the skill (re-seed tomorrow's conflicts).
+- ☑ **Call log is seeded by `reset_phone.py --apply`** — `public_v2.seed_calls` inserts
+  2 OUTGOING calls dated **today** (`+919000000001` 1:12, `+919000000002` 0:45 → total
+  **1:57**). The call log **is** writable from non-rooted adb
+  (`content insert --uri content://call_log/calls`); the old "make a real call, the log
+  can't be seeded" step was based on a wrong assumption — `scripts/seeding/seed_data.py`
+  has always seeded it for the 530 corpus. Today's rows are cleared first, so a re-apply
+  is idempotent and the answer is never the degenerate 0 seconds.
+  - Every seeded call is **outgoing**, so "calls I've made" and "all calls today" give
+    the same total.
+  - `easy__phone__002` (day 1) places a real call, so the day-2 total includes that row
+    on top of this baseline — that part is run-dependent by design.
+- ☑ **Then** re-verify the run day: `--verify-only` asserts at least one outgoing call
+  dated today. Re-confirm device **date = run day** and that the **tomorrow-conflict
+  events (Team Sync 14:00 + Mentor 1 on 1 14:30)** are still on **tomorrow** — every
+  calendar anchor is computed from the *host* clock, so a stale clock mis-anchors the
+  whole calendar in one go.
 
 ---
 

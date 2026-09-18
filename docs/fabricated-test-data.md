@@ -166,10 +166,17 @@ comparing the trajectory against the manifest:
 > selecting it.
 
 ### 3.8 Call log
-- **Nothing fabricated.** Call logs on a non-rooted device cannot be injected
-  programmatically. The "unsaved number from call logs today" task requires the
-  operator to make a real outgoing call to an unsaved number (see
-  [Limitations](#6-known-limitations--honest-caveats)).
+- **Seeded (corrected 2026-09-19).** An earlier note here claimed call logs "cannot be
+  injected programmatically" — that is **wrong**. A non-rooted adb **can** write them:
+  `content insert --uri content://call_log/calls --bind number:s:… --bind date:l:…
+  --bind duration:i:… --bind type:i:2`, and `scripts/seeding/seed_data.py` has always
+  seeded a missed call (`seed_missed_call`) and an incoming call this way for the 530
+  corpus. `reset_phone.py --apply` now seeds `public_v2.seed_calls` — 2 outgoing calls
+  dated today (`+919000000001` 1:12 + `+919000000002` 0:45 = **1:57**) — clearing today's
+  rows first so a re-apply is idempotent.
+  - All seeded calls are outgoing so "calls I've made today" and "all calls today"
+    agree; `easy__phone__002` (day 1) adds a real call on top for `easy__phone__005`.
+  - `--verify-only` asserts at least one outgoing call dated today.
 
 ### 3.9 Music + Obsidian bedtime (sleep-timer task)
 For `hard__music-obsidian__077` (Day 3, DETERMINISTIC — "search YouTube Music for
