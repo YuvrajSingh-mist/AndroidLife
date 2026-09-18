@@ -97,6 +97,16 @@ PROFILES: dict[str, dict] = {
             "com.google.android.apps.tachyon": "yuvraj.mist@gmail.com",            # Meet
             "com.google.android.apps.photos": "rajeshceo2015@gmail.com",           # Photos
         },
+        # The Google Slides deck for easy__google-slides__001 ("how many slides?").
+        # It is NOT a native cloud deck and NOT file-seeded -- it is an uploaded .pptx
+        # that lives as a device file (and in Drive on ranirajesh786@gmail.com), so
+        # nothing restores it if a run edits or deletes it. The grader carries no
+        # ground truth for this task, so the count is asserted here instead.
+        # NOTE the name is `Q3_Review.pptx` (underscore), not the `Q3 Review` var value.
+        "slides_deck": {
+            "path": "/sdcard/Download/Q3_Review.pptx",
+            "expected_slides": 8,
+        },
         # the contact that runs mangle (easy-contacts-001) - restored to this name
         "contact_email": "akashveyron33@gmail.com",
         "contact_display": "Akash Kumar",
@@ -923,6 +933,50 @@ def verify_cloud_accounts(serial: str, prof: dict, timeout_s: float = 28.0) -> b
     return ok
 
 
+def verify_slides_deck(serial: str, prof: dict) -> bool:
+    """Assert the seeded Slides deck exists and still has the expected slide count.
+
+    easy__google-slides__001 asks "how many slides does the [presentation name] deck
+    have?", but the official grader carries **no ground truth** for it -- pass/fail
+    rides on the agent's own reply. That is why the recorded history contains `1`,
+    `3` and `8` and every one of them scored PASS.
+
+    The deck is an uploaded `.pptx` (device file + Drive copy on ranirajesh786), NOT a
+    native cloud deck and NOT file-seeded, so there is nothing to restore it if a run
+    edits or deletes it. Asserting the count here is what keeps the task honest.
+    """
+    deck = prof.get("slides_deck")
+    if not deck:
+        return True
+    path, want = deck["path"], int(deck["expected_slides"])
+    if not sh(serial, f"ls {path}").strip() or "No such file" in sh(serial, f"ls {path}"):
+        print(f"  FAIL slides: {path} is missing (easy__google-slides__001 has no deck)")
+        return False
+
+    import tempfile, zipfile
+
+    fd, tmp = tempfile.mkstemp(prefix="androidlife_deck_", suffix=".pptx")
+    os.close(fd)
+    try:
+        subprocess.run(["adb", "-s", serial, "pull", path, tmp],
+                       capture_output=True, text=True, timeout=60)
+        with zipfile.ZipFile(tmp) as zf:
+            got = sum(1 for n in zf.namelist()
+                      if re.fullmatch(r"ppt/slides/slide\d+\.xml", n))
+    except Exception as exc:  # noqa: BLE001 - any failure means "cannot verify"
+        print(f"  FAIL slides: could not read {path} ({exc})")
+        return False
+    finally:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+
+    good = got == want
+    print(f"  {'PASS' if good else 'FAIL'} slides: {path.split('/')[-1]} has {got} slide(s) (want {want})")
+    return good
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Reset benchmark phone to pre-run baseline (dry-run by default).")
     parser.add_argument("--serial", required=True, help="ADB serial (device id or ip:port)")
@@ -937,6 +991,9 @@ def main() -> int:
                         help="Skip the canonical-cloud-account gate (~40s: launches Gmail, "
                              "Drive, Docs, Slides, Calendar, Meet and Photos to read each "
                              "app's selected Google account)")
+    parser.add_argument("--no-slides-check", action="store_true",
+                        help="Skip the Slides deck gate (pulls Q3_Review.pptx and asserts "
+                             "its slide count; the grader has no ground truth for it)")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -979,6 +1036,8 @@ def main() -> int:
     ok = verify(args.serial, prof)
     if not args.no_account_check:
         ok &= verify_cloud_accounts(args.serial, prof)
+    if not args.no_slides_check:
+        ok &= verify_slides_deck(args.serial, prof)
     if not args.no_meet_check:
         ok &= verify_meet_agenda(args.serial, prof)
     print("RESULT", "PASS" if ok else "FAIL")

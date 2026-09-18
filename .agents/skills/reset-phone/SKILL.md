@@ -373,10 +373,11 @@ Skip with `--no-account-check`. The mapping lives in the `public_v2` profile as
 > Re-selected `ranirajesh786` via the in-app account chooser (all six accounts are
 > already on the device — no password needed).
 >
-> Note the cloud `Q3 Review` deck did **not** appear in three consecutive Slides-home
-> dumps even on the correct account; the reliable target is the device file
-> `/sdcard/Download/Q3_Review.pptx` (**8 slides**). The deck is **not** managed by
-> `reset_phone.py` — see the re-run queue. Maps sits on `rajceo2031` and that is fine
+> Note the deck is `Q3_Review.pptx` — an uploaded `.pptx` (a device file **and** a Drive
+> copy on `ranirajesh786`), **not** a native cloud Slides deck, so a search for the literal
+> string `Q3 Review` misses it. It has **8 slides** and `Slide N of 8` **is** in the a11y
+> tree. It is **not** managed by `reset_phone.py`; `verify_slides_deck()` asserts the count
+> (the grader has no ground truth for this task). Maps sits on `rajceo2031` and that is fine
 > (above).
 
 Quick cloud verify (in-app, ~10 min):
