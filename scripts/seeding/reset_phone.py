@@ -106,6 +106,25 @@ PROFILES: dict[str, dict] = {
         # How far ahead Meet's "Scheduled" list reaches (measured ~48h: today/+1/+2
         # visible, +3/+4 hidden).
         "meet_window_hours": 48.0,
+        # Call-log seeds for easy__phone__005 ("how many calls I've made today...
+        # total call time"). The call log IS writable from a non-rooted adb
+        # (`content insert --uri content://call_log/calls`) -- a note in the docs
+        # claimed otherwise, but scripts/seeding/seed_data.py has always done exactly
+        # this for the 530 corpus. So this is a deterministic seed, not an operator
+        # "go make a real phone call" step, and the answer is no longer the degenerate
+        # 0 seconds you get from an empty log.
+        #
+        # Every seeded call is OUTGOING: the prompt asks for the calls the user MADE.
+        # Keeping the whole day outgoing means "outgoing only" and "all calls today"
+        # (the reading a 2026-08-30 audit used) give the SAME total, so the verdict does
+        # not hinge on which way the grader reads it.
+        #
+        # easy__phone__002 (day 1) places a real call, so the day-2 total also includes
+        # that row; these seeds are the fixed baseline underneath it.
+        "seed_calls": [
+            {"number": "+919000000001", "duration": 72},  # 1:12
+            {"number": "+919000000002", "duration": 45},  # 0:45  -> today total 1:57
+        ],
         # Canonical cloud account per app (see .agents/skills/reset-phone/SKILL.md ->
         # "Cloud account map"). The device carries 6 Google accounts and each app
         # remembers its own selection, so an app CAN drift onto another account --
@@ -321,6 +340,7 @@ CAL_URI = "content://com.android.calendar/events"
 CONTACTS_DATA_URI = "content://com.android.contacts/data"
 CONTACTS_URI = "content://com.android.contacts/contacts"
 BLOCKED_URI = "content://com.android.blockednumber/blocked"
+CALL_URI = "content://call_log/calls"
 
 
 def sh(serial: str, cmd: str, check: bool = False) -> str:
@@ -721,6 +741,71 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         print(f"  [{flag}]  calendar seed '{title}': {got} live event(s) (want {want})")
 
 
+def _calls_today(serial: str) -> list[tuple[str, int, str]]:
+    """`(id, duration_s, type)` for call-log rows dated TODAY on the device."""
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    tz = ZoneInfo(sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata")
+    today = datetime.datetime.now(tz).date()
+    rows = sh(serial, f"content query --uri {CALL_URI} --projection _id:date:duration:type")
+    out: list[tuple[str, int, str]] = []
+    for line in rows.splitlines():
+        i = re.search(r"_id=(\d+),", line)
+        d = re.search(r"date=(\d+)", line)
+        if not (i and d):
+            continue
+        when = datetime.datetime.fromtimestamp(int(d.group(1)) / 1000, tz=tz)
+        if when.date() != today:
+            continue
+        dur = re.search(r"duration=(\d+)", line)
+        typ = re.search(r"type=(\d+)", line)
+        out.append((i.group(1), int(dur.group(1)) if dur else 0, typ.group(1) if typ else "?"))
+    return out
+
+
+def ensure_call_log(serial: str, calls: list[dict], apply: bool) -> None:
+    """Seed TODAY's call log so easy__phone_005 has a definite, non-zero answer.
+
+    Today's rows are cleared first, which makes `--apply` idempotent: a second reset
+    on the same day reproduces the same log instead of stacking duplicates. Only rows
+    dated today are touched, so the historical log is left intact.
+
+    Timestamps sit shortly before the reset and are clamped to just after midnight, so
+    the calls always read as "today" even when the reset runs at 00:xx.
+    """
+    if not calls:
+        return
+    if not apply:
+        print(f"  [dry] ensure call-log seeds today: {len(calls)} call(s)")
+        return
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    tz = ZoneInfo(sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata")
+    now = datetime.datetime.now(tz)
+    floor = now.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(minutes=1)
+
+    cleared = 0
+    for eid, _dur, _typ in _calls_today(serial):
+        sh(serial, f"content delete --uri {CALL_URI} --where \"_id={eid}\"")
+        cleared += 1
+
+    for idx, call in enumerate(calls):
+        # Older seeds first; 12 minutes apart so the log reads naturally.
+        ts = now - datetime.timedelta(minutes=10 + (len(calls) - 1 - idx) * 12)
+        if ts < floor:
+            ts = floor + datetime.timedelta(minutes=idx)  # break ties at 00:xx resets
+        sh(serial, f"content insert --uri {CALL_URI} "
+                   f"--bind number:s:{call['number']} "
+                   f"--bind date:l:{int(ts.timestamp() * 1000)} "
+                   f"--bind duration:i:{int(call['duration'])} "
+                   f"--bind type:i:2 --bind new:i:0 --bind is_read:i:1")
+    total = sum(int(c["duration"]) for c in calls)
+    print(f"  [ok]  call log: seeded {len(calls)} outgoing call(s) today, total {total}s "
+          f"({cleared} prior row(s) cleared)")
+
+
 def verify(serial: str, prof: dict) -> bool:
     ok = True
     print("== baseline verify ==")
@@ -746,6 +831,15 @@ def verify(serial: str, prof: dict) -> bool:
         ok &= present
         synced = bool(re.search(r"_sync_id=[^,]", live))
         print(f"  {'PASS' if present else 'FAIL'} calendar seed '{title}' present (synced={synced})")
+    if prof.get("seed_calls"):
+        # easy__phone__005 needs at least one call dated TODAY, else the answer is a
+        # degenerate 0 seconds (and the day-2 total is whatever easy__phone__002 left).
+        calls = _calls_today(serial)
+        outgoing = [c for c in calls if c[2] == "2"]
+        good = bool(outgoing)
+        ok &= good
+        print(f"  {'PASS' if good else 'FAIL'} call log: {len(outgoing)} outgoing call(s) today, "
+              f"total {sum(c[1] for c in outgoing)}s (easy__phone__005)")
     for path in prof.get("seed_files", []):
         has = sh(serial, f"ls {quote(path)}").strip() != ""
         ok &= has
@@ -1090,6 +1184,7 @@ def main() -> int:
         remove_calendar_events(args.serial, prof.get("calendar_titles_to_remove", []), args.apply)
         remove_calendar_by_ids(args.serial, prof.get("calendar_ids_to_remove", []), args.apply)
         ensure_calendar_events(args.serial, prof.get("seed_calendar_events", []), args.apply)
+        ensure_call_log(args.serial, prof.get("seed_calls", []), args.apply)
         restore_contact(args.serial, prof, args.apply)
         remove_paths(args.serial, prof.get("downloads_to_remove", []), args.apply)
         remove_paths(args.serial, prof.get("device_paths_to_remove", []), args.apply)
