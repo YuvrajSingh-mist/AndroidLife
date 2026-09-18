@@ -4,8 +4,9 @@
 # Usage:
 #   scripts/llm/serve_gguf.sh qwen3.5-4b
 #   scripts/llm/serve_gguf.sh gemma4-e2b
-#   scripts/llm/serve_gguf.sh mai-ui-2b
-#   scripts/llm/serve_gguf.sh gui-owl-1.5-2b
+#   scripts/llm/serve_gguf.sh bonsai2-27b
+#   scripts/llm/serve_gguf.sh lfm2.5-2.6b
+#   scripts/llm/serve_gguf.sh lfm2.5-vl-3b
 #   scripts/llm/serve_gguf.sh /path/to/model.gguf [--alias NAME] [--mmproj PATH]
 #   LLAMA_PORT=8090 LLAMA_CTX=32768 scripts/llm/serve_gguf.sh qwen3.5-4b
 #
@@ -27,6 +28,19 @@ N_PREDICT="${LLAMA_N_PREDICT:-2048}"
 BIN="${LLAMA_SERVER_BIN:-$(command -v llama-server || true)}"
 HOST="${LLAMA_HOST:-127.0.0.1}"
 
+# PrismML's fork of llama.cpp, needed ONLY for Ternary Bonsai 2 (PTQ1_0/PQ2_0).
+# Those are PrismML's own ternary packings; stock upstream refuses them with
+# "tensor 'output.weight' has invalid ggml type 143". Side-by-side install so the
+# Gemma/Qwen/LFM presets keep using the stock binary untouched.
+prism_bin() {
+  local c
+  for c in "${LLAMA_PRISM_SERVER_BIN:-}" \
+           "$HOME"/local/llama-prism-*/*/llama-server; do
+    [[ -n "$c" && -x "$c" ]] && { printf '%s\n' "$c"; return 0; }
+  done
+  return 1
+}
+
 usage() {
   cat <<'EOF' >&2
 Usage: serve_gguf.sh <preset|path-to.gguf> [--alias NAME] [--mmproj PATH] [--port N] [--ctx N] [--n-predict N]
@@ -34,11 +48,9 @@ Usage: serve_gguf.sh <preset|path-to.gguf> [--alias NAME] [--mmproj PATH] [--por
 Presets (under $ANDROIDLIFE_GGUF_ROOT):
   qwen3.5-4b       Qwen3.5-4B-Q4_K_M.gguf          alias Qwen3.5-4B
   gemma4-e2b       gemma-4-E2B-it-Q4_K_M.gguf      + mmproj-BF16.gguf
-  mai-ui-2b        MAI-UI-2B.Q4_K_M.gguf           + mmproj-f16
-  gui-owl-1.5-2b   GUI-Owl-1.5-2B-Instruct.Q4_K_M  + mmproj-f16
-  smollm3-3b       SmolLM3-Q4_K_M.gguf             (general, text)
-  lfm2.5-vl-1.6b   LFM2.5-VL-1.6B-Q4_K_M.gguf      + mmproj-F16 (general, vision)
-  bonsai-4b        Bonsai-4B-Q1_0.gguf             (general, 1-bit)
+  bonsai2-27b      Ternary-Bonsai-2-27B-PTQ1_0.gguf + mmproj-Q8_0 (general, ternary, vision)
+  lfm2.5-2.6b      LFM2.5-2.6B-Q4_K_M.gguf         (general, text)
+  lfm2.5-vl-3b     LFM2.5-VL-3B-Q4_K_M.gguf        + mmproj-Q8_0 (general, vision)
 
 Examples:
   bash scripts/llm/serve_gguf.sh qwen3.5-4b
@@ -72,48 +84,54 @@ case "$SPEC" in
     ALIAS="${ALIAS:-gemma-4-E2B-it}"
     MMPROJ="${MMPROJ:-$ROOT/gemma4-e2b/mmproj-BF16.gguf}"
     ;;
-  mai-ui-2b|mai|mai-ui)
-    MODEL="$ROOT/mai-ui-2b/MAI-UI-2B.Q4_K_M.gguf"
-    ALIAS="${ALIAS:-MAI-UI-2B}"
-    # Prefer f16 mmproj if present.
+  bonsai2-27b|bonsai2|bonsai|bonsai-2-27b|ternary-bonsai-2|bonsai-2)
+    MODEL="$ROOT/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf"
+    ALIAS="${ALIAS:-Bonsai-2-27B}"
+    # Ternary Bonsai 2 only loads on the PrismML fork, not upstream llama.cpp.
+    # An explicit LLAMA_SERVER_BIN still wins (needed for dry-runs/tests).
+    if [[ -z "${LLAMA_SERVER_BIN:-}" ]]; then
+      if ! BIN="$(prism_bin)"; then
+        cat >&2 <<'EOF'
+bonsai2-27b needs PrismML's llama.cpp fork — stock upstream refuses PTQ1_0
+("invalid ggml type 143"). Install it side-by-side:
+
+  curl -sSL -o /tmp/llama-prism.tar.gz \
+    https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10685-7dffb15/llama-prism-b10685-7dffb15-bin-macos-arm64.tar.gz
+  mkdir -p ~/local/llama-prism-b10685 && tar -xzf /tmp/llama-prism.tar.gz -C ~/local/llama-prism-b10685
+
+...or point LLAMA_PRISM_SERVER_BIN at an existing prism llama-server.
+EOF
+        exit 1
+      fi
+    fi
+    # Bonsai 2 27B is a ternary multimodal model (Qwen3.8-27B base). The
+    # mmproj pack is optional and only loaded for image input.
     if [[ -z "$MMPROJ" ]]; then
-      for c in "$ROOT/mai-ui-2b"/MAI-UI-2B.mmproj-f16.gguf \
-               "$ROOT/mai-ui-2b"/*mmproj*f16*.gguf \
-               "$ROOT/mai-ui-2b"/mmproj*.gguf; do
+      for c in "$ROOT/bonsai2-27b"/Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf \
+               "$ROOT/bonsai2-27b"/*mmproj*.gguf; do
         [[ -f "$c" ]] && MMPROJ="$c" && break
       done
     fi
-    ;;
-  gui-owl-1.5-2b|gui-owl|owl)
-    MODEL="$ROOT/gui-owl-1.5-2b/GUI-Owl-1.5-2B-Instruct.Q4_K_M.gguf"
-    ALIAS="${ALIAS:-GUI-Owl-1.5-2B}"
-    if [[ -z "$MMPROJ" ]]; then
-      for c in "$ROOT/gui-owl-1.5-2b"/GUI-Owl-1.5-2B-Instruct.mmproj-f16.gguf \
-               "$ROOT/gui-owl-1.5-2b"/*mmproj*f16*.gguf \
-               "$ROOT/gui-owl-1.5-2b"/mmproj*.gguf; do
-        [[ -f "$c" ]] && MMPROJ="$c" && break
-      done
-    fi
-    ;;
-  smollm3-3b|smollm3|smollm|smol)
-    MODEL="$ROOT/smollm3-3b/SmolLM3-Q4_K_M.gguf"
-    ALIAS="${ALIAS:-SmolLM3-3B}"
-    # SmolLM3 has a hybrid thinking/no_think mode; the harness wants no_think.
+    # Bonsai 2 reasons by default at 'xhigh' effort. The chat template honours
+    # enable_thinking=false, which --reasoning off drives, so this genuinely
+    # disables thinking (verified: reasoning_content comes back empty).
+    # Note: 'low' effort is unsupported upstream and behaves like 'xhigh';
+    # only 'medium' and 'xhigh' are real. Override with --no-reasoning-off.
     REASONING_OFF=1
     ;;
-  lfm2.5-vl-1.6b|lfm|lfm2|lfm2.5|lfm-vl|lfm2-vl)
-    MODEL="$ROOT/lfm2.5-vl-1.6b/LFM2.5-VL-1.6B-Q4_K_M.gguf"
-    ALIAS="${ALIAS:-LFM2.5-VL-1.6B}"
+  lfm2.5-2.6b|lfm2.6b|lfm-text|lfm2.5-text|lfm26)
+    MODEL="$ROOT/lfm2.5-2.6b/LFM2.5-2.6B-Q4_K_M.gguf"
+    ALIAS="${ALIAS:-LFM2.5-2.6B}"
+    ;;
+  lfm2.5-vl-3b|lfm|lfm2|lfm2.5|lfm-vl|lfm2-vl|lfm3b)
+    MODEL="$ROOT/lfm2.5-vl-3b/LFM2.5-VL-3B-Q4_K_M.gguf"
+    ALIAS="${ALIAS:-LFM2.5-VL-3B}"
     if [[ -z "$MMPROJ" ]]; then
-      for c in "$ROOT/lfm2.5-vl-1.6b"/mmproj-LFM2.5-VL-1.6b-F16.gguf \
-               "$ROOT/lfm2.5-vl-1.6b"/*mmproj*.gguf; do
+      for c in "$ROOT/lfm2.5-vl-3b"/mmproj-LFM2.5-VL-3B-Q8_0.gguf \
+               "$ROOT/lfm2.5-vl-3b"/*mmproj*.gguf; do
         [[ -f "$c" ]] && MMPROJ="$c" && break
       done
     fi
-    ;;
-  bonsai-4b|bonsai)
-    MODEL="$ROOT/bonsai-4b/Bonsai-4B-Q1_0.gguf"
-    ALIAS="${ALIAS:-Bonsai-4B-1bit}"
     ;;
   *.gguf)
     MODEL="$SPEC"

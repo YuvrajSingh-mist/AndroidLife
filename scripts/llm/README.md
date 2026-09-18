@@ -12,6 +12,7 @@ bash scripts/llm/serve_gguf.sh qwen3.5-4b
 bash scripts/llm/serve_gguf.sh gemma4-e2b          # auto --mmproj
 bash scripts/llm/serve_gguf.sh mai-ui-2b
 bash scripts/llm/serve_gguf.sh gui-owl-1.5-2b
+bash scripts/llm/serve_gguf.sh bonsai2-27b         # ternary (Bonsai 2), vision
 
 # or any weights path / directory
 bash scripts/llm/serve_gguf.sh ~/models/foo/bar-Q4_K_M.gguf --alias MyModel
@@ -129,3 +130,46 @@ uv run androidlife_tasks.py \
 | `gemma4-e2b` | `gemma-4-E2B-it` | yes (`--vision`) |
 | `mai-ui-2b` | `MAI-UI-2B` | yes |
 | `gui-owl-1.5-2b` | `GUI-Owl-1.5-2B` | yes |
+| `bonsai2-27b` | `Bonsai-2-27B` | yes (`--vision`) |
+
+`bonsai2-27b` serves `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (5.54 GiB) + `Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf`
+(600 MiB, loaded only on image input) from `prism-ml/Ternary-Bonsai-2-27B-gguf` (Bonsai 2 27B, released
+2026-09-17).
+
+### `bonsai2-27b` needs PrismML's llama.cpp fork
+
+`PTQ1_0` / `PQ2_0` are PrismML's own ternary packings. **Stock upstream llama.cpp refuses them:**
+
+```text
+E gguf_init_from_reader: tensor 'output.weight' has invalid ggml type 143. should be in [0, 42)
+E llama_server: exiting due to model loading error
+```
+
+Bonsai **1**'s `Q1_0` *is* merged upstream, so it runs on the stock binary — Bonsai **2** does not. The
+preset installs side-by-side and only `bonsai2-27b` uses it, so the other presets are unaffected:
+
+```bash
+curl -sSL -o /tmp/llama-prism.tar.gz \
+  https://github.com/PrismML-Eng/llama.cpp/releases/download/prism-b10685-7dffb15/llama-prism-b10685-7dffb15-bin-macos-arm64.tar.gz
+mkdir -p ~/local/llama-prism-b10685 && tar -xzf /tmp/llama-prism.tar.gz -C ~/local/llama-prism-b10685
+```
+
+`serve_gguf.sh` auto-discovers `~/local/llama-prism-*/*/llama-server`; override with
+`LLAMA_PRISM_SERVER_BIN`. An explicit `LLAMA_SERVER_BIN` still wins (used for dry-runs).
+
+> Do not "fix" a load failure by switching to a `Q2_0` file on a stock build — PrismML documents that
+> those **load silently and output gibberish** rather than erroring.
+
+### Bonsai 2 reasoning is on by default, and genuinely disableable
+
+It thinks at `xhigh` effort by default. The preset passes `--reasoning off`, which the chat template
+honours via `enable_thinking=false` — verified: `reasoning_content` comes back empty. Other levers:
+`--reasoning-budget 0`, `--chat-template-kwargs '{"enable_thinking":false}'`, or per-request
+`thinking_budget_tokens: 0` (`-1` = unlimited). Use `--no-reasoning-off` to keep thinking on.
+
+`reasoning_effort` accepts only `medium` and `xhigh` — PrismML states `low` is unsupported and behaves
+close to `xhigh`, so it is not a middle option. Non-thinking sampling is t=0.7 / top_p=0.80 /
+presence_penalty=1.5; thinking mode is t=1.0 / top_p=0.95.
+
+Measured on the M4 16 GB: loads in ~4 s, **7.69 GB RSS** at `-c 32768`; text returns clean and vision
+correctly read a test image ("A red square with the word 'HELLO' and a blue circle.").
