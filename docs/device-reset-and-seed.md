@@ -67,7 +67,9 @@ uv run python scripts/seeding/enrich_public_notes.py --serial "$S"   # public Ob
 uv run python scripts/seeding/fabricate_public_pdfs.py --serial "$S" # Invoice + Rent Receipt
 ```
 
-Re-seed **tomorrow afternoon** conflicts (`easy__calendar__002`):
+Re-seed **tomorrow afternoon** conflicts (`easy__calendar__002`). **`reset_phone.py --apply`
+now does this automatically** — the pair is a `public_v2.seed_calendar_events` entry anchored
+to `run-day + 1`. Use this snippet only to repair it by hand, or when `--apply` cannot run:
 
 ```bash
 uv run python - <<PY

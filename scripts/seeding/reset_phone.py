@@ -61,6 +61,9 @@ PROFILES: dict[str, dict] = {
             # hard__clock-calendar__023 clash + hard__google-meet-files__070 agenda meeting
             "Weekly Sync",
             "Gym",
+            # easy__calendar__002 conflict pair (date-relative; see seed_calendar_events)
+            "Team Sync",
+            "Mentor 1 on 1",
         ],
         # Date-relative calendar seeds re-created at EVERY reset (cal_id=16,
         # device-local time) so the clock-calendar clash shift (07:00 -> 07:30)
@@ -83,6 +86,16 @@ PROFILES: dict[str, dict] = {
             {"title": "Weekly Sync", "offset_days": 1, "start": "10:00", "end": "11:00", "meet": True},
             {"title": "Weekly Sync", "offset_days": 2, "start": "10:00", "end": "11:00", "meet": True},
             {"title": "Gym", "weekday": "tuesday", "start": "06:30", "end": "07:30"},
+            # easy__calendar__002 ("any scheduling conflicts *tomorrow* afternoon?").
+            # Anchored to today+1 so the pair always reads as TOMORROW on the run day.
+            # Previously seeded by an out-of-band snippet pinned to `date.today() + 1`
+            # at *seed* time, so a batch that started a day later (or crossed midnight)
+            # left the conflicts on the run day and the task became unsolvable -- it
+            # cost the 2026-09-16 run (seeded 15 Sep, batch started 16 Sep 01:13 ->
+            # the agent's "tomorrow" was the 17th, which held no conflicts). Resetting
+            # the pair here re-anchors it on every `--apply`, removing the manual step.
+            {"title": "Team Sync", "offset_days": 1, "start": "14:00", "end": "15:00"},
+            {"title": "Mentor 1 on 1", "offset_days": 1, "start": "14:30", "end": "15:30"},
         ],
         # Meet package to drive for the pre-run gate (first one installed wins).
         # `tachyon` is Google Meet on this device (Duo-rebrand lineage); `meetings`
