@@ -342,8 +342,23 @@ prints these; the key ones:
   emailed a photo w/ attachment (`hard__photos-gmail-obsidian-012`), delete that
   Sent email; delete `Copy of SPORTS_VIDEO_DATA` leftovers; re-download the 5
   uploaded files, then delete that Drive folder.
-- **Call-log gap** — not seeded by design: the operator must make one real call
-  to an unsaved number on run day (see `docs/fabricated-test-data.md`).
+- **YouTube channel notifications** — RESTORE the notifying channel's bell to
+  **"All"**. `hard__youtube-settings__052` has the agent set it to **"None"**, and it
+  is app-private (no provider/ADB), so nothing resets it. The public prompt doesn't
+  name the channel — the agent finds whichever one is notifying (normally **Tech
+  Burner**), so scan the Subscriptions list for any channel left on "None". Left off,
+  the next run's agent finds notifications already disabled → free pass.
+- **Do Not Disturb** — Settings should read **"No schedules"** (the same task creates a
+  22:00–08:00 rule). ⚠️ **Trust the UI, not `dumpsys`:** a zombie `ZenRule` named
+  "Rule 1" (22:00–07:00) has persisted in `dumpsys notification` while Settings showed
+  "No schedules" — verified **2026-09-19**, dating from the 17 Sep run. An ADB-only DND
+  check can report a rule no agent can see (and, conversely, prior reports' "DND
+  ADB-verified" lines may have been reading that zombie rather than a live rule).
+- **Call log** — ✅ **now seeded** by `reset_phone.py --apply` (`public_v2.seed_calls`:
+  2 outgoing calls dated today). The old "operator must make one real call" step was
+  based on a wrong assumption — a non-rooted adb *can* write
+  `content://call_log/calls`, and `scripts/seeding/seed_data.py` always did. No manual
+  call needed; `--verify-only` asserts it.
 - Gmail "Recent Mail Searches" is NOT a reset item (personal searches, no Remove
   menu; can't leak ASK USER facts) — do NOT block a run on it.
 
