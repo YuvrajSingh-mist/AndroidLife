@@ -82,6 +82,21 @@ PROFILES: dict[str, dict] = {
         # How far ahead Meet's "Scheduled" list reaches (measured ~48h: today/+1/+2
         # visible, +3/+4 hidden).
         "meet_window_hours": 48.0,
+        # Canonical cloud account per app (see .agents/skills/reset-phone/SKILL.md ->
+        # "Cloud account map"). The device carries 6 Google accounts and each app
+        # remembers its own selection, so an app CAN drift onto another account --
+        # and then it cannot see its own seeded cloud data (that is exactly how
+        # easy__google-slides__001 lost its `Q3 Review` deck on 2026-09-18).
+        # Asserted by verify_cloud_accounts(); skip with --no-account-check.
+        "canonical_accounts": {
+            "com.google.android.gm": "ranirajesh786@gmail.com",                    # Gmail
+            "com.google.android.apps.docs": "ranirajesh786@gmail.com",             # Drive
+            "com.google.android.apps.docs.editors.docs": "ranirajesh786@gmail.com",   # Docs
+            "com.google.android.apps.docs.editors.slides": "ranirajesh786@gmail.com", # Slides
+            "com.google.android.calendar": "yuvraj.mist@gmail.com",                # Calendar
+            "com.google.android.apps.tachyon": "yuvraj.mist@gmail.com",            # Meet
+            "com.google.android.apps.photos": "rajeshceo2015@gmail.com",           # Photos
+        },
         # the contact that runs mangle (easy-contacts-001) - restored to this name
         "contact_email": "akashveyron33@gmail.com",
         "contact_display": "Akash Kumar",
@@ -853,6 +868,61 @@ def verify_meet_agenda(serial: str, prof: dict, timeout_s: float = 40.0) -> bool
     return True
 
 
+def _signed_in_email(xml: str) -> str | None:
+    """Pull the account email out of an app's `Signed in as <Name> <email>` disc."""
+    if not xml:
+        return None
+    # The disc is `Signed in as Rani Singh ranirajesh786@gmail.com\nAccount and settings.`
+    m = re.search(r"Signed in as[^\"&]{0,90}", xml)
+    if not m:
+        return None
+    em = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", m.group(0))
+    return em.group(0) if em else None
+
+
+def verify_cloud_accounts(serial: str, prof: dict, timeout_s: float = 28.0) -> bool:
+    """Assert every cloud app is on its canonical Google account.
+
+    Each app remembers its OWN selected account, and nothing resets that between
+    runs, so an app can silently drift onto a different Google account. When it
+    does, its seeded cloud data becomes invisible -- the app looks empty while the
+    seed is perfectly fine. That is the failure mode behind the Gemini-2026-08-26
+    Meet report ("account mismatch / Rani Singh") and the 2026-09-18 Slides deck
+    disappearing.
+
+    Read-only: launches each app, reads the identity disc's content-desc, and
+    force-stops again. Costs ~6s per app (~40s for the 7 mapped apps).
+    """
+    want = prof.get("canonical_accounts") or {}
+    if not want:
+        return True
+
+    installed = sh(serial, "pm list packages")
+    ok = True
+    for pkg, email in want.items():
+        if f"package:{pkg}" not in installed:
+            print(f"  SKIP cloud account {pkg.split('.')[-1]}: not installed")
+            continue
+        sh(serial, "input keyevent KEYCODE_WAKEUP")
+        sh(serial, f"am force-stop {pkg}")
+        time.sleep(1)
+        sh(serial, f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
+        found = None
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            time.sleep(5)
+            found = _signed_in_email(_pull_ui_dump(serial))
+            if found:
+                break
+        sh(serial, f"am force-stop {pkg}")
+        good = found == email
+        ok &= good
+        print(f"  {'PASS' if good else 'FAIL'} cloud account {pkg.split('.')[-1]}: "
+              f"{found or 'not readable'} (want {email})")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    return ok
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Reset benchmark phone to pre-run baseline (dry-run by default).")
     parser.add_argument("--serial", required=True, help="ADB serial (device id or ip:port)")
@@ -863,6 +933,10 @@ def main() -> int:
     parser.add_argument("--no-meet-check", action="store_true",
                         help="Skip the Google Meet 'Scheduled' pre-run gate (it needs the "
                              "phone unlocked and adds ~10-40s)")
+    parser.add_argument("--no-account-check", action="store_true",
+                        help="Skip the canonical-cloud-account gate (~40s: launches Gmail, "
+                             "Drive, Docs, Slides, Calendar, Meet and Photos to read each "
+                             "app's selected Google account)")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -903,6 +977,8 @@ def main() -> int:
         print("== UI-only manual cleanups (no ADB) — see .agents/skills/reset-phone/SKILL.md ==")
 
     ok = verify(args.serial, prof)
+    if not args.no_account_check:
+        ok &= verify_cloud_accounts(args.serial, prof)
     if not args.no_meet_check:
         ok &= verify_meet_agenda(args.serial, prof)
     print("RESULT", "PASS" if ok else "FAIL")
