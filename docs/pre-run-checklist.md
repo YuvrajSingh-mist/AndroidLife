@@ -82,9 +82,10 @@ Canonical operator runbook (ADB reset + manual seeds table):
   `ranirajesh786`, Calendar/Meet = `yuvraj.mist`, Photos = `rajeshceo2015`. (Maps is
   deliberately unconstrained.)
 - ☐ **Google Slides deck** exists (`easy__google-slides__001`) — slide count queryable.
-  🔴 The cloud `Q3 Review` deck is currently **missing**; the task resolves against the
-  device file `/sdcard/Download/Q3_Review.pptx` (**8 slides**). Confirm it is still present
-  and still 8 — it is **not** managed by `reset_phone.py`. See `redo.md` item 5.
+  🔴 The cloud `Q3 Review` deck did not appear in three consecutive Slides-home dumps;
+  the reliable target is the device file `/sdcard/Download/Q3_Review.pptx` (**8 slides**).
+  Confirm it is still present and still 8 — it is **not** managed by `reset_phone.py`.
+  See `redo.md` item 5.
 - ☐ **Google Docs doc** exists to rename (`easy__google-docs__004`).
 - ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and a conferenced **Weekly Sync
   10:00 within the next 2 days** with attendees `hard__google-meet-files__070` — Meet only lists
