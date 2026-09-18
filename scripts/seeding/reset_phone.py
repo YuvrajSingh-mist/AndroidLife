@@ -718,7 +718,12 @@ def _line_for(haystack: str, title: str) -> str:
 
 
 def _pull_ui_dump(serial: str, remote: str = "/sdcard/_gate_ui.xml") -> str:
-    """uiautomator dump -> local temp file -> text. '' on any failure."""
+    """uiautomator dump -> local temp file -> text. '' on any failure.
+
+    Removes the on-device dump afterwards: the gate runs several times per reset and
+    a stray `_gate_ui.xml` would sit in the shared storage the benchmark's Files
+    tasks browse.
+    """
     import tempfile
 
     sh(serial, f"uiautomator dump {remote}")
@@ -732,6 +737,9 @@ def _pull_ui_dump(serial: str, remote: str = "/sdcard/_gate_ui.xml") -> str:
     except Exception:
         return ""
     finally:
+        # Remove BOTH sides, always: the device copy would otherwise persist across
+        # resets (it is plain shared storage, not app-private).
+        sh(serial, f"rm -f {remote}")
         try:
             os.unlink(tmp)
         except OSError:
