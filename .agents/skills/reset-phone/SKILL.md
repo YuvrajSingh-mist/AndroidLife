@@ -373,10 +373,11 @@ Skip with `--no-account-check`. The mapping lives in the `public_v2` profile as
 > Re-selected `ranirajesh786` via the in-app account chooser (all six accounts are
 > already on the device — no password needed).
 >
-> Note the cloud `Q3 Review` deck is still missing even on the correct account; the
-> task now resolves against the device file `/sdcard/Download/Q3_Review.pptx`
-> (**8 slides**). The deck is **not** managed by `reset_phone.py` — see the re-run
-> queue. Maps sits on `rajceo2031` and that is fine (above).
+> Note the cloud `Q3 Review` deck did **not** appear in three consecutive Slides-home
+> dumps even on the correct account; the reliable target is the device file
+> `/sdcard/Download/Q3_Review.pptx` (**8 slides**). The deck is **not** managed by
+> `reset_phone.py` — see the re-run queue. Maps sits on `rajceo2031` and that is fine
+> (above).
 
 Quick cloud verify (in-app, ~10 min):
 - **Gmail** search "Scapia" → "Fwd: Pack for Delhi" flight email present (KB = PNR X84NVI, BBI→DEL, Oct 16, 12:05→14:30).
