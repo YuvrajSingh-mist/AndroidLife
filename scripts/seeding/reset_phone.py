@@ -223,7 +223,7 @@ PROFILES: dict[str, dict] = {
         "manual_ui_cleanup": [
             "Google Photos: the 3 food-photo captions + Favourites for medium__gallery__007 live in the app-private Photos DB - the task only reads them, so they persist across runs; if ever lost, re-add captions + favourites in the Photos UI before a run (SAME account the Photos app is signed into - favourites/captions do NOT carry across Google accounts)",
             "Gmail: unstar starred emails + remove the label the agent created; delete the sent-with-attachment email",
-            "Notes: delete run notes (Card Payment Due, Budget Tracker, Birthday Reminders, IndiGo flight note)",
+            "Notes (com.oneplus.note): delete run-CREATED notes ONLY, by title (Card Payment Due, Budget Tracker, Birthday Reminders, IndiGo flight note). NEVER sweep by date: PROTECT the 'Budget Deadline' SEED - hard__drive-notes-telegram__010 reads it and its prompt says 'otherwise just log today's check date in the note', so a run can make the note LOOK run-dated and a date-based sweep deletes the seed. That is the likely cause of it vanishing between 2026-08-30 and 2026-09-16 (re-seeded via UI 2026-09-18). The app is app-private with no file seed, so reset_phone.py cannot recreate it - losing it makes the task unsolvable.",
             "Obsidian: delete run notes (e.g. Birthday Reminders)",
             "Photos/Gallery: delete run albums (Invoices, Trip 2026); unstar the 2 starred photos",
             "YT Music: delete the 'Chill Vibes' playlist",
