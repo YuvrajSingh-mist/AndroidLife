@@ -15,6 +15,9 @@ Canonical operator runbook (ADB reset + manual seeds table):
 ## §0 — Already verified via ADB (do NOT recheck)
 
 - ☑ Reset baseline `--verify-only` → **PASS**
+- ☑ Root dump sweep — `reset_phone.py --apply` now clears `/sdcard/*.xml` + `/sdcard/*.png`
+  (724 stray dumps accumulated 2026-07-29 → 2026-09-18; cleared 2026-09-18, root now 0).
+  Nothing seeds or reads the root. If you saved a dump by hand, pull it **before** `--apply`.
 - ☑ Day-1 / Day-2 / Day-3 seed verify → **PASS** (all three)
 - ☑ Tomorrow-conflict events re-seeded (`Team Sync` + `Mentor 1 on 1`) for **tomorrow**
   - 🔴 **Re-check on the RUN day.** The §3 snippet anchors the pair to `today + 1` **at seed

@@ -56,9 +56,10 @@ uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile
 ```
 
 `--verify-only` is the **pre-run gate**: it re-checks the baseline seeds, then the canonical
-cloud accounts (`verify_cloud_accounts`) and the Meet seed (`verify_meet_agenda`). Exit
-code 0 = safe to start a run. Skips: `--no-account-check` (the ~40s account probe) and
-`--no-meet-check` (the Meet "Scheduled" probe).
+cloud accounts (`verify_cloud_accounts`), the Slides deck count (`verify_slides_deck`) and
+the Meet seed (`verify_meet_agenda`). Exit code 0 = safe to start a run. Skips:
+`--no-account-check` (the ~40s account probe), `--no-slides-check` and `--no-meet-check`
+(the Meet "Scheduled" probe).
 
 The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
@@ -66,6 +67,12 @@ The script (profile `public_v2`):
 - Deletes agent-created calendar events (marker/title/creation-window matched) and restores the mangled `Akash Kumar` contact.
 - **(Re)creates date-relative calendar seeds** at EVERY reset on `cal_id=16`: `Weekly Sync` (next Mon 07:00) + `Weekly Sync` (today+1 and today+2, 10:00) + `Gym` (next Tue 06:30) — powers `hard__clock-calendar__023` clash-shift + `hard__google-meet-files__070` agenda meeting. Anchors are declared per entry as `weekday` or `offset_days`. The agenda meeting is **offset-anchored on purpose**: Google Meet's "Scheduled" list only surfaces meetings within ~48h, so a Monday-anchored meeting is 3-6 days out whenever a run starts midweek and Meet showed nothing. Idempotent (shifts a matching copy in place, drops same-title leftovers).
 - Removes run-created files from Downloads/DCIM + Obsidian `Pasted image *.jpg` artifacts.
+- **Sweeps stray `uiautomator dump` debris off the shared-storage root** (`/sdcard/*.xml`,
+  `/sdcard/*.png`). Operator/agent sessions save dumps there and never clean up, so
+  **724 files** had accumulated between 2026-07-29 and 2026-09-18. Nothing seeds or reads
+  the root (all seeds live under `Download/` or `Obsidian/`), and the root's *files* were
+  verified to be exclusively dumps. Applied to **every** profile (`DEVICE_ROOT_DUMP_GLOBS`).
+  ⚠️ It will also remove a dump you saved by hand — pull anything you want to keep first.
 - **Restores mutated seed-note contents to their exact baseline** (`Food Favourites.md`, `Budget Deadline.md`, `Weekly Agenda.txt`, `Stock Watch.md`).
 - Prints the manual UI-only cleanups ADB can't reach (see Step 4).
 

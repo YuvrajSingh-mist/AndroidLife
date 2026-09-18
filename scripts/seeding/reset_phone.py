@@ -11,6 +11,17 @@ import subprocess
 import sys
 import time
 
+# --- stray dump sweep (profile-independent) -----------------------------------
+# Operator/agent sessions save `uiautomator dump` + `screencap` output to the shared
+# storage ROOT as /sdcard/<name>.xml and /sdcard/<name>.png, and never clean up, so
+# debris accumulates indefinitely -- 724 files had built up between 2026-07-29 and
+# 2026-09-18 (the sweep cleared them). Nothing seeds or reads the root: all seeds live
+# under Download/ or Obsidian/, and the root's *files* are exclusively dumps (verified),
+# so these globs are safe. Applied to EVERY profile on --apply, because the debris is
+# profile-independent. NOTE: this WILL remove a dump you saved by hand -- pull anything
+# you want to keep BEFORE running --apply.
+DEVICE_ROOT_DUMP_GLOBS = ["/sdcard/*.xml", "/sdcard/*.png"]
+
 # --- profile: known run-artifact + seed facts for the public 50-task dataset ---
 PROFILES: dict[str, dict] = {
     "public_v2": {
@@ -1031,6 +1042,9 @@ def main() -> int:
         remove_paths(args.serial, prof.get("downloads_to_remove", []), args.apply)
         remove_paths(args.serial, prof.get("device_paths_to_remove", []), args.apply)
         remove_glob(args.serial, prof.get("device_paths_glob", []), args.apply)
+        # Profile-independent: sweep operator/agent `uiautomator dump` debris off the
+        # shared-storage root (see DEVICE_ROOT_DUMP_GLOBS).
+        remove_glob(args.serial, DEVICE_ROOT_DUMP_GLOBS, args.apply)
         remove_paths(args.serial, prof.get("obsidian_vault_remove", []), args.apply)
         remove_by_find(args.serial, prof.get("obsidian_pasted_images", []), args.apply)
         restore_file_contents(args.serial, prof.get("restore_file_contents", {}), args.apply)
