@@ -315,9 +315,17 @@ agent touched them. **Clean-slate rule: remove what THIS run created (match by
 run-window/date), never assume a canned list from prior runs.** The reset script
 prints these; the key ones:
 
-- **Notes** (`com.oneplus.note`) — delete ALL notes dated the run day(s) (see
-  Step 1c — GUI automation works; "Card Payment Due / Budget Tracker / Birthday
-  Reminders / IndiGo" were PRIOR-run names, match by date not name).
+- **Notes** (`com.oneplus.note`) — delete run-CREATED notes (see Step 1c — GUI
+  automation works; "Card Payment Due / Budget Tracker / Birthday Reminders /
+  IndiGo" are PRIOR-run names, so match by title).
+  ⚠️ **PROTECT the `Budget Deadline` SEED — never delete it.** `hard__drive-notes-telegram__010`
+  reads it, and the prompt explicitly says *"otherwise just log today's check date in
+  the note"*, so a run that takes that branch rewrites the note and makes it **look
+  run-dated**. A "delete everything dated the run day" sweep then destroys the seed —
+  which is the most likely cause of it vanishing between **2026-08-30** and
+  **2026-09-16** (re-seeded via UI 2026-09-18; see `docs/fabricated-test-data.md`).
+  `com.oneplus.note` is app-private with **no file seed**, so `reset_phone.py` cannot
+  recreate it and the task becomes unsolvable. **Exclude it by TITLE, not by date.**
 - **Obsidian** — the vault IS at `/sdcard/Obsidian/<vault>` and is ADB-accessible
   (NOT app-private — corrected 2026-08-23): run-created notes (e.g.
   `Photo sent to Yuvraj Airtel.md` from `hard__photos-gmail-obsidian-012`) can be
