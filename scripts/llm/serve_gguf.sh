@@ -36,6 +36,9 @@ Presets (under $ANDROIDLIFE_GGUF_ROOT):
   gemma4-e2b       gemma-4-E2B-it-Q4_K_M.gguf      + mmproj-BF16.gguf
   mai-ui-2b        MAI-UI-2B.Q4_K_M.gguf           + mmproj-f16
   gui-owl-1.5-2b   GUI-Owl-1.5-2B-Instruct.Q4_K_M  + mmproj-f16
+  smollm3-3b       SmolLM3-Q4_K_M.gguf             (general, text)
+  lfm2.5-vl-1.6b   LFM2.5-VL-1.6B-Q4_K_M.gguf      + mmproj-F16 (general, vision)
+  bonsai-4b        Bonsai-4B-Q1_0.gguf             (general, 1-bit)
 
 Examples:
   bash scripts/llm/serve_gguf.sh qwen3.5-4b
@@ -91,6 +94,26 @@ case "$SPEC" in
         [[ -f "$c" ]] && MMPROJ="$c" && break
       done
     fi
+    ;;
+  smollm3-3b|smollm3|smollm|smol)
+    MODEL="$ROOT/smollm3-3b/SmolLM3-Q4_K_M.gguf"
+    ALIAS="${ALIAS:-SmolLM3-3B}"
+    # SmolLM3 has a hybrid thinking/no_think mode; the harness wants no_think.
+    REASONING_OFF=1
+    ;;
+  lfm2.5-vl-1.6b|lfm|lfm2|lfm2.5|lfm-vl|lfm2-vl)
+    MODEL="$ROOT/lfm2.5-vl-1.6b/LFM2.5-VL-1.6B-Q4_K_M.gguf"
+    ALIAS="${ALIAS:-LFM2.5-VL-1.6B}"
+    if [[ -z "$MMPROJ" ]]; then
+      for c in "$ROOT/lfm2.5-vl-1.6b"/mmproj-LFM2.5-VL-1.6b-F16.gguf \
+               "$ROOT/lfm2.5-vl-1.6b"/*mmproj*.gguf; do
+        [[ -f "$c" ]] && MMPROJ="$c" && break
+      done
+    fi
+    ;;
+  bonsai-4b|bonsai)
+    MODEL="$ROOT/bonsai-4b/Bonsai-4B-Q1_0.gguf"
+    ALIAS="${ALIAS:-Bonsai-4B-1bit}"
     ;;
   *.gguf)
     MODEL="$SPEC"
