@@ -55,9 +55,10 @@ uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile
 uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --verify-only  # pre-run gate (no changes)
 ```
 
-`--verify-only` is the **pre-run gate**: it re-checks the baseline seeds AND runs the
-`verify_meet_agenda()` gate (window + conference link + live Meet "Scheduled" probe).
-Exit code 0 = safe to start a run; `--no-meet-check` skips just the Meet probe.
+`--verify-only` is the **pre-run gate**: it re-checks the baseline seeds, then the canonical
+cloud accounts (`verify_cloud_accounts`) and the Meet seed (`verify_meet_agenda`). Exit
+code 0 = safe to start a run. Skips: `--no-account-check` (the ~40s account probe) and
+`--no-meet-check` (the Meet "Scheduled" probe).
 
 The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
@@ -343,18 +344,39 @@ prints these; the key ones:
 
 The fabricated **on-device** seeds are ADB-verifiable (§0). Everything else is
 **cloud/account state** that must sit on the right Google account — the device has
-6 Google accounts and the apps are NOT auto-consistent. Before every run, confirm
-each app is on ONE canonical account (currently split — pick one and re-login the
-others):
+6 Google accounts and each app remembers its **own** selected account, so the apps
+are NOT auto-consistent and **nothing resets that between runs**. An app on the
+wrong account cannot see its own seeded cloud data and just looks empty.
 
-| App | Where its seed data lives |
-|---|---|
-| Calendar (cal_id=16) | `yuvraj.mist@gmail.com` — Google Calendar only shows `_sync_id` events |
-| Google Meet | `yuvraj.mist@gmail.com` — must match the Calendar account, or its "Scheduled" list is empty. Only lists meetings with a **Meet conference link**, and only within ~**48h** (measured: today/+1/+2 visible, +3/+4 hidden) |
-| Gmail / Drive / Docs / Slides | `ranirajesh786@gmail.com` — Scapia flight email, `Q3_Report` + shared files, `Student Project Tracker` doc, `Q3 Review` deck |
-| Google Photos | `rajeshceo2015@gmail.com` (backup ON) — most-recent photo has location + "Backed up" |
-| Contacts / SMS / Notes / Obsidian / Telegram | device-local (no account) — ADB-seeded |
-| Prime Video / Amazon / Swiggy / BookMyShow / Zomato / YT Music | personal accounts (signed in, real order/watch history — re-verify at run time) |
+**This is now gate-enforced.** `reset_phone.py --verify-only` runs
+`verify_cloud_accounts()`, which launches each mapped app, reads its identity-disc
+`content-desc` (`Signed in as <Name> <email>`) and FAILs the reset on any mismatch.
+Skip with `--no-account-check`. The mapping lives in the `public_v2` profile as
+`canonical_accounts`:
+
+| App | Canonical account (where its seed data lives) | Package |
+|---|---|---|
+| Calendar (`cal_id=16`) | `yuvraj.mist@gmail.com` — Google Calendar only shows `_sync_id` events | `com.google.android.calendar` |
+| Google Meet | `yuvraj.mist@gmail.com` — must match the Calendar account, or its "Scheduled" list is empty. Only lists meetings with a **Meet conference link**, and only within ~**48h** (measured: today/+1/+2 visible, +3/+4 hidden) | `com.google.android.apps.tachyon` |
+| Gmail / Drive / Docs / Slides | `ranirajesh786@gmail.com` — Scapia flight email, `Q3_Report` + shared files, `Student Project Tracker` doc, `Q3 Review` deck | `com.google.android.gm`, `com.google.android.apps.docs`, `…editors.docs`, `…editors.slides` |
+| Google Photos | `rajeshceo2015@gmail.com` (backup ON) — most-recent photo has location + "Backed up" | `com.google.android.apps.photos` |
+| Contacts / SMS / Notes / Obsidian / Telegram | device-local (no account) — ADB-seeded | — |
+| Prime Video / Amazon / Swiggy / BookMyShow / Zomato / YT Music | personal accounts (signed in, real order/watch history — re-verify at run time) | — |
+| **Google Maps** | **not constrained** — neither Maps task (`google-maps__002` compare ETAs + Notes, `google-maps__004` save parking) touches account-bound data, so the Maps account gates nothing | `com.google.android.apps.maps` |
+
+> **Verified + fixed 2026-09-18.** All of the above were correct **except Google
+> Slides**, which had drifted to `rajceo2031@gmail.com` (Rani Singh's is
+> `ranirajesh786`). Consequence: the seeded `Q3 Review` deck became invisible, so
+> `easy__google-slides__001` ("how many slides?") had nothing to read — an archived
+> dump from **2026-09-04** (`assets/runs/logs/gui_checks/51_slides.xml`) still shows
+> Slides on `ranirajesh786` with the deck visible, so the drift happened after that.
+> Re-selected `ranirajesh786` via the in-app account chooser (all six accounts are
+> already on the device — no password needed).
+>
+> Note the cloud `Q3 Review` deck is still missing even on the correct account; the
+> task now resolves against the device file `/sdcard/Download/Q3_Review.pptx`
+> (**8 slides**). The deck is **not** managed by `reset_phone.py` — see the re-run
+> queue. Maps sits on `rajceo2031` and that is fine (above).
 
 Quick cloud verify (in-app, ~10 min):
 - **Gmail** search "Scapia" → "Fwd: Pack for Delhi" flight email present (KB = PNR X84NVI, BBI→DEL, Oct 16, 12:05→14:30).

@@ -75,7 +75,16 @@ Canonical operator runbook (ADB reset + manual seeds table):
 
 ## §4 — Google Docs / Slides / Meet (cloud)
 
+- ☑ **Cloud account gate** — `reset_phone.py --verify-only` now asserts each app's
+  selected Google account (`Signed in as …`), so a drifted app FAILs the reset instead of
+  silently hiding its seed. **2026-09-18: Slides had drifted to `rajceo2031@gmail.com`;
+  fixed to `ranirajesh786@gmail.com`.** Canonical: Gmail/Drive/Docs/Slides =
+  `ranirajesh786`, Calendar/Meet = `yuvraj.mist`, Photos = `rajeshceo2015`. (Maps is
+  deliberately unconstrained.)
 - ☐ **Google Slides deck** exists (`easy__google-slides__001`) — slide count queryable.
+  🔴 The cloud `Q3 Review` deck is currently **missing**; the task resolves against the
+  device file `/sdcard/Download/Q3_Review.pptx` (**8 slides**). Confirm it is still present
+  and still 8 — it is **not** managed by `reset_phone.py`. See `redo.md` item 5.
 - ☐ **Google Docs doc** exists to rename (`easy__google-docs__004`).
 - ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and a conferenced **Weekly Sync
   10:00 within the next 2 days** with attendees `hard__google-meet-files__070` — Meet only lists
