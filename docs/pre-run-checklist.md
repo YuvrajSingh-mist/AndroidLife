@@ -19,20 +19,19 @@ Canonical operator runbook (ADB reset + manual seeds table):
   (724 stray dumps accumulated 2026-07-29 → 2026-09-18; cleared 2026-09-18, root now 0).
   Nothing seeds or reads the root. If you saved a dump by hand, pull it **before** `--apply`.
 - ☑ Day-1 / Day-2 / Day-3 seed verify → **PASS** (all three)
-- ☑ Tomorrow-conflict events re-seeded (`Team Sync` + `Mentor 1 on 1`) for **tomorrow**
-  - 🔴 **Re-check on the RUN day.** The §3 snippet anchors the pair to `today + 1` **at seed
-    time**, so a run that crosses midnight leaves them on the run day and
-    `easy__calendar__002` becomes unsolvable — this happened on **16 Sep** (seeded 15 Sep,
+- ☑ Tomorrow-conflict events (`Team Sync` 14:00 + `Mentor 1 on 1` 14:30) are **reset-managed**
+  - ✅ **Fixed 2026-09-18.** `reset_phone.py --apply` now re-anchors the pair to
+    **run-day + 1** on every reset — they are ordinary `public_v2.seed_calendar_events`
+    entries (alongside `Weekly Sync` / `Gym`) and are date-shifted **in place**. The old
+    out-of-band §3 snippet anchored them to `date.today() + 1` **at seed time**, so a batch
+    that started on a later day (or crossed midnight) left the conflicts on the run day and
+    `easy__calendar__002` became unsolvable — it cost the **16 Sep** run (seeded 15 Sep,
     batch started 16 Sep 01:13 → `ui_states/0004` showed both events on Wed 16, Thu 17 empty).
-    Re-run the snippet on the day the batch actually starts, then confirm the pair reads
-    **run-day + 1**.
-  - ⚠️ **All 6 seeded events were shifted +7 days on 16 Sep** (operator request), so they are
-    currently anchored to a **~23 Sep run day**: `Team Sync` Thu 24 14:00, `Mentor 1 on 1`
-    Thu 24 14:30, `Weekly Sync` Mon 28 07:00 + 10:00, `Gym` Tue 29 06:30, and `Weekly_Standup`
-    daily 14:30 from Wed 23 → Tue 6 Oct (14 instances).
-    **A run before 23 Sep will fail `easy__calendar__002`** — its conflicts now sit on the 24th,
-    so "tomorrow" has none. `reset_phone.py --apply` re-anchors `Weekly Sync`/`Gym` to the next
-    weekday from the reset day, which undoes the shift: reset on the run day, or re-shift after.
+    The manual re-seed step is gone; `--verify-only` now asserts both titles are present.
+    In-place shifting keeps `easy__calendar__008`'s lookalike-deletion check intact.
+  - ⚠️ Still confirm the **device date = run day** before launch: every anchor is computed
+    from `date.today()` on the **host**, so a stale device/host clock mis-anchors the whole
+    calendar (pair, `Weekly Sync`, `Gym`) in one go.
 - ☑ Weekly Sync + Gym date-relative seeds (Mon 07:00 for the clash task; **10:00 on today+1 and today+2** for the Meet task; next Tue for Gym)
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)
