@@ -52,7 +52,12 @@ uv run python -m pytest tests/ -q -p no:cacheprovider --deselect tests/test_adb.
 ```bash
 uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2          # DRY RUN (default, safe)
 uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --apply  # actually reset
+uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --verify-only  # pre-run gate (no changes)
 ```
+
+`--verify-only` is the **pre-run gate**: it re-checks the baseline seeds AND runs the
+`verify_meet_agenda()` gate (window + conference link + live Meet "Scheduled" probe).
+Exit code 0 = safe to start a run; `--no-meet-check` skips just the Meet probe.
 
 The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
@@ -68,13 +73,30 @@ The script (profile `public_v2`):
 > false-FAILs `Weekly Sync` when a freshly re-seeded (non-synced, `_sync_id=NULL`)
 > copy coexists with an older soft-deleted one.
 >
-> **Meet conference link (one-time manual step).** Both 10:00 `Weekly Sync` seeds
-> need a Google Meet link or they never appear in Meet at all. It can only be
-> added by hand — `content insert --bind` splits bind values on ':' so a
-> `https://` URL is rejected. Calendar app → open the event → **Edit → Add video
+> **Meet conference link (one-time manual step, now gate-enforced).** Both 10:00
+> `Weekly Sync` seeds need a Google Meet link or they never appear in Meet at all.
+> It can only be added by hand — the non-rooted `content` CLI cannot write it
+> (bind values split on ':', and the provider ignores direct `description` writes
+> on synced rows). Calendar app → open the event → **Edit → Add video
 > conferencing → Google Meet → Save**. `reset_phone.py` then **shifts those events
-> in place** (never delete+insert) so the link survives every reset. If a seed is
-> ever torn down and re-inserted, re-add the link the same way.
+> in place** so the link survives every reset.
+>
+> Bug fixed 2026-09-18: the in-place shift previously required an EXACT date match,
+> so any reset run more than a day after the previous one fell through to
+> delete+insert and **silently destroyed the link**. `ensure_calendar_events` now
+> prefers an exact-date copy and otherwise falls back to any same-title/same-time
+> copy, so a linked seed is never torn down.
+>
+> **Pre-run gate (`reset_phone.py --verify-only`).** `verify_meet_agenda()` fails the
+> reset when any of these holds, so a broken Meet seed cannot silently cost a FAIL:
+> 1. **stale anchor** — no agenda occurrence lands inside Meet's ~48h "Scheduled"
+>    window (the seed is date-relative; re-run `--apply` on the run day);
+> 2. **no conference link** — no agenda occurrence's description holds a
+>    `meet.google.com/` URL;
+> 3. **wrong account** — Meet's "Scheduled" list does not actually show the meeting,
+>    which is the signature of Meet being signed into a different Google account
+>    than the one `cal_id=16` lives on.
+> Skip with `--no-meet-check` (the probe needs the phone awake and adds ~10-40s).
 
 ## Step 1b — Soft-delete run-created CALENDAR events (synced calendar — reset script MISSES these)
 

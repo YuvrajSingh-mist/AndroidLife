@@ -9,6 +9,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 # --- profile: known run-artifact + seed facts for the public 50-task dataset ---
 PROFILES: dict[str, dict] = {
@@ -64,10 +65,23 @@ PROFILES: dict[str, dict] = {
         # that window on the day the task actually runs.
         "seed_calendar_events": [
             {"title": "Weekly Sync", "weekday": "monday", "start": "07:00", "end": "08:00"},
-            {"title": "Weekly Sync", "offset_days": 1, "start": "10:00", "end": "11:00"},
-            {"title": "Weekly Sync", "offset_days": 2, "start": "10:00", "end": "11:00"},
+            # `meet: True` = this occurrence is the Google-Meet agenda seed for
+            # hard__google-meet-files__070. Meet only lists conferenced meetings, and
+            # only within ~48h, so the verify gate asserts at least one of these
+            # lands inside that window (a stale anchor silently fails the task).
+            {"title": "Weekly Sync", "offset_days": 1, "start": "10:00", "end": "11:00", "meet": True},
+            {"title": "Weekly Sync", "offset_days": 2, "start": "10:00", "end": "11:00", "meet": True},
             {"title": "Gym", "weekday": "tuesday", "start": "06:30", "end": "07:30"},
         ],
+        # Meet package to drive for the pre-run gate (first one installed wins).
+        # `tachyon` is Google Meet on this device (Duo-rebrand lineage); `meetings`
+        # is the standalone app and is NOT installed here.
+        "meet_packages": ["com.google.android.apps.meetings", "com.google.android.apps.tachyon"],
+        # Titles that must be visible in Meet -> "Scheduled" on run day.
+        "meet_expected_titles": ["Weekly Sync"],
+        # How far ahead Meet's "Scheduled" list reaches (measured ~48h: today/+1/+2
+        # visible, +3/+4 hidden).
+        "meet_window_hours": 48.0,
         # the contact that runs mangle (easy-contacts-001) - restored to this name
         "contact_email": "akashveyron33@gmail.com",
         "contact_display": "Akash Kumar",
@@ -559,14 +573,29 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
             return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=tz).timestamp() * 1000)
 
         dtstart, dtend = epoch(ev["start"]), epoch(ev["end"])
-        # Match on time-of-day AND date. Time-of-day alone separates the 07:00
-        # clash seed from the 10:00 agenda seed, but the agenda seed now exists at
-        # 10:00 on two consecutive days -- without the date check the second copy
-        # would look like a stale duplicate and be deleted on every reset.
-        match = next((eid for eid, etitle, eds in existing
-                      if eid not in used and etitle == ev["title"]
-                      and eds is not None and hhmm(eds) == ev["start"]
-                      and day_of(eds) == d), None)
+        # Match on title + time-of-day. PREFER an exact-date copy (the steady-state
+        # case), but fall back to any same-time copy so we SHIFT it in place rather
+        # than delete+insert.
+        #
+        # The fallback is load-bearing: a Meet conference link cannot be written by
+        # the non-rooted `content` CLI (bind values reject ':', and the provider
+        # drops direct `description` writes on synced rows), so a delete+insert
+        # silently DESTROYS it. Before this fallback existed, an anchor that was
+        # more than a day stale (i.e. any reset not run on consecutive days) matched
+        # nothing, inserted two fresh unlinked copies, and deleted the linked one —
+        # taking hard__google-meet-files__070 back to invisible.
+        def _pick(prefer_date: bool) -> str | None:
+            for eid, etitle, eds in existing:
+                if eid in used or etitle != ev["title"] or eds is None:
+                    continue
+                if hhmm(eds) != ev["start"]:
+                    continue
+                if prefer_date and day_of(eds) != d:
+                    continue
+                return eid
+            return None
+
+        match = _pick(True) or _pick(False)
         if match:
             sh(serial, f"content update --uri {CAL_URI} "
                        f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
@@ -663,6 +692,167 @@ def _line_for(haystack: str, title: str) -> str:
     return ""
 
 
+def _pull_ui_dump(serial: str, remote: str = "/sdcard/_gate_ui.xml") -> str:
+    """uiautomator dump -> local temp file -> text. '' on any failure."""
+    import tempfile
+
+    sh(serial, f"uiautomator dump {remote}")
+    fd, tmp = tempfile.mkstemp(prefix="androidlife_gate_", suffix=".xml")
+    os.close(fd)
+    try:
+        subprocess.run(["adb", "-s", serial, "pull", remote, tmp],
+                       capture_output=True, text=True, timeout=30)
+        with open(tmp, encoding="utf-8", errors="ignore") as fh:
+            return fh.read()
+    except Exception:
+        return ""
+    finally:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+
+
+def _agenda_seed_window(serial: str, prof: dict) -> tuple[bool, str]:
+    """Deterministic half of the Meet gate: is an agenda seed inside Meet's window?
+
+    Returns `(ok, detail)`. A stale anchor (reset days before the run) pushes the
+    10:00 meetings into the past, so Meet's ~48h "Scheduled" list shows nothing and
+    hard__google-meet-files__070 fails *silently* — the model just reports nothing.
+    This catches that without touching the UI.
+    """
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    agenda = [e for e in prof.get("seed_calendar_events", []) if e.get("meet")]
+    if not agenda:
+        return True, "no meet-marked seeds"
+    window = float(prof.get("meet_window_hours", 48.0))
+
+    tz = ZoneInfo(sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata")
+    now = datetime.datetime.now(tz)
+    live = _live_calendar_events(serial, [e["title"] for e in agenda])
+    soonest: float | None = None
+    for ev in agenda:
+        hits = [ds for _eid, t, ds in live if t == ev["title"] and ds is not None]
+        for ds in hits:
+            delta_h = (datetime.datetime.fromtimestamp(ds / 1000, tz=tz) - now).total_seconds() / 3600
+            if delta_h > 0 and (soonest is None or delta_h < soonest):
+                soonest = delta_h
+    if soonest is None:
+        return False, "no upcoming meet-marked seed at all"
+    if soonest > window:
+        return False, (f"soonest agenda seed is +{soonest:.1f}h away — outside Meet's "
+                       f"~{window:.0f}h Scheduled window (STALE ANCHOR: re-run "
+                       f"`reset_phone.py --apply` on the run day)")
+    return True, f"soonest agenda seed +{soonest:.1f}h (inside the ~{window:.0f}h window)"
+
+
+def _agenda_conference_links(serial: str, prof: dict) -> list[tuple[str, bool]]:
+    """`(title, has_meet_link)` for each live agenda occurrence, from its `description`.
+
+    Scoped to the `meet`-marked seeds' time-of-day, so the Monday 07:00 / Tue 06:30
+    clash seeds (same title, no conferencing) are not miscounted as agenda meetings.
+
+    A Meet conference link is only writable through the Calendar UI — the non-rooted
+    `content` CLI cannot set it (bind values reject ':' and the provider ignores
+    direct `description` writes on synced rows). It IS readable though, so the gate
+    can assert it is still present instead of discovering it is gone on run day.
+
+    Rows are split on the `Row: N ` marker, NOT on newlines: an event description
+    contains embedded newlines, so the meet link lands several physical lines below
+    the `title=` field and a per-line scan false-negatives every linked seed.
+    """
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    agenda = [e for e in prof.get("seed_calendar_events", []) if e.get("meet")]
+    titles = {e["title"] for e in agenda}
+    starts = {e["start"] for e in agenda}
+    if not titles:
+        return []
+    tz = ZoneInfo(sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata")
+    rows = sh(serial, f"content query --uri {CAL_URI} "
+                      f"--projection _id:title:dtstart:description:deleted")
+    out: list[tuple[str, bool]] = []
+    for block in re.split(r"^Row: \d+ ", rows, flags=re.M)[1:]:
+        t = re.search(r"title=([^,]*),", block)
+        d = re.search(r"deleted=([01])", block)
+        s = re.search(r"dtstart=(\d+)", block)
+        if not (t and d and s) or d.group(1) == "1":
+            continue
+        title = t.group(1).strip()
+        if title not in titles:
+            continue
+        slot = datetime.datetime.fromtimestamp(int(s.group(1)) / 1000, tz=tz).strftime("%H:%M")
+        if slot not in starts:
+            continue
+        out.append((title, "meet.google.com/" in block))
+    return out
+
+
+def verify_meet_agenda(serial: str, prof: dict, timeout_s: float = 40.0) -> bool:
+    """Pre-run gate: will Meet actually list the agenda meeting on run day?
+
+    Three layers, because they catch different breakages:
+      1. calendar-side window check (deterministic) — catches a stale anchor;
+      2. conference-link check (deterministic) — catches a dropped Meet link;
+      3. live Meet "Scheduled" probe — catches the classic account mismatch (Meet
+         signed into a different Google account than the one cal_id=16 lives on, so
+         the meeting never appears even though the seed is perfect).
+    """
+    titles = prof.get("meet_expected_titles") or []
+    if not titles:
+        return True
+
+    ok, detail = _agenda_seed_window(serial, prof)
+    print(f"  {'PASS' if ok else 'FAIL'} meet: agenda seed in window ({detail})")
+    if not ok:
+        # A stale anchor dooms the Meet task regardless of what the app shows.
+        print("        -> hard__google-meet-files__070 will FAIL as seeded. Fix before running.")
+        return False
+
+    links = _agenda_conference_links(serial, prof)
+    linked = [t for t, has in links if has]
+    if not linked:
+        print(f"  FAIL meet: no agenda seed carries a Meet conference link ({len(links)} checked)")
+        print("        -> re-add it by hand: Calendar -> open the 10:00 'Weekly Sync' -> "
+              "Edit -> Add video conferencing -> Google Meet -> Save")
+        return False
+    print(f"  PASS meet: conference link present ({len(linked)}/{len(links)} agenda seed(s))")
+
+    installed = sh(serial, "pm list packages")
+    pkg = next((p for p in prof.get("meet_packages", []) if f"package:{p}" in installed), None)
+    if not pkg:
+        print(f"  FAIL meet: none of {prof.get('meet_packages')} installed")
+        return False
+
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
+    xml = ""
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        time.sleep(4)
+        xml = _pull_ui_dump(serial)
+        # "Scheduled" is the list header; "New call" shows on the same home screen.
+        if xml and ("Scheduled" in xml or "New call" in xml):
+            break
+    if not xml:
+        print(f"  FAIL meet: could not read the Meet UI (no uiautomator dump after {timeout_s:.0f}s)")
+        return False
+
+    found = [t for t in titles if f'text="{t}"' in xml or f'content-desc="{t}' in xml]
+    missing = [t for t in titles if t not in found]
+    if missing:
+        print(f"  FAIL meet: {pkg} -> 'Scheduled' does NOT list {missing} "
+              f"(no conference link, stale anchor, or Meet on the wrong Google account)")
+        print("        -> hard__google-meet-files__070 will FAIL as seeded. Fix before running.")
+        return False
+
+    print(f"  PASS meet: {pkg} -> 'Scheduled' lists {found}")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Reset benchmark phone to pre-run baseline (dry-run by default).")
     parser.add_argument("--serial", required=True, help="ADB serial (device id or ip:port)")
@@ -670,6 +860,9 @@ def main() -> int:
     parser.add_argument("--day", type=int, default=None, help="Shortcut for --profile day_N (e.g. --day 1 cleans Day-1 530 run artifacts).")
     parser.add_argument("--apply", action="store_true", help="Actually apply changes (default is dry-run)")
     parser.add_argument("--verify-only", action="store_true", help="Only verify baseline; make no changes")
+    parser.add_argument("--no-meet-check", action="store_true",
+                        help="Skip the Google Meet 'Scheduled' pre-run gate (it needs the "
+                             "phone unlocked and adds ~10-40s)")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -710,6 +903,8 @@ def main() -> int:
         print("== UI-only manual cleanups (no ADB) — see .agents/skills/reset-phone/SKILL.md ==")
 
     ok = verify(args.serial, prof)
+    if not args.no_meet_check:
+        ok &= verify_meet_agenda(args.serial, prof)
     print("RESULT", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 
