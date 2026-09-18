@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download the four AndroidLife SLM GGUFs for llama.cpp (Apple Silicon).
+# Download the AndroidLife SLM GGUFs for llama.cpp (Apple Silicon).
 set -euo pipefail
 ROOT="${ANDROIDLIFE_GGUF_ROOT:-$HOME/models/androidlife-gguf}"
 export PATH="${PATH}:$(cd "$(dirname "$0")/../.." && pwd)/.venv/bin"
@@ -30,6 +30,12 @@ hf download mradermacher/GUI-Owl-1.5-2B-Instruct-GGUF \
   --include "*Q4_K_M*" \
   --include "*mmproj*f16*" \
   --local-dir "$ROOT/gui-owl-1.5-2b"
+
+echo "==> Ternary-Bonsai-2-27B PTQ1_0 + mmproj-Q8_0"
+hf download prism-ml/Ternary-Bonsai-2-27B-gguf \
+  --include "Ternary-Bonsai-2-27B-PTQ1_0.gguf" \
+  --include "Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf" \
+  --local-dir "$ROOT/bonsai2-27b"
 
 echo "Done. Tree:"
 find "$ROOT" -name '*.gguf' -exec ls -lh {} \;
