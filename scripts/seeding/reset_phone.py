@@ -230,6 +230,8 @@ PROFILES: dict[str, dict] = {
             "Telegram: unmute the 'Forever 21' group; keep the meetup thread UNRESOLVED (edited 2026-08-21: last message is \"22nd could work for me too, let me confirm once she's free\" — no settled date/time/venue in the chat, so hard__telegram-calendar__016 forces ask_user; do NOT re-add a settling message)",
             "Digital Wellbeing: remove the 30-min app timers the agent set",
             "Camera: delete the run-recorded 'Camera Video' clip if present",
+            "YouTube: RESTORE the notifying channel's notification bell to 'All'. hard__youtube-settings__052 has the agent turn it OFF ('None'), and it is app-private (no provider, no ADB), so nothing resets it. The public prompt does NOT name the channel - the agent must find whichever channel is notifying (normally 'Tech Burner', see config/user_config.example -> notifying channel), so check the Subscription list for any channel left on 'None'. If left off, the NEXT run's agent finds notifications already disabled and the task becomes a free pass.",
+            "Settings: confirm Do Not Disturb shows 'No schedules' (hard__youtube-settings__052 also creates a 22:00-08:00 schedule rule). TRUST THE UI, NOT dumpsys: a stale ZenRule named 'Rule 1' (22:00-07:00) has survived deletion in `dumpsys notification` while Settings reads 'No schedules' - verified 2026-09-19, the zombie dated from the 17 Sep run. An ADB-only check can therefore report a DND rule that no agent can actually see.",
             "Drive: delete 'Copy of SPORTS_VIDEO_DATA' leftovers; re-download the 5 uploaded files, then delete that Drive folder",
         ],
     },
