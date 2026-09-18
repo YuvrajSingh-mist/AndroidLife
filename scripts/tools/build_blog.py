@@ -123,7 +123,7 @@ FOOTER = """<footer>
 SCRIPTS = """<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
 <script src="{p}assets/js/nav.js?v=13"></script>
-<script src="{p}assets/js/app.js?v=12"></script>"""
+<script src="{p}assets/js/app.js?v=13"></script>"""
 
 HEAD = """<!DOCTYPE html>
 <html lang="en">
