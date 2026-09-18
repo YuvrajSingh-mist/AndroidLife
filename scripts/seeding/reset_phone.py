@@ -558,6 +558,27 @@ def _live_calendar_events(serial: str, titles: list[str]) -> list[tuple[str, str
     return found
 
 
+def _calendar_ids_with_meet_link(serial: str) -> set[str]:
+    """`_id`s of LIVE events that carry a Google Meet conference link.
+
+    Read from `description`, which is where the sync adapter stores the join block.
+    Rows are split on the `Row: N ` marker rather than on newlines: a description
+    contains embedded newlines, so the URL lands several physical lines below the
+    `_id=` field and a per-line scan false-negatives every linked event.
+    """
+    rows = sh(serial, f"content query --uri {CAL_URI} "
+                      f"--projection _id:description:deleted")
+    out: set[str] = set()
+    for block in re.split(r"^Row: \d+ ", rows, flags=re.M)[1:]:
+        i = re.match(r"_id=(\d+),", block)
+        d = re.search(r"deleted=([01])", block)
+        if not i or (d and d.group(1) == "1"):
+            continue
+        if "meet.google.com/" in block:
+            out.add(i.group(1))
+    return out
+
+
 def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None:
     """(Re)create date-relative calendar seeds so clash/agenda meetings exist at
     every reset (variance-safe for the 3x public runs).
@@ -594,6 +615,9 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
                      "friday": 4, "saturday": 5, "sunday": 6}
     titles = [e["title"] for e in events]
     existing = _live_calendar_events(serial, titles)
+    # Only queried when a meet-marked seed exists: pre-fix resets migrated the
+    # unlinked duplicate into Meet's window slot, so the link has to be steered.
+    linked = _calendar_ids_with_meet_link(serial) if any(e.get("meet") for e in events) else set()
     if not apply:
         print(f"  [dry] ensure date-relative calendar seeds: {titles}")
         print(f"  [dry] would date-shift {len(existing)} live seed event(s) in place")
@@ -633,18 +657,33 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         # more than a day stale (i.e. any reset not run on consecutive days) matched
         # nothing, inserted two fresh unlinked copies, and deleted the linked one —
         # taking hard__google-meet-files__070 back to invisible.
-        def _pick(prefer_date: bool) -> str | None:
+        def _pick(*, exact_date: bool, prefer_link: bool) -> str | None:
             for eid, etitle, eds in existing:
                 if eid in used or etitle != ev["title"] or eds is None:
                     continue
                 if hhmm(eds) != ev["start"]:
                     continue
-                if prefer_date and day_of(eds) != d:
+                if exact_date and day_of(eds) != d:
+                    continue
+                if prefer_link and eid not in linked:
                     continue
                 return eid
             return None
 
-        match = _pick(True) or _pick(False)
+        # A `meet: True` seed must end up as the LINKED copy, because the link is what
+        # makes the meeting visible in Meet at all -- and only the run-day+1 slot lands
+        # inside Meet's ~48h "Scheduled" window. Date-exactness alone is not enough: on
+        # consecutive-day resets the unlinked duplicate already occupies the +1 slot, so
+        # an exact-date-first pick hands that slot to the UNLINKED copy and pushes the
+        # linked one to +2 -- silently out of the window (this actually happened on the
+        # 2026-09-19 run day). Prefer the linked copy first, then fall back.
+        if ev.get("meet") and linked:
+            match = (_pick(exact_date=True, prefer_link=True)
+                     or _pick(exact_date=False, prefer_link=True)
+                     or _pick(exact_date=True, prefer_link=False)
+                     or _pick(exact_date=False, prefer_link=False))
+        else:
+            match = _pick(exact_date=True, prefer_link=False) or _pick(exact_date=False, prefer_link=False)
         if match:
             sh(serial, f"content update --uri {CAL_URI} "
                        f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
