@@ -86,7 +86,9 @@ SCHEMA: dict[str, tuple[str, str]] = {
                           "(`[notifying channel]`).", "Tech Burner"),
     "related product": ("Product the user wants surfaced from the Sheets best-performer task "
                         "(`[related product]`).", "smartphone gimbal"),
-    "cinema": ("Cinema for the BookMyShow group-movie task (`[cinema]`).", "INOX Bhubaneswar"),
+       "cinema": ("Cinema for the BookMyShow group-movie task (`[cinema]`). Must be an "
+                  "exact BookMyShow listing name (search is literal: 'INOX Bhubaneswar' "
+                  "returns no results), e.g. 'INOX: Symphony Mall'.", "INOX: Symphony Mall"),
     "ticket price": ("Per-ticket price for the BookMyShow group-movie task (`[ticket price]`).", "₹240"),
     "weekly meeting": ("Recurring weekly meeting the Clock/Meet-Files tasks reference "
                         "(`[weekly meeting]`; matches the seeded Calendar event).", "Weekly Sync"),
