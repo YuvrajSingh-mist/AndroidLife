@@ -2,12 +2,13 @@
 """Render the public run reports as a blog on the AndroidLife website.
 
 Reads `reports/public/*.md` and writes:
-  * one post per report -> androidlife-website/pages/blog/<slug>.html
-  * an index           -> androidlife-website/pages/blog.html
+  * one post per report listed in PUBLISHED -> androidlife-website/pages/blog/<slug>.html
+  * an index                                -> androidlife-website/pages/blog.html
 
 The reports are the single source of truth: edit a report, re-run this, and the
-post updates. A run id listed in UNPUBLISHED is skipped, so its report stays in
-the repo without appearing on the site.
+post updates. Only run ids listed in PUBLISHED are written, so a report stays in
+the repo without appearing on the site; with PUBLISHED empty nothing is written
+at all.
 Relative links into the repo (e.g. ../../docs/manual-audit-protocol.md)
 are rewritten to GitHub blob URLs so nothing 404s on the deployed site.
 
@@ -36,13 +37,15 @@ GITHUB_BLOB = "https://github.com/YuvrajSingh-mist/AndroidLife/blob/master"
 
 MD_EXTENSIONS = ["tables", "fenced_code", "sane_lists", "attr_list"]
 
-# Reports that stay in the repo (and keep their normal format) but are not
-# published as posts. Add a run id here to take its post down; remove it to
-# put the post back. Kept in code rather than in the report so the report
-# stays a clean data artifact.
-UNPUBLISHED: frozenset[str] = frozenset({
-    "20260917-160018",  # interrupted run (battery/ADB death at 3%) - not for the blog yet
-})
+# Only run ids listed here are published as posts. Everything else in
+# reports/public/ stays a repo-only report. Add a run id to publish it; remove
+# it to take the post down. Kept in code rather than in the report so reports
+# stay clean data artifacts.
+#
+# The blog is currently off the site, so this is empty. Publishing again takes
+# two steps: add the run id here, and put the Blog link back in the nav and
+# footer of the hand-maintained pages (index.html and pages/*.html).
+PUBLISHED: frozenset[str] = frozenset()
 
 
 @dataclass
@@ -259,8 +262,8 @@ def main() -> int:
     posts = []
     for source in sources:
         post = parse(source)
-        if post.slug in UNPUBLISHED:
-            print(f"   skip   {source.relative_to(ROOT)} (unpublished)")
+        if post.slug not in PUBLISHED:
+            print(f"   skip   {source.relative_to(ROOT)} (not published)")
             continue
         posts.append(post)
     # Newest run id first (run ids sort lexicographically by date).
@@ -270,7 +273,10 @@ def main() -> int:
     plan: list[tuple[Path, str]] = []
     for post in posts:
         plan.append((OUT_DIR / f"{post.slug}.html", render_post(post, render_body(post.source))))
-    plan.append((OUT_INDEX, render_index(posts)))
+    # No posts means no blog: leave the index unwritten rather than emitting an
+    # empty page, so removing every post really does remove the page.
+    if posts:
+        plan.append((OUT_INDEX, render_index(posts)))
 
     for path, content in plan:
         if path.exists() and path.read_text(encoding="utf-8") == content:
@@ -282,10 +288,11 @@ def main() -> int:
     print(f"\n   {len(posts)} post(s), {drift} file(s) to write")
     if args.check:
         return 1 if drift else 0
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
     for path, content in plan:
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
-    print("   written")
+    if plan:
+        print("   written")
     return 0
 
 
