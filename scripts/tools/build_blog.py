@@ -96,23 +96,21 @@ NAV = """<nav aria-label="Main navigation">
     <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
   </button>
   <div class="nav-links" id="primary-navigation">
-    <a href="{p}index.html">Overview</a>
     <a href="{blog}"{blog_active}>Blog</a>
     <a href="{p}pages/tasks.html">Tasks</a>
     <a href="{p}pages/browse-apps.html">Browse Apps</a>
     <a href="{p}pages/how-it-was-formed.html">How it was formed</a>
-    <a href="{p}index.html#leaderboard">Leaderboard</a>
+    <a href="{p}pages/arena.html">Arena</a>
   </div>
 </nav>"""
 
 FOOTER = """<footer>
   <div class="container">
     <div class="footer-links">
-      <a href="{p}index.html">Overview</a>
       <a href="{blog}">Blog</a>
       <a href="{p}pages/how-it-was-formed.html">How it was formed</a>
       <a href="{p}pages/tasks.html">Tasks</a>
-      <a href="{p}index.html#leaderboard">Leaderboard</a>
+      <a href="{p}pages/arena.html">Arena</a>
     </div>
     <p><strong>AndroidLife</strong> &nbsp;&middot;&nbsp; real-phone Android agent benchmark &nbsp;&middot;&nbsp; GitHub Pages ready</p>
     <p><em>Built by Yuvraj Singh.</em></p>
@@ -148,7 +146,7 @@ def esc(s: str) -> str:
 
 def render_post(post: Post, body: str) -> str:
     p = "../../"
-    nav = NAV.format(p=p, blog="./blog.html", blog_active=' class="nav-active"')
+    nav = NAV.format(p=p, blog="../blog.html", blog_active=' class="nav-active"')
     desc = esc((post.summary or post.title)[:180])
     meta_bits = [b for b in (post.date, post.blob and f"run `{post.blob}`") if b]
     return f"""{HEAD.format(canonical=f"https://androidlife-website.vercel.app/pages/blog/{post.slug}.html", title_html=esc(post.title), desc=desc, p=p)}
@@ -164,7 +162,7 @@ def render_post(post: Post, body: str) -> str:
       <p class="hero-subtitle">{esc(post.model)}</p>
       <p class="hero-desc">{esc(" · ".join(meta_bits))}</p>
       <div class="hero-btns">
-        <a href="./blog.html" class="btn btn-outline">&larr; All posts</a>
+        <a href="../blog.html" class="btn btn-outline">&larr; All posts</a>
         <a href="{p}index.html#leaderboard" class="btn btn-outline">Leaderboard</a>
       </div>
     </div>
@@ -179,7 +177,7 @@ def render_post(post: Post, body: str) -> str:
   </section>
 </main>
 
-{FOOTER.format(p=p, blog="./blog.html")}
+{FOOTER.format(p=p, blog="../blog.html")}
 
 {SCRIPTS.format(p=p)}
 </body>
