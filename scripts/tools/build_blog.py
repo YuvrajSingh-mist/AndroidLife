@@ -6,7 +6,9 @@ Reads `reports/public/*.md` and writes:
   * an index           -> androidlife-website/pages/blog.html
 
 The reports are the single source of truth: edit a report, re-run this, and the
-post updates. Relative links into the repo (e.g. ../../docs/manual-audit-protocol.md)
+post updates. A run id listed in UNPUBLISHED is skipped, so its report stays in
+the repo without appearing on the site.
+Relative links into the repo (e.g. ../../docs/manual-audit-protocol.md)
 are rewritten to GitHub blob URLs so nothing 404s on the deployed site.
 
 Usage (from the repo root):
@@ -33,6 +35,14 @@ OUT_DIR = SITE / "pages" / "blog"
 GITHUB_BLOB = "https://github.com/YuvrajSingh-mist/AndroidLife/blob/master"
 
 MD_EXTENSIONS = ["tables", "fenced_code", "sane_lists", "attr_list"]
+
+# Reports that stay in the repo (and keep their normal format) but are not
+# published as posts. Add a run id here to take its post down; remove it to
+# put the post back. Kept in code rather than in the report so the report
+# stays a clean data artifact.
+UNPUBLISHED: frozenset[str] = frozenset({
+    "20260917-160018",  # interrupted run (battery/ADB death at 3%) - not for the blog yet
+})
 
 
 @dataclass
@@ -135,7 +145,7 @@ HEAD = """<!DOCTYPE html>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=28">
+  <link rel="stylesheet" href="{p}assets/css/style.css?v=40">
   <script src="{p}assets/js/posthog.js"></script>
 </head>"""
 
@@ -246,7 +256,13 @@ def main() -> int:
         print(f"error: no reports found in {REPORTS}")
         return 1
 
-    posts = [parse(s) for s in sources]
+    posts = []
+    for source in sources:
+        post = parse(source)
+        if post.slug in UNPUBLISHED:
+            print(f"   skip   {source.relative_to(ROOT)} (unpublished)")
+            continue
+        posts.append(post)
     # Newest run id first (run ids sort lexicographically by date).
     posts.sort(key=lambda x: x.slug, reverse=True)
 
