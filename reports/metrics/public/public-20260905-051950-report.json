@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.7142857142857143,
   "gui_only_success_rate": 0.6415094339622641,
-  "average_steps": 19.716666666666665,
+  "average_steps": 19.683333333333334,
   "average_user_queries": 0.7142857142857143,
   "user_interaction_quality_factmatch": 0.2,
   "kb_interaction_quality": 0.5,
@@ -29,8 +29,9 @@
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 16809.838111086,
+  "wall_clock_seconds": 16795.527018045002,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 16219.838111086,
-  "cooldown_seconds_per_gap": 10.0
+  "agent_running_seconds": 16205.527018045,
+  "cooldown_seconds_per_gap": 10.0,
+  "rerun_2026_09_21": "re-run 2026-09-21: easy__calendar_002 replaced with a valid-seed re-run; the aggregates here are recomputed for that single task (exact arithmetic, not a corpus regeneration). See the run report for the verdict."
 }
