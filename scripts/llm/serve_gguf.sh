@@ -48,7 +48,8 @@ Usage: serve_gguf.sh <preset|path-to.gguf> [--alias NAME] [--mmproj PATH] [--por
 Presets (under $ANDROIDLIFE_GGUF_ROOT):
   qwen3.5-4b       Qwen3.5-4B-Q4_K_M.gguf          alias Qwen3.5-4B
   gemma4-e2b       gemma-4-E2B-it-Q4_K_M.gguf      + mmproj-BF16.gguf
-  bonsai2-27b      Ternary-Bonsai-2-27B-PTQ1_0.gguf + mmproj-Q8_0 (general, ternary, vision)
+  bonsai2-27b      Ternary-Bonsai-2-27B-PQ2_0.gguf + mmproj-Q8_0 (general, ternary, vision;
+                   falls back to the smaller PTQ1_0 pack when PQ2_0 is not downloaded)
   lfm2.5-2.6b      LFM2.5-2.6B-Q4_K_M.gguf         (general, text)
   lfm2.5-vl-3b     LFM2.5-VL-3B-Q4_K_M.gguf        + mmproj-Q8_0 (general, vision)
 
@@ -85,7 +86,32 @@ case "$SPEC" in
     MMPROJ="${MMPROJ:-$ROOT/gemma4-e2b/mmproj-BF16.gguf}"
     ;;
   bonsai2-27b|bonsai2|bonsai|bonsai-2-27b|ternary-bonsai-2|bonsai-2)
-    MODEL="$ROOT/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf"
+    # PrismML ships two packings of the same ternary weights, and Bonsai-demo's
+    # own selector tries them in the order "*-PQ2_0.gguf *-PTQ1_0.gguf"
+    # (scripts/common.sh: select_model_gguf). Follow that order here.
+    #
+    # Why it matters for THIS harness: the two packs are a genuine trade, not a
+    # ranking. PTQ1_0 packs trits densely (1.75 bpw, 5.95 GB) and wins where
+    # decode is memory-bandwidth-bound (Ada-class GPUs, L4). PQ2_0 stores each
+    # trit in a 2-bit slot (2.13 bpw, 7.21 GB) so unpacking is cheaper, and
+    # PrismML states prompt processing favours PQ2_0 on every platform measured.
+    # Our workload is prefill-bound, not decode-bound -- long agentic prompts
+    # (p50 ~6.7k tokens, max 16.4k) and 73% prompt-cache reuse -- so the pack
+    # that is worse at prefill is exactly the wrong one. Measured on this M4
+    # 16 GB: PTQ1_0 prefill p50 48.8 tok/s (max 52.7), against PrismML's own
+    # 65.2 tok/s prompt-processing figure for the quantized 27B on the same
+    # base M4 (via MLX) and 116 tok/s on an M4 Pro (Metal).
+    #
+    # PTQ1_0 stays as the fallback so an existing download keeps working; fetch
+    # PQ2_0 (same HF repo) to actually get the prefill win.
+    MODEL=""
+    for c in "$ROOT/bonsai2-27b/Ternary-Bonsai-2-27B-PQ2_0.gguf" \
+             "$ROOT/bonsai2-27b"/*Ternary-Bonsai-2-27B-PQ2_0.gguf; do
+      [[ -f "$c" ]] && { MODEL="$c"; break; }
+    done
+    # Fallback: the footprint-minimal pack, and the "Missing weights:" message
+    # below should name a real path even when nothing is downloaded yet.
+    [[ -n "$MODEL" ]] || MODEL="$ROOT/bonsai2-27b/Ternary-Bonsai-2-27B-PTQ1_0.gguf"
     ALIAS="${ALIAS:-Bonsai-2-27B}"
     # Ternary Bonsai 2 only loads on the PrismML fork, not upstream llama.cpp.
     # An explicit LLAMA_SERVER_BIN still wins (needed for dry-runs/tests).
@@ -222,6 +248,16 @@ fi
 cmd=(
   "$BIN"
   -m "$MODEL"
+)
+# --mmproj sits immediately after the weights, before -a. The position is
+# semantically irrelevant (llama.cpp parses each flag independently), but pinning
+# it here means this script emits the SAME arg order as the servers launched by
+# hand — so `ps` output is a trustworthy provenance check, and a preset edit can
+# never silently diverge from a running server.
+if [[ -n "$MMPROJ" ]]; then
+  cmd+=(--mmproj "$MMPROJ")
+fi
+cmd+=(
   -a "$ALIAS"
   --host "$HOST"
   --port "$PORT"
@@ -262,9 +298,6 @@ fi
 
 if [[ "$REASONING_OFF" -eq 1 ]]; then
   cmd+=(--reasoning off)
-fi
-if [[ -n "$MMPROJ" ]]; then
-  cmd+=(--mmproj "$MMPROJ")
 fi
 
 # shellcheck disable=SC2206

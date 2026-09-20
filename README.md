@@ -176,7 +176,6 @@ export PATH="$HOME/local/bin:/opt/homebrew/bin:$PATH"
 bash scripts/llm/serve_gguf.sh qwen3.5-4b
 # shared Metal args: -ngl 99 -fa on -c 65536 -b 2048 -ub 512 -ctk/-ctv q8_0 --jinja -np 1
 # Qwen also gets --reasoning off; vision presets auto-attach --mmproj
-# back-compat: bash scripts/llm/serve_qwen35_4b.sh
 
 uv run androidlife_tasks.py \
   --dataset benchmarks/androidlife-530/AndroidLife_public_v2.json \

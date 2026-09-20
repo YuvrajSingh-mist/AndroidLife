@@ -23,8 +23,6 @@ nohup bash scripts/llm/serve_gguf.sh qwen3.5-4b > /tmp/llama.log 2>&1 &
 curl -sS http://127.0.0.1:8088/v1/models
 ```
 
-`scripts/llm/serve_qwen35_4b.sh` is a thin alias for `serve_gguf.sh qwen3.5-4b`.
-
 ### Shared Metal / M4 flags (all presets)
 
 ```text
@@ -132,9 +130,83 @@ uv run androidlife_tasks.py \
 | `gui-owl-1.5-2b` | `GUI-Owl-1.5-2B` | yes |
 | `bonsai2-27b` | `Bonsai-2-27B` | yes (`--vision`) |
 
-`bonsai2-27b` serves `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (5.54 GiB) + `Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf`
+`bonsai2-27b` serves `Ternary-Bonsai-2-27B-PQ2_0.gguf` + `Ternary-Bonsai-2-27B-mmproj-Q8_0.gguf`
 (600 MiB, loaded only on image input) from `prism-ml/Ternary-Bonsai-2-27B-gguf` (Bonsai 2 27B, released
-2026-09-17).
+2026-09-17), falling back to the smaller `PTQ1_0` pack when `PQ2_0` is not on disk.
+
+### Pack choice: prefer `PQ2_0`, not `PTQ1_0`
+
+The repo ships two packings of the same ternary weights. They are a genuine trade, not a ranking:
+
+| Pack | Stored | Size | Wins on |
+|---|---|---|---|
+| `PTQ1_0` | dense trits, 1.75 bpw | 5.95 GB | decode where memory bandwidth is binding (Ada-class GPUs, L4); tightest footprint |
+| `PQ2_0` | 2-bit slots, 2.13 bpw | 7.21 GB | **prompt processing everywhere**; decode on H100 / A100 / Blackwell |
+
+PrismML's own demo selects them in the order `"*-PQ2_0.gguf *-PTQ1_0.gguf"` — `PQ2_0` first, dense
+`PTQ1_0` only as fallback (`Bonsai-demo/scripts/common.sh: select_model_gguf`) — and `PQ2_0` is the pack
+its README calls "what this demo downloads by default". `serve_gguf.sh` now follows that order, and as
+of 2026-09-20 `PQ2_0` is on disk here so the preset serves it by default.
+
+**This harness is prefill-bound, so the default pack matters more here than the vendor's headline
+numbers suggest.** Across the 14 finalized tasks of the 2026-09-20 Bonsai run: 411 requests,
+2.69 M prompt tokens against 33 k completion tokens, at a 71.9 % prompt-cache hit rate — i.e.
+**~755 k tokens of *fresh* prefill**. At the measured `PTQ1_0` 54 tok/s that is **~3.9 h of pure prompt
+processing**, versus **~0.33 h** for the same token volume at Qwen3.5-4B's measured 386 tok/s prefill.
+Decode is a rounding error next to that. (Counting every request the batch issued, including the two
+tasks that never finalized: 452 requests / 3.17 M prompt / 73.5 % cached.)
+
+Measured on this M4 16 GB (macOS, `prism-b10685`, the *same* `llama-bench` binary for all three rows,
+`-ngl 99 -fa 1 -p 512 -n 128 -r 3`, run back-to-back with the server stopped and **both Bonsai packs on
+the same build in the same session**):
+
+| Model | Pack | prefill pp512 (tok/s) | decode tg128 (tok/s) |
+|---|---|---|---|
+| `Qwen3.5-4B` | `Q4_K_M` | **385.95 ± 0.09** | 29.06 ± 0.07 |
+| `Ternary-Bonsai-2-27B` | `PTQ1_0` (the old default) | **53.99 ± 0.12** | 10.03 ± 0.01 |
+| `Ternary-Bonsai-2-27B` | `PQ2_0` (**now the default**) | **63.12 ± 0.01** | 11.00 ± 0.02 |
+
+**`PQ2_0` measured +16.9 % prefill and +9.7 % decode** over `PTQ1_0` here — a real win, but nothing like
+the 1.7–2.2× the vendor reports on CUDA, which is the expected outcome: on this box the ternary kernels
+are compute-bound on the 10-core GPU, not starved of memory bandwidth the way the Ada-class cards are.
+On the 2026-09-20 workload (755 k fresh prefill tokens) that moves pure prompt processing from
+**3.9 h to 3.3 h** — ~35 min saved, not a fix.
+
+**No pack makes a 27B ternary model prefill like a 4B `Q4_K_M` on a base M4.** Even with `PQ2_0`, Bonsai
+prefills **6.1×** slower than the 4B Q4_K_M. Most of the gap is the model and the 10-core GPU, not the
+packing, so treat the packing as a tuning knob and the model/accelerator as the actual constraint. For
+reference, the ternary 27B line on Apple Silicon as published:
+
+| | prefill (tok/s) | decode (tok/s) |
+|---|---|---|
+| `PQ2_0`, this M4, `llama.cpp` Metal (above) | 63.1 | 11.0 |
+| quantized 27B on a base **M4**, MLX 2-bit (community) | 65.2 | 12.7 |
+| quantized 27B on **M4 Pro**, `llama.cpp` Metal | 116 | 19.0 |
+| quantized 27B on **M5 Max**, `llama.cpp` Metal, `PQ2_0` | 816 | 45.8 |
+
+Re-measure with the command above before trusting any of it on your own box.
+
+### Context size is RAM-tiered upstream, and 65536 is not the 16 GB tier
+
+`Bonsai-demo` sizes `-c` to system RAM rather than using llama.cpp's `-c 0` (which means "full 262 144
+training context" and will OOM a constrained machine). Its tiers: **≤11 GB → 8192**, **≤23 GB → 16384**,
+≤35 GB → 32768, ≤71 GB → 65536. This box is 16 GB, so the upstream default would be **16384**, not the
+`65536` this script defaults to — four times the KV footprint the vendor considers safe here (27B hybrid
+attention is ~64 KiB/token FP16).
+
+The 2026-09-20 run never needed the headroom: over its 14 finalized tasks the largest prompt was
+**11 794 tokens** (p50 6 611), so a 65536 context bought nothing and only added memory pressure. Keep
+65536 only if you actually feed contexts that long; otherwise pass `LLAMA_CTX=32768` (headroom over the
+observed max) or `--ctx`.
+
+### Speculative decoding: do not enable it on Apple Silicon
+
+`Bonsai-demo` pairs the 27B with a `dspark` drafter (`BONSAI_SPECULATIVE=1`). That path is worth ~1.8–2.4×
+on CUDA code/math, but SPECULATIVE.md says outright it "is not recommended on Apple Silicon": on an M5 Max
+it measures 1.19× / 1.17× on code/math and **0.91× / 0.83× on reasoning/chat** (1.03× blended), because
+Metal acceptance is too low for the draft overhead to pay off. It also disables cross-request prompt-cache
+reuse and forces `-np 1` — which is fatal for a 60-step agentic loop that currently reuses 73.5 % of its
+prompt. Leave it off.
 
 ### `bonsai2-27b` needs PrismML's llama.cpp fork
 
