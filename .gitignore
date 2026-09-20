@@ -84,3 +84,4 @@ blogs/
 
 # Local run/plan caches (e.g. scripts/hf/upload_530_ui_states.py)
 .cache/
+.seed_state.json

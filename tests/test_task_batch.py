@@ -192,6 +192,9 @@ def test_main_runs_each_task_once_by_default(monkeypatch, tmp_path) -> None:
             "--llm-upstream-base", "http://mini2:8081/v1",
             "--model", "demo-model",
             "--cooldown-seconds", "0",
+            # These tests assert task orchestration, not the seed gate; the gate
+            # spawns its own subprocess and is covered separately below.
+            "--seed-gate", "off",
         ],
     )
     assert task_batch.main() == 0
@@ -239,6 +242,9 @@ def test_main_runs_each_task_repeats_times(monkeypatch, tmp_path) -> None:
             "--model", "demo-model",
             "--repeats", "2",
             "--cooldown-seconds", "0",
+            # These tests assert task orchestration, not the seed gate; the gate
+            # spawns its own subprocess and is covered separately below.
+            "--seed-gate", "off",
         ],
     )
     assert task_batch.main() == 0

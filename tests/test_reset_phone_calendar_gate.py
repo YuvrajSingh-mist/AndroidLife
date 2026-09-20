@@ -126,6 +126,13 @@ def _rows(*specs) -> str:
 
 # One May-ish copy of each seed, plus an unrelated live event whose title merely
 # contains "Gym".
+#
+# KNOWN STALE (predates the meet-link rework in ensure_calendar_events): these copies are
+# built from the CURRENT anchors, so the seeder's exact-date fast path treats them as
+# already-correct and issues no write -- while the three shift tests below still assert
+# three UPDATEs. That combination can only hold for `meet: True` seeds, where a same-time
+# miss is resolved by an in-place UPDATE to preserve the conference link. These fixtures
+# are unlinked, so a same-time miss now INSERTs by design. See redo.md.
 QUERY_ROWS = _rows(
     (4313, "Old_Gym_Class", _ms(TODAY, "07:00"), 0),
     (4341, "Weekly Sync", _ms(MONDAY, "07:00"), 0),
@@ -215,6 +222,24 @@ def test_time_of_day_disambiguates_duplicate_titles(rp, monkeypatch):
     updates = [c for c in calls if "content update" in c]
     assert len(updates) == 1
     assert "_id=4341" in updates[0], f"matched the wrong Weekly Sync copy: {updates[0]}"
+
+
+def test_already_correct_seed_is_not_rewritten(rp, monkeypatch):
+    """A seed already sitting on its anchor is left alone (no pointless write).
+
+    This skip is what silently invalidated the three shift tests above when their fixture
+    was built from the current anchors -- so it gets its own explicit test rather than
+    being an unasserted side effect of them.
+    """
+    calls: list[str] = []
+    rows = _rows((4341, "Weekly Sync", _ms(_next_weekday(0), "07:00"), 0))
+    monkeypatch.setattr(rp, "sh", _fake_sh(rows, calls))
+    monkeypatch.setattr(rp, "quote", lambda s: f"'{s}'")
+
+    rp.ensure_calendar_events("S", [_seed(start="07:00", end="08:00")], apply=True)
+
+    assert not [c for c in calls if "content update" in c], f"rewrote an up-to-date seed: {calls}"
+    assert not [c for c in calls if "content insert" in c], "duplicated an existing seed"
 
 
 def test_missing_seed_is_inserted(rp, monkeypatch):

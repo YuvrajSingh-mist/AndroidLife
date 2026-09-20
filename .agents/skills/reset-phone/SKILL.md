@@ -304,32 +304,36 @@ uv run python scripts/seeding/fabricate_public_pdfs.py --serial $S
 > the public baseline is 1,320.50 INR. `enrich_public_notes.py` (run right after)
 > overwrites it with the correct public value, so keep the order above.
 
-## Step 2b — Re-seed date-relative calendar events (per run date)
+## Step 2b — Date-relative calendar events (now MACHINE-MANAGED — do not hand-seed)
 
-`easy__calendar__002` (conflict check) needs **2 overlapping events TOMORROW
-afternoon**; the old ones go stale. Re-create them on `cal_id=16` (correct IST
-epochs, Asia/Kolkata) — run this every reset:
+**Do not run the old out-of-band snippet.** It anchored `Team Sync` / `Mentor 1 on 1` to
+`date.today() + 1` *at seed time*, so a batch that started on a later day (or crossed
+midnight) left the conflicts on the run day and `easy__calendar__002` became unsolvable.
+That single step is why 5 of 13 recorded runs passed **vacuously**.
 
-```bash
-uv run python - <<'PY'
-import datetime, subprocess
-from zoneinfo import ZoneInfo
-S = "RS7XKZDI8HTOJNYL"; tz = ZoneInfo("Asia/Kolkata")
-tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-CAL = "content://com.android.calendar/events"
-def sh(*a): return subprocess.run(["adb","-s",S,"shell",*a], capture_output=True, text=True)
-def ms(d,h,m): return int(datetime.datetime(d.year,d.month,d.day,h,m,tzinfo=tz).timestamp()*1000)
-for t in ("Team Sync","Mentor 1 on 1","Team_Conflict_A","Team_Conflict_B"):
-    for _ in range(6): sh("content","delete","--uri",CAL,"--where",f"'title=\"{t}\"'")
-def ins(t,h0,m0,h1,m1):
-    sh("content","insert","--uri",CAL,"--bind","calendar_id:i:16",
-       "--bind",f"title:s:'{t}'","--bind",f"dtstart:l:{ms(tomorrow,h0,m0)}",
-       "--bind",f"dtend:l:{ms(tomorrow,h1,m1)}","--bind","allDay:i:0",
-       "--bind","hasAlarm:i:0","--bind","eventTimezone:s:Asia/Kolkata")
-ins("Team Sync",14,0,15,0); ins("Mentor 1 on 1",14,30,15,30)
-print(f"seeded tomorrow ({tomorrow}) afternoon conflicts")
-PY
+Both events are now ordinary `public_v2.seed_calendar_events` entries, re-anchored in
+place by `reset_phone.py --apply` on **every** reset (run-day + 1), alongside `Weekly Sync`
+(Mon 07:00 + 10:00 on +1/+2 for the Meet task) and `Gym` (next Tue). The gate asserts every
+anchor's **date and start time**, so a half-applied reset now fails instead of hiding.
+
+**The one rule that still matters: `--apply` must run on the RUN DAY.** Every anchor is a
+delta from the day it ran. `--apply` now writes a stamp (`.seed_state.json`,
+`seeded_on=<date>`) and `--verify-only` FAILS when that date is not today — so a stale
+reset can no longer be launched past. This is enforced, not remembered:
+
 ```
+# The launch path runs this for you and refuses to start on FAIL:
+uv run python scripts/seeding/reset_phone.py --serial <S> --profile public_v2 --verify-only
+```
+
+**Recurring run artifacts are swept automatically.** A leftover daily series lands on
+*every* day of the window — including "tomorrow" — so it survives every date-exact check
+while still changing the conflict set the agent sees. `Weekly_Standup`
+(`FREQ=DAILY;COUNT=14`, created by the 2026-09-17 run's agent and uploaded, so no seed file
+can re-derive it) did exactly that on 2026-09-20. `--apply` now deletes the whole series by
+title on any date (`calendar_recurring_artifacts_to_remove`), and the gate asserts none
+remain live. Scope note: this key is **public_v2-only** — `Weekly_Standup` is a *real* seed
+for the 530 `day_N` profiles, so the sweep must never run there.
 
 ## Step 3 — Verify baseline (gate)
 
@@ -345,6 +349,26 @@ calendar (`yuvraj.mist@gmail.com`, with `_sync_id`), `Weekly Sync` + `Gym`
 `Weekly Agenda.txt`, `Invoice INV-2026-071.pdf`, `Rent Receipt.pdf`), the public
 Obsidian notes, `Team Sync`/`Mentor 1 on 1` tomorrow, contact "Akash Kumar" present.
 If verify fails, do NOT start the run — fix the device first (fail-fast).
+
+**This gate is now wired into the launch path and cannot be skipped by forgetting it.**
+`task_batch.py` runs it once before the first task and, on FAIL, aborts with exit code 5
+and writes `SEED_GATE_FAILED` into the run root (mirroring the `DEVICE_UNREACHABLE`
+abort). Escape hatches: `--seed-gate warn` (report and continue — transport debugging
+only) and `--seed-gate off` (never for a scored run). It checks, in one pass:
+
+| Check | Catches |
+|---|---|
+| seed stamp `seeded_on == today` | a reset run on the previous day (the vacuous-calendar bug) |
+| calendar anchors (date **and** time) | a half-applied reset |
+| no live recurring run artifacts | `Weekly_Standup`-style series landing on "tomorrow" |
+| device clock == host clock | stale RTC after a battery death (anchors are host-computed, device-rendered) |
+| cloud accounts, Slides deck, call log, files, contacts | silent seed drift |
+
+> **The Meet agenda check is verified but does NOT block** (`--meet-strict` re-arms it).
+> It cannot pass today for a reason that is not a seeding mistake: Meet lists what is in
+> Google's **cloud**, and an adb-written calendar row never uploads. Measured: both
+> force-sync nudges are no-ops. See redo.md #2 — the fix is to create the meeting once in
+> the Calendar app UI (app writes *do* upload).
 
 ## Step 4 — Manual UI-only cleanups (no ADB access — app-private DB / cloud)
 

@@ -5,6 +5,21 @@ cloud/server-side state — NOT ADB-checkable on this non-rooted device). The AD
 baseline is confirmed via `reset_phone.py --verify-only` + `verify_day1_seeds.py --day {1,2,3}`;
 do **not** re-do those here.
 
+> **The ADB-verifiable half is now ENFORCED (2026-09-21).** `task_batch.py` runs the seed
+> gate before the first task and **aborts the batch (exit 5, `SEED_GATE_FAILED` in the run
+> root)** if it fails, so the items below this box are the only ones still relying on you.
+> Those are precisely the ones ADB cannot see — treat this document as the gate's blind
+> spot, and assume anything not checked here is unchecked.
+>
+> Two failures this gate now catches automatically, both of which previously cost real
+> runs *silently* (a vacuous PASS is indistinguishable from a real one in a report):
+> - **`--apply` ran on a previous day** → every calendar anchor is a day early, so
+>   `easy__calendar__002` asks about a "tomorrow" holding no conflict. Caught by the
+>   `seeded_on == today` stamp (5 of 13 runs were affected; see `redo.md` #6).
+> - **A live recurring run artifact** → `Weekly_Standup` (`FREQ=DAILY;COUNT=14`) landed on
+>   every day of the window including "tomorrow" and silently changed the conflict set.
+
+
 Canonical operator runbook (ADB reset + manual seeds table):
 [`.agents/skills/reset-phone/SKILL.md`](../.agents/skills/reset-phone/SKILL.md).
 
@@ -20,6 +35,10 @@ Canonical operator runbook (ADB reset + manual seeds table):
   Nothing seeds or reads the root. If you saved a dump by hand, pull it **before** `--apply`.
 - ☑ Day-1 / Day-2 / Day-3 seed verify → **PASS** (all three)
 - ☑ Tomorrow-conflict events (`Team Sync` 14:00 + `Mentor 1 on 1` 14:30) are **reset-managed**
+  - ☑ **Now stamp-enforced (2026-09-21).** `reset_phone.py --apply` writes
+    `.seed_state.json` (`seeded_on=<date>`), and the launch gate FAILS unless that date is
+    **today** — so a reset left over from the previous day can no longer reach a scored
+    run. Same for the recurring-artifact sweep (`Weekly_Standup`). See `redo.md` #6.
   - ✅ **Fixed 2026-09-18.** `reset_phone.py --apply` now re-anchors the pair to
     **run-day + 1** on every reset — they are ordinary `public_v2.seed_calendar_events`
     entries (alongside `Weekly Sync` / `Gym`) and are date-shifted **in place**. The old

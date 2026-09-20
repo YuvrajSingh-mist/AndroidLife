@@ -93,7 +93,68 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
                         help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-530/multiturn_kb_530.json.")
+    parser.add_argument("--seed-gate", choices=["off", "warn", "enforce"], default="enforce",
+                        help="Run the reset/seed verification gate ONCE before the first task and refuse to start unless it passes. The gate is accepted, not tolerated: a stale seed silently produces vacuous PASSes (e.g. easy__calendar__002 passed 5 times because the reset ran the previous day), so the default is 'enforce'. 'warn' prints the verdict and continues. 'off' skips it (for transport-only debugging, never for a scored run).")
+    parser.add_argument("--seed-gate-profile", default="public_v2",
+                        help="Reset profile the seed gate verifies (must match the one used for the run's --apply).")
+    parser.add_argument("--seed-gate-timeout", type=float, default=600.0,
+                        help="Seconds allowed for the seed gate. It drives several app launches, so it needs a generous budget.")
     return parser
+
+
+def run_seed_gate(serial: str, batch_dir: Path, profile: str, mode: str, timeout: float) -> None:
+    """Verify the device's seed baseline BEFORE any scored task runs.
+
+    Fail-closed by design, mirroring the DEVICE_UNREACHABLE abort: a run started on a bad
+    seed does not merely risk a low score, it records results that are *wrong* rather than
+    unlucky -- a vacuous PASS is indistinguishable from a real one in the report. The
+    check itself already existed (`reset_phone.py --verify-only`); the defect was that
+    only a human remembering to type it stood between a stale seed and a scored run.
+
+    Verification happens in a subprocess so a crash in the gate is a FAIL (never a silent
+    pass), and so the gate's own imports cannot disturb the batch process.
+    """
+    if mode == "off":
+        print("Seed gate: SKIPPED (--seed-gate off). Scored runs should not use this.")
+        return
+    script = Path(__file__).resolve().parents[2] / "scripts" / "seeding" / "reset_phone.py"
+    if not script.exists():
+        # Not a device fault: the tree is wrong. Report it either way.
+        raise SystemExit(f"Seed gate: {script} is missing; cannot verify the seed baseline.")
+    command = [sys.executable, str(script), "--serial", serial,
+               "--profile", profile, "--verify-only"]
+    print(f"Seed gate ({mode}): {' '.join(command)}")
+    try:
+        proc = subprocess.run(command, capture_output=True, text=True, timeout=timeout,
+                              check=False)
+    except subprocess.TimeoutExpired:
+        detail = f"seed gate exceeded {timeout:.0f}s; no verdict for profile {profile}"
+        print(f"\nSEED GATE FAILED: {detail}", file=sys.stderr)
+        if mode == "enforce":
+            (batch_dir / "SEED_GATE_FAILED").write_text(detail + "\n", encoding="utf-8")
+            raise SystemExit(5)
+        return
+    output = (getattr(proc, "stdout", "") or "") + (getattr(proc, "stderr", "") or "")
+    # The gate's verdict is its own RESULT line, not the exit code: a WARN-only run (the
+    # known-unsolvable Meet seed) still exits 0 with RESULT PASS.
+    verdict = next((line.strip() for line in reversed(output.splitlines())
+                    if line.strip().startswith("RESULT ")), "")
+    passed = verdict == "RESULT PASS"
+    for line in output.splitlines():
+        if line.startswith("  FAIL") or line.startswith("  WARN") or line.startswith("  PASS seed stamp"):
+            print(line)
+    if passed:
+        print(f"Seed gate: PASS (profile={profile})")
+        return
+    detail = f"seed gate FAILED for profile {profile} ({verdict or 'no RESULT line'})"
+    print(f"\nSEED GATE FAILED: {detail}\nFix the seed, then relaunch:\n"
+          f"  uv run python scripts/seeding/reset_phone.py --serial {serial} "
+          f"--profile {profile} --apply\n", file=sys.stderr)
+    if mode == "enforce":
+        # Mirror DEVICE_UNREACHABLE: leave the evidence in the run root, and stop. Every
+        # later task would otherwise record a result computed against a broken baseline.
+        (batch_dir / "SEED_GATE_FAILED").write_text(detail + "\n" + output[-4000:], encoding="utf-8")
+        raise SystemExit(5)
 
 
 def parse_vars(items: list[str]) -> dict[str, str]:
@@ -334,6 +395,13 @@ def main() -> int:
             args.run_root = str(batch_dir)
             write_initial_device_sample(args.serial, batch_dir)
     ask_user_facts = load_json_object(ask_user_facts_path(args.source))
+    # Seed gate: verify the device baseline ONCE, before any scored task. Placed after the
+    # run root exists so a failure can drop SEED_GATE_FAILED evidence into it, and before
+    # the first task so a broken baseline can never produce a single recorded result.
+    # Skipped for --list/--dry-run (nothing is scored) and for a fork/transport debug run.
+    if not args.dry_run:
+        run_seed_gate(args.serial, batch_dir, args.seed_gate_profile, args.seed_gate,
+                      args.seed_gate_timeout)
     ask_user_kb = load_json_object(args.ask_user_kb) if args.ask_user_kb else None
     unresolved_failures: list[str] = []
     retry_queue: list[tuple[list[str], str, str]] = []  # (command, label, task_id) - transient LLM blips
