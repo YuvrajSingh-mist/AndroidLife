@@ -1452,29 +1452,42 @@ def verify_meet_agenda(serial: str, prof: dict, timeout_s: float = 40.0) -> bool
         return False
 
     sh(serial, "input keyevent KEYCODE_WAKEUP")
-    sh(serial, f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
-    xml = ""
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        time.sleep(4)
-        xml = _pull_ui_dump(serial)
-        # "Scheduled" is the list header; "New call" shows on the same home screen.
-        if xml and ("Scheduled" in xml or "New call" in xml):
-            break
-    if not xml:
-        print(f"  FAIL meet: could not read the Meet UI (no uiautomator dump after {timeout_s:.0f}s)")
-        return False
+    # From here on Meet is on screen, so EVERY exit path must put the device back.
+    # This matters because the gate now runs automatically right before the first task,
+    # while the harness only resets the foreground app AFTER a task (cli.py) and never
+    # before the first one. So whatever this leaves on screen BECOMES the first task's
+    # starting state. Verified regression: a re-run of easy__calendar__002 began with
+    # Meet in the foreground (`com.google.android.apps.tachyon` HomeActivity) where the
+    # original run began on the launcher -- an avoidable difference in starting
+    # conditions, caused by automating a step an operator used to finish by hand.
+    # Mirrors verify_cloud_accounts(), which already force-stops + goes home.
+    try:
+        sh(serial, f"monkey -p {pkg} -c android.intent.category.LAUNCHER 1")
+        xml = ""
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            time.sleep(4)
+            xml = _pull_ui_dump(serial)
+            # "Scheduled" is the list header; "New call" shows on the same home screen.
+            if xml and ("Scheduled" in xml or "New call" in xml):
+                break
+        if not xml:
+            print(f"  FAIL meet: could not read the Meet UI (no uiautomator dump after {timeout_s:.0f}s)")
+            return False
 
-    found = [t for t in titles if f'text="{t}"' in xml or f'content-desc="{t}' in xml]
-    missing = [t for t in titles if t not in found]
-    if missing:
-        print(f"  FAIL meet: {pkg} -> 'Scheduled' does NOT list {missing} "
-              f"(no conference link, stale anchor, or Meet on the wrong Google account)")
-        print("        -> hard__google-meet-files__070 will FAIL as seeded. Fix before running.")
-        return False
+        found = [t for t in titles if f'text="{t}"' in xml or f'content-desc="{t}' in xml]
+        missing = [t for t in titles if t not in found]
+        if missing:
+            print(f"  FAIL meet: {pkg} -> 'Scheduled' does NOT list {missing} "
+                  f"(no conference link, stale anchor, or Meet on the wrong Google account)")
+            print("        -> hard__google-meet-files__070 will FAIL as seeded. Fix before running.")
+            return False
 
-    print(f"  PASS meet: {pkg} -> 'Scheduled' lists {found}")
-    return True
+        print(f"  PASS meet: {pkg} -> 'Scheduled' lists {found}")
+        return True
+    finally:
+        sh(serial, f"am force-stop {pkg}")
+        sh(serial, "input keyevent KEYCODE_HOME")
 
 
 def _signed_in_email(xml: str) -> str | None:
