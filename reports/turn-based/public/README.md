@@ -10,7 +10,7 @@ reports/turn-based/public/
 └── ask-query-multi/<run-ts>/<task>.md
 ```
 
-Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `2026-08-30-021852`, `2026-08-30-143554`, `20260826-105200`, `20260901-002701`, `20260905-051950`, `20260906-063336`, `20260909-043419`, `20260910-041531`, `20260914-061846`, `20260916-011341`
+Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `2026-08-30-021852`, `2026-08-30-143554`, `20260826-105200`, `20260901-002701`, `20260905-051950`, `20260906-063336`, `20260909-043419`, `20260910-041531`, `20260914-061846`, `20260916-011341`, `20260920-044846`
 
 ## ask-query-single/
 | Run | Task | Day | # asks | Asked? | Fact |
@@ -99,6 +99,7 @@ Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `20
 | 20260916-011341 | [hard__google-search-telegram-clock__018](ask-query-single/20260916-011341/hard__google-search-telegram-clock__018.md) | day2 | 1 | ✅ asked | The place is the SBI ATM. The person to message is Yuvraj Si |
 | 20260916-011341 | [hard__photos-gmail-obsidian__012](ask-query-single/20260916-011341/hard__photos-gmail-obsidian__012.md) | day2 | 1 | ✅ asked | The photo to send is the one captioned 'Sunset at Puri' from |
 | 20260916-011341 | [medium__google-search__008](ask-query-single/20260916-011341/medium__google-search__008.md) | day3 | 1 | ✅ asked | The route is from IIIT Bhubaneswar to Bhubaneswar Airport. |
+| 20260920-044846 | [hard__drive-notes-telegram__010](ask-query-single/20260920-044846/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The spreadsheet to chase is 'family_n |
 
 ## ask-query-multi/
 | Run | Task | Day | # asks | Asked? | Fact |
@@ -154,4 +155,5 @@ Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `20
 | 20260916-011341 | [hard__music-obsidian__077](ask-query-multi/20260916-011341/hard__music-obsidian__077.md) | day2 | 1 | ✅ asked | multiturn_kb: youtube-music::sleep-timer-1030pm |
 | 20260916-011341 | [hard__swiggy__005](ask-query-multi/20260916-011341/hard__swiggy__005.md) | day1 | 1 | ✅ asked | multiturn_kb: swiggy::reorder-downtown-delight-murgh-mughlai |
 | 20260916-011341 | [hard__telegram-calendar__016](ask-query-multi/20260916-011341/hard__telegram-calendar__016.md) | day1 | 0 | ❌ never asked | multiturn_kb: telegram::forever-21-meetup-tue-8pm |
+| 20260920-044846 | [hard__telegram-calendar__016](ask-query-multi/20260920-044846/hard__telegram-calendar__016.md) | day1 | 0 | ❌ never asked | multiturn_kb: telegram::forever-21-meetup-tue-8pm |
 
