@@ -559,6 +559,70 @@ def remove_calendar_by_ids(serial: str, ids: list[int], apply: bool) -> None:
         print(f"  [dry] soft-delete calendar events by id: {ids}")
 
 
+def _force_calendar_sync(serial: str, account: str = "") -> bool:
+    """Best-effort nudge for the Google calendar sync adapter. True if one landed.
+
+    There is no public force-sync API for a third-party account (`ContentResolver
+    .requestSync` is signature-protected), so this tries the provider `call()`
+    hooks that some builds expose and reports honestly instead of pretending.
+
+    This is a PROBE, not the fix. The durable fix for the 2026-09-20 revert is the
+    insert-not-update rule in `ensure_calendar_events`: a `content insert` uploads
+    and persists, while a `content update` of dtstart/dtend on a synced row gets
+    clobbered by the next sync.
+    """
+    for cmd in (
+        f"content call --uri {CAL_URI} --method forceSync",
+        "cmd sync --help",
+    ):
+        out = sh(serial, cmd)
+        low = out.lower()
+        if out.strip() and "error" not in low and "exception" not in low and "unknown" not in low:
+            print(f"  [ok]  calendar sync nudged ({cmd.split()[0]} {cmd.split()[1]})")
+            return True
+    if account:
+        # Fallback: an explicit sync-adapter broadcast. Usually ignored on Android
+        # 15, but harmless to try before giving up.
+        out = sh(serial, f"am broadcast -a android.content.SyncAdapter "
+                         f"--es account_name {account} --es account_type com.google")
+        if "Broadcast completed" in out:
+            print("  [ok]  calendar sync nudged (broadcast)")
+            return True
+    print("  [warn] could not force a calendar sync on this build -- the settle "
+          "re-check below is therefore a lower bound, not a guarantee")
+    return False
+
+
+def assert_anchor_durability(serial: str, prof: dict, settle_s: float,
+                             account: str = "") -> bool:
+    """Re-run the anchor gate after a settle window so a silent revert is visible.
+
+    Why this exists: on 2026-09-20 the anchors verified correct at 03:46 and had
+    already reverted by the time `easy__calendar__002` ran at 09:31, which is what
+    made that task vacuous. A gate that only samples the instant after the write
+    cannot see a revert, however well it checks the date.
+
+    Caveat, and it matters: Google schedules account sync opportunistically, so a
+    short window may not pull a revert into the open. A PASS here is reassurance,
+    not proof -- the structural guarantee is the insert-not-update rule in
+    `ensure_calendar_events`.
+    """
+    import time
+    if settle_s <= 0:
+        return True
+    print(f"== calendar durability re-check (sync nudge + {settle_s:.0f}s settle) ==")
+    _force_calendar_sync(serial, account)
+    time.sleep(settle_s)
+    ok = verify_calendar_anchors(serial, prof)
+    if ok:
+        print("  [ok]  anchors still correct after the settle window")
+    else:
+        print("  [FAIL] anchors MOVED after the settle window -- the synced "
+              "calendar reverted the write. Do NOT benchmark: the calendar tasks "
+              "will run against the wrong dates.")
+    return ok
+
+
 def _live_calendar_events(serial: str, titles: list[str]) -> list[tuple[str, str, int | None]]:
     """Return `(id, title, dtstart_ms)` for LIVE events whose title matches exactly.
 
@@ -601,6 +665,32 @@ def _calendar_ids_with_meet_link(serial: str) -> set[str]:
     return out
 
 
+WEEKDAY_INDEX = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
+                 "friday": 4, "saturday": 5, "sunday": 6}
+
+
+def _anchor_date(ev: dict, today) -> "object":
+    """Resolve a `seed_calendar_events` entry's anchor to a concrete date.
+
+    An entry is anchored either by `offset_days` (today + N) or by `weekday` (the
+    NEXT occurrence -- never today, so a `"monday"` seed is always in the future).
+
+    This helper is shared by BOTH the writer (`ensure_calendar_events`) and the gate
+    (`verify_calendar_anchors`). That sharing is the point: the gate can only assert
+    the right date if it derives the date the same way the writer does, and a
+    duplicated copy of this arithmetic is exactly how a half-applied reset (which
+    shifted the Weekly Sync seeds but not Team Sync / Mentor 1 on 1) slipped past the
+    old presence-only gate on 2026-09-20.
+    """
+    import datetime
+    if "offset_days" in ev:
+        return today + datetime.timedelta(days=int(ev["offset_days"]))
+    days_ahead = (WEEKDAY_INDEX[ev["weekday"]] - today.weekday()) % 7
+    if days_ahead == 0:
+        days_ahead = 7  # next week's occurrence, never today
+    return today + datetime.timedelta(days=days_ahead)
+
+
 def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None:
     """(Re)create date-relative calendar seeds so clash/agenda meetings exist at
     every reset (variance-safe for the 3x public runs).
@@ -633,8 +723,6 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         tz = ZoneInfo(tz_name)
     except Exception:
         tz = ZoneInfo("Asia/Kolkata")
-    weekday_index = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
-                     "friday": 4, "saturday": 5, "sunday": 6}
     titles = [e["title"] for e in events]
     existing = _live_calendar_events(serial, titles)
     # Only queried when a meet-marked seed exists: pre-fix resets migrated the
@@ -653,32 +741,24 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
 
     today = datetime.date.today()
     used: set[str] = set()
+    # (title, dtstart_ms) of seeds written via INSERT this run. Tracked so the
+    # stale-copy sweep can be gated on the inserts having actually landed.
+    _inserted: list[tuple[str, int]] = []
     for ev in events:
-        if "offset_days" in ev:
-            d = today + datetime.timedelta(days=int(ev["offset_days"]))
-        else:
-            target = weekday_index[ev["weekday"]]
-            days_ahead = (target - today.weekday()) % 7
-            if days_ahead == 0:
-                days_ahead = 7  # next week's occurrence, never today
-            d = today + datetime.timedelta(days=days_ahead)
+        d = _anchor_date(ev, today)
 
         def epoch(hhmm_str: str) -> int:
             h, m = map(int, hhmm_str.split(":"))
             return int(datetime.datetime(d.year, d.month, d.day, h, m, tzinfo=tz).timestamp() * 1000)
 
         dtstart, dtend = epoch(ev["start"]), epoch(ev["end"])
-        # Match on title + time-of-day. PREFER an exact-date copy (the steady-state
-        # case), but fall back to any same-time copy so we SHIFT it in place rather
-        # than delete+insert.
-        #
-        # The fallback is load-bearing: a Meet conference link cannot be written by
-        # the non-rooted `content` CLI (bind values reject ':', and the provider
-        # drops direct `description` writes on synced rows), so a delete+insert
-        # silently DESTROYS it. Before this fallback existed, an anchor that was
-        # more than a day stale (i.e. any reset not run on consecutive days) matched
-        # nothing, inserted two fresh unlinked copies, and deleted the linked one —
-        # taking hard__google-meet-files__070 back to invisible.
+        # Match on title + time-of-day. An exact-date hit means "this seed is already
+        # where it belongs" and issues no write at all (see the durability note
+        # below). A same-time miss must be resolved by INSERT for unlinked seeds and
+        # by an in-place UPDATE only for Meet seeds -- the link is what makes the
+        # meeting visible in Meet, and a delete+insert silently DESTROYS it, because
+        # the non-rooted `content` CLI cannot write the conferencing column (bind
+        # values reject ':' and a Meet URL always contains '://').
         def _pick(*, exact_date: bool, prefer_link: bool) -> str | None:
             for eid, etitle, eds in existing:
                 if eid in used or etitle != ev["title"] or eds is None:
@@ -699,16 +779,46 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         # an exact-date-first pick hands that slot to the UNLINKED copy and pushes the
         # linked one to +2 -- silently out of the window (this actually happened on the
         # 2026-09-19 run day). Prefer the linked copy first, then fall back.
+        #
+        # 2026-09-20 DURABILITY FIX -- read before changing the branch structure.
+        # A `content update` of dtstart/dtend on this GOOGLE-SYNCED calendar
+        # (cal_id=16) does NOT stick: the sync adapter re-applies the server's copy
+        # and silently reverts the row to whatever the original INSERT uploaded.
+        # Proof from the 2026-09-20 run -- the 03:46 gate saw the correct dates, and
+        # by 09:31 `easy__calendar__002`'s own ui_states showed every `offset_days`
+        # seed reverted by exactly one day (Team Sync / Mentor 1 on 1 back onto the
+        # run day; both Weekly Sync 10:00 copies back to D+1/D+2, i.e. the dates the
+        # 2026-09-19 reset had INSERTED). The `weekday` anchors looked correct only
+        # because Sep-19's and Sep-20's "next Monday/Tuesday" coincide. That is why
+        # `easy__calendar__002` ended up vacuous: the conflict pair was not on
+        # "tomorrow" when the task ran.
+        #
+        # So the rule is: INSERT is durable, UPDATE is not. Therefore
+        #   1. if a copy already sits on the exact target date+time, issue NO write;
+        #   2. if the seed needs a Meet link, it MUST be moved in place (a
+        #      delete+insert would drop the conferencing block, which the non-rooted
+        #      `content` CLI cannot rewrite) -- so update it and mark it dirty;
+        #   3. otherwise INSERT a fresh copy on the target date and let the leftover
+        #      sweep below remove the stale same-time row.
+        already = (_pick(exact_date=True, prefer_link=True) if (ev.get("meet") and linked)
+                   else _pick(exact_date=True, prefer_link=False))
+        if already:
+            used.add(already)
+            print(f"  [ok]  calendar event '{ev['title']}' already on {d} "
+                  f"{ev['start']}-{ev['end']} (_id={already}, no write needed)")
+            continue
+
+        match = None
         if ev.get("meet") and linked:
-            match = (_pick(exact_date=True, prefer_link=True)
-                     or _pick(exact_date=False, prefer_link=True)
-                     or _pick(exact_date=True, prefer_link=False)
+            match = (_pick(exact_date=False, prefer_link=True)
                      or _pick(exact_date=False, prefer_link=False))
-        else:
-            match = _pick(exact_date=True, prefer_link=False) or _pick(exact_date=False, prefer_link=False)
         if match:
+            # `dirty:i:1` is the durable-write marker: it is what gets the edit
+            # uploaded instead of clobbered by the next sync. Kept even though this
+            # path is now only reached for Meet-linked copies (see rule 2 above).
             sh(serial, f"content update --uri {CAL_URI} "
                        f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
+                       f"--bind dirty:i:1 "
                        f"--where \"_id={match}\"", check=True)
             used.add(match)
             print(f"  [ok]  shifted calendar event '{ev['title']}' to {d} "
@@ -718,11 +828,34 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
                 f"content insert --uri {CAL_URI} --bind title:s:{quote(ev['title'])} "
                 f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
                 f"--bind calendar_id:i:16 --bind allDay:i:0 "
-                f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0"
+                f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0 "
+                f"--bind dirty:i:1"
             )
             sh(serial, cmd, check=True)
+            # The stale same-time copy (if any) is deliberately NOT added to `used`:
+            # it becomes a leftover and is swept below. But only after the insert is
+            # CONFIRMED -- otherwise a failed insert plus the sweep would leave the
+            # device with no seed at all.
+            _inserted.append((ev["title"], dtstart))
             print(f"  [ok]  seeded calendar event '{ev['title']}' {d} "
                   f"{ev['start']}-{ev['end']} ({tz_name})")
+
+    # Confirm every freshly INSERTed anchor actually landed before we delete anything.
+    # An insert is durable (unlike an update, see above), so this is the one write we
+    # can trust -- but only if it is verified before the sweep runs.
+    if _inserted:
+        live_after = _live_calendar_events(serial, sorted({t for t, _ in _inserted}))
+        missing = []
+        for title, want_ms in _inserted:
+            if not any(t == title and s is not None and abs(s - want_ms) <= 60_000
+                       for _i, t, s in live_after):
+                missing.append(title)
+        if missing:
+            print(f"  [FAIL] calendar insert did not land for: {sorted(set(missing))}")
+            print("  [FAIL] skipping the stale-copy sweep so no seed is lost; "
+                  "re-run --apply before benchmarking.")
+            return
+        print(f"  [ok]  confirmed {len(_inserted)} freshly inserted calendar anchor(s)")
 
     # Live copies we did not shift are stale duplicates or run artifacts. Delete
     # one id at a time: the provider clears a single row per `content delete`.
@@ -808,6 +941,81 @@ def ensure_call_log(serial: str, calls: list[dict], apply: bool) -> None:
           f"({cleared} prior row(s) cleared)")
 
 
+def verify_calendar_anchors(serial: str, prof: dict) -> bool:
+    """Assert every date-relative seed sits on its EXPECTED date AND start time.
+
+    `verify()` below only checks that a seed title EXISTS on the calendar; it never
+    checked *where* it was anchored. That gap let a half-applied reset pass the gate
+    with `Team Sync` on the run day instead of tomorrow -- and since
+    `easy__calendar__002` asks for "tomorrow afternoon" conflicts, the task would
+    fail while the gate said PASS. Observed 2026-09-20: a `nohup`-backgrounded
+    `--apply` was torn down after it had shifted the Weekly Sync seeds but before it
+    reached Team Sync / Mentor 1 on 1 (and before the call log, which has its own
+    check). The same gap silently makes `hard__clock-calendar__023` (Weekly Sync
+    Mon 07:00) and `hard__google-meet-files__070` (10:00 agenda in Meet's 48h window)
+    unsolvable when an anchor goes stale.
+
+    Cheap and device-local -- one `content query` for all titles, no UI launches --
+    so it always runs and has no `--no-*` skip flag, unlike the UI-probe gates.
+
+    Matching is per (title, expected date, expected start) with each live copy
+    consumed once, because duplicate titles are legitimate here (Weekly Sync exists
+    at Mon 07:00, D+1 10:00 and D+2 10:00).
+    """
+    events = prof.get("seed_calendar_events") or []
+    if not events:
+        return True
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    tz_name = sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata"
+    try:
+        tz = ZoneInfo(tz_name)
+    except Exception:
+        tz = ZoneInfo("Asia/Kolkata")
+
+    today = datetime.date.today()
+    titles = sorted({e["title"] for e in events})
+    live = _live_calendar_events(serial, titles)
+    linked = _calendar_ids_with_meet_link(serial) if any(e.get("meet") for e in events) else set()
+
+    print("== calendar anchor verify (each seed must be on the RIGHT date) ==")
+    ok = True
+    used: set[str] = set()
+    for ev in events:
+        want = _anchor_date(ev, today)
+        h, m = map(int, ev["start"].split(":"))
+        want_ms = int(datetime.datetime(want.year, want.month, want.day, h, m,
+                                        tzinfo=tz).timestamp() * 1000)
+        hit = None
+        for eid, etitle, eds in live:
+            if eid in used or etitle != ev["title"] or eds is None:
+                continue
+            if abs(eds - want_ms) <= 60_000:  # <=1 min slack for provider rounding
+                hit = eid
+                break
+        if hit:
+            used.add(hit)
+        ok &= hit is not None
+        note = ""
+        if hit and ev.get("meet") and linked:
+            # Informational only -- verify_meet_agenda() owns the conferencing-link
+            # verdict, and failing here too would just double-report the same fault.
+            note = (" (link present)" if hit in linked
+                    else " (no link on THIS copy -- see meet gate)")
+        print(f"  {'PASS' if hit else 'FAIL'} anchor '{ev['title']}' "
+              f"{want} {ev['start']} (today{(want - today).days:+d}d){note}")
+    for eid, etitle, eds in live:
+        if eid in used or eds is None:
+            continue
+        # Unconsumed live copy of a seeded title = a stale duplicate the writer
+        # should have deleted. Not fatal, but it is how a wrong-date copy lingers.
+        got = datetime.datetime.fromtimestamp(eds / 1000, tz=tz)
+        print(f"  WARN  stale '{etitle}' at {got} (today{(got.date() - today).days:+d}d) "
+              f"was not claimed by any seed")
+    return ok
+
+
 def verify(serial: str, prof: dict) -> bool:
     ok = True
     print("== baseline verify ==")
@@ -857,6 +1065,9 @@ def verify(serial: str, prof: dict) -> bool:
         name_ok = contact_display.lower() in ca.lower()
         ok &= name_ok
         print(f"  {'PASS' if name_ok else 'FAIL'} contact '{contact_display}' present")
+    # Presence is not enough: the seed must be on the DATE the task expects. This is
+    # what catches a half-applied reset (see verify_calendar_anchors docstring).
+    ok &= verify_calendar_anchors(serial, prof)
     return ok
 
 
@@ -1161,6 +1372,10 @@ def main() -> int:
     parser.add_argument("--no-slides-check", action="store_true",
                         help="Skip the Slides deck gate (pulls Q3_Review.pptx and asserts "
                              "its slide count; the grader has no ground truth for it)")
+    parser.add_argument("--settle-recheck", type=float, default=0.0, metavar="SECONDS",
+                        help="After --apply, nudge the calendar sync, wait SECONDS, then "
+                             "re-assert the date anchors. Catches a silent revert of the "
+                             "synced-calendar seeds (2026-09-20 root cause). 0 = off.")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -1202,9 +1417,12 @@ def main() -> int:
             print("== CANNOT auto-reset (app-private; do by hand in the UI) ==")
             for item in manual:
                 print(f"  - {item}")
-        print("== UI-only manual cleanups (no ADB) — see .agents/skills/reset-phone/SKILL.md ==")
+        print("== UI-only manual cleanups (no ADB) — see scripts/seeding/SKILL.md ==")
 
     ok = verify(args.serial, prof)
+    if args.settle_recheck and args.apply and not args.verify_only:
+        ok &= assert_anchor_durability(args.serial, prof, args.settle_recheck,
+                                       prof.get("calendar_account", ""))
     if not args.no_account_check:
         ok &= verify_cloud_accounts(args.serial, prof)
     if not args.no_slides_check:

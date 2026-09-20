@@ -69,6 +69,10 @@ benchmarks/androidlife-600
 # Redo queue: tasks whose recorded results aren't trustworthy (local only)
 redo.md
 
+# Reset/seed operator runbook — holds real serials + account emails + failure log.
+# The sanitized, tracked copy is .agents/skills/reset-phone/SKILL.md
+scripts/seeding/SKILL.md
+
 # X / tweet series drafts for AndroidLife (local only, not for GitHub)
 androidlife-tweets/
 

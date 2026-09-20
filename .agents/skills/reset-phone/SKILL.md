@@ -55,11 +55,42 @@ uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile
 uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile public_v2 --verify-only  # pre-run gate (no changes)
 ```
 
-`--verify-only` is the **pre-run gate**: it re-checks the baseline seeds, then the canonical
-cloud accounts (`verify_cloud_accounts`), the Slides deck count (`verify_slides_deck`) and
-the Meet seed (`verify_meet_agenda`). Exit code 0 = safe to start a run. Skips:
+`--verify-only` is the **pre-run gate**: it re-checks the baseline seeds, then asserts every
+date-relative calendar seed sits on its expected **date and start time**
+(`verify_calendar_anchors`), then the canonical cloud accounts (`verify_cloud_accounts`),
+the Slides deck count (`verify_slides_deck`) and the Meet seed (`verify_meet_agenda`).
+Exit code 0 = safe to start a run. Skips:
 `--no-account-check` (the ~40s account probe), `--no-slides-check` and `--no-meet-check`
-(the Meet "Scheduled" probe).
+(the Meet "Scheduled" probe). The anchor check has no skip flag — it is one local
+`content query` with no UI launches.
+
+> **Anchor check added 2026-09-20.** The gate previously asserted only that a seed
+> *existed*, never *where* it was anchored, so a reset that died partway (e.g. a
+> `nohup`-backgrounded `--apply` torn down after it had moved the Weekly Sync seeds but
+> not `Team Sync` / `Mentor 1 on 1`) still reported PASS — while `easy__calendar__002`
+> asks for *tomorrow's* conflicts and could not pass. `verify_calendar_anchors()` now
+> asserts the date + start time, and WARNs on any live copy of a seeded title that no
+> seed claimed. The writer (`ensure_calendar_events`) and the gate both derive the date
+> from the same `_anchor_date()` helper, so they cannot drift apart. `weekday` anchors
+> mean the **next** occurrence and resolve to **+7** when today *is* that weekday.
+> **Also run `--apply` in the foreground** — a backgrounded reset can die silently and
+> leave a half-applied state that looks finished.
+
+> **Durability fixed 2026-09-20.** `cal_id=16` is a Google-**synced** calendar, and a
+> plain `content update` of `dtstart`/`dtend` on a synced row does not stick — the sync
+> adapter re-applies the server's copy and reverts the row to whatever the original
+> `content insert` uploaded. That is how the 2026-09-20 run passed the anchor gate at
+> 03:46 and still had every `offset_days` seed a day early by 09:31, making
+> `easy__calendar__002` vacuous. The rule is now **insert is durable, update is not**:
+> no write at all when the row is already on the exact target date+time; an in-place
+> update (**always with `dirty:i:1`**, the marker that gets the edit uploaded instead
+> of clobbered) only for Meet-linked copies, because a delete+insert would destroy the
+> conference link the non-rooted CLI cannot rewrite; otherwise insert and sweep the
+> stale same-time row — with the sweep gated on the inserts having actually landed, so
+> a failed insert can never leave the device with no seed at all. An opt-in
+> `--settle-recheck SECONDS` nudges the sync, waits, and re-asserts the anchors, but
+> note it is a lower bound: Android offers no public force-sync for a third-party
+> account, so a PASS there is reassurance, not proof.
 
 The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
