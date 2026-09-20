@@ -58,11 +58,12 @@ uv run python scripts/seeding/reset_phone.py --serial RS7XKZDI8HTOJNYL --profile
 `--verify-only` is the **pre-run gate**: it re-checks the baseline seeds, then asserts every
 date-relative calendar seed sits on its expected **date and start time**
 (`verify_calendar_anchors`), then the canonical cloud accounts (`verify_cloud_accounts`),
-the Slides deck count (`verify_slides_deck`) and the Meet seed (`verify_meet_agenda`).
+the Slides deck count (`verify_slides_deck`), the Meet seed (`verify_meet_agenda`) and the
+**Calendar app's view mode** (`verify_calendar_view_mode`).
 Exit code 0 = safe to start a run. Skips:
-`--no-account-check` (the ~40s account probe), `--no-slides-check` and `--no-meet-check`
-(the Meet "Scheduled" probe). The anchor check has no skip flag — it is one local
-`content query` with no UI launches.
+`--no-account-check` (the ~40s account probe), `--no-slides-check`, `--no-meet-check`
+(the Meet "Scheduled" probe) and `--no-calendar-view-check`. The anchor check has no skip
+flag — it is one local `content query` with no UI launches.
 
 > **Anchor check added 2026-09-20.** The gate previously asserted only that a seed
 > *existed*, never *where* it was anchored, so a reset that died partway (e.g. a
@@ -360,6 +361,7 @@ only) and `--seed-gate off` (never for a scored run). It checks, in one pass:
 |---|---|
 | seed stamp `seeded_on == today` | a reset run on the previous day (the vacuous-calendar bug) |
 | calendar anchors (date **and** time) | a half-applied reset |
+| **Calendar app in Schedule view** | a previous run leaving the app in **Day** view, so the next start state is a day grid instead of the Schedule agenda (redo.md 7.2) |
 | no live recurring run artifacts | `Weekly_Standup`-style series landing on "tomorrow" |
 | device clock == host clock | stale RTC after a battery death (anchors are host-computed, device-rendered) |
 | cloud accounts, Slides deck, call log, files, contacts | silent seed drift |
@@ -369,6 +371,20 @@ only) and `--seed-gate off` (never for a scored run). It checks, in one pass:
 > Google's **cloud**, and an adb-written calendar row never uploads. Measured: both
 > force-sync nudges are no-ops. See redo.md #2 — the fix is to create the meeting once in
 > the Calendar app UI (app writes *do* upload).
+
+> **The Calendar view-mode gate READS THE APP and REPAIRS it (added 2026-09-21).** No
+> provider query can see the app's view mode, yet it is the agent's first screen — a run
+> that ends on the Day grid hands the next run a different starting condition than the
+> original runs had. This cost two `easy__calendar__002` re-runs (redo.md 7.2). Two traps:
+>
+> * The content-desc marker is **inverted**: the day row names the mode you would switch
+>   *into*, so `"... , Open Day View"` means the app is currently in **Schedule** view.
+>   `_OPEN_DAY`/`_OPEN_SCHEDULE` are correct as written — do not "fix" them.
+> * It taps **"Open Schedule View"** and re-reads rather than merely warning, because "a
+>   human will notice" is the assumption that failed. Blind to it: everything adb-side.
+>   It always force-stops Calendar and presses HOME on the way out (same rule as
+>   `verify_meet_agenda`: this runs seconds before the first task, so whatever is left on
+>   screen *becomes* the start state). Pinned by `tests/test_reset_phone_calendar_view.py`.
 
 ## Step 4 — Manual UI-only cleanups (no ADB access — app-private DB / cloud)
 

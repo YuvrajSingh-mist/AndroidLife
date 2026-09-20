@@ -1222,6 +1222,104 @@ def verify_calendar_anchors(serial: str, prof: dict) -> bool:
     return ok
 
 
+CAL_PKG = "com.google.android.calendar"
+
+# Google Calendar's day-row content-desc advertises the mode you would switch INTO, so
+# it names the CURRENT mode:
+#   "<weekday> <D> <Month> <Y>, Open Day View"      -> currently in SCHEDULE view
+#   "<weekday> <D> <Month> <Y>, Open Schedule View" -> currently in DAY view
+_OPEN_DAY = "Open Day View"
+_OPEN_SCHEDULE = "Open Schedule View"
+
+
+def _calendar_view_mode(serial: str, timeout_s: float = 40.0) -> str:
+    """'schedule' | 'day' | 'unknown' -- the mode the Calendar APP is showing now.
+
+    Always leaves the app stopped and the device on the launcher. That matters here
+    for the same reason it does in verify_meet_agenda(): the gate runs right before
+    the first task, so whatever it leaves on screen BECOMES the agent's start state.
+    """
+    import time
+
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"am force-stop {CAL_PKG}")
+    sh(serial, f"monkey -p {CAL_PKG} -c android.intent.category.LAUNCHER 1")
+    try:
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            time.sleep(4)
+            xml = _pull_ui_dump(serial)
+            # _OPEN_DAY first: the marker for "we are in Schedule" must win if both
+            # strings ever appear in one dump.
+            if _OPEN_DAY in xml:
+                return "schedule"
+            if _OPEN_SCHEDULE in xml:
+                return "day"
+        return "unknown"
+    finally:
+        sh(serial, f"am force-stop {CAL_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+
+
+def _switch_calendar_to_schedule(serial: str, timeout_s: float = 25.0) -> bool:
+    """Tap the 'Open Schedule View' affordance, then confirm the mode flipped."""
+    import time
+
+    sh(serial, f"monkey -p {CAL_PKG} -c android.intent.category.LAUNCHER 1")
+    try:
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            time.sleep(4)
+            xml = _pull_ui_dump(serial)
+            if _OPEN_DAY in xml:
+                return True
+            for pat in (
+                r'content-desc="[^"]*Open Schedule View[^"]*"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"',
+                r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"[^>]*content-desc="[^"]*Open Schedule View',
+            ):
+                m = re.search(pat, xml)
+                if m:
+                    x1, y1, x2, y2 = (int(g) for g in m.groups())
+                    sh(serial, f"input tap {(x1 + x2) // 2} {(y1 + y2) // 2}")
+                    time.sleep(5)
+                    return _calendar_view_mode(serial, timeout_s=20.0) == "schedule"
+        return False
+    finally:
+        sh(serial, f"am force-stop {CAL_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+
+
+def verify_calendar_view_mode(serial: str, prof: dict) -> bool:
+    """The Calendar APP must be in Schedule view -- the mode the original runs began in.
+
+    Measured 2026-09-21 (redo.md 7.2): a run's agent leaves the app wherever it
+    finished, so a completed run can hand the next one a **Day**-view calendar. None of
+    the provider checks above can see that -- they query the content provider, not the
+    app -- and it silently changes the agent's starting screen. It bit rows 1 and 2 of
+    the easy__calendar_002 re-runs, which had to be run a second time.
+
+    Repaired in place rather than merely reported: this is UI mode, not seed data, and
+    the failure mode being defended against is precisely "a manual fix gets skipped".
+    Always exits to the launcher.
+    """
+    if not (prof.get("seed_calendar_events") or prof.get("seed_calendar_titles")):
+        return True
+    mode = _calendar_view_mode(serial)
+    if mode == "schedule":
+        print("  PASS calendar app view mode: Schedule (matches the original runs)")
+        return True
+    if mode == "day":
+        print("  WARN calendar app view mode: Day (a previous run left it there) -- restoring")
+        if _switch_calendar_to_schedule(serial):
+            print("  PASS calendar app view mode: restored to Schedule")
+            return True
+        print("  FAIL calendar app view mode: still Day -- the Calendar UI would not switch")
+        return False
+    print("  FAIL calendar app view mode: could not read the Calendar UI (no "
+          "'Open Day View' / 'Open Schedule View' marker in the dump)")
+    return False
+
+
 def verify(serial: str, prof: dict) -> bool:
     ok = True
     print("== baseline verify ==")
@@ -1599,6 +1697,11 @@ def main() -> int:
     parser.add_argument("--no-meet-check", action="store_true",
                         help="Skip the Google Meet 'Scheduled' pre-run gate (it needs the "
                              "phone unlocked and adds ~10-40s)")
+    parser.add_argument("--no-calendar-view-check", action="store_true",
+                        help="Skip the Calendar-app view-mode gate. Schedule view is the "
+                             "starting state the original runs began from; an agent can "
+                             "leave the app in Day view (redo.md 7.2), which no provider "
+                             "query can detect. Auto-restores rather than only warning.")
     parser.add_argument("--meet-strict", action="store_true",
                         help="Treat a failing Meet agenda check as a hard FAIL. Default is "
                              "WARN, because the seed is known-unsolvable until the meeting "
@@ -1660,6 +1763,11 @@ def main() -> int:
         print("== UI-only manual cleanups (no ADB) — see scripts/seeding/SKILL.md ==")
 
     ok = verify(args.serial, prof)
+    # Not part of verify(): like the account/slides checks it drives an app, and it is
+    # gated by its own flag. It DOES block -- an agent that starts on the wrong Calendar
+    # screen is not running the task that was benchmarked.
+    if not args.no_calendar_view_check:
+        ok &= verify_calendar_view_mode(args.serial, prof)
     if args.settle_recheck and args.apply and not args.verify_only:
         ok &= assert_anchor_durability(args.serial, prof, args.settle_recheck,
                                        prof.get("calendar_account", ""))

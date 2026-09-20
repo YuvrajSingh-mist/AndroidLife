@@ -52,6 +52,11 @@ Canonical operator runbook (ADB reset + manual seeds table):
     from `date.today()` on the **host**, so a stale device/host clock mis-anchors the whole
     calendar (pair, `Weekly Sync`, `Gym`) in one go.
 - ☑ Weekly Sync + Gym date-relative seeds (Mon 07:00 for the clash task; **10:00 on today+1 and today+2** for the Meet task; next Tue for Gym)
+
+  ☑ **Gate-enforced:** the Calendar app must be left in **Schedule** view. A finished run
+  hands the next one whatever view its agent ended on, and Day view changes the starting
+  screen without touching any seed — `verify_calendar_view_mode()` now restores it
+  automatically (redo.md 7.2). Look at `ui_states/0002` of a task to see the start state.
 - ☑ All PDFs/xlsx/Downloads present (PURCHASE_ORDER, SPORTS_VIDEO_DATA, budget, quote,
   Weekly Agenda.txt, Invoice INV-2026-071.pdf, Rent Receipt.pdf, …)
 - ☑ All public Obsidian notes present (Bedtime, Budget Deadline, Exam Scores, Monthly Budget,
