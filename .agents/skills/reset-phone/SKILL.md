@@ -76,20 +76,16 @@ Exit code 0 = safe to start a run. Skips:
 > **Also run `--apply` in the foreground** — a backgrounded reset can die silently and
 > leave a half-applied state that looks finished.
 
-> **Calendar durability — corrected 2026-09-20.** An earlier revision of this note
-> claimed a synced row's `content update` of `dtstart`/`dtend` gets reverted by the
-> sync adapter, and told you to bind `dirty:i:1` to prevent it. **That was wrong, and
-> the bind made things worse.** Measured on device: the CalendarProvider rejects it
-> with `IllegalArgumentException: Only sync adapters may write to dirty`, and the
-> failure is **silent**, because `content update`/`insert` still exit 0 through
-> `adb shell`. With the bind, the row did not move at all; without it, the write lands
-> *and* the provider marks the row `dirty=1` by itself. So local edits are already
-> queued for upload and **nothing should ever bind `dirty`**.
->
-> What actually causes a one-day-early seed: the anchors are relative to **the day
-> `--apply` ran**, so a reset performed the day before a batch leaves every
-> `offset_days` seed on what is now the run day. That is the documented 2026-09-16
-> failure, and the reason the rule is to re-run `--apply` **on the run day**.
+> **Calendar anchors are day-relative — `--apply` on the run day, or they are wrong.** An
+> `offset_days` seed is computed from **the day `--apply` runs**, so a reset performed the
+> day *before* a batch leaves every anchor one day early, on what is by then the run day.
+> Confirmed from the 2026-09-20 run's own week view: every `offset_days` seed sat exactly
+> one day early while every `weekday` anchor was right, because on consecutive days
+> "next Monday" resolves to the same date. An earlier revision of this note blamed a
+> **Google-sync revert**; that was **disproven** — the provider *rejects* a `dirty` bind
+> (`IllegalArgumentException: Only sync adapters may write to dirty`) and it fails
+> **silently**, because `content insert`/`update` still exit 0 through `adb shell`, while a
+> plain write already sets `dirty=1` by itself. **Nothing should ever bind `dirty`.**
 >
 > The rule the code holds to: no write at all when the row is already on the exact
 > target date+time; an in-place update only for Meet-linked copies, because a
