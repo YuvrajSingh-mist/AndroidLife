@@ -566,10 +566,17 @@ def _force_calendar_sync(serial: str, account: str = "") -> bool:
     .requestSync` is signature-protected), so this tries the provider `call()`
     hooks that some builds expose and reports honestly instead of pretending.
 
-    This is a PROBE, not the fix. The durable fix for the 2026-09-20 revert is the
-    insert-not-update rule in `ensure_calendar_events`: a `content insert` uploads
-    and persists, while a `content update` of dtstart/dtend on a synced row gets
-    clobbered by the next sync.
+    This is a PROBE, not a fix. It reports honestly instead of pretending, because
+    on this build both nudges return success without starting a sync.
+
+    What was actually proven on device (2026-09-20) is narrower than an earlier
+    revision of this file claimed: the CalendarProvider marks any local write
+    `dirty=1` by itself, so local edits are already queued for upload, and binding
+    `dirty` from adb is REJECTED ("Only sync adapters may write to dirty"). The
+    cause of the 2026-09-20 one-day revert was therefore NOT a missing dirty flag.
+    A direct probe (insert Sep-25, update Sep-26) held its update across a sync
+    nudge and a 150 s settle, but with `dirty` still 1 -- i.e. the upload had not
+    completed, so that run did not exercise the revert either way.
     """
     for cmd in (
         f"content call --uri {CAL_URI} --method forceSync",
@@ -603,9 +610,10 @@ def assert_anchor_durability(serial: str, prof: dict, settle_s: float,
     cannot see a revert, however well it checks the date.
 
     Caveat, and it matters: Google schedules account sync opportunistically, so a
-    short window may not pull a revert into the open. A PASS here is reassurance,
-    not proof -- the structural guarantee is the insert-not-update rule in
-    `ensure_calendar_events`.
+    short window may not pull a revert into the open. Measured 2026-09-20: neither
+    `content call --method forceSync` nor the SyncAdapter broadcast actually starts
+    a sync on this build, so the window is whatever Android chooses. A PASS here is
+    reassurance, not proof.
     """
     import time
     if settle_s <= 0:
@@ -744,6 +752,10 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
     # (title, dtstart_ms) of seeds written via INSERT this run. Tracked so the
     # stale-copy sweep can be gated on the inserts having actually landed.
     _inserted: list[tuple[str, int]] = []
+    # (title, _id, dtstart_ms) of rows moved in place via UPDATE. Tracked for the
+    # same reason: `content update` reports success even when the provider rejects
+    # it, so an unconfirmed move would be indistinguishable from a good one.
+    _moved: list[tuple[str, str, int]] = []
     for ev in events:
         d = _anchor_date(ev, today)
 
@@ -780,26 +792,36 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
         # linked one to +2 -- silently out of the window (this actually happened on the
         # 2026-09-19 run day). Prefer the linked copy first, then fall back.
         #
-        # 2026-09-20 DURABILITY FIX -- read before changing the branch structure.
-        # A `content update` of dtstart/dtend on this GOOGLE-SYNCED calendar
-        # (cal_id=16) does NOT stick: the sync adapter re-applies the server's copy
-        # and silently reverts the row to whatever the original INSERT uploaded.
-        # Proof from the 2026-09-20 run -- the 03:46 gate saw the correct dates, and
-        # by 09:31 `easy__calendar__002`'s own ui_states showed every `offset_days`
-        # seed reverted by exactly one day (Team Sync / Mentor 1 on 1 back onto the
-        # run day; both Weekly Sync 10:00 copies back to D+1/D+2, i.e. the dates the
-        # 2026-09-19 reset had INSERTED). The `weekday` anchors looked correct only
-        # because Sep-19's and Sep-20's "next Monday/Tuesday" coincide. That is why
-        # `easy__calendar__002` ended up vacuous: the conflict pair was not on
-        # "tomorrow" when the task ran.
+        # 2026-09-20 DURABILITY -- read before changing the branch structure.
         #
-        # So the rule is: INSERT is durable, UPDATE is not. Therefore
+        # The 2026-09-20 run's `easy__calendar__002` was vacuous because every
+        # `offset_days` seed sat one day early at run time (Team Sync / Mentor 1 on
+        # 1 on the run day; both Weekly Sync 10:00 copies on D+1/D+2) -- i.e. the
+        # dates a reset run the PREVIOUS day would compute. The `weekday` anchors
+        # looked correct only because Sep-19's and Sep-20's "next Monday/Tuesday"
+        # coincide.
+        #
+        # An earlier revision of this code blamed that on a missing `dirty` flag and
+        # bound `dirty:i:1` on both writes. THAT WAS WRONG, and it was worse than
+        # useless -- the CalendarProvider rejects it outright:
+        #
+        #     IllegalArgumentException: Only sync adapters may write to dirty
+        #
+        # and the failure is SILENT, because `content update/insert` still exits 0
+        # through `adb shell`. Measured on device 2026-09-20: with the bind, the row
+        # did not move at all; without it, the write lands AND the provider marks the
+        # row `dirty=1` by itself. So local edits are already flagged for upload --
+        # nothing here should ever bind `dirty`.
+        #
+        # What the code DOES hold to, and why:
         #   1. if a copy already sits on the exact target date+time, issue NO write;
         #   2. if the seed needs a Meet link, it MUST be moved in place (a
         #      delete+insert would drop the conferencing block, which the non-rooted
-        #      `content` CLI cannot rewrite) -- so update it and mark it dirty;
+        #      `content` CLI cannot rewrite) -- so update that row;
         #   3. otherwise INSERT a fresh copy on the target date and let the leftover
         #      sweep below remove the stale same-time row.
+        # Every write is then CONFIRMED by re-reading the row, because a rejected
+        # write costs nothing to miss otherwise (see the silent-exit-0 note above).
         already = (_pick(exact_date=True, prefer_link=True) if (ev.get("meet") and linked)
                    else _pick(exact_date=True, prefer_link=False))
         if already:
@@ -813,14 +835,13 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
             match = (_pick(exact_date=False, prefer_link=True)
                      or _pick(exact_date=False, prefer_link=False))
         if match:
-            # `dirty:i:1` is the durable-write marker: it is what gets the edit
-            # uploaded instead of clobbered by the next sync. Kept even though this
-            # path is now only reached for Meet-linked copies (see rule 2 above).
+            # No `dirty` bind: the provider sets it, and binding it is rejected
+            # outright (see the note above -- it broke every calendar write).
             sh(serial, f"content update --uri {CAL_URI} "
                        f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
-                       f"--bind dirty:i:1 "
                        f"--where \"_id={match}\"", check=True)
             used.add(match)
+            _moved.append((ev["title"], match, dtstart))
             print(f"  [ok]  shifted calendar event '{ev['title']}' to {d} "
                   f"{ev['start']}-{ev['end']} in place (_id={match}, conferencing kept)")
         else:
@@ -828,8 +849,7 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
                 f"content insert --uri {CAL_URI} --bind title:s:{quote(ev['title'])} "
                 f"--bind dtstart:l:{dtstart} --bind dtend:l:{dtend} "
                 f"--bind calendar_id:i:16 --bind allDay:i:0 "
-                f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0 "
-                f"--bind dirty:i:1"
+                f"--bind eventTimezone:s:{quote(tz_name)} --bind hasAlarm:i:0"
             )
             sh(serial, cmd, check=True)
             # The stale same-time copy (if any) is deliberately NOT added to `used`:
@@ -841,8 +861,8 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
                   f"{ev['start']}-{ev['end']} ({tz_name})")
 
     # Confirm every freshly INSERTed anchor actually landed before we delete anything.
-    # An insert is durable (unlike an update, see above), so this is the one write we
-    # can trust -- but only if it is verified before the sweep runs.
+    # A rejected write is silent (adb exits 0 through a provider exception), so the
+    # only trustworthy signal is re-reading the row.
     if _inserted:
         live_after = _live_calendar_events(serial, sorted({t for t, _ in _inserted}))
         missing = []
@@ -856,6 +876,23 @@ def ensure_calendar_events(serial: str, events: list[dict], apply: bool) -> None
                   "re-run --apply before benchmarking.")
             return
         print(f"  [ok]  confirmed {len(_inserted)} freshly inserted calendar anchor(s)")
+
+    # Same confirmation for rows moved in place. These are the Meet-linked seeds, so
+    # a silent rejection here loses the link's slot and takes
+    # hard__google-meet-files__070 down with it.
+    if _moved:
+        moved_missing = []
+        for title, eid, want_ms in _moved:
+            row = sh(serial, f"content query --uri {CAL_URI} "
+                             f"--projection _id:dtstart --where \"_id={eid}\"")
+            m = re.search(r"dtstart=(\d+)", row)
+            if not m or abs(int(m.group(1)) - want_ms) > 60_000:
+                moved_missing.append(f"{title} (_id={eid})")
+        if moved_missing:
+            print(f"  [FAIL] calendar in-place move did not land for: {moved_missing}")
+            print("  [FAIL] re-run --apply before benchmarking.")
+            return
+        print(f"  [ok]  confirmed {len(_moved)} in-place calendar move(s)")
 
     # Live copies we did not shift are stale duplicates or run artifacts. Delete
     # one id at a time: the provider clears a single row per `content delete`.

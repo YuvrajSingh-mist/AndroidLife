@@ -76,21 +76,32 @@ Exit code 0 = safe to start a run. Skips:
 > **Also run `--apply` in the foreground** — a backgrounded reset can die silently and
 > leave a half-applied state that looks finished.
 
-> **Durability fixed 2026-09-20.** `cal_id=16` is a Google-**synced** calendar, and a
-> plain `content update` of `dtstart`/`dtend` on a synced row does not stick — the sync
-> adapter re-applies the server's copy and reverts the row to whatever the original
-> `content insert` uploaded. That is how the 2026-09-20 run passed the anchor gate at
-> 03:46 and still had every `offset_days` seed a day early by 09:31, making
-> `easy__calendar__002` vacuous. The rule is now **insert is durable, update is not**:
-> no write at all when the row is already on the exact target date+time; an in-place
-> update (**always with `dirty:i:1`**, the marker that gets the edit uploaded instead
-> of clobbered) only for Meet-linked copies, because a delete+insert would destroy the
-> conference link the non-rooted CLI cannot rewrite; otherwise insert and sweep the
-> stale same-time row — with the sweep gated on the inserts having actually landed, so
-> a failed insert can never leave the device with no seed at all. An opt-in
+> **Calendar durability — corrected 2026-09-20.** An earlier revision of this note
+> claimed a synced row's `content update` of `dtstart`/`dtend` gets reverted by the
+> sync adapter, and told you to bind `dirty:i:1` to prevent it. **That was wrong, and
+> the bind made things worse.** Measured on device: the CalendarProvider rejects it
+> with `IllegalArgumentException: Only sync adapters may write to dirty`, and the
+> failure is **silent**, because `content update`/`insert` still exit 0 through
+> `adb shell`. With the bind, the row did not move at all; without it, the write lands
+> *and* the provider marks the row `dirty=1` by itself. So local edits are already
+> queued for upload and **nothing should ever bind `dirty`**.
+>
+> What actually causes a one-day-early seed: the anchors are relative to **the day
+> `--apply` ran**, so a reset performed the day before a batch leaves every
+> `offset_days` seed on what is now the run day. That is the documented 2026-09-16
+> failure, and the reason the rule is to re-run `--apply` **on the run day**.
+>
+> The rule the code holds to: no write at all when the row is already on the exact
+> target date+time; an in-place update only for Meet-linked copies, because a
+> delete+insert would destroy the conference link the non-rooted CLI cannot rewrite;
+> otherwise insert and sweep the stale same-time row — with the sweep gated on the
+> inserts having actually landed, so a failed insert can never leave the device with
+> no seed at all. Every write is then **confirmed by re-reading the row**, because a
+> rejected write is otherwise indistinguishable from a good one. An opt-in
 > `--settle-recheck SECONDS` nudges the sync, waits, and re-asserts the anchors, but
-> note it is a lower bound: Android offers no public force-sync for a third-party
-> account, so a PASS there is reassurance, not proof.
+> note it is a lower bound: **neither `content call --method forceSync` nor the
+> SyncAdapter broadcast actually starts a sync on this build** (both return success
+> while doing nothing), so a PASS there is reassurance, not proof.
 
 The script (profile `public_v2`):
 - Restores settings (e.g. `screen_off_timeout` → 1800000).
