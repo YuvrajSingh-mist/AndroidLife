@@ -59,8 +59,8 @@ aren't grouped or predictable by position.**
 **[Google Drive]**
 - Medium (3pt): I'm running out of space in my Drive and can't figure out where it all went. Check my current storage usage in Drive's settings, then open the details of the files in the main Drive folder, find the largest file, and note its name, type, size, and last modified date. <!--medium__google-drive__001-->
 
-**3. [Drive+Notes+Telegram] — ASK USER SINGLE**
-- I'm worried our shared budget spreadsheet is slipping. Open the shared budget spreadsheet in Drive, check when it was last edited, and compare that against the committed finalisation deadline noted in my 'Budget Deadline' note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way (deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message) <!--hard__drive-notes-telegram__010-->
+**3. [Notes+Telegram] — ASK USER SINGLE**
+- I'm worried our shared budget is slipping. Open my budget note in the Notes app and compare the last-reviewed date recorded in it against the finalisation deadline recorded in the same note. If it hasn't been updated by the deadline (it's overdue), message the person who owns the budget on Telegram to chase it; otherwise just log today's check date in the note. Confirm what you did either way (deliberately neither the note nor the recipient is named, so the agent must ask the user which note they mean and who to message) <!--hard__drive-notes-telegram__010-->
 
 **4. [Google Sheets+Amazon Shopping] — DETERMINISTIC**
 - I've got all my video stats in the [spreadsheet name] spreadsheet and I want to treat myself. Can you open it in Google Sheets, find the video with the most views, and read out its name and view count? Then open Amazon Shopping, search for '[related product]', and open the top result to check its price. Reply with only the video name and the product name, no other text. <!--hard__google-sheets-amazon-shopping__074-->

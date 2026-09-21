@@ -13,21 +13,42 @@ DEFAULT_SERIAL = "100.108.15.119:5555"
 VAULT = "/sdcard/Obsidian/Papers vault oneplus /"
 
 NOTES: dict[str, str] = {
+    # hard__drive-notes-telegram__010 reads this note (the OnePlus Notes app copy is
+    # re-typed through the UI from this same text). It carries the real budget figures
+    # the task compares against, plus the two dates the task hinges on: the committed
+    # finalisation deadline and the last-reviewed date. Keep "Last reviewed: 2026-07-10."
+    # verbatim -- hard__drive-obsidian-telegram__049 (530 corpus) matches on that line,
+    # and reset_phone.py's verify needle expects it.
     "Budget Deadline.md": """# Budget Deadline
 
-## Shared budget spreadsheet - FY26 finalisation
+## FY26 family budget - finalisation
 
-The family shared budget spreadsheet (the one we all add our monthly spends
-to) must be **finalised by 2026-08-10** so the numbers are locked before the
-new financial-year planning round starts.
-
+Deadline: 2026-08-10
 Last reviewed: 2026-07-10.
 
+### Income per month
+- Salary: Rs 78000
+- Flat 2B rent: Rs 14000
+- Total income: Rs 92000
+
+### Spends per month
+- Rent: Rs 24000
+- Groceries: Rs 11500
+- Utilities: Rs 9400
+- Transport: Rs 6900
+- School fees: Rs 19000
+- Medical: Rs 3200
+- Misc: Rs 8600
+- Total spends: Rs 82600
+
+Left over: Rs 9400
+- Move Rs 5000 to savings, keep Rs 4400 as buffer.
+
 ## To do before finalising
-- Make sure everyone has added their spends for June and July.
-- Categorise the ~7 uncategorised rows in the misc column.
-- Cross-check the rent + utilities split against last month.
-- Export a PDF copy to Drive for the family group once locked.
+- Add June and July spends to the tracker.
+- Categorise the 7 uncategorised rows in misc.
+- Cross-check rent and utilities against last month.
+- Export a PDF copy once locked.
 """,
     "Exam Scores.md": """# Exam Scores
 

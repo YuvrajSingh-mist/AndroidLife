@@ -381,11 +381,22 @@ Harness behavior that affects results and is part of the reproducible spec:
      - **OnePlus Notes app `Budget Deadline` note also enriched (via UI).** `hard__drive-notes-telegram__010` (apps: Drive+Notes+Telegram) reads the 'Budget Deadline' note in the **OnePlus Notes app** (`com.oneplus.note`, app-private `needs_ui` seed), which held only "The budget deadline is 2026-08-10" plus blank lines. Enriched through the app UI to the same realistic content (deadline **2026-08-10** + "Last reviewed: 2026-07-10" + todo list) so it is no longer near-empty. App-private → no file seed; re-applied via UI if ever reset.
      - ⚠️ **2026-09-18 — the OnePlus Notes seed went MISSING, then was RESTORED.** Verified by comparing pre-run UI dumps: `notes_final.xml` (2026-08-30) lists `Budget Deadline` as the first of 8 notes, but `notes_now.xml` (2026-09-16) lists 8 notes with no `Budget Deadline` anywhere. `reset_phone.py` only *deletes* run-created notes in `com.oneplus.note`; it cannot recreate this one, so the note had become **Obsidian-only** (`Budget Deadline.md`, which *is* file-seeded). The 17 Sep run's Notes search returning "No results" was therefore correct and `hard__drive-notes-telegram__010` was unsolvable as seeded.
      - ✅ **2026-09-18 (same day) — re-seeded via UI.** The note was recreated by hand in `com.oneplus.note` from the file seed `assets/seeds/public/notes/Budget Deadline.md` (title `Budget Deadline`; body = FY26-finalisation section + `finalised by 2026-08-10` + `Last reviewed: 2026-07-10.` + the 4-item to-do list). Verified by screenshot OCR of the reopened note and by the app's own list preview (`Budget Deadline` first row + `Shared budget spreadsheet - FY26 finalisation`). Notes now holds **10 notes**, and a force-stop + relaunch lands on the **list** (not inside a note), so the "last-edited note" trap is not tripped. The `@@note` reset procedure still cannot recreate it — if it goes missing again, re-apply via UI or repoint the public task at Obsidian (its 530 twin `hard__drive-obsidian-telegram__049` already does).
+  - ✅ **2026-09-21 — note re-typed with real budget data; the task no longer uses Drive.**
+    The note was rewritten through the Notes UI to a realistic FY26 budget (income, spends,
+    left-over, to-do list) while keeping both graded dates verbatim — `Deadline: 2026-08-10`
+    and `Last reviewed: 2026-07-10.` — and that exact text is now the tracked file seed
+    (`assets/seeds/public/notes/Budget Deadline.md` ← `enrich_public_notes.py` ←
+    `reset_phone.py`). In the same change the public task dropped its Drive half: the prompt
+    now reads the **last-reviewed date and the deadline from the same note**, the header is
+    `[Notes+Telegram]`, and the oracle's bogus `family_numbers.xlsx` (a Drive file that never
+    existed — Drive only ever held `budget.xlsx`) became *"The note you want is 'Budget
+    Deadline'."* See `redo.md` §4. `task_id` is unchanged, so artifact paths are stable.
   - **Lives in BOTH places — and the Notes copy is a protected SEED.**
-    `hard__drive-notes-telegram__010` (apps: Drive + Notes + Telegram) reads the
-    **`Budget Deadline` note in the OnePlus Notes app**; an `Budget Deadline.md` copy
+    `hard__drive-notes-telegram__010` (apps since 2026-09-21: **Notes + Telegram**) reads the
+    **`Budget Deadline` note in the OnePlus Notes app**; a `Budget Deadline.md` copy
     also sits in the Obsidian vault (that one *is* file-seeded, so `reset_phone.py`
-    restores it). Both were verified present on device **2026-09-19**.
+    restores it, and its `Last reviewed:` line is a verify needle). Both were verified present
+    on device **2026-09-21**.
     ⚠️ **Do NOT delete the Notes copy as a "run note".** The prompt says *"otherwise just
     log today's check date in the note"*, so a run taking that branch rewrites the note
     and makes it look run-dated; a date-based cleanup sweep then destroys the seed. This

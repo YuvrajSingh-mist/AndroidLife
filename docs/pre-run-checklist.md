@@ -94,8 +94,10 @@ Canonical operator runbook (ADB reset + manual seeds table):
 
 - ☐ **Shared-with-me editable files** present (`medium__google-drive__007`) — count queryable.
 - ☐ Largest-file check works (`medium__google-drive__001`) — main folder has files.
-- ☐ **Shared budget spreadsheet** reachable from the secondary account
-  (`hard__drive-notes-telegram__010`) with last-edit date vs the 2026-08-10 deadline.
+- ☐ **`Budget Deadline` note** present in the OnePlus Notes app (`hard__drive-notes-telegram__010`)
+  carrying both dates — `Deadline: 2026-08-10` and `Last reviewed: 2026-07-10.` App-private with
+  no file seed, so it must be re-typed via the UI if missing; `reset_phone.py` verifies the
+  Obsidian copy's `Last reviewed:` needle. Drive is **not** part of this task since 2026-09-21.
 - ☐ Clean up `Copy of SPORTS_VIDEO_DATA` leftovers; re-download the 5 uploaded files, then
   delete that Drive folder.
 

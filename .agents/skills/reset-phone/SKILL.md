@@ -526,7 +526,7 @@ Chrome History provider is blocked on this non-rooted phone — **do not expect
 | `medium__gallery__007` | 3 food photos in Google Photos: Favourites + captions Pancakes / Pizza / Veggie Bowl (same Photos account). | ❌ app-private |
 | `easy__gallery__012` | Screenshots album has a known count (real Screenshots). | ❌ |
 | `hard__gmail-calendar__003` | Gmail has the Scapia / "Pack for Delhi" flight email. | ❌ cloud |
-| `hard__drive-notes-telegram__010` | Drive shared budget spreadsheet + Obsidian/Notes `Budget Deadline.md` baseline. | Drive ❌ / note ✅ ADB restore |
+| `hard__drive-notes-telegram__010` | Obsidian + OnePlus Notes `Budget Deadline` note holding both dates (finalisation deadline + last-reviewed). Drive is **not** part of this task since 2026-09-21. | Obsidian ✅ ADB restore / Notes ❌ app-private (re-type via UI) |
 | `medium__google-drive__001` | Real Drive usage + files with visible Details sizes. | ❌ cloud |
 | `easy__google-docs__004` / Docs tasks | Real Docs with body text (not title-only), e.g. Student Project Tracker. | ❌ cloud |
 | `easy__amazon-shopping__002` | Amazon cart state for the seeded product (in or out — task asks to check). | ❌ account |

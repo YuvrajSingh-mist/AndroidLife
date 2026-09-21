@@ -87,7 +87,7 @@ withheld fact(s), and the same answer comes back each time. Guessing without ask
 
 | task | day | withheld fact |
 |---|---|---|
-| `hard__drive-notes-telegram__010` | 1 | Message Yuvraj Airtel about the budget spreadsheet |
+| `hard__drive-notes-telegram__010` | 1 | Message Yuvraj Airtel; the note to open is the `Budget Deadline` note |
 | `hard__chrome-telegram-notes__008` | 2 | The item is wireless earbuds |
 | `hard__google-search-telegram-clock__018` | 2 | The place is the SBI ATM; the person to message is Yuvraj Singh Jio |
 | `hard__photos-gmail-obsidian__012` | 2 | The photo is the 'Sunset at Puri' shot; the recipient's email is `hafari4025@aghism.com` |

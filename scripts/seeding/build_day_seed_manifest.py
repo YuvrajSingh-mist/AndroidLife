@@ -750,13 +750,12 @@ DAY5_TASKS: dict[str, dict] = {
     },
     "hard__drive-notes-telegram__010": {
         "vars": {},
-        "ask_user_fact": "Message {contact} about the budget spreadsheet.",
+        "ask_user_fact": "Message {contact} about the budget.",
         "seed": [
-            {"type": "drive_spreadsheet", "location": "Google Drive (real)", "value": "The shared budget spreadsheet's real last-edited date (operator ensures the shared budget.xlsx exists in Drive).", "status": "needs_ui"},
-            {"type": "notes", "location": "Notes app (app-private)", "value": "The budget deadline noted in Notes (operator ensures a 'Budget Deadline' note).", "status": "needs_ui"},
+            {"type": "notes", "location": "Notes app (app-private)", "value": "The 'Budget Deadline' note: real budget figures plus the finalisation deadline (2026-08-10) and the last-reviewed date (2026-07-10). App-private, so it is typed through the app UI by hand -- reset_phone.py can only DELETE run-created notes there, never recreate this one.", "status": "needs_ui"},
             {"type": "telegram_contact", "location": "Telegram (real)", "value": "Contact '{contact}' exists.", "status": "present"},
         ],
-        "end_state": "A note records the last-edited date + today's check date; if overdue the budget owner is messaged on Telegram, else the spreadsheet is starred.",
+        "end_state": "The note's last-reviewed date is compared against the finalisation deadline recorded in it; the deadline is in the past, so the budget owner is messaged on Telegram.",
     },
     "hard__drive-obsidian-telegram__049": {
         "vars": {},
