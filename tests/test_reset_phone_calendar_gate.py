@@ -124,15 +124,16 @@ def _rows(*specs) -> str:
                      for i, t, ms, d in specs)
 
 
-# One May-ish copy of each seed, plus an unrelated live event whose title merely
-# contains "Gym".
+# One copy of each seed sitting on its CURRENT anchor, plus an unrelated live event whose
+# title merely contains "Gym". This is the steady state: the seeder's exact-date fast path
+# treats these as already-correct and issues no write, which is what
+# test_already_correct_seed_is_not_rewritten pins (and why the dry-run test can assert
+# "no writes" against it).
 #
-# KNOWN STALE (predates the meet-link rework in ensure_calendar_events): these copies are
-# built from the CURRENT anchors, so the seeder's exact-date fast path treats them as
-# already-correct and issues no write -- while the three shift tests below still assert
-# three UPDATEs. That combination can only hold for `meet: True` seeds, where a same-time
-# miss is resolved by an in-place UPDATE to preserve the conference link. These fixtures
-# are unlinked, so a same-time miss now INSERTs by design. See redo.md.
+# The three shift tests need the OPPOSITE fixture -- a stale, one-day-early device -- and
+# they need real write round-trips, because the seeder now CONFIRMS every write by
+# re-reading the row before it sweeps anything. A single canned dump cannot express that,
+# so they drive FakeCalendar below, which actually applies the writes.
 QUERY_ROWS = _rows(
     (4313, "Old_Gym_Class", _ms(TODAY, "07:00"), 0),
     (4341, "Weekly Sync", _ms(MONDAY, "07:00"), 0),
@@ -161,6 +162,96 @@ def _seed_off(days=1, title="Weekly Sync", start="10:00", end="11:00"):
     return {"title": title, "offset_days": days, "start": start, "end": end}
 
 
+# --- shift tests: a device model that actually applies the writes ------------
+# `ensure_calendar_events` resolves a same-time miss in two different ways -- an
+# in-place UPDATE for a Meet-linked seed (to preserve the conference link) and an
+# INSERT + stale-copy sweep for an unlinked one. Those are asserted on END STATE, so
+# the fake has to hold state: it renders rows, applies updates/inserts/deletes, and
+# answers the `--where "_id=N"` re-read the seeder confirms every write with.
+
+MEET_LINK = "https://meet.google.com/abc-defg-hij"
+
+
+def _meet_seed(title="Weekly Sync", start="07:00", end="08:00", weekday="monday"):
+    """Weekday-anchored seed that must keep a Google Meet conference link."""
+    return {**_seed(title=title, start=start, end=end, weekday=weekday), "meet": True}
+
+
+def _meet_seed_off(days=1, title="Weekly Sync", start="10:00", end="11:00"):
+    """Offset-anchored seed that must keep a Google Meet conference link."""
+    return {**_seed_off(days=days, title=title, start=start, end=end), "meet": True}
+
+
+class FakeCalendar:
+    """Minimal in-memory stand-in for the CalendarProvider.
+
+    Rows are `(id, title, dtstart_ms, deleted)` with an optional 5th `description`
+    holding the Meet link. Every row renders as ONE line carrying all four fields, so
+    the same dump satisfies each of the seeder's projections (`_id:title:dtstart:deleted`,
+    `_id:description:deleted`, `_id:title:deleted`) without the fake having to model
+    projections at all.
+    """
+
+    def __init__(self, rows=()):
+        self.rows: dict[str, dict] = {}
+        for r in rows:
+            self.rows[str(r[0])] = {
+                "id": str(r[0]), "title": r[1], "dtstart": r[2], "deleted": r[3],
+                "description": r[4] if len(r) > 4 else "",
+            }
+        self.calls: list[str] = []
+        self._next_id = max((int(k) for k in self.rows), default=9000) + 1
+
+    def _line(self, r: dict) -> str:
+        return (f"Row: {r['id']} _id={r['id']}, title={r['title']}, "
+                f"dtstart={r['dtstart']}, deleted={r['deleted']}, "
+                f"description={r['description']}")
+
+    def _dump(self) -> str:
+        return "\n".join(self._line(r) for r in self.rows.values())
+
+    def sh(self, serial, cmd, check=False):
+        self.calls.append(cmd)
+        if "getprop" in cmd:
+            return "Asia/Kolkata"
+        where = re.search(r'--where "([^"]+)"', cmd)
+        if cmd.startswith("content update"):
+            eid = re.search(r"_id=(\d+)", where.group(1)).group(1)
+            self.rows[eid]["dtstart"] = int(re.search(r"dtstart:l:(\d+)", cmd).group(1))
+            return ""
+        if cmd.startswith("content insert"):
+            title = re.search(r"title:s:'([^']*)'", cmd).group(1)
+            dtstart = int(re.search(r"dtstart:l:(\d+)", cmd).group(1))
+            nid = str(self._next_id)
+            self._next_id += 1
+            self.rows[nid] = {"id": nid, "title": title, "dtstart": dtstart,
+                              "deleted": 0, "description": ""}
+            return ""
+        if cmd.startswith("content delete"):
+            eid = re.search(r"_id=(\d+)", where.group(1)).group(1)
+            self.rows[eid]["deleted"] = 1
+            return ""
+        if where:  # the seeder's post-write confirmation re-read
+            eid = re.search(r"_id=(\d+)", where.group(1)).group(1)
+            row = self.rows.get(eid)
+            return self._line(row) if row else ""
+        return self._dump()
+
+    # --- assertions --------------------------------------------------------
+    def updates(self) -> list[str]:
+        return [c for c in self.calls if c.startswith("content update")]
+
+    def inserts(self) -> list[str]:
+        return [c for c in self.calls if c.startswith("content insert")]
+
+    def deletes(self) -> list[str]:
+        return [c for c in self.calls if c.startswith("content delete")]
+
+    def live(self, title: str | None = None) -> list[dict]:
+        return [r for r in self.rows.values()
+                if r["deleted"] == 0 and (title is None or r["title"] == title)]
+
+
 def test_live_events_match_exact_titles_and_skip_deleted(rp, monkeypatch):
     """Only live rows with exactly-matching titles come back."""
     monkeypatch.setattr(rp, "sh", _fake_sh(QUERY_ROWS, []))
@@ -174,54 +265,92 @@ def test_live_events_match_exact_titles_and_skip_deleted(rp, monkeypatch):
 
 
 def test_existing_seeds_are_shifted_in_place(rp, monkeypatch):
-    """Matched seeds are UPDATE'd, never deleted and re-inserted."""
-    calls: list[str] = []
-    monkeypatch.setattr(rp, "sh", _fake_sh(QUERY_ROWS, calls))
+    """Meet-linked seeds are UPDATE'd in place -- never deleted and re-inserted.
+
+    A Meet conference link lives in Google sync-adapter columns the non-rooted
+    `content` CLI cannot write (bind values reject ':' and a Meet URL always contains
+    '://'), so a delete+insert silently drops it -- which is what made
+    hard__google-meet-files__070 unfixable. The fixture sits one day early, exactly
+    like a reset that ran the previous day.
+    """
+    dev = FakeCalendar([
+        (4313, "Old_Gym_Class", _ms(TODAY, "07:00"), 0),
+        (4341, "Weekly Sync", _ms(TODAY, "07:00"), 0, MEET_LINK),
+        (4342, "Weekly Sync", _ms(TODAY, "10:00"), 0, MEET_LINK),
+        (4343, "Weekly Sync", _ms(TODAY, "10:00"), 0, MEET_LINK),
+    ])
+    monkeypatch.setattr(rp, "sh", dev.sh)
     monkeypatch.setattr(rp, "quote", lambda s: f"'{s}'")
 
     # the full public_v2 declaration: clash seed + both agenda-meeting offsets
-    rp.ensure_calendar_events("S", [_seed(start="07:00", end="08:00"),
-                                    _seed_off(days=1), _seed_off(days=2)], apply=True)
+    rp.ensure_calendar_events("S", [_meet_seed(start="07:00", end="08:00"),
+                                    _meet_seed_off(days=1), _meet_seed_off(days=2)], apply=True)
 
-    updates = [c for c in calls if "content update" in c]
-    inserts = [c for c in calls if "content insert" in c]
-    deletes = [c for c in calls if "content delete" in c]
-    assert len(updates) == 3, f"expected in-place shifts, got: {calls}"
-    assert ["_id=4341" in updates[0], "_id=4342" in updates[1], "_id=4343" in updates[2]]
-    assert not inserts, "a matched seed must not be re-inserted"
-    assert not deletes, "a matched seed must not be deleted"
-    # Gym is not in the declared seed list, so it must not be touched either.
-    assert not any("_id=4344" in c for c in calls)
+    assert len(dev.updates()) == 3, f"expected in-place shifts, got: {dev.calls}"
+    assert ["_id=4341" in dev.updates()[0],
+            "_id=4342" in dev.updates()[1],
+            "_id=4343" in dev.updates()[2]] == [True, True, True]
+    assert not dev.inserts(), "a matched seed must not be re-inserted"
+    assert not dev.deletes(), "a matched seed must not be deleted"
+
+    # each row landed on its own anchor, and every one kept its conference link
+    assert dev.rows["4341"]["dtstart"] == _ms(_next_weekday(0), "07:00")
+    assert dev.rows["4342"]["dtstart"] == _ms(D1, "10:00")
+    assert dev.rows["4343"]["dtstart"] == _ms(D2, "10:00")
+    assert all("meet.google.com/" in dev.rows[i]["description"]
+               for i in ("4341", "4342", "4343")), "an in-place shift dropped the Meet link"
+
+    # Old_Gym_Class is not in the declared seed list, so it must not be touched.
+    assert dev.rows["4313"]["dtstart"] == _ms(TODAY, "07:00")
+    assert dev.rows["4313"]["deleted"] == 0
 
 
 def test_same_time_on_consecutive_days_both_survive(rp, monkeypatch):
     """The two 10:00 agenda seeds differ only by date; neither may be treated as
-    a stale duplicate of the other (time-of-day matching alone would delete one)."""
-    calls: list[str] = []
-    monkeypatch.setattr(rp, "sh", _fake_sh(QUERY_ROWS, calls))
+    a stale duplicate of the other (time-of-day matching alone would drop one)."""
+    dev = FakeCalendar([
+        (4341, "Weekly Sync", _ms(TODAY, "07:00"), 0, MEET_LINK),
+        (4342, "Weekly Sync", _ms(TODAY, "10:00"), 0, MEET_LINK),
+        (4343, "Weekly Sync", _ms(TODAY, "10:00"), 0, MEET_LINK),
+    ])
+    monkeypatch.setattr(rp, "sh", dev.sh)
     monkeypatch.setattr(rp, "quote", lambda s: f"'{s}'")
 
-    rp.ensure_calendar_events("S", [_seed(start="07:00", end="08:00"),
-                                    _seed_off(days=1), _seed_off(days=2)], apply=True)
+    rp.ensure_calendar_events("S", [_meet_seed(start="07:00", end="08:00"),
+                                    _meet_seed_off(days=1), _meet_seed_off(days=2)], apply=True)
 
-    updates = [c for c in calls if "content update" in c]
-    deletes = [c for c in calls if "content delete" in c]
-    assert len(updates) == 3, f"one copy was wrongly dropped: {calls}"
-    assert "_id=4342" in updates[1] and "_id=4343" in updates[2]
-    assert not deletes, f"a declared seed was deleted as stale: {deletes}"
+    assert not dev.deletes(), f"a declared seed was deleted as stale: {dev.deletes()}"
+    assert dev.rows["4342"]["dtstart"] == _ms(D1, "10:00")
+    assert dev.rows["4343"]["dtstart"] == _ms(D2, "10:00")
+    assert dev.rows["4342"]["dtstart"] != dev.rows["4343"]["dtstart"]
+    assert len(dev.live("Weekly Sync")) == 3, "a Weekly Sync copy went missing"
+    # only the +1 slot is inside Meet's ~48h "Scheduled" window, so both 10:00 copies
+    # must exist on DISTINCT days rather than one being collapsed onto the other
+    assert {dev.rows["4342"]["dtstart"], dev.rows["4343"]["dtstart"]} == {
+        _ms(D1, "10:00"), _ms(D2, "10:00")}
 
 
 def test_time_of_day_disambiguates_duplicate_titles(rp, monkeypatch):
-    """The 10:00 agenda seed must not match the 07:00 Monday copy."""
-    calls: list[str] = []
-    monkeypatch.setattr(rp, "sh", _fake_sh(QUERY_ROWS, calls))
+    """A 07:00 seed must move the 07:00 copy, never the same-titled 10:00 one."""
+    dev = FakeCalendar([
+        (4341, "Weekly Sync", _ms(TODAY, "07:00"), 0, MEET_LINK),
+        (4342, "Weekly Sync", _ms(TODAY, "10:00"), 0, MEET_LINK),
+    ])
+    monkeypatch.setattr(rp, "sh", dev.sh)
     monkeypatch.setattr(rp, "quote", lambda s: f"'{s}'")
 
-    rp.ensure_calendar_events("S", [_seed(start="07:00", end="08:00")], apply=True)
+    rp.ensure_calendar_events("S", [_meet_seed(start="07:00", end="08:00")], apply=True)
 
-    updates = [c for c in calls if "content update" in c]
-    assert len(updates) == 1
+    updates = dev.updates()
+    assert len(updates) == 1, updates
     assert "_id=4341" in updates[0], f"matched the wrong Weekly Sync copy: {updates[0]}"
+    assert dev.rows["4341"]["dtstart"] == _ms(_next_weekday(0), "07:00")
+    # The 10:00 copy is a slot this declaration never asked for, so it must not be
+    # MOVED onto the 07:00 anchor. It is swept as an undeclared stray instead -- which
+    # is the separate contract pinned by
+    # test_unmatched_stale_copy_is_deleted_but_matched_one_is_kept.
+    assert dev.rows["4342"]["dtstart"] == _ms(TODAY, "10:00")
+    assert dev.rows["4342"]["deleted"] == 1
 
 
 def test_already_correct_seed_is_not_rewritten(rp, monkeypatch):
