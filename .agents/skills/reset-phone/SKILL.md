@@ -432,6 +432,31 @@ prints these; the key ones:
   **UNRESOLVED** (last message: *"22nd could work for me too, let me confirm once
   she's free"* so `hard__telegram-calendar__016` forces a multi-turn ask — don't
   re-add a settling message).
+- **Telegram — the "Yuvraj Airtel" chat (every `hard__drive-notes-telegram__010`
+  run messages the budget owner there).** Clear **both drafts and sent bubbles**.
+  Confirmed 2026-09-21 as a real cross-run leak: row 4 composed the chase message,
+  its Send **never registered**, and the leftover **draft** was then inherited by
+  rows **5 / 6 / 9 / 11** — row 5 narrated *"I see a chat with Yuvraj Airtel that
+  has a draft"*, row 9 *"The message is already composed"*, and row 11 finally
+  tapped Send (*"I can see the message has been sent! … Sent at 18:31, Not seen"*).
+  One draft survived **~90 min and 7 rows**. A *sent* bubble is worse: the next
+  run reads the chat as already handled. Note uiautomator **cannot read the chat
+  list** — open the chat itself and verify the compose box is empty and no
+  today-dated bubble remains. Delete via long-press → top-bar **Delete** →
+  confirm `Delete` (the long-press also works on the message text node, and the
+  Delete action lives in the *top* bar, not the Reply/Forward bar at the bottom).
+- **Notes app: `Airtel Contacts` is baseline, NOT a run artifact — leave it.**
+  A one-line note (`- Yuvraj Airtel`) dated **8/15/2026**, absent from
+  `assets/seeds/public/notes/` but part of the hand-maintained app-private Notes
+  baseline (like `Rent Dues`, `To Buy`, `HDFC Bank notifications`). Two reasons not
+  to sweep it: it predates the run window, and deleting is irreversible (no file
+  seed). It is however a **task-design consideration** for
+  `hard__drive-notes-telegram__010`: a run may read it and arrive at the withheld
+  recipient without asking (`2026-09-21` row 11: *"I can see the 'Airtel Contacts'
+  note which mentions 'Yuvraj Airtel' — this confirms Yuvraj is the budget owner"*;
+  row 2 also spotted it). The name is already present in the **legitimately seeded**
+  `Shared Bill.md`, so removing this note would not close that channel — treat it as
+  a spec decision, not a cleanup step.
 - **Digital Wellbeing** — remove any 30-min app timers (none set this run — verify).
 - **Camera** — delete the run-recorded "Camera Video" clip if present (none this run).
 - **Cloud (Gmail / Drive)** — NO run-created Gmail label exists this run; if a task
