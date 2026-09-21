@@ -10,7 +10,7 @@ reports/turn-based/public/
 └── ask-query-multi/<run-ts>/<task>.md
 ```
 
-Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `2026-08-30-021852`, `2026-08-30-143554`, `20260826-105200`, `20260901-002701`, `20260905-051950`, `20260906-063336`, `20260909-043419`, `20260910-041531`, `20260914-061846`, `20260916-011341`, `20260920-044846`
+Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `2026-08-30-021852`, `2026-08-30-143554`, `20260826-105200`, `20260901-002701`, `20260905-051950`, `20260906-063336`, `20260909-043419`, `20260910-041531`, `20260914-061846`, `20260916-011341`, `20260920-044846`, `20260921-212306`, `20260921-213754`
 
 ## ask-query-single/
 | Run | Task | Day | # asks | Asked? | Fact |
@@ -100,6 +100,8 @@ Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `20
 | 20260916-011341 | [hard__photos-gmail-obsidian__012](ask-query-single/20260916-011341/hard__photos-gmail-obsidian__012.md) | day2 | 1 | ✅ asked | The photo to send is the one captioned 'Sunset at Puri' from |
 | 20260916-011341 | [medium__google-search__008](ask-query-single/20260916-011341/medium__google-search__008.md) | day3 | 1 | ✅ asked | The route is from IIIT Bhubaneswar to Bhubaneswar Airport. |
 | 20260920-044846 | [hard__drive-notes-telegram__010](ask-query-single/20260920-044846/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The spreadsheet to chase is 'family_n |
+| 20260921-212306 | [hard__drive-notes-telegram__010](ask-query-single/20260921-212306/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The note you want is 'Budget Deadline |
+| 20260921-213754 | [hard__drive-notes-telegram__010](ask-query-single/20260921-213754/hard__drive-notes-telegram__010.md) | day1 | 0 | ❌ never asked | Message Yuvraj Airtel. The note you want is 'Budget Deadline |
 
 ## ask-query-multi/
 | Run | Task | Day | # asks | Asked? | Fact |

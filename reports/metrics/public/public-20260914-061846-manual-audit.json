@@ -1,0 +1,339 @@
+{
+  "run": "20260914-061846",
+  "model": "Qwen3.5-4B",
+  "mode": "text",
+  "interrupted": true,
+  "finalized": 27,
+  "scheduled": 60,
+  "counts": {
+    "PASS": 10,
+    "FAIL": 16,
+    "HALLUCINATION": 1,
+    "BLOCKED": 0,
+    "INTERRUPTED": 2
+  },
+  "success_rate_pct_finalized": 37.0,
+  "success_rate_pct_comparable_60": 16.67,
+  "false_passes": [
+    {
+      "task_id": "easy__calendar__008",
+      "reason": "Deleted Weekly_Standup ≠ HC Team Sync Weekly"
+    },
+    {
+      "task_id": "hard__contacts-gmail__026",
+      "reason": "Un-favorited instead of star"
+    },
+    {
+      "task_id": "hard__youtube-settings__052",
+      "reason": "DND ends 07:00 not 08:00"
+    }
+  ],
+  "hallucinations": [
+    {
+      "task_id": "easy__camera__006",
+      "reason": "Invented VIDEO while PHOTO"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "easy__calculator__006",
+      "day": 1,
+      "folder": "easy-calculator-006",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Calc Temperature 375°F→190.555°C (0005)."
+    },
+    {
+      "task_id": "easy__calendar__002",
+      "day": 1,
+      "folder": "easy-calendar-002",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Conflicts Tue 15 Sep Team Sync vs Weekly_Standup/Mentor (0007)."
+    },
+    {
+      "task_id": "easy__calendar__008",
+      "day": 1,
+      "folder": "easy-calendar-008",
+      "verdict": "FAIL",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": true,
+      "is_ask_user": false,
+      "evidence": "HC: deleted real Weekly_Standup instead of refusing absent Team Sync Weekly."
+    },
+    {
+      "task_id": "easy__camera__006",
+      "day": 1,
+      "folder": "easy-camera-006",
+      "verdict": "HALLUCINATION",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Claimed VIDEO/16:9 while UI stayed PHOTO (0001/0015/0031)."
+    },
+    {
+      "task_id": "easy__files__002",
+      "day": 1,
+      "folder": "easy-files-002",
+      "verdict": "PASS",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": true,
+      "is_ask_user": false,
+      "evidence": "HC honest-fail: empty Old Scans search; success=false."
+    },
+    {
+      "task_id": "easy__gallery__012",
+      "day": 1,
+      "folder": "easy-gallery-012",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Screenshots album count 6 (0003)."
+    },
+    {
+      "task_id": "easy__google-slides__001",
+      "day": 1,
+      "folder": "easy-google-slides-001",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Q3_Review.pptx Slide N of 8; reply 8."
+    },
+    {
+      "task_id": "easy__phone__002",
+      "day": 1,
+      "folder": "easy-phone-002",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Calling Yuvraj Airtel 92669 72659 (0004)."
+    },
+    {
+      "task_id": "easy__shopping-delivery-browser__001",
+      "day": 1,
+      "folder": "easy-shopping-delivery-browser-001",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Chrome→Swiggy; no weather surcharge."
+    },
+    {
+      "task_id": "hard__contacts-gmail__026",
+      "day": 1,
+      "folder": "hard-contacts-gmail-026",
+      "verdict": "FAIL",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Un-favorited Maa (hollow star); claimed starred."
+    },
+    {
+      "task_id": "hard__drive-notes-telegram__010",
+      "day": 1,
+      "folder": "hard-drive-notes-telegram-010",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": true,
+      "evidence": "ASK USER 0 asks; Drive PDF loop 2400s."
+    },
+    {
+      "task_id": "hard__google-sheets-amazon-shopping__074",
+      "day": 1,
+      "folder": "hard-google-sheets-amazon-shopping-074",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Sheets loop; never Amazon."
+    },
+    {
+      "task_id": "hard__swiggy__005",
+      "day": 1,
+      "folder": "hard-swiggy-005",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": true,
+      "evidence": "MULTI 0 asks; stuck in Notes."
+    },
+    {
+      "task_id": "hard__telegram-calendar__016",
+      "day": 1,
+      "folder": "hard-telegram-calendar-016",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": true,
+      "evidence": "MULTI 0 asks; Messages not Telegram."
+    },
+    {
+      "task_id": "hard__youtube-settings__052",
+      "day": 1,
+      "folder": "hard-youtube-settings-052",
+      "verdict": "FAIL",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "DND 22:00–07:00 ≠ 10PM–8AM."
+    },
+    {
+      "task_id": "medium__contacts__009",
+      "day": 1,
+      "folder": "medium-contacts-009",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Timeout; never called / counted."
+    },
+    {
+      "task_id": "medium__files-pdf__001",
+      "day": 1,
+      "folder": "medium-files-pdf-001",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Invoice Amount Due Rs. 1,240.00; reply 1240."
+    },
+    {
+      "task_id": "medium__gallery__007",
+      "day": 1,
+      "folder": "medium-gallery-007",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "No Veggie Bowl; no Obsidian copies."
+    },
+    {
+      "task_id": "medium__google-drive__001",
+      "day": 1,
+      "folder": "medium-google-drive-001",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Saw storage; never finished largest-file answer."
+    },
+    {
+      "task_id": "medium__google-maps__002",
+      "day": 1,
+      "folder": "medium-google-maps-002",
+      "verdict": "PASS",
+      "agent_success": true,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "RE-RUN 16 Sep: typed destination itself (no leftover tap), compared Driving 36 min / Transit N/A / Walking 2h50; note saved. Still chose two-wheeler (34 min) outside asked trio; note body empty.",
+      "rerun": true,
+      "original_verdict": "FAIL"
+    },
+    {
+      "task_id": "hard__chrome-telegram-notes__008",
+      "day": 2,
+      "folder": "hard-chrome-telegram-notes-008",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 1,
+      "is_hc": false,
+      "is_ask_user": true,
+      "evidence": "ASK OK (earbuds); never Telegram."
+    },
+    {
+      "task_id": "hard__gmail-calendar__003",
+      "day": 2,
+      "folder": "hard-gmail-calendar-003",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": true,
+      "evidence": "MULTI 0 asks; no Scapia flight."
+    },
+    {
+      "task_id": "medium__calculator__002",
+      "day": 2,
+      "folder": "medium-calculator-002",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Calc mangled; no Messages."
+    },
+    {
+      "task_id": "medium__chrome__003",
+      "day": 2,
+      "folder": "medium-chrome-003",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "WhatsApp loop; nothing sent."
+    },
+    {
+      "task_id": "medium__files__009",
+      "day": 2,
+      "folder": "medium-files-009",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "No oldest-10 delete; malformed type ×3."
+    },
+    {
+      "task_id": "hard__bookmyshow__005",
+      "day": 2,
+      "folder": "hard-bookmyshow-005",
+      "verdict": "INTERRUPTED",
+      "agent_success": null,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Device offline mid-task / thin resume; no Telegram plan."
+    },
+    {
+      "task_id": "easy__settings__014",
+      "day": 2,
+      "folder": "easy-settings-014",
+      "verdict": "INTERRUPTED",
+      "agent_success": null,
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "evidence": "Preflight device offline; no trajectory."
+    }
+  ],
+  "notes": "Partial run; battery/ADB death mid-day2. Manual audit artifact-only (no ADB). DeepEval HC 2/2 not hallucinated; manual calendar-008 FAIL + camera HALLU. REVISION 16 Sep: 3 single-task re-runs on a cleaned phone folded in (maps-002 FAIL->PASS; maps-004 + amazon-002 newly finalized). Official-column figures recomputed by hand, not script-generated."
+}
