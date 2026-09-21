@@ -1,0 +1,24 @@
+Budget Deadline
+FY26 family budget - finalisation
+Deadline: 2026-08-10
+Last reviewed: 2026-07-10.
+Income per month
+- Salary: Rs 78000
+- Flat 2B rent: Rs 14000
+- Total income: Rs 92000
+Spends per month
+- Rent: Rs 24000
+- Groceries: Rs 11500
+- Utilities: Rs 9400
+- Transport: Rs 6900
+- School fees: Rs 19000
+- Medical: Rs 3200
+- Misc: Rs 8600
+- Total spends: Rs 82600
+Left over: Rs 9400
+- Move Rs 5000 to savings, keep Rs 4400 as buffer.
+To do before finalising
+- Add June and July spends to the tracker.
+- Categorise the 7 uncategorised rows in misc.
+- Cross-check rent and utilities against last month.
+- Export a PDF copy once locked.

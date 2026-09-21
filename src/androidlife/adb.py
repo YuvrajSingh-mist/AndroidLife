@@ -14,6 +14,13 @@ THERMAL_RE = re.compile(
     r"Temperature\{mValue=(?P<value>[-0-9.]+), mType=(?P<type>\d+), mName=(?P<name>[^,]+), mStatus=(?P<status>\d+)\}"
 )
 FOREGROUND_PACKAGE_RE = re.compile(r"mCurrentFocus=Window\{[^}]*\su\d+\s+([a-zA-Z0-9_.]+)/")
+# `mFocusedApp` names the focused ActivityRecord, which is still there when
+# `mCurrentFocus` is null (transient dialogs, the notification shade, mid-animation);
+# the resumed-activity line is the last resort.
+FOCUSED_APP_RE = re.compile(r"mFocusedApp=.*?\su\d+\s+([a-zA-Z0-9_.]+)/")
+RESUMED_ACTIVITY_RE = re.compile(
+    r"(?:topResumedActivity|mResumedActivity|ResumedActivity)[^\n]*?\su\d+\s+([a-zA-Z0-9_.]+)/"
+)
 
 # Never force-stopped even if found in the foreground: the mobilerun Portal is needed
 # for the *next* task's own automation (auto_setup would just relaunch it anyway, but
@@ -164,10 +171,28 @@ def capture_app_battery(serial: str) -> dict[str, float]:
 
 
 def get_foreground_package(serial: str) -> str | None:
-    """Return the package name currently focused on-screen, or None if it can't be determined."""
-    output = adb_shell(serial, "dumpsys window")
-    match = FOREGROUND_PACKAGE_RE.search(output)
-    return match.group(1) if match else None
+    """Return the package name currently focused on-screen, or None if it can't be determined.
+
+    Three sources, in order of specificity. One `dumpsys window` parse is not enough:
+    `mCurrentFocus` is `null` whenever nothing holds input focus, and the between-task
+    reset then skips the force-stop entirely. That is not hypothetical -- three of the
+    thirteen 2026-09-21 `hard__drive-notes-telegram__010` re-runs recorded
+    `app_reset_stopped_package: None` while the device was sitting inside
+    `com.oneplus.note`, leaving the app (and its edited note) resident for the next task.
+    """
+    for command, pattern in (
+        ("dumpsys window", FOREGROUND_PACKAGE_RE),
+        ("dumpsys window", FOCUSED_APP_RE),
+        ("dumpsys activity activities", RESUMED_ACTIVITY_RE),
+    ):
+        try:
+            output = adb_shell(serial, command)
+        except Exception:  # noqa: BLE001, S112 - a probe failure must not break the reset
+            continue
+        match = pattern.search(output)
+        if match:
+            return match.group(1)
+    return None
 
 
 def force_stop_app(serial: str, package: str) -> None:

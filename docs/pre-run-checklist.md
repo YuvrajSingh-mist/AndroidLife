@@ -64,6 +64,14 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☑ Contacts (incl. Akash Kumar + fabricated email `yuvraj.mist@gmail.com`)
 - ☑ Camera seeds + Screenshots · `screen_off_timeout=1800000` · blocked numbers cleared
 - ☑ Public dataset = **60 tasks** (`AndroidLife_public_v2.json`)
+- ☑ 🔴 **Harness-level pre-run app reset (added 2026-09-22).** `cli.py` force-stops the
+  focused app and returns to the launcher **before** the agent's first step, so a task can
+  no longer inherit the previous run's final screen. Auditable as
+  `pre_app_reset_stopped_package` in each run's `meta.json` (`--no-pre-app-reset` to skip).
+  This closes the hole where a run ended inside an app and the next one started there with
+  the previous run's content on screen — but note it resets the *app*, **not** the *app's
+  data*: a draft or an edited note survives it, and those two are handled below (§6, §9) and
+  by `reset_phone.py`'s leak gates.
 
 ---
 
@@ -95,9 +103,13 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☐ **Shared-with-me editable files** present (`medium__google-drive__007`) — count queryable.
 - ☐ Largest-file check works (`medium__google-drive__001`) — main folder has files.
 - ☐ **`Budget Deadline` note** present in the OnePlus Notes app (`hard__drive-notes-telegram__010`)
-  carrying both dates — `Deadline: 2026-08-10` and `Last reviewed: 2026-07-10.` App-private with
-  no file seed, so it must be re-typed via the UI if missing; `reset_phone.py` verifies the
-  Obsidian copy's `Last reviewed:` needle. Drive is **not** part of this task since 2026-09-21.
+  carrying both dates — `Deadline: 2026-08-10` and `Last reviewed: 2026-07-10.` Its text is
+  now version-controlled at `assets/seeds/public/Budget Deadline (OnePlus Notes).txt` (the
+  canonical seed measures **518** non-whitespace chars), and `reset_phone.py --apply` re-types
+  it from the seed whenever `com.oneplus.note:id/text_count` drifts — a run that edits the note
+  in place is **repaired**, and `--verify-only` **gates** on it. Note the title **is** the first
+  line of the note, so never trim the note character-wise (that renames it). The Obsidian copy's
+  `Last reviewed:` needle is checked separately. Drive is **not** part of this task since 2026-09-21.
 - ☐ Clean up `Copy of SPORTS_VIDEO_DATA` leftovers; re-download the 5 uploaded files, then
   delete that Drive folder.
 
@@ -138,6 +150,16 @@ Canonical operator runbook (ADB reset + manual seeds table):
   date/time/venue in the chat, so `hard__telegram-calendar__016` forces ask_user).
   **Do NOT re-add a settling message.**
 - ☐ (Cleanup) Clear stale sent messages to Yuvraj Airtel from prior runs.
+- ☐ 🔴 **(Cleanup) The `Yuvraj Airtel` composer must be EMPTY, and no bubble may sit under
+  today's date separator.** A run that composes a chase message and never sends it poisons
+  every later run that opens the chat — measured 2026-09-21: one draft survived ~90 minutes
+  and **7 rows**, and row 11 reported *"I can see the message has been sent!"* against a
+  message a previous run had left in the box. ⚠️ **`force-stop` does NOT clear it**: once
+  Telegram has been backgrounded (which is how every run ends) the draft is persisted, and
+  killing the process restores it. This is now automated —
+  `reset_phone.py --apply` runs `clear_telegram_run_leaks()` and `--verify-only` **gates**
+  on it (`PASS telegram: Yuvraj Airtel composer empty, 0 run-window bubble(s) …`), so a
+  clean chat is a launch precondition rather than a manual reminder.
 
 ## §7 — YouTube Music / Music
 

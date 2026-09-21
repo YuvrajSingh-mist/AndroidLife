@@ -1,0 +1,157 @@
+"""Regression tests for the Telegram/Notes run-leak cleanup in reset_phone.
+
+Why this exists (redo.md 7.2): the harness reset force-stops an app and returns home,
+which resets the app's *screen* but never its *content*. Two leaks were measured across
+the 2026-09-21 hard__drive-notes-telegram__010 re-runs:
+
+  * a chase message one run composed and never sent stayed in the Telegram composer, and
+    later runs opened the chat to find it already typed (row 9: "The message is already
+    composed"; row 11: "I can see the message has been sent!"); and
+  * row 12 edited the Budget Deadline note in place, silently moving the graded date and
+    flipping the overdue branch the next run takes.
+
+Neither app is debuggable and neither exposes a content provider, so the fix has to drive
+the UI -- and the parts worth pinning in a test are the pure decisions around it:
+
+  * what counts as "a draft" (the composer is an EditText, but so is the chat-list SEARCH
+    box, whose "Search Chats" hint reads as a leaked draft if position is ignored);
+  * which bubbles are run artifacts rather than seeded history; and
+  * the Notes fingerprint (`text_count` excludes whitespace, so the tracked seed's
+    non-whitespace length is the number the device must match).
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import sys
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = REPO_ROOT / "scripts" / "seeding" / "reset_phone.py"
+NOTE_SEED = REPO_ROOT / "assets" / "seeds" / "public" / "Budget Deadline (OnePlus Notes).txt"
+
+# The device's published `text_count` for the canonical seed: non-whitespace characters
+# only. Pinned so a silent edit to the seed file cannot pass unnoticed.
+EXPECTED_NOTE_COUNT = 518
+
+
+@pytest.fixture(scope="module")
+def rp():
+    spec = importlib.util.spec_from_file_location("reset_phone_leaks", SCRIPT)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules["reset_phone_leaks"] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _node(text: str, cls: str = "android.widget.TextView", rid: str = "",
+          bounds: str = "[0,0][100,100]", desc: str = "") -> str:
+    return (f'<node index="0" text="{text}" resource-id="{rid}" class="{cls}" '
+            f'package="app" content-desc="{desc}" bounds="{bounds}" />')
+
+
+def test_note_seed_file_is_tracked_and_matches_the_device_fingerprint(rp):
+    assert NOTE_SEED.is_file(), f"tracked note seed missing: {NOTE_SEED}"
+    assert rp._non_ws_count(rp._note_seed_text()) == EXPECTED_NOTE_COUNT
+
+
+def test_non_ws_count_ignores_spaces_and_newlines(rp):
+    assert rp._non_ws_count("a b\nc\t d") == 4
+    assert rp._non_ws_count("   \n ") == 0
+
+
+def test_ui_nodes_parses_text_bounds_and_resource_id(rp):
+    xml = ("<hierarchy>"
+           + _node("Message", cls="android.widget.EditText", bounds="[171,2212][777,2332]")
+           + _node("518", rid="com.oneplus.note:id/text_count", bounds="[410,306][469,355]")
+           + "</hierarchy>")
+    nodes = rp._ui_nodes(xml)
+    assert [n["text"] for n in nodes] == ["Message", "518"]
+    assert nodes[0]["cx"] == (171 + 777) // 2 and nodes[0]["cy"] == (2212 + 2332) // 2
+    assert rp._note_text_count(nodes) == 518
+
+
+def test_tg_draft_returns_none_for_the_empty_hint(rp):
+    nodes = rp._ui_nodes(_node("Message", cls="android.widget.EditText", bounds="[171,2212][777,2332]"))
+    assert rp._tg_draft(nodes) is None
+
+
+def test_tg_draft_reads_a_real_draft(rp):
+    nodes = rp._ui_nodes(
+        _node("Hey, just checked our shared budget note", cls="android.widget.EditText",
+              bounds="[171,2212][777,2332]")
+    )
+    assert rp._tg_draft(nodes) == "Hey, just checked our shared budget note"
+
+
+def test_tg_draft_ignores_the_chat_list_search_box(rp):
+    """The search box is an EditText too; its hint must not read as a leaked draft.
+
+    Measured 2026-09-22: after a force-stop Telegram reopens on the chat LIST, and a
+    position-blind lookup returned 'Search Chats' as the composer's contents.
+    """
+    nodes = rp._ui_nodes(_node("Search Chats", cls="android.widget.EditText", bounds="[0,290][1080,370]"))
+    assert rp._tg_draft(nodes) is None
+
+
+def test_tg_run_window_bubbles_only_picks_today_below_its_separator(rp):
+    xml = ("<hierarchy>"
+           + _node("August 20", bounds="[0,0][100,40]")
+           + _node("Seems nice ain't it?&#10;Sent at 16:46, Seen", bounds="[0,1739][100,1789]")
+           + _node("August 23", bounds="[0,1975][100,2015]")
+           + _node("But need more suggestions pls&#10;Received at 22:18", bounds="[0,2066][100,2116]")
+           + _node("September 22", bounds="[0,2180][100,2220]")
+           + _node("Hey, just checked budget&#10;Sent at 09:12", bounds="[0,2260][100,2310]")
+           + "</hierarchy>")
+    nodes = rp._ui_nodes(xml)
+    leaks = rp._tg_run_window_bubbles(nodes, "September 22")
+    assert len(leaks) == 1
+    assert leaks[0]["text"].startswith("Hey, just checked budget")
+    # Seeded history (Aug 20/23) is never a candidate, even though it carries a stamp.
+    assert all("Seems nice" not in n["text"] for n in leaks)
+
+
+def test_tg_run_window_bubbles_empty_when_today_absent(rp):
+    xml = ("<hierarchy>"
+           + _node("August 23", bounds="[0,1975][100,2015]")
+           + _node("But need more suggestions pls&#10;Received at 22:18", bounds="[0,2066][100,2116]")
+           + "</hierarchy>")
+    assert rp._tg_run_window_bubbles(rp._ui_nodes(xml), "September 22") == []
+
+
+def test_tg_today_label_uses_the_device_clock(rp, monkeypatch):
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "2026-09-22\n")
+    assert rp._tg_today_label("S") == "September 22"
+
+
+def test_tg_today_label_is_blank_when_the_clock_is_unreadable(rp, monkeypatch):
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "not-a-date")
+    assert rp._tg_today_label("S") == ""
+
+
+def test_restore_is_a_noop_when_the_note_already_matches(rp, monkeypatch):
+    """A healthy note must cost no typing at all -- the retype path is the risky one."""
+    typed: list[str] = []
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: typed.append(cmd) or "")
+    monkeypatch.setattr(
+        rp, "_note_open",
+        lambda serial, timeout_s=40.0: rp._ui_nodes(
+            _node(str(EXPECTED_NOTE_COUNT), rid="com.oneplus.note:id/text_count")
+        ),
+    )
+    assert rp.restore_budget_note("S", apply=True) is True
+    assert typed == [], f"no adb input should be issued for a matching note, got {typed}"
+
+
+def test_restore_refuses_to_type_when_the_seed_is_missing(rp, monkeypatch):
+    monkeypatch.setattr(rp, "ONEPLUS_NOTE_SEED", Path("/nonexistent/Budget Deadline.txt"))
+    assert rp.restore_budget_note("S", apply=True) is False
+
+
+def test_verify_fails_when_the_note_title_vanished(rp, monkeypatch):
+    """A renamed note is the worst case: the oracle names it, so the task is unsolvable."""
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    monkeypatch.setattr(rp, "_note_open", lambda serial, timeout_s=40.0: [])
+    assert rp.verify_budget_note("S") is False

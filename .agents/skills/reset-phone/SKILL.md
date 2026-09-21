@@ -65,15 +65,40 @@ Exit code 0 = safe to start a run. Skips:
 (the Meet "Scheduled" probe) and `--no-calendar-view-check`. The anchor check has no skip
 flag — it is one local `content query` with no UI launches.
 
-`--apply` additionally **repairs** two things the gate can only assert (both added
-2026-09-21, after each silently re-scored a task):
+`--apply` additionally **repairs** things the gate can only assert (all added after each
+silently re-scored a task):
 
 `restore_slides_deck()` re-pushes `/sdcard/Download/Q3_Review.pptx` from the
-**version-controlled** fixture (`assets/seeds/public/Q3_Review.pptx` — the one file
-excepted from the `assets/` gitignore) whenever the device copy is missing or the wrong
-length. It is a no-op when the deck is already correct, and it refuses to push a fixture
-whose slide count disagrees with the task's ground truth. And the **Calendar app's view
-mode** is switched back to Schedule rather than only warned about (see `redo.md` 7.2).
+**version-controlled** fixture (`assets/seeds/public/Q3_Review.pptx` — one of the two
+files excepted from the `assets/` gitignore) whenever the device copy is missing or the
+wrong length. It is a no-op when the deck is already correct, and it refuses to push a
+fixture whose slide count disagrees with the task's ground truth. The **Calendar app's
+view mode** is switched back to Schedule rather than only warned about (see `redo.md`
+7.2). And `clear_telegram_run_leaks()` / `restore_budget_note()` clear the two *content*
+leaks that force-stopping an app cannot touch — see the box below.
+
+> **Content leaks are now automated (added 2026-09-22).** Force-stopping an app resets
+> its *screen* but never its *content*, so two leaks survived every reset and both
+> misled later runs of `hard__drive-notes-telegram__010` (`redo.md` 7.2):
+>
+> * **Telegram** — a run that composes a chase message and does not send it leaves it in
+>   the composer, and the next run opens the chat to find it already typed (row 9: *"The
+>   message is already composed"*; row 11: *"I can see the message has been sent!"*).
+>   `clear_telegram_run_leaks()` opens the **Yuvraj Airtel** chat, deletes the draft and
+>   any bubble under **today's** date separator (seeded history is dated 2026-08-20/23, so
+>   run artifacts are distinguishable), then verifies the composer is empty.
+> * **OnePlus Notes** — row 12 edited the `Budget Deadline` note in place, moving the
+>   graded date and silently flipping the overdue branch the next run takes.
+>   `restore_budget_note()` re-types the note from the now-version-controlled seed and
+>   verifies it via `com.oneplus.note:id/text_count`.
+>
+> Both are **gates** (`--no-leak-cleanup` to skip): a run that starts against a leaked
+> draft or an edited note is not running the benchmarked task. Two measured details are
+> load-bearing and easy to get wrong: **`force-stop` does NOT clear a Telegram draft**
+> (once the app has been backgrounded the draft is persisted, and killing the process
+> restores it), and the **Notes title IS the note's first line**, so a character-wise
+> delete can rename the note and make the task unresolvable — the retype uses Ctrl+A and
+> never a DEL loop.
 
 > **Anchor check added 2026-09-20.** The gate previously asserted only that a seed
 > *existed*, never *where* it was anchored, so a reset that died partway (e.g. a
@@ -213,9 +238,22 @@ per task, do not skip any — and clear persisted state:
    (`hard__swiggy-005` "Order total: Rs. 30.00", `medium__google-maps-003`
    "Nearest EV charging station…", `medium__music-telegram-001`
    "Blinding Lights | The Weeknd"). Verify the compose EditText is empty
-   (uiautomator `text=''`). Note: Telegram force-stop can drop the draft, but
-   RE-CHECK every chat the agent touched — the chat list is a custom view
+   (uiautomator `text=''`).
+
+   ⚠️ **`force-stop` does NOT clear a Telegram draft (measured 2026-09-22).** Earlier
+   notes here claimed it "can drop the draft" — it does not, and relying on it is exactly
+   how a draft survived ~90 minutes and 7 rows. Once the app has been **backgrounded**
+   (any `KEYCODE_HOME`, which every run ends with) Telegram persists the composer, and
+   force-stopping afterwards just restores the same draft on the next launch: typed →
+   HOME → `am force-stop` → relaunch showed the identical draft. The chat must be cleared
+   **in the UI**. `reset_phone.py --apply` now does this for the `Yuvraj Airtel` chat
+   (`clear_telegram_run_leaks`), and `--verify-only` gates on it; the manual step below is
+   for every OTHER chat an agent touched — and the chat **list** is a custom view
    uiautomator can't read, so open each chat individually.
+
+   Also measured the same day, and the reason the composer is identified by *position*:
+   the chat-list **search box is an EditText too**, so when Telegram reopens on the list
+   its `Search Chats` hint reads as a leaked draft unless the lookup is y-guarded.
 
    > 2026-08-22-195244 run, all-task scan → undo list (match by run-window):
    > calendar events to soft-delete: "Get-together with friends"
@@ -412,8 +450,20 @@ prints these; the key ones:
   run-dated**. A "delete everything dated the run day" sweep then destroys the seed —
   which is the most likely cause of it vanishing between **2026-08-30** and
   **2026-09-16** (re-seeded via UI 2026-09-18; see `docs/fabricated-test-data.md`).
-  `com.oneplus.note` is app-private with **no file seed**, so `reset_phone.py` cannot
-  recreate it and the task becomes unsolvable. **Exclude it by TITLE, not by date.**
+  **Exclude it by TITLE, not by date.**
+
+  ✅ **It no longer has to be app-private-only (2026-09-22).** Its text is now
+  version-controlled at `assets/seeds/public/Budget Deadline (OnePlus Notes).txt`
+  (the second `assets/` gitignore exception), and `reset_phone.py --apply` re-types the
+  note from it whenever `com.oneplus.note:id/text_count` drifts, then verifies the
+  result — so a run's in-place edit is now **repaired**, not merely detected. Note this
+  is a *different* artifact from `assets/seeds/public/notes/Budget Deadline.md`, which is
+  the **Obsidian** note of the same name. Two measured gotchas:
+  * `text_count` is the character count **excluding whitespace** — the canonical seed is
+    **518** on that scale, which is what the gate asserts.
+  * the note's **title IS its first line**, so a character-wise delete can rename the
+    note (a 2026-09-22 trial turned it into `- Utilities: Rs 9400`); the restore uses
+    Ctrl+A and never a DEL loop, and a missing title fails the gate.
 - **Obsidian** — the vault IS at `/sdcard/Obsidian/<vault>` and is ADB-accessible
   (NOT app-private — corrected 2026-08-23): run-created notes (e.g.
   `Photo sent to Yuvraj Airtel.md` from `hard__photos-gmail-obsidian-012`) can be

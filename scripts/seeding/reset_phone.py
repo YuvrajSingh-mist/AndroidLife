@@ -1809,6 +1809,444 @@ def verify_slides_deck(serial: str, prof: dict) -> bool:
     return good
 
 
+# ---------------------------------------------------------------------------
+# Run-leak cleanup: the Telegram chat and the OnePlus Notes seed
+#
+# Force-stopping an app (below, and in the harness) resets its *screen*, never its
+# *content*. A Telegram draft composed by one run is still sitting in the composer
+# when the next run opens the chat, and a run's edit to the Notes seed stays in the
+# note -- both measured leaking across rows on 2026-09-21 (redo.md 7.2: one draft
+# survived ~90 minutes and 7 rows; row 12 rewrote the "Last reviewed" line in place).
+#
+# Neither app is debuggable and neither exposes a content provider (`run-as` fails on
+# both; `dumpsys package com.oneplus.note` lists widget providers only), so `pm clear`
+# is the only non-UI route -- and it destroys the seed (Telegram's login, every note).
+# Driving the UI is therefore the only viable mechanism, which is what these helpers
+# do. Both are *verifiable* rather than best-effort, and that is what makes them safe
+# to gate on:
+#
+#   * Notes publishes `com.oneplus.note:id/text_count`, which measurement shows is the
+#     character count EXCLUDING whitespace -- a stable fingerprint of the whole note.
+#     The canonical seed is 518 on that scale.
+#   * Telegram's a11y tree exposes the composer (an empty one reads as the literal hint
+#     `Message`) and every bubble with its `Sent at`/`Received at` stamp under a date
+#     separator, which is how run-window bubbles are told apart from seeded history.
+# ---------------------------------------------------------------------------
+
+TG_PKG = "org.telegram.messenger"
+TG_CHAT_NAME = "Yuvraj Airtel"
+TG_COMPOSE_HINT = "Message"
+
+NOTE_PKG = "com.oneplus.note"
+NOTE_TITLE = "Budget Deadline"
+NOTE_TEXT_COUNT_ID = "com.oneplus.note:id/text_count"
+
+# Tracked plain-text seed for the OnePlus Notes app. This is NOT the same artifact as
+# assets/seeds/public/notes/Budget Deadline.md -- that one is a markdown note pushed
+# into the Obsidian vault, which happens to share the title. This file is the exact
+# plain text the app holds.
+ONEPLUS_NOTE_SEED = REPO_ROOT / "assets/seeds/public/Budget Deadline (OnePlus Notes).txt"
+
+_UI_NODE_RE = re.compile(r"<node\b[^>]*>")
+_UI_ATTR_RE = re.compile(r'(\w[\w-]*)="([^"]*)"')
+_UI_BOUNDS_RE = re.compile(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]")
+
+
+def _ui_nodes(xml: str) -> list[dict]:
+    """Parse a `uiautomator dump` into a flat list of {text, desc, cls, rid, bounds, cx, cy}."""
+    nodes = []
+    for tag in _UI_NODE_RE.findall(xml):
+        attrs = dict(_UI_ATTR_RE.findall(tag))
+        b = _UI_BOUNDS_RE.search(attrs.get("bounds", ""))
+        if not b:
+            continue
+        x1, y1, x2, y2 = (int(g) for g in b.groups())
+        nodes.append({
+            "text": attrs.get("text", ""),
+            "desc": attrs.get("content-desc", ""),
+            "cls": attrs.get("class", ""),
+            "rid": attrs.get("resource-id", ""),
+            "bounds": (x1, y1, x2, y2),
+            "cy": (y1 + y2) // 2,
+            "cx": (x1 + x2) // 2,
+        })
+    return nodes
+
+
+def _ui_tap(serial: str, node: dict) -> None:
+    sh(serial, f"input tap {node['cx']} {node['cy']}")
+
+
+def _ui_wait(serial: str, predicate, timeout_s: float = 30.0, interval_s: float = 2.0) -> tuple[str, list[dict]]:
+    """Poll the a11y dump until `predicate(nodes)` is truthy. Returns (xml, nodes) -- possibly stale on timeout."""
+    deadline = time.time() + timeout_s
+    xml, nodes = "", []
+    while time.time() < deadline:
+        xml = _pull_ui_dump(serial)
+        nodes = _ui_nodes(xml)
+        if predicate(nodes):
+            return xml, nodes
+        time.sleep(interval_s)
+    return xml, nodes
+
+
+def _non_ws_count(text: str) -> int:
+    """Count characters the way `com.oneplus.note:id/text_count` does (whitespace excluded)."""
+    return len(re.sub(r"\s", "", text))
+
+
+def _note_seed_text() -> str | None:
+    """The canonical OnePlus note body, or None when the tracked seed is missing."""
+    if not ONEPLUS_NOTE_SEED.is_file():
+        return None
+    return ONEPLUS_NOTE_SEED.read_text(encoding="utf-8").rstrip("\n")
+
+
+def _note_open(serial: str, timeout_s: float = 40.0) -> list[dict]:
+    """Force-stop Notes, launch it, open NOTE_TITLE and return the editor's a11y nodes."""
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, f"monkey -p {NOTE_PKG} -c android.intent.category.LAUNCHER 1")
+    _, nodes = _ui_wait(serial, lambda ns: any(n["text"] == NOTE_TITLE for n in ns), timeout_s)
+    target = next((n for n in nodes if n["text"] == NOTE_TITLE), None)
+    if target is None:
+        return []
+    # Tap below the title text: the row title sits at the top of its card, and tapping
+    # the card body is what opens the note (tapping the title itself can start a rename).
+    sh(serial, f"input tap 540 {target['cy'] + 45}")
+    _xml, nodes = _ui_wait(serial, lambda ns: any(n["rid"] == NOTE_TEXT_COUNT_ID for n in ns), timeout_s)
+    return nodes
+
+
+def _note_text_count(nodes: list[dict]) -> int | None:
+    """The note's published `text_count`, or None when the editor is not on screen."""
+    for n in nodes:
+        if n["rid"] == NOTE_TEXT_COUNT_ID:
+            try:
+                return int(n["text"])
+            except ValueError:
+                return None
+    return None
+
+
+def restore_budget_note(serial: str, apply: bool) -> bool:
+    """Rewrite the Budget Deadline note from the tracked seed when a run has drifted it.
+
+    Verified by `text_count` before and after, so a partial retype is reported rather
+    than silently leaving the task unsolvable. This is the only repair path: the note
+    lives in app-private storage with no file seed, so it cannot be pushed back.
+    """
+    seed = _note_seed_text()
+    if seed is None:
+        print(f"  [!!]  note seed missing ({ONEPLUS_NOTE_SEED}) — cannot restore the Budget Deadline note")
+        return False
+    want = _non_ws_count(seed)
+
+    nodes = _note_open(serial)
+    got = _note_text_count(nodes)
+    if got is None:
+        print(f"  [!!]  note: no note titled '{NOTE_TITLE}' with a readable body — missing "
+              "or renamed (the title IS the note's first line)")
+        return False
+    if got == want:
+        print(f"  [ok]  note already matches the seed (text_count {got}, not re-typed)")
+        return True
+
+    print(f"  [!!]  Budget Deadline drift: text_count {got}, seed {want} "
+          f"({'run added text' if got > want else 'run removed/edited text'})")
+    if not apply:
+        print("  [dry] restore Budget Deadline note from the tracked seed")
+        return True
+
+    # The retype is verified and retried rather than done once: `input text` occasionally
+    # drops characters against this editor's live rich-text formatting (measured
+    # 2026-09-22: a first pass landed 492/518), and a partially restored seed is worse
+    # than a known-dirty one because it silently changes the overdue arithmetic. Each
+    # attempt re-opens the note, so a retry starts from a clean editor.
+    after = got
+    for attempt in range(1, 4):
+        nodes = _note_open(serial) if attempt > 1 else nodes
+        editor = next((n for n in nodes if n["rid"].endswith("id/richEditor")), None)
+        if editor is None:
+            print("  [!!]  note: no editor node — cannot enter edit mode")
+            return False
+        # Enter edit mode by tapping the note BODY. Tapping the `Insert` toolbar button
+        # does not do it (measured 2026-09-22: the toolbar layout is unchanged afterwards
+        # and typing goes nowhere); tapping inside `richEditor` places the cursor and
+        # switches the toolbar into its edit variant.
+        _ui_tap(serial, editor)
+        time.sleep(4)
+
+        # Ctrl+A selects the whole body and the retype replaces it. Deliberately NOT a
+        # character-wise DEL loop: deleting from the end eats the note's FIRST LINE, and
+        # the app treats that line as the note TITLE -- a 2026-09-22 trial renamed the
+        # seed to "- Utilities: Rs 9400", making the task unresolvable (the oracle names
+        # the note "Budget Deadline") until the title was typed back.
+        sh(serial, "input keycombination 113 29")
+        time.sleep(3)
+
+        lines = seed.split("\n")
+        for i, line in enumerate(lines):
+            # `input text` needs literal spaces as %s; the seed is deliberately ASCII
+            # (no `Rs`-vs-rupee ambiguity) so no other escaping is required.
+            sh(serial, "input text " + line.replace(" ", "%s"))
+            if i < len(lines) - 1:
+                sh(serial, "input keyevent 66")     # Enter -> new line
+            time.sleep(0.35)
+        time.sleep(3)
+        sh(serial, "input keyevent KEYCODE_BACK")
+        time.sleep(5)
+
+        nodes = _note_open(serial)
+        after = _note_text_count(nodes)
+        if after == want:
+            print(f"  [ok]  note restored from the tracked seed: text_count {after} "
+                  f"(attempt {attempt})")
+            sh(serial, f"am force-stop {NOTE_PKG}")
+            sh(serial, "input keyevent KEYCODE_HOME")
+            return True
+        print(f"  [!!]  note re-type attempt {attempt} landed text_count {after} (want {want})")
+
+    print(f"  [!!]  note: seed NOT restored (text_count {after}, want {want}) — restore by hand")
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    return False
+
+
+def verify_budget_note(serial: str) -> bool:
+    """Gate: the one-plus Notes seed must be byte-equivalent to the tracked seed.
+
+    `text_count` excludes whitespace, so it pins the *content* without needing to read
+    the (unreadable) note body. It catches the row-12 failure mode -- an agent editing a
+    line in place rather than appending -- which changes the count and silently flips
+    the overdue branch the NEXT run takes.
+    """
+    seed = _note_seed_text()
+    if seed is None:
+        print(f"  FAIL note: seed missing ({ONEPLUS_NOTE_SEED})")
+        return False
+    want = _non_ws_count(seed)
+    nodes = _note_open(serial)
+    got = _note_text_count(nodes)
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    if got is None:
+        print(f"  FAIL note: no note titled '{NOTE_TITLE}' with a readable body — missing or "
+              "renamed (the title IS the note's first line)")
+        return False
+    good = got == want
+    print(f"  {'PASS' if good else 'FAIL'} note: Budget Deadline text_count {got} (want {want})")
+    return good
+
+
+_TG_DATE_SEP_RE = re.compile(
+    r"^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(,\s*\d{4})?$"
+)
+
+
+def _tg_open_chat(serial: str, timeout_s: float = 45.0) -> list[dict]:
+    """Launch Telegram, search for TG_CHAT_NAME and open it. Returns the chat's a11y nodes.
+
+    The chat LIST is not exposed to uiautomator (documented, and re-confirmed here), so
+    search is the only route in. Returns [] if the chat could not be reached.
+    """
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"am force-stop {TG_PKG}")
+    sh(serial, f"monkey -p {TG_PKG} -c android.intent.category.LAUNCHER 1")
+    _, nodes = _ui_wait(
+        serial,
+        lambda ns: any("search" in (n["desc"] or n["text"]).lower() for n in ns),
+        timeout_s,
+    )
+    search = next((n for n in nodes if "search" in (n["desc"] or n["text"]).lower()), None)
+    if search is None:
+        return []
+    _ui_tap(serial, search)
+    time.sleep(4)
+    sh(serial, "input text " + TG_CHAT_NAME.replace(" ", "%s"))
+    # The result row is the one carrying the live "last seen" status; the bare-name row
+    # above it is the search box echo, and the rows below are unrelated contacts.
+    _, nodes = _ui_wait(
+        serial,
+        lambda ns: any(n["text"].startswith(TG_CHAT_NAME + ",") for n in ns),
+        timeout_s,
+    )
+    row = next((n for n in nodes if n["text"].startswith(TG_CHAT_NAME + ",")), None)
+    if row is None:
+        return []
+    sh(serial, f"input tap 540 {row['cy']}")
+    _, nodes = _ui_wait(
+        serial,
+        lambda ns: any(n["text"].strip() == TG_COMPOSE_HINT for n in ns)
+        or any(_TG_DATE_SEP_RE.match(n["text"].strip()) for n in ns),
+        timeout_s,
+    )
+    return nodes
+
+
+def _tg_draft(nodes: list[dict]) -> str | None:
+    """The composer's text when a draft is present, else None (an empty box shows the hint).
+
+    Only the composer counts, and it is identified by position: the chat-list SEARCH box
+    is an EditText too, so when Telegram opens on the list rather than in the chat its
+    hint ("Search Chats") otherwise reads as a leaked draft. That false positive is what
+    the y-guard below prevents.
+    """
+    box = next((n for n in nodes if "EditText" in n["cls"] and n["cy"] > 1500), None)
+    if box is None:
+        return None
+    text = box["text"].strip()
+    return text if text and text != TG_COMPOSE_HINT else None
+
+
+def _tg_run_window_bubbles(nodes: list[dict], today_label: str) -> list[dict]:
+    """Bubbles below a date separator for TODAY -- i.e. written by a run, not seeded.
+
+    Seeded history in this chat is dated 2026-08-20/23, so anything under today's
+    separator is a run artifact (a chase message that was sent, or a failed send the
+    model left behind) and must go before the next run reads it as already handled.
+    """
+    stamps = [n for n in nodes if _TG_DATE_SEP_RE.match(n["text"].strip())]
+    today_seps = [n for n in stamps if n["text"].strip() == today_label]
+    if not today_seps:
+        return []
+    cutoff = max(n["cy"] for n in today_seps)
+    return [
+        n for n in nodes
+        if n["cy"] > cutoff and ("Sent at" in n["text"] or "Received at" in n["text"])
+    ]
+
+
+def _tg_today_label(serial: str) -> str:
+    """Telegram's date-separator spelling for today, read from the device clock."""
+    raw = sh(serial, "date +%Y-%m-%d").strip()
+    try:
+        _y, m, d = (int(x) for x in raw.split("-"))
+    except ValueError:
+        return ""
+    import calendar as _calendar
+
+    return f"{_calendar.month_name[m]} {d}"
+
+
+def clear_telegram_run_leaks(serial: str, apply: bool) -> bool:
+    """Clear a leaked draft and any run-window bubbles in the Yuvraj Airtel chat.
+
+    The failure this prevents is specific and measured: row 4's chase message never left
+    the composer, and rows 5/6/9/11 then opened the chat to find it already typed -- row
+    9 reported "The message is already composed" and row 11 "I can see the message has
+    been sent!". A run that DOES send leaves a bubble the next one reads as done.
+    """
+    today = _tg_today_label(serial)
+    nodes = _tg_open_chat(serial)
+    if not nodes:
+        print("  [!!]  telegram: could not open the Yuvraj Airtel chat — clean it by hand")
+        return False
+
+    draft = _tg_draft(nodes)
+    leaks = _tg_run_window_bubbles(nodes, today)
+    if draft is None and not leaks:
+        print("  [ok]  telegram: composer empty, no run-window bubbles in Yuvraj Airtel")
+        sh(serial, f"am force-stop {TG_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    print(f"  [!!]  telegram leak: draft={draft!r}, {len(leaks)} run-window bubble(s) dated {today}")
+    if not apply:
+        print("  [dry] clear the draft and delete the run-window bubbles")
+        sh(serial, f"am force-stop {TG_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    if draft is not None:
+        # Ctrl+A does NOT work in Telegram's composer (measured 2026-09-22: the selection
+        # is ignored and the draft survives). Move to the end and delete character-wise
+        # instead, with margin so a longer draft is still fully cleared -- then re-read the
+        # composer and retry, because a tap that misses focus silently clears nothing.
+        for _ in range(3):
+            fresh = _ui_nodes(_pull_ui_dump(serial))
+            box = next((n for n in fresh if "EditText" in n["cls"] and n["cy"] > 1500), None)
+            if box is None:
+                break
+            _ui_tap(serial, box)
+            time.sleep(2)
+            sh(serial, "input keyevent 123")  # KEYCODE_MOVE_END
+            time.sleep(1)
+            sh(serial, "input keyevent " + " ".join(["67"] * (len(draft) + 10)))  # DEL
+            time.sleep(3)
+            draft = _tg_draft(_ui_nodes(_pull_ui_dump(serial)))
+            if draft is None:
+                break
+        if draft is not None:
+            print(f"  [!!]  telegram: composer still holds a draft after 3 attempts ({draft!r})")
+            ok_draft = False
+        else:
+            ok_draft = True
+    else:
+        ok_draft = True
+
+    # Delete bottom-up: the a11y coordinates shift as bubbles disappear, so re-dumping
+    # each round is required (and doubling as the loop guard against a stuck menu).
+    ok = True
+    for _ in range(len(leaks)):
+        cur = _ui_nodes(_pull_ui_dump(serial))
+        targets = _tg_run_window_bubbles(cur, today)
+        if not targets:
+            break
+        victim = max(targets, key=lambda n: n["cy"])
+        sh(serial, f"input swipe {victim['cx']} {victim['cy']} {victim['cx']} {victim['cy']} 900")
+        time.sleep(3)
+        menu = _ui_nodes(_pull_ui_dump(serial))
+        # The selection bar's `Delete` is the topmost one; the dialog's is lower.
+        dels = [n for n in menu if n["text"].strip() == "Delete"]
+        if not dels:
+            print("  [!!]  telegram: long-press menu did not appear — stopping")
+            ok = False
+            break
+        _ui_tap(serial, min(dels, key=lambda n: n["cy"]))
+        time.sleep(3)
+        dialog = _ui_nodes(_pull_ui_dump(serial))
+        # Leave "Also delete for Yuvraj" UNCHECKED: this is device-side cleanup, and
+        # ticking it would notify the real contact that the message was deleted.
+        confirm = [n for n in dialog if n["text"].strip() == "Delete"]
+        if not confirm:
+            print("  [!!]  telegram: delete confirmation did not appear — stopping")
+            ok = False
+            break
+        _ui_tap(serial, max(confirm, key=lambda n: n["cy"]))  # the dialog's Delete
+        time.sleep(4)
+
+    # Deleting a draft in the composer is not enough on its own: Telegram persists the
+    # *editor contents* when the app is backgrounded, so force-stopping too soon lets it
+    # restore the stale on-disk draft on the next launch (measured 2026-09-22 -- clearing
+    # then killing within ~2s brought the draft straight back, while clearing, going HOME
+    # and waiting before the kill made it stick). Park the app first, give it time to
+    # flush the now-empty draft, then stop it.
+    sh(serial, "input keyevent KEYCODE_HOME")
+    time.sleep(10)
+    sh(serial, f"am force-stop {TG_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    return ok and ok_draft
+
+
+def verify_telegram_chat_clean(serial: str) -> bool:
+    """Gate: the Yuvraj Airtel composer is empty and no run-window bubble remains."""
+    today = _tg_today_label(serial)
+    nodes = _tg_open_chat(serial)
+    if not nodes:
+        print("  FAIL telegram: could not read the Yuvraj Airtel chat")
+        return False
+    draft = _tg_draft(nodes)
+    leaks = _tg_run_window_bubbles(nodes, today)
+    sh(serial, f"am force-stop {TG_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    good = draft is None and not leaks
+    detail = (f"composer {'empty' if draft is None else 'HOLDS A DRAFT'}, "
+              f"{len(leaks)} run-window bubble(s) dated {today}")
+    print(f"  {'PASS' if good else 'FAIL'} telegram: Yuvraj Airtel {detail}")
+    return good
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Reset benchmark phone to pre-run baseline (dry-run by default).")
     parser.add_argument("--serial", required=True, help="ADB serial (device id or ip:port)")
@@ -1840,6 +2278,13 @@ def main() -> int:
                         help="After --apply, nudge the calendar sync, wait SECONDS, then "
                              "re-assert the date anchors. Catches a silent revert of the "
                              "synced-calendar seeds (2026-09-20 root cause). 0 = off.")
+    parser.add_argument("--no-leak-cleanup", action="store_true",
+                        help="Skip the Telegram + OnePlus-Notes run-leak cleanup and its "
+                             "gate. Both drive the UI (~40-90s). Force-stopping an app "
+                             "resets its screen, never its content: a leaked second-hand "
+                             "Telegram draft misled 4 rows, and an in-place edit to the "
+                             "Budget Deadline note (row 12) flips the overdue branch the "
+                             "next run takes. See redo.md 7.2.")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -1883,6 +2328,11 @@ def main() -> int:
         # against the wrong file for six runs (redo.md 5). Cheap no-op when correct.
         if not args.no_slides_check:
             restore_slides_deck(args.serial, prof, args.apply)
+        if not args.no_leak_cleanup:
+            # Content leaks, which no force-stop can clear (see the section header above).
+            # Both report rather than raise, so a cleanup failure cannot abort a reset.
+            clear_telegram_run_leaks(args.serial, apply=args.apply)
+            restore_budget_note(args.serial, apply=args.apply)
         manual = prof.get("manual_ui_cleanup") or []
         if manual:
             print("== CANNOT auto-reset (app-private; do by hand in the UI) ==")
@@ -1903,6 +2353,11 @@ def main() -> int:
         ok &= verify_cloud_accounts(args.serial, prof)
     if not args.no_slides_check:
         ok &= verify_slides_deck(args.serial, prof)
+    if not args.no_leak_cleanup:
+        # Both are gates, not warnings: a run that starts against a leaked draft or an
+        # edited note is not running the benchmarked task.
+        ok &= verify_telegram_chat_clean(args.serial)
+        ok &= verify_budget_note(args.serial)
     # The Meet agenda check is verified but -- by default -- does NOT block. It cannot
     # pass today for a reason that is not a seeding mistake: the meeting has to exist in
     # Google's CLOUD for Meet to list it, and an adb-written calendar row never uploads

@@ -21,6 +21,14 @@ assets/seeds/*
 assets/seeds/public/*
 !assets/seeds/public/Q3_Review.pptx
 
+# EXCEPTION — the hard__drive-notes-telegram__010 seed note.
+# Same reasoning as the deck above, and the same failure mode: the OnePlus Notes app
+# keeps the note in app-private storage with no file seed, so nothing could recreate it
+# once a run had edited or the app had lost it. Its text is now version-controlled here
+# and reset_phone.py re-types it whenever the note drifts, verifying the result against
+# `com.oneplus.note:id/text_count` (whitespace-excluded), which is 518 for this text.
+!assets/seeds/public/Budget Deadline (OnePlus Notes).txt
+
 # --- personal / device-specific data (never commit) ---
 .env
 config/user.yaml

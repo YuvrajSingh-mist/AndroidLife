@@ -60,6 +60,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--phoenix-db", default=None, help="Path to the Phoenix SQLite DB file to stamp this run's model onto the matching trace (e.g. assets/db/day3/phoenix.db). When omitted but --phoenix-project is `androidlife-dayN`, the DB is auto-derived as assets/db/dayN/phoenix.db. Stamping is best-effort and never fails the run.")
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after the run (on by default, for fairness so the next task doesn't inherit this task's UI/navigation state).")
+    parser.add_argument("--no-pre-app-reset", action="store_true", help="Skip the same force-stop + home reset BEFORE the agent starts (on by default). The post-run reset cleans up after task N; this one guarantees task N itself does not begin on whatever the previous run left on screen -- which matters when a run dies before its post-run reset, when --no-app-reset was used, or when two runs are launched by different processes (e.g. one re-run per leaderboard row).")
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
     parser.add_argument("--ask-user-kb", default="", help="Path to a JSON knowledge-base profile for the simulated user (multi-turn mode): the user answers whatever the agent asks, from the profile, with rolling memory across turns. When set, takes precedence over --ask-user-context.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="OpenAI model used to play the simulated user for the ask_user tool.")
@@ -398,6 +399,18 @@ def main() -> int:
         write_text(run_dir / "PHOENIX_NOT_READY", f"phoenix not reachable at {args.phoenix_url}")
         logging.error("ABORTING run: Phoenix collector down at %s — start `phoenix serve` for this day first.", args.phoenix_url)
         return 3
+    # Pre-run fairness reset. The post-run reset below only helps when THIS process
+    # owns the previous task; it cannot cover a hard-killed run, a task launched with
+    # --no-app-reset, or a row-at-a-time driver where each run is a separate process
+    # (the 2026-09-21 hard__drive-notes-telegram__010 re-runs were exactly that). Doing
+    # it here makes the guarantee self-contained: the agent always starts on the
+    # launcher, whoever ran before it.
+    pre_app_reset_stopped_package = None
+    if not args.no_pre_app_reset:
+        try:
+            pre_app_reset_stopped_package = reset_app_state(args.serial)
+        except Exception:  # noqa: BLE001, S110 - best-effort, same contract as the post-run reset
+            pass
     start_monotonic = time.monotonic()
     outcome = asyncio.run(run_agent(args, run_dir, api_base))
     elapsed = time.monotonic() - start_monotonic
@@ -419,6 +432,7 @@ def main() -> int:
     meta.update({
         "ended_at_utc": utc_now(), "elapsed_seconds": elapsed, "command_exit_code": return_code,
         "sampler_errors": sampler.errors, "app_reset_stopped_package": app_reset_stopped_package,
+        "pre_app_reset_stopped_package": pre_app_reset_stopped_package,
     })
     write_json(run_dir / "meta.json", meta)
     write_text(run_dir / "output.txt", outcome.reason)

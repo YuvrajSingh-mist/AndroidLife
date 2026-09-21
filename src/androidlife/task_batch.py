@@ -89,6 +89,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--phoenix-project", default=None, help="Phoenix project name to group traces under (sets the `phoenix_project_name` env var).")
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
+    parser.add_argument("--no-pre-app-reset", action="store_true", help="Also skip the same reset BEFORE each task starts (on by default). See cli.py --no-pre-app-reset.")
     parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
@@ -279,6 +280,8 @@ def build_run_command(
     command.extend(["--save-trajectory", args.save_trajectory])
     if args.no_app_reset:
         command.append("--no-app-reset")
+    if args.no_pre_app_reset:
+        command.append("--no-pre-app-reset")
     if ask_user_kb and task.get("task_id") in ask_user_kb:
         # Multi-turn KB mode (these are DETERMINISTIC tasks carrying a KB profile):
         # the simulated user is an honest oracle over the profile with rolling

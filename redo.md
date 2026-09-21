@@ -743,6 +743,28 @@ stale tests are broken.
 Everything below is ADB-invisible, so `--verify-only` **cannot** see it and only the manual
 checklist in `docs/pre-run-checklist.md` covers it.
 
+> **Promoted out of this table 2026-09-22 — the two content leaks that survived `force-stop`.**
+> Both of the first two rows below were *app content*, not app screen, so the new pre-run app
+> reset (`cli.py`, §7.4) cannot touch them and they stayed manual. Both are now **blocking
+> gates with `--apply` repairs**:
+>
+> * **Telegram `Yuvraj Airtel` chat** — `clear_telegram_run_leaks()`. Deletes the draft and
+>   any bubble under **today's** date separator (seeded history is dated 2026-08-20/23
+>   precisely so run artifacts are distinguishable). Two measured facts drive the
+>   implementation: **`force-stop` does NOT clear a Telegram draft** (typed → HOME →
+>   force-stop → relaunch showed the identical draft, so the clearing has to happen in the
+>   UI before the process is killed), and the chat-list **search box is also an EditText**,
+>   so the composer lookup is y-guarded or `Search Chats` reads as a leak.
+> * **OnePlus Notes `Budget Deadline`** — `restore_budget_note()`. The note text is now a
+>   tracked fixture (`assets/seeds/public/Budget Deadline (OnePlus Notes).txt`, canonical
+>   `text_count` **518**); a drifted note is re-typed from it via Ctrl+A and verified. It
+>   must **not** be repaired by character-wise deletion: the note's **title is its first
+>   line**, so a DEL-loop renames the note (a trial turned it into `- Utilities: Rs 9400`)
+>   and the next run cannot find it.
+>
+> Opt out with `--no-leak-cleanup`. Both run in the same pre-first-task window as
+> `verify_calendar_view_mode`, so they always hand back a stopped app on the launcher.
+
 > **Promoted out of this table 2026-09-21 — App UI mode drift.** A previous run leaving the
 > **Calendar app in Day view** used to be undetectable here: `--verify-only` reads the
 > *provider*, and the view mode lives in app state. It bit **rows 1 and 2** of the
@@ -763,10 +785,10 @@ checklist in `docs/pre-run-checklist.md` covers it.
 | Class | Example | Blast radius |
 |---|---|---|
 | Leftover app state lets the agent skip the work | Maps recents + leftover route: 7 of 13 runs never typed the query | `medium__google-maps__002`, `easy__google-maps__004` |
-| **Messaging leftovers inherited across runs** | **Telegram draft/sent bubble in the `Yuvraj Airtel` chat: ONE draft survived 7 rows and ~90 min** — row 4 composed the chase message, its Send never registered, and rows 5/6/9/11 then opened the chat to find it pre-typed ("*The message is already composed*") or already sent ("*I can see the message has been sent!*"). Nothing in `--verify-only` can see it; the chat list is unreadable by uiautomator. | `hard__drive-notes-telegram__010`; any "message X" deliverable |
+| ~~**Messaging leftovers inherited across runs**~~ ✅ **gated 2026-09-22** | **Telegram draft/sent bubble in the `Yuvraj Airtel` chat: ONE draft survived 7 rows and ~90 min** — row 4 composed the chase message, its Send never registered, and rows 5/6/9/11 then opened the chat to find it pre-typed ("*The message is already composed*") or already sent ("*I can see the message has been sent!*"). Now a **blocking gate** (`clear_telegram_run_leaks` / `verify_telegram_chat_clean`); the chat list is still unreadable by uiautomator, so the check opens the chat by name rather than scanning the list. | `hard__drive-notes-telegram__010`; any "message X" deliverable |
 | Leftover *conferenced* event hijacks the Meet task | day-2 `easy__google-meet__004` creates "Product Demo", which day-3 Meet reports instead | `hard__google-meet-files__070` |
 | **The Telegram `Send` tap does not reliably deliver** | A tap on `Text: 'Send'` at its reported centre coordinates is logged as "clicked" but the text stays in the compose box — hit by **4 runs across 2 models** (rows 3 & 6 originally, rows 3 & 4 on the 2026-09-21 re-run). Row 4 even pressed Enter and retried the button 3×. Post-send `ui_states` and the model's own closing reason are the only reliable evidence; the trajectory's "clicked" line is not. | every "message X" deliverable |
-| App-private seeds with no file backup | OnePlus Notes `Budget Deadline` — adb cannot recreate it | `hard__drive-notes-telegram__010` |
+| ~~App-private seeds with no file backup~~ ✅ **fixed 2026-09-22** | OnePlus Notes `Budget Deadline` — adb cannot recreate it, but the text is now version-controlled (`assets/seeds/public/Budget Deadline (OnePlus Notes).txt`) and `restore_budget_note()` re-types + verifies it (`text_count` 518) | `hard__drive-notes-telegram__010` |
 | Cloud account drift | Slides drifted to `rajceo2031`; caught only by the account gate | 25 of 60 tasks touch a cloud app |
 | Live external data | BookMyShow listings, Maps ETAs, Swiggy/Amazon/Prime state | 10 of 60 tasks |
 | Grader blind spots | Slides has no ground truth (1/3/8 all passed); Sheets exposes no cell data to the a11y tree | `*google-slides*`, `*google-sheets*` |
@@ -776,3 +798,28 @@ checklist in `docs/pre-run-checklist.md` covers it.
 `calendar_recurring_artifacts_to_remove` is **public_v2-only, deliberately**:
 `Weekly_Standup` is a legitimate *seed* for the 530 `day_N` profiles
 (`scripts/seeding/verify_day1_seeds.py` asserts it). The sweep must never run there.
+
+### 7.4 Pre-run vs post-run reset: the harness now closes the start-state hole (2026-09-22)
+
+The distinction that matters, since "we reset between runs" was being read as covering more
+than it did:
+
+| | **Post-run reset** (`reset_phone.py --apply`, before a *batch*) | **Pre-run reset** (`cli.py`, before *every task*) |
+|---|---|---|
+| Scope | whole device → canonical seeds | the **focused app** only |
+| Resets | files, calendar, provider DBs, now two leak repairs | the app's **screen** (force-stop + HOME) |
+| Resets app **data**? | only for the two named leaks | ❌ no — a draft/edit still survives it |
+
+So both holes were real and neither was redundant: the post-run reset cannot run between
+tasks in a batch (it would wipe seeds a previous task legitimately consumed), and the
+pre-run reset cannot see app content. Concretely, this is why `5–11 (vision/text) FAIL` is
+**not** a start-state artifact — every one of the 13 re-runs began on the launcher
+(`🏠 LAUNCHER` in its first `ui_states`), so those failures are model behaviour, not
+inherited screens. The pre-run package is recorded per run as
+`pre_app_reset_stopped_package` in `meta.json`, so a run that starts inside an app is now
+visible in the artifacts instead of having to be inferred from `ui_states/0001`.
+`get_foreground_package()` was hardened at the same time: it previously read only
+`mCurrentFocus`, which is `null` whenever nothing holds input focus (transient dialog,
+notification shade, mid-animation) and made the force-stop a silent no-op — three of the
+2026-09-21 re-runs recorded `None` while parked inside `com.oneplus.note`. It now falls
+back to `mFocusedApp`, then the resumed-activity line.
