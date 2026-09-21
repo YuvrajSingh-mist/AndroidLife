@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.0,
   "gui_only_success_rate": 0.16981132075471697,
-  "average_steps": 40.88333333333333,
+  "average_steps": 40.883333,
   "average_user_queries": 0.0,
   "user_interaction_quality_factmatch": 0.0,
   "kb_interaction_quality": null,
