@@ -1,5 +1,15 @@
 # hard__drive-notes-telegram__010  — ASK USER SINGLE
 
+> **↻ RE-RUN 2026-09-21 — the transcript below is the ORIGINAL run's, and the task text + oracle
+> in this file are SUPERSEDED.** The artifacts that now sit under
+> `assets/runs/public/2026-08-28-002424/day1/hard-drive-notes-telegram-010/` (and on the Hub) are the
+> **2026-09-21 re-run**. The Drive half of the task was **dropped** — the spreadsheet it named
+> never existed — and the withheld fact now names the **`Budget Deadline`** note. This run's
+> audit is kept for its turn transcript; **row 1 re-run outcome: FAIL — 0 asks — read the note, called it overdue, sent nothing.** The
+> current verdict, telemetry and re-run note are in
+> [`reports/public/public-2026-08-28-002424.md`](../../../../../public/public-2026-08-28-002424.md).
+
+
 **Run day:** day1 · **Run root:** `assets/runs/public/2026-08-28-002424/day1/hard-drive-notes-telegram-010/`
 
 **Difficulty:** hard · **Apps:** Google Drive, Notes, Telegram
