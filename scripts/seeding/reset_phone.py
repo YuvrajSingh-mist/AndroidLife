@@ -11,6 +11,7 @@ import re
 import subprocess
 import sys
 import time
+import zipfile
 from pathlib import Path
 
 # --- stray dump sweep (profile-independent) -----------------------------------
@@ -164,13 +165,23 @@ PROFILES: dict[str, dict] = {
         },
         # The Google Slides deck for easy__google-slides__001 ("how many slides?").
         # It is NOT a native cloud deck and NOT file-seeded -- it is an uploaded .pptx
-        # that lives as a device file (and in Drive on ranirajesh786@gmail.com), so
-        # nothing restores it if a run edits or deletes it. The grader carries no
-        # ground truth for this task, so the count is asserted here instead.
+        # that lives as a device file (and in Drive on ranirajesh786@gmail.com).
+        #
+        # `sources` is the host-side canonical copy, in preference order. It IS
+        # version-controlled (see .gitignore's one-line assets/ exception), because an
+        # uncommitted deck is exactly what rotted: two presentations both named
+        # "Q3 Review" existed, the device kept the 1-slide one, and six runs in
+        # Aug/Sep 2026 self-reported a PASS against the wrong file. restore_slides_deck()
+        # now re-pushes it whenever the device copy is missing or the wrong length, so
+        # the deck cannot drift again; verify_slides_deck() still asserts the result.
+        #
         # NOTE the name is `Q3_Review.pptx` (underscore), not the `Q3 Review` var value.
         "slides_deck": {
             "path": "/sdcard/Download/Q3_Review.pptx",
             "expected_slides": 8,
+            "sources": [
+                "assets/seeds/public/Q3_Review.pptx",  # tracked canonical fixture
+            ],
         },
         # the contact that runs mangle (easy-contacts-001) - restored to this name
         "contact_email": "akashveyron33@gmail.com",
@@ -1643,47 +1654,139 @@ def verify_cloud_accounts(serial: str, prof: dict, timeout_s: float = 28.0) -> b
     return ok
 
 
-def verify_slides_deck(serial: str, prof: dict) -> bool:
-    """Assert the seeded Slides deck exists and still has the expected slide count.
+def _slide_count_in_pptx(path: Path) -> int:
+    """Count slides in a local .pptx (one slide == one `ppt/slides/slideN.xml` part).
 
-    easy__google-slides__001 asks "how many slides does the [presentation name] deck
-    have?", but the official grader carries **no ground truth** for it -- pass/fail
-    rides on the agent's own reply. That is why the recorded history contains `1`,
-    `3` and `8` and every one of them scored PASS.
-
-    The deck is an uploaded `.pptx` (device file + Drive copy on ranirajesh786), NOT a
-    native cloud deck and NOT file-seeded, so there is nothing to restore it if a run
-    edits or deletes it. Asserting the count here is what keeps the task honest.
+    Deliberately host-side and shared by the canonical fixture AND the device pull, so
+    the two are scored by the same rule and a disagreement is reported rather than
+    rounded away.
     """
-    deck = prof.get("slides_deck")
-    if not deck:
-        return True
-    path, want = deck["path"], int(deck["expected_slides"])
-    if not sh(serial, f"ls {path}").strip() or "No such file" in sh(serial, f"ls {path}"):
-        print(f"  FAIL slides: {path} is missing (easy__google-slides__001 has no deck)")
-        return False
+    with zipfile.ZipFile(path) as zf:
+        return sum(1 for n in zf.namelist() if re.fullmatch(r"ppt/slides/slide\d+\.xml", n))
 
-    import tempfile, zipfile
+
+def _device_slide_count(serial: str, remote: str) -> int | None:
+    """Slide count of the deck currently on the device; None when it can't be read."""
+    import tempfile
 
     fd, tmp = tempfile.mkstemp(prefix="androidlife_deck_", suffix=".pptx")
     os.close(fd)
     try:
-        subprocess.run(["adb", "-s", serial, "pull", path, tmp],
-                       capture_output=True, text=True, timeout=60)
-        with zipfile.ZipFile(tmp) as zf:
-            got = sum(1 for n in zf.namelist()
-                      if re.fullmatch(r"ppt/slides/slide\d+\.xml", n))
-    except Exception as exc:  # noqa: BLE001 - any failure means "cannot verify"
-        print(f"  FAIL slides: could not read {path} ({exc})")
-        return False
+        pulled = subprocess.run(["adb", "-s", serial, "pull", remote, tmp],
+                                capture_output=True, text=True, timeout=60)
+        if pulled.returncode != 0:
+            return None
+        return _slide_count_in_pptx(Path(tmp))
+    except Exception:  # noqa: BLE001 - any failure means "cannot read"
+        return None
     finally:
         try:
             os.unlink(tmp)
         except OSError:
             pass
 
+
+def _deck_source(deck: dict) -> Path | None:
+    """The first existing host-side canonical deck, or None if no candidate exists."""
+    for rel in deck.get("sources", []):
+        p = REPO_ROOT / rel
+        if p.is_file():
+            return p
+    return None
+
+
+def restore_slides_deck(serial: str, prof: dict, apply: bool) -> bool:
+    """Re-push the canonical Q3_Review.pptx when the device copy is missing or wrong.
+
+    This is what makes the version-controlled fixture load-bearing. The deck has no
+    generator -- it is a hand-built ground-truth artifact -- so before this existed it
+    was repaired by hand and silently rotted back to a stray 1-slide presentation also
+    named "Q3 Review", which re-scored easy__google-slides__001 against the wrong file
+    for six runs (redo.md 5).
+
+    A no-op when the device already holds the right deck, so it costs no ADB traffic on
+    a healthy reset. Returns False only when a restore was needed and could not be done.
+    """
+    deck = prof.get("slides_deck")
+    if not deck:
+        return True
+    want = int(deck["expected_slides"])
+    remote = deck["path"]
+
+    got = _device_slide_count(serial, remote)
+    if got == want:
+        print(f"  [ok]  slides deck already correct: {remote} ({got} slides, not re-pushed)")
+        return True
+
+    src = _deck_source(deck)
+    if src is None:
+        print(f"  [!!]  slides deck source missing (looked for {deck.get('sources')} "
+              f"under {REPO_ROOT}) — cannot restore")
+        return False
+
+    src_slides = _slide_count_in_pptx(src)
+    if src_slides != want:
+        print(f"  [!!]  canonical {src} has {src_slides} slide(s), expected {want} — "
+              "refusing to push a deck that does not match the task's ground truth")
+        return False
+
+    state = f"{got} slide(s)" if got is not None else "missing/unreadable"
+    if not apply:
+        print(f"  [dry] restore slides deck: {src} -> {remote} (device has {state})")
+        return True
+
+    pushed = subprocess.run(["adb", "-s", serial, "push", str(src), remote],
+                            capture_output=True, text=True, timeout=120)
+    if pushed.returncode != 0:
+        print(f"  [!!]  slides deck push failed for {remote}: {pushed.stderr.strip()[:200]}")
+        return False
+    print(f"  [ok]  restored slides deck: {src.name} -> {remote} "
+          f"(device had {state}; now {src_slides} slides)")
+    return True
+
+
+def verify_slides_deck(serial: str, prof: dict) -> bool:
+    """Assert the seeded Slides deck exists and still has the expected slide count.
+
+    easy__google-slides__001 asks "how many slides does the [presentation name] deck
+    have?". The answer is ground-truthed twice, on purpose:
+
+      * here -- the DEVICE deck is byte-for-byte the version-controlled fixture, so the
+        task cannot be run against the wrong presentation at all; and
+      * in the grader (`answer_checks_public.json`) -- the agent's REPLY has to contain
+        the expected count, so a model cannot self-report a pass it did not earn.
+
+    Before either existed the recorded history contained `1`, `3` and `8`, and every one
+    of them scored PASS, because the official grader rode entirely on the model's own
+    success flag.
+
+    restore_slides_deck() has already tried to re-push the file, so a failure here means
+    the push itself failed rather than the deck having quietly rotted.
+    """
+    deck = prof.get("slides_deck")
+    if not deck:
+        return True
+    path, want = deck["path"], int(deck["expected_slides"])
+
+    src = _deck_source(deck)
+    if src is None:
+        print(f"  FAIL slides: no canonical deck on the host (looked for "
+              f"{deck.get('sources')} under {REPO_ROOT}) — the ground-truth fixture is "
+              "missing")
+        return False
+    src_slides = _slide_count_in_pptx(src)
+    if src_slides != want:
+        print(f"  FAIL slides: canonical {src.name} has {src_slides} slide(s), want {want}")
+        return False
+
+    got = _device_slide_count(serial, path)
+    if got is None:
+        print(f"  FAIL slides: {path} is missing or unreadable")
+        return False
+
     good = got == want
-    print(f"  {'PASS' if good else 'FAIL'} slides: {path.split('/')[-1]} has {got} slide(s) (want {want})")
+    print(f"  {'PASS' if good else 'FAIL'} slides: {path.split('/')[-1]} has {got} slide(s) "
+          f"(want {want}; canonical {src.name} has {src_slides})")
     return good
 
 
@@ -1711,8 +1814,9 @@ def main() -> int:
                              "Drive, Docs, Slides, Calendar, Meet and Photos to read each "
                              "app's selected Google account)")
     parser.add_argument("--no-slides-check", action="store_true",
-                        help="Skip the Slides deck gate (pulls Q3_Review.pptx and asserts "
-                             "its slide count; the grader has no ground truth for it)")
+                        help="Skip the Slides deck gate AND its restore (restore re-pushes "
+                             "the version-controlled Q3_Review.pptx when the device copy is "
+                             "missing or has the wrong slide count; the gate then asserts it)")
     parser.add_argument("--settle-recheck", type=float, default=0.0, metavar="SECONDS",
                         help="After --apply, nudge the calendar sync, wait SECONDS, then "
                              "re-assert the date anchors. Catches a silent revert of the "
@@ -1755,6 +1859,11 @@ def main() -> int:
         remove_paths(args.serial, prof.get("obsidian_vault_remove", []), args.apply)
         remove_by_find(args.serial, prof.get("obsidian_pasted_images", []), args.apply)
         restore_file_contents(args.serial, prof.get("restore_file_contents", {}), args.apply)
+        # Ground-truth fixture with no generator: re-push the deck so it cannot rot back
+        # to the stray 1-slide "Q3 Review" that re-scored easy__google-slides__001
+        # against the wrong file for six runs (redo.md 5). Cheap no-op when correct.
+        if not args.no_slides_check:
+            restore_slides_deck(args.serial, prof, args.apply)
         manual = prof.get("manual_ui_cleanup") or []
         if manual:
             print("== CANNOT auto-reset (app-private; do by hand in the UI) ==")

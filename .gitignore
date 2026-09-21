@@ -1,8 +1,25 @@
 # --- generated / regenerable artifacts (do not commit; rebuild via scripts) ---
 # Entire assets/ tree is local/HF (runs, seeds, Phoenix DBs, etc.) — never git.
 # datasets/ stays at the repo root.
-assets/
+#
+# NOTE the `assets/*` (not `assets/`) form: an excluded DIRECTORY can never have its
+# contents re-included, so the tree has to be excluded entry-by-entry for the deck
+# exception below to be reachable at all.
+assets/*
 datasets/
+
+# EXCEPTION — the easy__google-slides__001 seed deck.
+# Every other file under assets/ is regenerable or mirrored to HF, but this one is a
+# ground-truth fixture that NOTHING regenerates, so it has to be version-controlled.
+# Leaving it uncommitted is precisely how it silently rotted: two files both named
+# "Q3 Review" existed, the device kept the 1-slide one, and six runs in Aug/Sep 2026
+# self-reported a PASS against it. Git's negation rules require each parent to be
+# re-included, hence the alternating pair of lines.
+!assets/seeds
+assets/seeds/*
+!assets/seeds/public
+assets/seeds/public/*
+!assets/seeds/public/Q3_Review.pptx
 
 # --- personal / device-specific data (never commit) ---
 .env
