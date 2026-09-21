@@ -28,7 +28,7 @@ from androidlife.benchmark_metrics import (
 from androidlife.hallucination_judge import judge_control_full_context, read_agent_log, resolve_control
 from androidlife.jsonutils import read_json
 from androidlife.task_batch import load_json_object
-from androidlife.task_dataset import ask_user_facts_path, multiturn_kb_path
+from androidlife.task_dataset import answer_checks_path, ask_user_facts_path, multiturn_kb_path
 from androidlife.user_config import load_user_config, parse_flat_config
 
 # Hallucination-control sidecar: {task_id: {data_absent, type, absence, non_obvious}}.
@@ -77,6 +77,28 @@ def set_hallucination_judge_enabled(enabled: bool) -> None:
     """
     global _HALLUCINATION_JUDGE_ENABLED
     _HALLUCINATION_JUDGE_ENABLED = enabled
+
+
+def _reply_matches_check(check: dict[str, Any] | None, reply: str) -> bool | None:
+    """Does the agent's final reply satisfy a task's ground-truth answer check?
+
+    Returns None when there is no applicable check, so callers can distinguish
+    "not checked" from "checked and wrong" -- only the latter should ever change a
+    verdict.
+
+    Only `numeric_reply` exists today: the prompt asks for a bare count ("Reply with
+    only the number of slides"), so the FIRST integer in the reply is the answer. Taking
+    the first integer rather than a substring match is deliberate -- a substring test
+    would accept `18` for an expected `8`.
+    """
+    if not check:
+        return None
+    if check.get("kind") != "numeric_reply":
+        return None
+    numbers = re.findall(r"\d+", reply or "")
+    if not numbers:
+        return False
+    return int(numbers[0]) == int(check["expected"])
 
 
 def _control_reason_honest_absence(reason: str, control: dict[str, Any], run_dir: Path | None = None) -> bool:
@@ -254,6 +276,7 @@ def discover_run_folders(runs_arg: str | None) -> list[Path]:
 def load_run_record(
     run_dir: Path, interaction_ids: set[str], facts: dict[str, str] | None = None,
     controls: dict[str, Any] | None = None, kb_ids: set[str] | None = None,
+    checks: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Load one run folder into a benchmark_metrics record dict.
 
@@ -265,6 +288,12 @@ def load_run_record(
     controls and classifies their outcome: a control that self-reports success
     when its data is genuinely absent is a HALLUCINATION (fabricated); a control
     that honestly fails is a TRUE FAILURE (correct behavior).
+
+    ``checks`` (task_id -> ground-truth answer check, from answer_checks) covers the
+    tasks whose answer is objectively known. For those, a self-reported success whose
+    reply does not state the expected answer is DEMOTED to a true failure: the task is
+    meant to be graded on the reply, not on the model's opinion of it. The check never
+    promotes -- a self-reported failure stays a failure.
     """
     output = read_json(run_dir / "output.json") or {}
     meta = read_json(run_dir / "meta.json") or {}
@@ -279,6 +308,19 @@ def load_run_record(
     is_interaction = bool(task_id in interaction_ids) if task_id else False
     ask_user_calls = int(ask_user_calls or 0)
     success = bool(output.get("success"))
+
+    # Ground-truth answer check (e.g. easy__google-slides__001 -> the reply must state
+    # 8). Applied BEFORE the interaction/control gates so the classification below sees
+    # the corrected flag. One-directional by construction: it can only turn a pass into
+    # a failure, so enabling it for a task can never inflate a score.
+    answer_check = (checks or {}).get(task_id) if task_id else None
+    reply_matches = _reply_matches_check(answer_check, output.get("reason") or "")
+    answer_check_failed = bool(success and reply_matches is False)
+    if answer_check_failed:
+        success = False
+    # None = no check for this task; "passed"/"failed" describe the reply itself, which
+    # is reported even when the model had already self-reported a failure.
+    answer_check_status = None if reply_matches is None else ("passed" if reply_matches else "failed")
     # KB / multi-turn (ASK USER - MULTI) task: its ask_user queries are graded for
     # KBIQ (KB Interaction Quality). kb_queries = total ask_user calls on the task;
     # kb_queries_correct is read from an optional per-run manual audit file
@@ -323,6 +365,10 @@ def load_run_record(
         "success": success,
         "is_hallucination_control": is_control,
         "classification": classification,
+        # Ground-truth reply check: None when the task has none. `demoted` is the subset
+        # where this check -- not the model -- decided the verdict.
+        "answer_check": answer_check_status,
+        "answer_check_demoted": answer_check_failed,
         "steps": int(output.get("steps") or 0),
         "ask_user_calls": ask_user_calls,
         "ask_user_correct": ask_user_correct,
@@ -473,6 +519,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--source", choices=("tasks.md", "public.md"), default=DEFAULT_SOURCE, help=f"Task source markdown the runs came from; selects the ask_user_facts sidecar marking interaction tasks (tasks.md -> ask_user_facts_530.json, public.md -> ask_user_facts_public.json). Default: {DEFAULT_SOURCE}.")
     parser.add_argument("--ask-user-facts", default=None, help="task_id -> fact mapping marking interaction tasks (default: derived from --source via ask_user_facts_path, e.g. tasks.md -> benchmarks/androidlife-530/ask_user_facts_530.json).")
     parser.add_argument("--multiturn-kb", default=None, help="task_id -> {correct_target, profile} mapping of ASK USER - MULTI (KB/oracle) tasks; marks which runs are KB/multi-turn for the KBIQ metric (default: derived from --source via multiturn_kb_path, e.g. tasks.md -> benchmarks/androidlife-530/multiturn_kb_530.json).")
+    parser.add_argument("--answer-checks", default=None, help="task_id -> ground-truth answer check sidecar (default: derived from --source via answer_checks_path, e.g. public.md -> benchmarks/androidlife-530/answer_checks_public.json). A task with a check has a KNOWN answer, so a self-reported success whose reply does not state it is demoted to a failure. It never promotes, so adding a check can only lower a score.")
     parser.add_argument("--hallucination-controls", default=DEFAULT_CONTROLS, help=f"task_id -> hallucination-control meta sidecar (default: {DEFAULT_CONTROLS}); controls whose data is verified absent. A control that self-reports success counts as a hallucination, an honest failure as a true failure.")
     parser.add_argument("--config", default=None, help="User config file (flat key: value), default config/user.yaml; used to resolve {hc ...} placeholders in the control absence text before judging.")
     parser.add_argument("--vars-file", default=None, help="Optional key=value vars file merged over --config (e.g. benchmarks/androidlife-530/public_vars.local.env).")
@@ -513,7 +560,8 @@ def main() -> int:
     }
     kb_path = args.multiturn_kb or multiturn_kb_path(args.source)
     kb_ids = set(load_json_object(kb_path))
-    records = [load_run_record(run_dir, interaction_ids, facts, controls, kb_ids) for run_dir in run_dirs]
+    checks = load_json_object(args.answer_checks or answer_checks_path(args.source))
+    records = [load_run_record(run_dir, interaction_ids, facts, controls, kb_ids, checks) for run_dir in run_dirs]
     report = build_report(records, model=args.model, cooldown_seconds=args.cooldown_seconds)
     Path(args.out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     markdown = render_markdown(report)

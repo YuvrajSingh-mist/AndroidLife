@@ -211,6 +211,10 @@ def parse_tasks_markdown(markdown_text: str, *, source_path: str) -> dict[str, A
                 "interaction": interaction,
                 "note": note,
                 "ask_user_fact": None,
+                # Ground-truth answer check for tasks whose answer is objectively known
+                # (filled from answer_checks_path(source) by merge_answer_checks). None
+                # means the task is scored only on the model's own success flag.
+                "answer_check": None,
                 "is_ask_user": ahi == "ASK USER",
                 "task_number_within_app": task_index,
                 "task_number_within_dataset_app": ordinal,
@@ -354,6 +358,16 @@ _MULTITURN_KB_BY_SOURCE = {
     "public.md": "multiturn_kb_public.json",
 }
 
+# Ground-truth answer checks are keyed by source as well: tasks.md -> the 530-corpus
+# file, public.md -> the public-sample file. A task with a check has a KNOWN answer,
+# which is what lets the grader refuse a self-reported pass whose reply does not state
+# it -- without one, a task like easy__google-slides__001 is scored purely on the
+# model's own success flag.
+_ANSWER_CHECKS_BY_SOURCE = {
+    "tasks.md": "answer_checks_530.json",
+    "public.md": "answer_checks_public.json",
+}
+
 
 def multiturn_kb_path(source: str) -> str:
     """Return the multi-turn KB file for a task source markdown path.
@@ -400,6 +414,39 @@ def merge_ask_user_facts(dataset: dict[str, Any], facts_path: str | Path) -> Non
         fact = facts.get(task["task_id"])
         if fact is not None:
             task["ask_user_fact"] = fact
+
+
+def answer_checks_path(source: str) -> str:
+    """Return the ground-truth answer-check file for a task source markdown path.
+
+    Derived from the source's filename (repo-root-relative), exactly like
+    `ask_user_facts_path`, so callers pass `--source tasks.md|public.md` and get the
+    right file with no hardcoded path:
+
+      tasks.md  -> benchmarks/androidlife-530/answer_checks_530.json   (530-task corpus)
+      public.md -> benchmarks/androidlife-530/answer_checks_public.json (3-day preview)
+    """
+    checks_file = _ANSWER_CHECKS_BY_SOURCE.get(Path(source).name)
+    if checks_file is None:
+        raise ValueError(f"Unknown task source {source!r}: expected tasks.md or public.md")
+    return f"benchmarks/androidlife-530/{checks_file}"
+
+
+def merge_answer_checks(dataset: dict[str, Any], checks_path: str | Path) -> None:
+    """Attach each task's ground-truth answer check from a {task_id: check} JSON file.
+
+    Sets `answer_check` on the matching dataset rows (and leaves every other row's as
+    None). A missing file is a no-op, matching `merge_ask_user_facts`, so a dataset
+    exported without the sidecar still loads.
+    """
+    path = Path(checks_path)
+    if not path.exists():
+        return
+    checks: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    for task in dataset["tasks"]:
+        check = checks.get(task["task_id"])
+        if check is not None:
+            task["answer_check"] = check
 
 
 def save_dataset_files(dataset: dict[str, Any], json_path: str | Path, jsonl_path: str | Path) -> None:

@@ -107,12 +107,17 @@ Canonical operator runbook (ADB reset + manual seeds table):
   fixed to `ranirajesh786@gmail.com`.** Canonical: Gmail/Drive/Docs/Slides =
   `ranirajesh786`, Calendar/Meet = `yuvraj.mist`, Photos = `rajeshceo2015`. (Maps is
   deliberately unconstrained.)
-- ☐ **Google Slides deck** exists (`easy__google-slides__001`) — slide count queryable.
-  ☑ **Gate-enforced:** `verify_slides_deck()` pulls `/sdcard/Download/Q3_Review.pptx` and
-  asserts **8** slides. The deck is an uploaded `.pptx` (device file + Drive copy on
-  `ranirajesh786`), **not** a native cloud deck and **not** file-seeded, and the grader has
-  **no ground truth** for this task — so the count is asserted by the gate instead. If it
-  fails, re-push the `.pptx`. See `redo.md` item 5.
+- ☑ **Google Slides deck** exists (`easy__google-slides__001`) — slide count queryable.
+  **Gate-enforced AND self-repairing (2026-09-21):** `restore_slides_deck()` re-pushes
+  `/sdcard/Download/Q3_Review.pptx` from the **version-controlled** fixture
+  (`assets/seeds/public/Q3_Review.pptx` — the single file excepted from the `assets/`
+  gitignore) whenever the device copy is missing or the wrong length, and
+  `verify_slides_deck()` then asserts **8** slides. The deck is an uploaded `.pptx`
+  (device file + Drive copy on `ranirajesh786`), **not** a native cloud deck and **not**
+  file-seeded, so nothing else would restore it. The grader also carries ground truth for
+  this task now (`answer_checks_public.json`) and **refuses a PASS whose reply does not
+  state `8`** — before that, replies of `1`, `3` and `8` all scored PASS. See `redo.md`
+  item 5.
 - ☐ **Google Docs doc** exists to rename (`easy__google-docs__004`).
 - ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and a conferenced **Weekly Sync
   10:00 within the next 2 days** with attendees `hard__google-meet-files__070` — Meet only lists

@@ -1,0 +1,7 @@
+{
+  "easy__google-slides__001": {
+    "kind": "numeric_reply",
+    "expected": 8,
+    "note": "The task asks how many slides the seeded deck has, and asks for a bare number. The ground-truth deck is assets/seeds/public/Q3_Review.pptx (version-controlled; 8 slides), pushed to /sdcard/Download/Q3_Review.pptx by reset_phone.py --see-slides-check. Without this check the task rides entirely on the model's own success flag: the recorded history contains replies of 1, 3 and 8, and all three scored PASS. This check DEMOTES a self-reported pass whose reply does not state 8; it never promotes a failure, so applying it can only make historic numbers more honest."
+  }
+}

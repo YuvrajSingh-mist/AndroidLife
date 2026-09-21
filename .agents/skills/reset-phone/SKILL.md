@@ -65,6 +65,16 @@ Exit code 0 = safe to start a run. Skips:
 (the Meet "Scheduled" probe) and `--no-calendar-view-check`. The anchor check has no skip
 flag — it is one local `content query` with no UI launches.
 
+`--apply` additionally **repairs** two things the gate can only assert (both added
+2026-09-21, after each silently re-scored a task):
+
+`restore_slides_deck()` re-pushes `/sdcard/Download/Q3_Review.pptx` from the
+**version-controlled** fixture (`assets/seeds/public/Q3_Review.pptx` — the one file
+excepted from the `assets/` gitignore) whenever the device copy is missing or the wrong
+length. It is a no-op when the deck is already correct, and it refuses to push a fixture
+whose slide count disagrees with the task's ground truth. And the **Calendar app's view
+mode** is switched back to Schedule rather than only warned about (see `redo.md` 7.2).
+
 > **Anchor check added 2026-09-20.** The gate previously asserted only that a seed
 > *existed*, never *where* it was anchored, so a reset that died partway (e.g. a
 > `nohup`-backgrounded `--apply` torn down after it had moved the Weekly Sync seeds but
@@ -484,9 +494,19 @@ Skip with `--no-account-check`. The mapping lives in the `public_v2` profile as
 > Note the deck is `Q3_Review.pptx` — an uploaded `.pptx` (a device file **and** a Drive
 > copy on `ranirajesh786`), **not** a native cloud Slides deck, so a search for the literal
 > string `Q3 Review` misses it. It has **8 slides** and `Slide N of 8` **is** in the a11y
-> tree. It is **not** managed by `reset_phone.py`; `verify_slides_deck()` asserts the count
-> (the grader has no ground truth for this task). Maps sits on `rajceo2031` and that is fine
-> (above).
+> tree.
+>
+> **Fixed 2026-09-21 — the deck is now managed by `reset_phone.py`.** It used to be
+> hand-maintained on the device only, which is how it rotted: two presentations both named
+> "Q3 Review" were in circulation, the device kept a **1-slide** one, and **six runs
+> self-reported a PASS against it** because the grader scored the task purely on the
+> model's own success flag (`redo.md` 5). Now the deck lives in git
+> (`assets/seeds/public/Q3_Review.pptx`), `restore_slides_deck()` re-pushes it on
+> `--apply` whenever the device copy is missing or the wrong length, `verify_slides_deck()`
+> blocks the gate on a mismatch, and the grader's `answer_checks_public.json` refuses a
+> PASS whose reply does not state `8`. **Do not "fix" the deck by hand on the device
+> again** — update the fixture in git so every future run sees it. Maps sits on
+> `rajceo2031` and that is fine (above).
 
 Quick cloud verify (in-app, ~10 min):
 - **Gmail** search "Scapia" → "Fwd: Pack for Delhi" flight email present (KB = PNR X84NVI, BBI→DEL, Oct 16, 12:05→14:30).

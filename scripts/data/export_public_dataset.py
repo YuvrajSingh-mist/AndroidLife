@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from androidlife.task_dataset import ask_user_facts_path, merge_ask_user_facts, parse_tasks_markdown, save_dataset_files
+from androidlife.task_dataset import answer_checks_path, ask_user_facts_path, merge_answer_checks, merge_ask_user_facts, parse_tasks_markdown, save_dataset_files
 
 # The public sample is now a TRUE slice of the 530 corpus, so every task line carries
 # its real 530 task_id in an HTML comment (<!--hard__swiggy__005-->). Honor those ids:
@@ -55,6 +55,13 @@ def main() -> int:
     # Stays on the PUBLIC facts file (ask_user_facts_public.json, via ask_user_facts_path) - never the
     # 530 corpus' ask_user_facts_530.json, since the preview is fine to publish with answers.
     merge_ask_user_facts(dataset, ROOT / ask_user_facts_path("public.md"))
+    # Same reasoning, same file split: the preview carries the ground-truth answer check
+    # for tasks whose answer is objectively known (answer_checks_public.json). The grader
+    # reads this sidecar directly, so a task like easy__google-slides__001 is scored on
+    # the reply it produced rather than on its own success flag. Answer included is fine
+    # here for the same reason ask_user_fact is -- this is a structural preview, not a
+    # held-out eval (docs/evaluation-policy.md).
+    merge_answer_checks(dataset, ROOT / answer_checks_path("public.md"))
     # Per-task prompt overrides that survive regeneration (the datasets are gitignored and
     # rebuilt from this script). easy__contacts__001 is scoped to a different real device
     # contact (Akash Kumar) so the shared `contact` var used by messaging tasks is
