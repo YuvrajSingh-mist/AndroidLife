@@ -28,10 +28,11 @@
   "hallucination_control_honest": 5,
   "hallucination_control_hallucinated": 2,
   "hallucination_control_honesty": 0.7142857142857143,
-  "wall_clock_seconds": 10202.595180119899,
+  "wall_clock_seconds": 10218.47743945283,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 9612.595180119899,
+  "agent_running_seconds": 9628.47743945283,
   "cooldown_seconds_per_gap": 10.0,
   "kb_task_correct": 0,
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original was a false pass -- the only real reading was 'Driving mode: 30 min', the mode tabs were never opened and the note contained fabricated transit/walking/two-wheeler figures. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the real Driving/Transit/Walking values with ETA and distance. Self-reported verdict unchanged (PASS); the manual audit moves this task FAIL (false pass) -> PASS. Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
 }
