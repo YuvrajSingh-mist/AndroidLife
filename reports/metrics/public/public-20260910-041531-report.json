@@ -1,15 +1,15 @@
 {
   "run_count": 60,
   "model_filter": null,
-  "success_rate": 0.05,
+  "success_rate": 0.06666666666666667,
   "success_rate_by_bucket": {
     "easy": 0.11538461538461539,
     "hard": 0.0,
-    "medium": 0.0
+    "medium": 0.11764705882352941
   },
   "interaction_success_rate": 0.0,
-  "gui_only_success_rate": 0.05660377358490566,
-  "average_steps": 44.75,
+  "gui_only_success_rate": 0.07547169811320754,
+  "average_steps": 44.65,
   "average_user_queries": 0.14285714285714285,
   "user_interaction_quality_factmatch": 0.14285714285714285,
   "kb_interaction_quality": null,
@@ -19,19 +19,20 @@
   "kb_task_count": 4,
   "interaction_run_count": 7,
   "gui_only_run_count": 53,
-  "true_success_count": 3,
-  "true_failure_count": 57,
+  "true_success_count": 4,
+  "true_failure_count": 56,
   "hallucination_count": 0,
   "hallucination_rate": 0.0,
-  "true_success_rate": 0.05,
-  "true_failure_rate": 0.95,
+  "true_success_rate": 0.06666666666666667,
+  "true_failure_rate": 0.9333333333333333,
   "hallucination_control_count": 7,
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 31084.434951667252,
+  "wall_clock_seconds": 31529.292052458215,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 30494.434951667252,
+  "agent_running_seconds": 30939.292052458215,
   "cooldown_seconds_per_gap": 10.0,
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original ran to the 60-step cap with no verified end state. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the fastest option's ETA and distance. Self-reported success false -> true and manual FAIL -> PASS (official 3 -> 4 = 6.7%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
 }
