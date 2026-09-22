@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Row 1 published** (`700711e`, corrected `b2e4776`). Rows 2-13 pending — see §7 for the two conventions to handle |
+| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Published: rows 1-3** (`700711e`+`b2e4776` row 1, `241a762` row 2, `9f14da4` row 3). Rows 4-13 pending — see §7 for the two conventions to handle |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
