@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 12 of 13 | ❌ | **9 PASS / 3 FAIL** — rows 1-8, 11 valid; rows 9, 10, 12 FAIL. Row 13 running, gated by `review_rerun_row.py` (§1b) |
+| 1 | `medium__google-maps__002` | 13 of 13 | ❌ | **10 PASS / 3 FAIL** — rows 1-8, 11, 13 valid; rows 9, 10, 12 FAIL. All rows reviewed from artifacts (§1b); verdicts not yet written into the model reports |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -205,19 +205,26 @@ Care is needed in **both** directions, and both traps are pinned in
 | 10 | gemma-4-E2B-it | TEXT | **local** | `20260923-171300` | ✅ | ❌ **FAIL** |
 | 11 | kimi-k2.6 | VISION | API | `20260923-174839` | ✅ | ✅ PASS |
 | 12 | gemma-4-E2B-it | VISION | **local** | `20260923-180228` | ✅ | ❌ **FAIL** |
-| 13 | Bonsai-2-27B | TEXT | **local** | — | — | ⏳ running |
+| 13 | Bonsai-2-27B | TEXT | **local** | `20260923-184553` | ✅ | ✅ PASS |
 
-**Row 12 verdict — FAIL.** Same shape as row 10: typed the query, then never wrote a note and
-let the step counter run out (60-step cap, `success: false`).
+**Row 13 verdict — PASS.** Best local row: 15 steps, all three modes compared, note written.
 
-### Row-by-row outcome so far
+### Row-by-row outcome — all 13 done
 
 | outcome | rows | note |
 | --- | --- | --- |
-| ✅ PASS | 1-8, **11** | typed the query and wrote a note naming the fastest of the three modes |
+| ✅ PASS | 1-8, **11**, **13** | typed the query and wrote a note naming the fastest of the three modes |
 | ❌ FAIL — off-mode answer | 9 | saved *Two-wheeler* as fastest |
 | ❌ FAIL — click loop | 10 | never reached Notes |
 | ❌ FAIL — no note, step cap | 12 | reached Maps, never saved anything |
+
+**Final: 10 PASS / 3 FAIL across 13 rows.** Every row was reviewed from its own
+`trajectory.json` + `output.json` via `review_rerun_row.py` before the next row was
+allowed to start (§1b). Leak cleanup reported **PASS** after every row: no Maps
+run-notes left, recents cleared, Telegram composer empty, `Budget Deadline` intact.
+
+**Still to do:** write these 13 verdicts back into the 13 model reports, recompute
+metrics, and re-upload byte-identical to `androidlife-public`.
 
 **Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
 `Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks
