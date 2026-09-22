@@ -202,8 +202,8 @@ Care is needed in **both** directions, and both traps are pinned in
 | 7 | gpt-5.6-luna | TEXT | API | `20260923-030604` | ✅ | ✅ PASS |
 | 8 | gpt-5.6-luna | VISION | API | `20260923-160008` | ✅ | ✅ PASS |
 | 9 | Qwen3.5-4B | TEXT | **local** | `20260923-162648` | ✅ | ❌ **FAIL** |
-| 10 | gemma-4-E2B-it | TEXT | **local** | — | — | ⏳ next |
-| 11 | kimi-k2.6 | VISION | API | — | — | ⏳ pending |
+| 10 | gemma-4-E2B-it | TEXT | **local** | `20260923-171300` | ✅ | ❌ **FAIL** |
+| 11 | kimi-k2.6 | VISION | API | — | — | ⏳ next |
 | 12 | gemma-4-E2B-it | VISION | **local** | — | — | ⏳ pending |
 | 13 | Bonsai-2-27B | TEXT | **local** | — | — | ⏳ pending |
 
@@ -213,6 +213,22 @@ for the fastest of **driving / transit / walking**; the Maps UI also offers *Two
 *Public transport*, and the model compared a mode that was never asked about — it read
 `Driving at 35 minutes` and then reported a 33-minute two-wheeler as the answer. It also
 burned all 60 steps. The artifact-level check would have called this a pass.
+
+**Row 10 verdict — FAIL.** Typed the query, then got stuck in a **click loop**: from step 7
+onward it toggled between two UI elements (`index 24` / `20` / `26`) without ever reaching the
+Notes app, ending on `Clicked on Text: 'Bicycling'`. No note was written. 60-step cap.
+
+### The review gate stopped a batch for the first time (working as designed)
+
+Rows 10-13 launched together; after row 10 the runner refused to continue:
+
+```
+REVIEW REQUIRED before the next row - this batch is stopping here.
+BATCH FINISHED WITH PROBLEMS: 10(gemma-4-E2B-it) 10(unreviewed)
+```
+
+Rows 11-13 did **not** start. Previously they would have run and been reviewed — or not — long
+afterwards. That is the difference between a rule in a document and a gate in the pipeline.
 
 ### Device-state note (verified, not assumed)
 
