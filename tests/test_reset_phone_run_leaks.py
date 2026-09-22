@@ -73,6 +73,120 @@ def test_ui_nodes_parses_text_bounds_and_resource_id(rp):
     assert rp._note_text_count(nodes) == 518
 
 
+def test_tg_label_reads_content_desc_when_text_is_empty(rp):
+    """Telegram's selection toolbar is a row of icon buttons: label in `content-desc`."""
+    xml = "".join([
+        _node("", desc="Delete", bounds="[921,96][1050,264]"),
+        _node("1 Selected", bounds="[225,96][579,264]"),
+        _node("Delete", bounds="[799,1403][1008,1523]"),   # the dialog's button
+    ])
+    nodes = rp._ui_nodes(xml)
+    assert rp._tg_label(nodes[0]) == "Delete"   # from desc
+    assert rp._tg_label(nodes[1]) == "1 Selected"
+    assert rp._tg_label(nodes[2]) == "Delete"   # from text
+
+
+def test_tg_delete_actions_finds_the_selection_bar_delete(rp):
+    """The exact measured long-press menu: this is what the old text-only match missed.
+
+    Reproduced from the device on 2026-09-22: the toolbar Delete is `text='' desc='Delete'`.
+    Matching on `text` alone made every cleanup report 'long-press menu did not appear',
+    so leaked bubbles were never deleted and aborted every later row at the seed gate.
+    """
+    xml = "".join([
+        _node("1 Selected", bounds="[225,96][579,264]"),
+        _node("", desc="Edit", bounds="[579,96][723,264]"),
+        _node("", desc="Copy", bounds="[693,96][837,264]"),
+        _node("", desc="Delete", bounds="[921,96][1050,264]"),
+    ])
+    dels = rp._tg_delete_actions(rp._ui_nodes(xml))
+    assert len(dels) == 1
+    assert dels[0]["cy"] == (96 + 264) // 2
+
+
+def test_tg_delete_actions_ignores_the_checkbox_and_title(rp):
+    """The confirm dialog: only the button is the action; the checkbox would notify the contact."""
+    xml = "".join([
+        _node("Delete message", bounds="[120,969][549,1050]"),
+        _node("Are you sure you want to delete this message?", bounds="[120,1080][960,1202]"),
+        _node("Also delete for Yuvraj", bounds="[210,1271][945,1336]"),
+        _node("Cancel", bounds="[556,1403][775,1523]"),
+        _node("Delete", bounds="[799,1403][1008,1523]"),
+    ])
+    dels = rp._tg_delete_actions(rp._ui_nodes(xml))
+    assert [n["text"] for n in dels] == ["Delete"]
+
+
+def test_tg_delete_actions_empty_when_the_menu_never_opened(rp):
+    """No menu means no Delete: the caller must see this as a failure, not a no-op pass."""
+    xml = _node("Movie night this weekend!&#10;Sent at 16:46", bounds="[0,1838][1080,2184]")
+    assert rp._tg_delete_actions(rp._ui_nodes(xml)) == []
+
+
+def test_clear_deletes_a_sent_bubble_end_to_end(rp, monkeypatch):
+    """Full deletion sequence against the measured Telegram UI.
+
+    The chat has one run-window bubble (a message a previous run sent). The cleanup must
+    long-press it, tap the SELECTION BAR's Delete (label in content-desc), then tap the
+    CONFIRM DIALOG's Delete (label in text) -- and never the "Also delete for Yuvraj"
+    checkbox. Regression cover for the bug that made every cleanup report "long-press menu
+    did not appear" while the menu was in fact on screen.
+    """
+    bubble = _node("Movie night this weekend!&#10;Sent at 19:02&#10;",
+                   bounds="[0,1838][1080,2184]")
+    # The detector only counts bubbles BELOW today's date separator.
+    sep = _node("September 22", bounds="[0,1747][1080,1838]")
+    chat_xml = "<hierarchy>" + sep + bubble + "</hierarchy>"
+    menu = "".join([
+        _node("1 Selected", bounds="[225,96][579,264]"),
+        _node("", desc="Delete", bounds="[921,96][1050,264]"),        # selection bar
+        _node("Reply", bounds="[103,2229][442,2313]"),
+    ])
+    dialog = "".join([
+        _node("Delete message", bounds="[120,969][549,1050]"),
+        _node("Also delete for Yuvraj", bounds="[210,1271][945,1336]"),
+        _node("Cancel", bounds="[556,1403][775,1523]"),
+        _node("Delete", bounds="[799,1403][1008,1523]"),              # dialog button
+    ])
+    dumps = [chat_xml,
+             "<hierarchy>" + menu + "</hierarchy>",
+             "<hierarchy>" + dialog + "</hierarchy>"]
+
+    calls: list[str] = []
+    monkeypatch.setattr(rp, "_tg_today_label", lambda serial: "September 22")
+    monkeypatch.setattr(rp, "_pull_ui_dump", lambda serial, remote="/x": dumps.pop(0))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: calls.append(cmd) or "")
+    monkeypatch.setattr(rp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(rp, "_tg_open_chat", lambda serial, timeout_s=45.0: rp._ui_nodes(chat_xml))
+
+    assert rp.clear_telegram_run_leaks("S", apply=True) is True
+    taps = [c for c in calls if c.startswith("input tap")]
+    # 1) the selection bar's Delete (icon button, label in content-desc) ...
+    assert taps[0] == "input tap 985 180"
+    # 2) ... then the dialog's Delete. Neither is the checkbox at cy 1303.
+    assert taps[1] == "input tap 903 1463"
+    assert all("1303" not in t for t in taps)
+    assert "am force-stop org.telegram.messenger" in calls
+
+
+def test_clear_reports_failure_when_the_menu_never_appears(rp, monkeypatch):
+    """A long-press that produces no Delete must FAIL, not silently pass and leave the leak."""
+    bubble = _node("x&#10;Sent at 19:02&#10;", bounds="[0,1838][1080,2184]")
+    sep = _node("September 22", bounds="[0,1747][1080,1838]")
+    chat_xml = "<hierarchy>" + sep + bubble + "</hierarchy>"
+    # 1 chat read + 3 menu reads, all identical: the long-press never opens a menu.
+    dumps = [chat_xml] * 4
+    calls: list[str] = []
+    monkeypatch.setattr(rp, "_tg_today_label", lambda serial: "September 22")
+    monkeypatch.setattr(rp, "_pull_ui_dump", lambda serial, remote="/x": dumps.pop(0) if dumps else "<hierarchy/>")
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: calls.append(cmd) or "")
+    monkeypatch.setattr(rp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(rp, "_tg_open_chat", lambda serial, timeout_s=45.0: rp._ui_nodes(chat_xml))
+
+    assert rp.clear_telegram_run_leaks("S", apply=True) is False
+    assert not [c for c in calls if c.startswith("input tap")]  # never tapped a guess
+
+
 def test_tg_draft_returns_none_for_the_empty_hint(rp):
     nodes = rp._ui_nodes(_node("Message", cls="android.widget.EditText", bounds="[171,2212][777,2332]"))
     assert rp._tg_draft(nodes) is None

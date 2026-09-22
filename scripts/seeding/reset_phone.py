@@ -2049,7 +2049,25 @@ def _tg_open_chat(serial: str, timeout_s: float = 45.0) -> list[dict]:
 
     The chat LIST is not exposed to uiautomator (documented, and re-confirmed here), so
     search is the only route in. Returns [] if the chat could not be reached.
+
+    Retried once: `clear_telegram_run_leaks` treats [] as a hard failure (it must never
+    report a clean chat it never saw), and this sequence has several ways to come up empty
+    on a slow handset -- a cold start that outlasts the search wait, a tap that lands
+    before the list is laid out. One retry covers those; a genuinely unreachable chat fails
+    both times and still reports the failure.
     """
+    for attempt in range(2):
+        nodes = _tg_open_chat_once(serial, timeout_s)
+        if nodes:
+            return nodes
+        if not attempt:
+            sh(serial, f"am force-stop {TG_PKG}")
+            time.sleep(3)
+    return []
+
+
+def _tg_open_chat_once(serial: str, timeout_s: float) -> list[dict]:
+    """One attempt at Telegram -> search -> TG_CHAT_NAME. [] if any step does not land."""
     sh(serial, "input keyevent KEYCODE_WAKEUP")
     sh(serial, f"am force-stop {TG_PKG}")
     sh(serial, f"monkey -p {TG_PKG} -c android.intent.category.LAUNCHER 1")
@@ -2082,6 +2100,29 @@ def _tg_open_chat(serial: str, timeout_s: float = 45.0) -> list[dict]:
         timeout_s,
     )
     return nodes
+
+
+def _tg_label(node: dict) -> str:
+    """A node's human label, from `text` or `content-desc`.
+
+    Telegram's *selection toolbar* exposes its actions as ICON buttons whose label lives
+    only in `content-desc` (`text` is empty), while the confirm *dialog* puts the same
+    words in `text`. Matching on `text` alone therefore never sees the toolbar's Delete,
+    which is exactly how `clear_telegram_run_leaks` failed: the long-press worked, the
+    selection bar appeared, and the cleanup reported "long-press menu did not appear"
+    (measured 2026-09-22). Never match on `text` alone here.
+    """
+    return node["text"].strip() or (node.get("desc") or "").strip()
+
+
+def _tg_delete_actions(nodes: list[dict]) -> list[dict]:
+    """The Delete entries in a Telegram long-press menu or confirm dialog.
+
+    An EXACT match on the label, not a substring: the confirm dialog also contains a
+    "Delete message" title and an "Also delete for Yuvraj" checkbox, and tapping either
+    would be wrong (the checkbox would notify the real contact).
+    """
+    return [n for n in nodes if _tg_label(n) == "Delete"]
 
 
 def _tg_draft(nodes: list[dict]) -> str | None:
@@ -2189,26 +2230,38 @@ def clear_telegram_run_leaks(serial: str, apply: bool) -> bool:
     # each round is required (and doubling as the loop guard against a stuck menu).
     ok = True
     for _ in range(len(leaks)):
-        cur = _ui_nodes(_pull_ui_dump(serial))
-        targets = _tg_run_window_bubbles(cur, today)
-        if not targets:
-            break
-        victim = max(targets, key=lambda n: n["cy"])
-        sh(serial, f"input swipe {victim['cx']} {victim['cy']} {victim['cx']} {victim['cy']} 900")
-        time.sleep(3)
-        menu = _ui_nodes(_pull_ui_dump(serial))
-        # The selection bar's `Delete` is the topmost one; the dialog's is lower.
-        dels = [n for n in menu if n["text"].strip() == "Delete"]
+        dels: list[dict] = []
+        # A long-press does not always register: measured 2026-09-22 as "long-press menu
+        # did not appear" on a real sent bubble. A missed press leaves the message
+        # resident -- which is the exact contamination this cleanup exists to prevent, and
+        # it then aborts every later row at the seed gate -- so retry with a longer hold
+        # before giving up.
+        for hold in (900, 1400, 1400):
+            targets = _tg_run_window_bubbles(_ui_nodes(_pull_ui_dump(serial)), today)
+            if not targets:
+                break
+            victim = max(targets, key=lambda n: n["cy"])
+            sh(serial, f"input swipe {victim['cx']} {victim['cy']} "
+                       f"{victim['cx']} {victim['cy']} {hold}")
+            time.sleep(3)
+            menu = _ui_nodes(_pull_ui_dump(serial))
+            # The selection bar's `Delete` is the topmost one; the dialog's is lower.
+            # Its label is in `content-desc` (icon button) -- see _tg_label.
+            dels = _tg_delete_actions(menu)
+            if dels:
+                break
         if not dels:
-            print("  [!!]  telegram: long-press menu did not appear — stopping")
+            print("  [!!]  telegram: long-press menu did not appear after 3 attempts — stopping")
             ok = False
             break
         _ui_tap(serial, min(dels, key=lambda n: n["cy"]))
         time.sleep(3)
         dialog = _ui_nodes(_pull_ui_dump(serial))
         # Leave "Also delete for Yuvraj" UNCHECKED: this is device-side cleanup, and
-        # ticking it would notify the real contact that the message was deleted.
-        confirm = [n for n in dialog if n["text"].strip() == "Delete"]
+        # ticking it would notify the real contact that the message was deleted. Note this
+        # must be an EXACT "Delete": the dialog also has a "Delete message" title and an
+        # "Also delete for Yuvraj" row, both of which a substring match would hit.
+        confirm = _tg_delete_actions(dialog)
         if not confirm:
             print("  [!!]  telegram: delete confirmation did not appear — stopping")
             ok = False
