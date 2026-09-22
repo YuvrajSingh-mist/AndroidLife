@@ -1,15 +1,15 @@
 {
   "run_count": 60,
   "model_filter": null,
-  "success_rate": 0.6333333333333333,
+  "success_rate": 0.65,
   "success_rate_by_bucket": {
     "easy": 0.7307692307692307,
     "hard": 0.5882352941176471,
-    "medium": 0.5294117647058824
+    "medium": 0.5882352941176471
   },
   "interaction_success_rate": 0.5714285714285714,
-  "gui_only_success_rate": 0.6415094339622641,
-  "average_steps": 19.166666666666668,
+  "gui_only_success_rate": 0.660377358490566,
+  "average_steps": 19.1,
   "average_user_queries": 0.5714285714285714,
   "user_interaction_quality_factmatch": 0.10000000000000003,
   "kb_interaction_quality": 0.5,
@@ -19,20 +19,21 @@
   "kb_task_count": 4,
   "interaction_run_count": 7,
   "gui_only_run_count": 53,
-  "true_success_count": 38,
-  "true_failure_count": 22,
+  "true_success_count": 39,
+  "true_failure_count": 21,
   "hallucination_count": 0,
   "hallucination_rate": 0.0,
-  "true_success_rate": 0.6333333333333333,
-  "true_failure_rate": 0.36666666666666664,
+  "true_success_rate": 0.65,
+  "true_failure_rate": 0.35,
   "hallucination_control_count": 7,
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 16530.871887170004,
+  "wall_clock_seconds": 16488.247593171,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 15940.87188717,
+  "agent_running_seconds": 15898.247593170996,
   "cooldown_seconds_per_gap": 10.0,
   "rerun_2026_09_21": "re-run 2026-09-21: easy__calendar_002 replaced with a valid-seed re-run; the aggregates here are recomputed for that single task (exact arithmetic, not a corpus regeneration). See the run report for the verdict.",
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original FAIL was a harness stop -- three malformed tool calls in a row, Maps never opened. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the real Driving/Transit/Walking values with ETA and distance. Self-reported success false -> true and manual FAIL -> PASS, so this is the first row in the batch where the official count moves too (38 -> 39 = 65.0%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
 }
