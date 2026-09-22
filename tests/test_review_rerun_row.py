@@ -139,3 +139,105 @@ def test_out_of_question_note_that_names_no_required_mode_fails(rr, tmp_path):
     res = rr.review_maps(task)
     assert res["verdict"] == "FAIL"
     assert any("cab" in x for x in res["reasons"])
+
+
+# ---------------------------------------------------------------------------------------
+# easy__google-slides__001 -- redo.md section 5. Two decks were both named "Q3 Review":
+# the stray 1-slide upload and the canonical 8-slide Q3_Review.pptx. Replies of 1, 3 and 8
+# ALL scored PASS because the grader had no ground truth, so the review checks both the
+# deck that was opened and the number in the reply.
+# ---------------------------------------------------------------------------------------
+
+def _reply_row(tmp_path, slug, *, success, steps, reply, traj_extra=""):
+    task = tmp_path / "day1" / slug
+    (task / "trajectories" / "t1").mkdir(parents=True)
+    (task / "output.json").write_text(
+        json.dumps({"success": success, "steps": steps, "reason": reply}))
+    (task / "trajectories" / "t1" / "trajectory.json").write_text(traj_extra)
+    return task
+
+
+def test_slides_correct_count_on_canonical_deck_passes(rr, tmp_path):
+    task = _reply_row(tmp_path, "easy-google-slides-001", success=True, steps=4,
+                      reply="8", traj_extra='opened /Download/Q3_Review.pptx, "Slide 8 of 8"')
+    res = rr.review_slides(task)
+    assert res["verdict"] == "PASS", res["reasons"]
+    assert res["evidence"]["opened_canonical_deck"] is True
+    assert res["evidence"]["expected"] == 8
+
+
+def test_slides_right_count_on_the_wrong_deck_fails(rr, tmp_path):
+    """The section-5 trap: a confident correct-looking count read off the stray 1-slide deck."""
+    task = _reply_row(tmp_path, "easy-google-slides-001", success=True, steps=3,
+                      reply="8", traj_extra='opened the deck named "Q3 Review" (1 slide)')
+    res = rr.review_slides(task)
+    assert res["verdict"] == "FAIL"
+    assert any("canonical Q3_Review.pptx" in x for x in res["reasons"])
+
+
+def test_slides_wrong_number_fails(rr, tmp_path):
+    """A reply of 1 was a true reading of the wrong file, and used to score PASS."""
+    task = _reply_row(tmp_path, "easy-google-slides-001", success=True, steps=3,
+                      reply="1", traj_extra="Q3_Review.pptx")
+    res = rr.review_slides(task)
+    assert res["verdict"] == "FAIL"
+    assert any("slide count" in x for x in res["reasons"])
+
+
+def test_slides_step_cap_fails(rr, tmp_path):
+    """Row 7, 2026-09-21: correct deck on screen, but 60 steps burned and no count emitted."""
+    task = _reply_row(tmp_path, "easy-google-slides-001", success=False, steps=60,
+                      reply="Reached max step count of 60 steps", traj_extra="Q3_Review.pptx")
+    res = rr.review_slides(task)
+    assert res["verdict"] == "FAIL"
+    assert any("slide count" in x for x in res["reasons"])
+    assert any("step cap" in x for x in res["reasons"])
+
+
+# ---------------------------------------------------------------------------------------
+# easy__calendar__002 -- redo.md section 6. The deliverable is naming BOTH seeded events
+# and the overlap; a self-reported success is not enough, because the whole defect was a
+# PASS that was vacuous (only Weekly_Standup left on "tomorrow").
+# ---------------------------------------------------------------------------------------
+
+def test_calendar_correct_pair_passes(rr, tmp_path):
+    task = _reply_row(tmp_path, "easy-calendar-002", success=True, steps=4,
+                      reply=("You have a conflict tomorrow afternoon: "
+                             '"Team Sync" (14:00-15:00) and "Mentor 1 on 1" '
+                             "(14:30-15:30) overlap by 30 minutes."))
+    res = rr.review_calendar(task)
+    assert res["verdict"] == "PASS", res["reasons"]
+    assert res["evidence"]["events_named"] == ["team sync", "mentor 1 on 1"]
+
+
+def test_calendar_malformed_tool_call_fails(rr, tmp_path):
+    """Row 12, 2026-09-21: named the pair in reasoning, then emitted invalid tool markup."""
+    task = _reply_row(tmp_path, "easy-calendar-002", success=False, steps=4,
+                      reply="Model produced malformed tool-call markup 3 consecutive times; "
+                            "stopped to prevent a retry loop.")
+    res = rr.review_calendar(task)
+    assert res["verdict"] == "FAIL"
+    assert any("malformed tool-call" in x for x in res["reasons"])
+
+
+def test_calendar_single_event_fails(rr, tmp_path):
+    task = _reply_row(tmp_path, "easy-calendar-002", success=True, steps=4,
+                      reply="Tomorrow you have a conflict: Team Sync 14:00-15:00 overlaps "
+                            "with something else.")
+    res = rr.review_calendar(task)
+    assert res["verdict"] == "FAIL"
+    assert any("mentor 1 on 1 missing" in x for x in res["reasons"])
+
+
+def test_calendar_naming_both_but_no_conflict_fails(rr, tmp_path):
+    task = _reply_row(tmp_path, "easy-calendar-002", success=True, steps=4,
+                      reply="Tomorrow: Team Sync 14:00-15:00 and Mentor 1 on 1 14:30-15:30.")
+    res = rr.review_calendar(task)
+    assert res["verdict"] == "FAIL"
+    assert any("never says they conflict" in x for x in res["reasons"])
+
+
+def test_slides_and_calendar_are_registered(rr):
+    """The gate is driven by task id, so both must be in REVIEWERS or they VOID."""
+    assert rr.REVIEWERS["easy__google-slides__001"] is rr.review_slides
+    assert rr.REVIEWERS["easy__calendar__002"] is rr.review_calendar

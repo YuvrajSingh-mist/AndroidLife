@@ -43,6 +43,33 @@ MAPS_MODES = ("driving", "transit", "walking")
 # "fastest" answers a different question, however well-formed the note looks.
 MAPS_OFF_MODE = ("two-wheeler", "two wheeler", "bike", "motorcycle", "cycling", "cab")
 
+# `easy__calendar__002`'s ground truth: the pair reset_phone.py seeds at offset_days=1. The
+# section-6 defect was these landing on the run day instead of D+1.
+CAL_PAIR = (("team sync", "14:00", "15:00"), ("mentor 1 on 1", "14:30", "15:30"))
+
+# Tasks with an objectively known answer live in this sidecar (the same plumbing described in
+# redo.md section 5), so a verdict never has to trust the model's self-report.
+ANSWER_CHECKS = REPO / "benchmarks" / "androidlife-530" / "answer_checks_public.json"
+
+
+def _reply_text(out: dict) -> str:
+    """The agent's reply, wherever the harness put it. `reason` is what the runner writes."""
+    for key in ("reason", "answer", "final_answer", "reply", "response", "message"):
+        v = out.get(key)
+        if isinstance(v, str) and v.strip():
+            return v
+    return ""
+
+
+def _expected_numeric(task_id: str) -> int | None:
+    """The task's known numeric answer, or None if it has no answer check."""
+    try:
+        checks = json.loads(ANSWER_CHECKS.read_text())
+    except Exception:
+        return None
+    entry = checks.get(task_id) or {}
+    return entry.get("expected") if entry.get("kind") == "numeric_reply" else None
+
 
 
 
@@ -128,7 +155,106 @@ def review_maps(task_dir: Path, max_steps: int = 60) -> dict:
     return r
 
 
-REVIEWERS = {"medium__google-maps__002": review_maps}
+def review_slides(task_dir: Path, max_steps: int = 60) -> dict:
+    """easy__google-slides__001: open the seeded deck and state how many slides it has.
+
+    This task has a known answer, so the verdict must not ride on the model's own success
+    flag. Two presentations were both named "Q3 Review" (redo.md section 5): the stray old
+    upload with **1** slide and the canonical `Q3_Review.pptx` with **8**. A reply of `1`
+    was an honest reading of the wrong file, and it scored PASS because the grader carried
+    no ground truth. So two independent things must hold: the canonical deck was the one
+    opened, and the reply states the expected count.
+    """
+    r: dict = {"reasons": [], "evidence": {}}
+    out_path = task_dir / "output.json"
+    if not out_path.is_file():
+        return {"verdict": "VOID", "reasons": ["no output.json (aborted before any result)"],
+                "evidence": {}}
+    out = json.loads(out_path.read_text())
+    steps, success = out.get("steps"), out.get("success")
+    reply = _reply_text(out)
+    expected = _expected_numeric("easy__google-slides__001")
+    r["evidence"].update({"steps": steps, "output_success": success,
+                          "reply": reply.strip()[:200], "expected": expected})
+
+    trajs = sorted(task_dir.glob("trajectories/*/trajectory.json"))
+    if not trajs:
+        return {"verdict": "VOID", "reasons": ["no trajectory.json - nothing to review"],
+                "evidence": r["evidence"]}
+    canonical = "Q3_Review.pptx" in trajs[0].read_text()
+    r["evidence"]["opened_canonical_deck"] = canonical
+    if not canonical:
+        r["reasons"].append("never opened the canonical Q3_Review.pptx - the stray 1-slide "
+                            "'Q3 Review' is not the task's target (redo.md section 5)")
+
+    # Mirror the grader: it takes the FIRST integer in the reply (androidlife_report.py,
+    # answer_checks). A cap message like "Reached max steps at 60" therefore fails here too.
+    if expected is not None:
+        m = re.search(r"\d+", reply)
+        if not m or int(m.group(0)) != expected:
+            r["reasons"].append(
+                f"reply {reply.strip()[:40]!r} does not state the deck's slide count "
+                f"({expected}) as its first number")
+
+    if steps is not None and steps >= max_steps:
+        r["reasons"].append(f"hit the {max_steps}-step cap without answering")
+    if success is not True:
+        r["reasons"].append(f"harness recorded success={success!r}")
+
+    r["verdict"] = "PASS" if not r["reasons"] else "FAIL"
+    return r
+
+
+def review_calendar(task_dir: Path, max_steps: int = 60) -> dict:
+    """easy__calendar__002: report the seeded afternoon conflict that sits on "tomorrow".
+
+    The deliverable is naming BOTH seeded events and the overlap between them. reset_phone.py
+    seeds `Team Sync` 14:00-15:00 and `Mentor 1 on 1` 14:30-15:30 at offset_days: 1, and the
+    whole section-6 defect was those anchors landing on the RUN day instead of D+1 -- which
+    made a PASS vacuous (only `Weekly_Standup` left tomorrow) and a FAIL unjust. So the
+    verdict needs the pair actually named, not just a self-reported success.
+    """
+    r: dict = {"reasons": [], "evidence": {}}
+    out_path = task_dir / "output.json"
+    if not out_path.is_file():
+        return {"verdict": "VOID", "reasons": ["no output.json (aborted before any result)"],
+                "evidence": {}}
+    out = json.loads(out_path.read_text())
+    steps, success = out.get("steps"), out.get("success")
+    reply = _reply_text(out)
+    r["evidence"].update({"steps": steps, "output_success": success,
+                          "reply": reply.strip()[:200]})
+
+    low = reply.lower()
+    named = [name for name, _, _ in CAL_PAIR if name in low]
+    r["evidence"]["events_named"] = named
+    r["evidence"]["conflict_stated"] = bool(re.search(r"overlap|conflict|double-?book", low))
+
+    if "malformed tool-call" in low:
+        r["reasons"].append("aborted on malformed tool-call markup - an answer that never "
+                            "reaches a valid tool call is not a deliverable (redo.md section 6)")
+    else:
+        missing = [name for name, _, _ in CAL_PAIR if name not in low]
+        if missing:
+            r["reasons"].append("reply does not name both seeded events (" +
+                                ", ".join(missing) + " missing), so the conflict is not identified")
+        elif not r["evidence"]["conflict_stated"]:
+            r["reasons"].append("reply names the events but never says they conflict/overlap")
+
+    if steps is not None and steps >= max_steps:
+        r["reasons"].append(f"hit the {max_steps}-step cap without completing")
+    if success is not True:
+        r["reasons"].append(f"harness recorded success={success!r}")
+
+    r["verdict"] = "PASS" if not r["reasons"] else "FAIL"
+    return r
+
+
+REVIEWERS = {
+    "medium__google-maps__002": review_maps,
+    "easy__google-slides__001": review_slides,
+    "easy__calendar__002": review_calendar,
+}
 
 
 def review_root(root: Path, task_id: str | None, max_steps: int) -> dict:
@@ -184,12 +310,22 @@ def main() -> int:
         print(f"=== {res.get('run_root', root.name)}  [{res.get('task_id', '?')}] ===")
         ev = res.get("evidence", {})
         if "steps" in ev:
-            print(f"   steps={ev['steps']}  output_success={ev['output_success']}  "
-                  f"typed_query={ev.get('typed_query')}")
+            bits = [f"steps={ev['steps']}", f"output_success={ev['output_success']}"]
+            if ev.get("typed_query") is not None:
+                bits.append(f"typed_query={ev['typed_query']}")
+            if ev.get("opened_canonical_deck") is not None:
+                bits.append(f"canonical_deck={ev['opened_canonical_deck']}")
+            print("   " + "  ".join(bits))
+            if ev.get("expected") is not None:
+                print(f"   expected answer: {ev['expected']}")
             if ev.get("modes_in_note") is not None:
                 print(f"   modes in note: {ev.get('modes_in_note')}"
                       + (f"   OFF-MODE: {ev['off_mode_in_note']}" if ev.get("off_mode_in_note") else ""))
-            if ev.get("note"):
+            if ev.get("events_named") is not None:
+                print(f"   events named: {ev['events_named']}   conflict stated: {ev.get('conflict_stated')}")
+            if ev.get("reply"):
+                print(f"   reply: {ev['reply'][:120]!r}")
+            elif ev.get("note"):
                 print(f"   note: {ev['note'][:120]!r}")
         print(f"   VERDICT: {res['verdict']}")
         for why in res.get("reasons", []):

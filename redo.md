@@ -817,6 +817,18 @@ read the wrong one (1 slide, not 8). All 7 affected rows re-taken against the ca
 `reset_phone.py`, and the grader now checks the reply against ground truth — see the end of
 this item.**
 
+**↻ Re-reviewed 2026-09-23 under the review gate (backfill).** These verdicts were reached
+by hand on 2026-09-21, *before* `review_rerun_row.py` existed, so none of the 7 re-run roots
+carried a `review.json` and the gate had no record to read. All 7 have now been reviewed from
+their own artifacts by a purpose-built reviewer (`review_slides`) and each root has a
+`review.json`: **6 PASS / 1 FAIL**, reproducing the hand verdicts exactly (row 7's 60-step
+cap is the FAIL). The reviewer is deliberately stricter than the hand pass in one way —
+because two decks were both called "Q3 Review", it requires (a) the canonical
+`Q3_Review.pptx` to be the deck actually opened and (b) the reply's **first integer** to be
+the expected `8`, mirroring the grader's `answer_checks` semantics. That combination is what
+the original grader could not see: replies of `1`, `3` and `8` all scored PASS because the
+grader carried no ground truth at all.
+
 The task: *"open the `[presentation name]` presentation in Google Slides and tell me how
 many slides it has"* → `presentation name=Q3 Review`.
 
@@ -979,6 +991,24 @@ confirmed; all models need a re-run.**
 >
 > **Net: +4 true successes across the 9 rows**, 1 hallucination retired, and every remaining
 > PASS on this task is now earned rather than vacuous.
+>
+> **↻ Re-reviewed 2026-09-23 under the review gate (backfill).** As with section 5, these
+> verdicts were reached by hand on 2026-09-21 before `review_rerun_row.py` existed, so no
+> root carried a `review.json`. All the re-run roots have now been reviewed from their own
+> artifacts by a purpose-built reviewer (`review_calendar`) and carry a `review.json`:
+> **8 PASS / 1 FAIL across the 9 rows**, reproducing the hand verdicts — row 12 is the FAIL
+> (malformed tool-call markup). Two caveats on the count: row 12 was attempted **twice**
+> (both malformed, both FAIL), so there are 10 review files for 9 rows; and row 13's re-run
+> was merged **in place** into its original root `20260920-044846` (only that root's
+> `easy-calendar-002` trajectory is the 2026-09-21 re-run), so its `review.json` lives there
+> rather than in a `20260921-*` root. The two discarded first-pass runs for rows 1 and 2
+> sit in `assets/runs/_rerun_backups/thrownaway/` and are deliberately not reviewed — they
+> were superseded, not published.
+>
+> The reviewer requires the reply to name **both** seeded events *and* say they
+> conflict/overlap, and it special-cases the malformed-tool-call abort. A self-reported
+> success is not sufficient, which is the point: the entire section-6 defect was a PASS that
+> was vacuous once the seed drifted onto the run day.
 >
 > **Row 12 is the one judgement call.** gemma-4-E2B-it VISION *twice* named the correct pair
 > in its reasoning, then emitted `<complete success="true" message="…"/>` instead of the
