@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.14285714285714285,
   "gui_only_success_rate": 0.5660377358490566,
-  "average_steps": 32.25,
+  "average_steps": 32.233333333333334,
   "average_user_queries": 1.0,
   "user_interaction_quality_factmatch": 0.125,
   "kb_interaction_quality": null,
@@ -28,11 +28,12 @@
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 20847.106020003062,
+  "wall_clock_seconds": 20895.46826504406,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 20257.106020003062,
+  "agent_running_seconds": 20305.46826504406,
   "cooldown_seconds_per_gap": 10.0,
   "kb_task_correct": 0,
   "rerun_2026_09_21": "re-run 2026-09-21 (x2): easy__calendar_002 replaced with a valid-seed re-run; the second pass also corrected the Calendar app's starting view mode (the first began in Day view). Aggregates are recomputed for that single task by exact arithmetic, not a corpus regeneration. NOTE: the replaced task timed out at steps:0 in the original run, so the run report deliberately leaves its mean-steps figure describing the original 60-task run; average_steps here is the exact arithmetic. See the run report.",
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original run never typed the airport query (it tapped a leftover Maps recent), so its PASS was vacuous; the re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the fastest. Verdict unchanged (PASS), now non-vacuous. Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
 }
