@@ -1,15 +1,15 @@
 {
   "run_count": 60,
   "model_filter": null,
-  "success_rate": 0.6,
+  "success_rate": 0.6166666666666667,
   "success_rate_by_bucket": {
     "easy": 0.6923076923076923,
-    "hard": 0.35294117647058826,
+    "hard": 0.4117647058823529,
     "medium": 0.7058823529411765
   },
   "interaction_success_rate": 0.42857142857142855,
-  "gui_only_success_rate": 0.6226415094339622,
-  "average_steps": 26.283333333333335,
+  "gui_only_success_rate": 0.6415094339622641,
+  "average_steps": 25.616666666666667,
   "average_user_queries": 0.7142857142857143,
   "user_interaction_quality_factmatch": 0.16666666666666666,
   "kb_interaction_quality": 0.25,
@@ -19,8 +19,8 @@
   "kb_task_count": 4,
   "interaction_run_count": 7,
   "gui_only_run_count": 53,
-  "true_success_count": 36,
-  "true_failure_count": 24,
+  "true_success_count": 37,
+  "true_failure_count": 23,
   "hallucination_count": 0,
   "hallucination_rate": 0.0,
   "true_success_rate": 0.6,
@@ -33,5 +33,6 @@
   "cooldown_seconds_total": 590.0,
   "agent_running_seconds": 25942.70539320907,
   "cooldown_seconds_per_gap": 10.0,
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_22_bookmyshow": "re-run 2026-09-22: hard__bookmyshow__005 re-taken against the corrected 'INOX: Symphony Mall' seed (the old 'INOX Bhubaneswar' placeholder named a cinema BookMyShow does not list). Verdict FAIL -> PASS: the re-run reached the correct cinema, picked Avengers Endgame: Encore 07:15 PM Sat 26 Sep, and actually DELIVERED the Telegram plan (device evidence: 1 sent bubble in the 'Yuvraj Airtel' chat). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
 }

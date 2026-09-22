@@ -362,6 +362,52 @@ It typed the entire message and never pressed send. This is a genuine task failu
 deliverable is the message), but note it is *not* the `INOX Bhubaneswar` failure of the
 original rows — the cinema is now correct, so this row is a clean, attributable miss.
 
+### ✅ RE-RUN COMPLETE — 2026-09-22 (all 13 rows, manually reviewed)
+
+All 13 model rows were re-run against the corrected `INOX: Symphony Mall` seed and each
+run was then manually reviewed from its own artifacts — `output.json` (`success`, `steps`),
+`delivery.json` (`sent_bubbles`, `draft_present`, `draft_text`) and the `ui_states` dumps
+(which cinema the run actually reached). `androidlife_report.py`'s delivery gate is what
+separates a real send from a self-reported one.
+
+**The seed fix worked: every one of the 13 rows reached the real `INOX: Symphony Mall`.**
+(BookMyShow still renders `Bhubaneswar` as its city chip — that is the app's city label,
+not the cinema the agent picked.)
+
+| row | model | verdict | evidence |
+| --- | --- | --- | --- |
+| 1 | `qwen/qwen3.8-27b` (TEXT) | ❌ FAIL | step cap (60), no send |
+| 2 | `moonshotai/kimi-k2.6` (TEXT) | ❌ FAIL | step cap (60), no send |
+| 3 | `google/gemini-3.1-flash-lite` | ❌ FAIL *(false pass)* | 13 steps, `sent_bubbles: 0`, draft left in the composer |
+| 4 | `bytedance-seed/seed-2.0-lite` (TEXT) | ❌ FAIL *(false pass)* | 5 steps, nothing drafted, self-reported success |
+| **5** | **`qwen/qwen3.8-27b` (VISION)** | **✅ PASS** | **`sent_bubbles: 1`** — plan delivered to `Yuvraj Airtel`, `Avengers Endgame: Encore 07:15 PM Sat 26 Sep`, 20 steps |
+| 6 | `bytedance-seed/seed-2.0-lite` (VISION) | ❌ FAIL *(false pass)* | 30 steps, whole message left unsent in the composer |
+| 7 | `openai/gpt-5.6-luna` (TEXT) | ❌ FAIL | 13 steps, no send |
+| 8 | `openai/gpt-5.6-luna` (VISION) | ❌ FAIL | 23 steps, no send |
+| 9 | `Qwen3.5-4B` (TEXT) | ❌ FAIL | step cap (60), no send |
+| 10 | `gemma-4-E2B-it` (TEXT) | ❌ FAIL *(false pass)* | 14 steps, no send — **the wrong-cinema hallucination is retired** |
+| 11 | `moonshotai/kimi-k2.6` (VISION) | ❌ FAIL | step cap (60), no send |
+| 12 | `gemma-4-E2B-it` (VISION) | ❌ FAIL | step cap (60), no send |
+| 13 | `Bonsai-2-27B` (TEXT) | ⏸️ VOID (timeout) | 2400 s cap after 19 steps; at ~2 min/step a 60-step hard task cannot fit |
+
+**Exactly one published verdict moved: row 5, FAIL → PASS.** No run recorded the old
+`INOX Bhubaneswar`. Rows 3/4/6/10 were already non-PASS, so their downgrade to a
+**delivery-gate FAIL** does not change the headline count — but it does change *why* they
+fail, and row 10's hallucination is retired.
+
+**Applied in place:**
+* the `hard__bookmyshow__005` row in all **13** reports (`reports/public/public-*.md`),
+  each with a `↻ re-run 2026-09-22` note under its manual-audit heading, and the Day-2
+  header recalculated where the class changed (row 9 interrupted → FAIL, row 10
+  hallucination → FAIL);
+* `reports/metrics/public/public-20260909-043419-report.{json,md}` — aggregates recomputed
+  by exact arithmetic (+1 success, −40 steps over the 60-run corpus) and a
+  `rerun_2026_09_22_bookmyshow` key added alongside the existing
+  `rerun_2026_09_21_drive_notes_telegram` one;
+* `androidlife-website/assets/js/leaderboard.js` — row 5 `success 60.0 → 61.7`,
+  `guiOnly 58.5 → 60.4`, `steps 26.28 → 25.62`, `buckets.hard 23.5 → 29.4`.
+  `verify_leaderboard.py` reports **0 mismatches across 13 rows / 300 fields**.
+
 ---
 
 ## 4. `hard__drive-notes-telegram__010` — Notes + Telegram (hard, 5pt, day 1)
@@ -845,7 +891,7 @@ level**, not by any individual model — so the recorded cells are not a model s
 |---|---|---|---|
 | 1 | `medium__google-maps__002` | vacuous PASS from Maps' leaked recent/route state; the 17 Sep run also left live navigation running over 26/27 tasks | clear Maps history + stop nav |
 | 2 | `hard__google-meet-files__070` | unsolvable seed (no conference link + 48h window) — **fixed** | re-run `reset_phone.py --apply` **on the run day** (anchors are date-relative; no new time needed), then `--verify-only` gates it |
-| 3 | `hard__bookmyshow__005` | `[cinema]` placeholder named a non-existent cinema — **fixed (`INOX: Symphony Mall`); the 2026-09-18 fix had NOT taken effect** — `config/user.yaml` is gitignored and was overriding it, so the runner still resolved `INOX Bhubaneswar`. Corrected + launch now gated by `verify_task_vars.py` | **↻ IN PROGRESS 2026-09-22** — listing re-verified live on-device, device re-seeded today, 13 rows running. Row 1 found `INOX: Symphony Mall` (no placeholder echo) and failed only at the harness Send step. ⚠️ verdict pass needed: rows 6/10 recorded "success" while replying the non-existent `INOX Bhubaneswar`, and row 6's FAIL reason (ASK USER gate) doesn't apply to a `DETERMINISTIC` task |
+| 3 | `hard__bookmyshow__005` | `[cinema]` placeholder named a non-existent cinema — **fixed (`INOX: Symphony Mall`); the 2026-09-18 fix had NOT taken effect** — `config/user.yaml` is gitignored and was overriding it, so the runner still resolved `INOX Bhubaneswar`. Corrected + launch now gated by `verify_task_vars.py` | ✅ **DONE 2026-09-22** — all 13 rows re-run on the corrected seed and **manually reviewed** (0.5 → 1 PASS: **only row 5 moved, FAIL → PASS**, its plan genuinely delivered; rows 3/4/6/10 became delivery-gate false passes; row 10's hallucination retired; row 13 VOID on timeout). Rows + `↻` notes written into all 13 reports, metrics JSONs substituted, leaderboard updated (`verify_leaderboard.py`: 0 mismatches) |
 | 4 | `hard__drive-notes-telegram__010` | app-private `Budget Deadline` note kept vanishing, and the oracle named a Drive file (`family_numbers.xlsx`) that never existed — **fixed 2026-09-21: Drive dropped from the task, oracle fixed, note text version-controlled + re-typed via UI** | ✅ **DONE 2026-09-21** — all 13 rows re-run against the corrected seed (**0 PASS**, no verdict flipped); every run verified to start on the launcher; reports/leaderboard/metrics substituted, artifacts + reports byte-identical on HF |
 | 5 | `easy__google-slides__001` | Two decks both named **"Q3 Review"** (stray **1**-slide vs canonical `Q3_Review.pptx` **8**-slide, rebuilt 2026-09-07) → runs read the wrong file; the grader had no ground truth, so `1`/`3`/`8` all recorded PASS — **deck now version-controlled + restored on reset, grader now checks the reply** | ✅ **DONE 2026-09-21** — all 7 affected rows re-run against the real deck (6 PASS / 1 genuine FAIL); reports, leaderboard + metrics JSONs substituted; artifacts byte-identical on HF |
 | 6 | `easy__calendar__002` | conflict pair seeded on the **run day** instead of tomorrow in 5 of 13 rows → 3 vacuous PASSes (incl. the golden report) + 1 unjust FAIL — **cause confirmed, fix is same-day `--apply`** | ✅ **DONE 2026-09-21** — all 9 affected rows re-run; `--apply` gate is now enforced at launch and the recurring-artifact sweep is automatic |
