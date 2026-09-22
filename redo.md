@@ -328,9 +328,14 @@ task actually deserves:
 | row | model | outcome | evidence |
 | --- | --- | --- | --- |
 | 6 | `bytedance-seed/seed-2.0-lite` | **FAIL** (not sent) | 30 steps, self-reported `success: true`, but the composer held the whole message unsent |
-| 11 | `moonshotai/kimi-k2.6` | **VOID — never ran** | aborted at the seed gate on row 6's leaked draft (§7.5) |
-| 12 | `gemma-4-E2B-it` | in flight | `LAUNCH.txt` model matches the row |
-| 13 | `Bonsai-2-27B` | pending | |
+| 11 | `moonshotai/kimi-k2.6` | **VOID — never ran** | aborted at the seed gate on row 6's leaked draft (§7.5); queued for re-run |
+| 12 | `gemma-4-E2B-it` | **FAIL** | hit the 60-step cap, `sent_bubbles: 0`, composer empty at the end |
+| 13 | `Bonsai-2-27B` | in flight | `LAUNCH.txt` model matches the row; 8088 serving `Bonsai-2-27B` |
+
+Queued as a detached chain (`LOCAL_AUTOSERVE=1`) so it runs as soon as row 13 exits, the
+device being single-tenant: **BMS row 11**, then **`hard__drive-notes-telegram__010` row 13**
+(the one run `audit_telegram_inheritance.py` voids — `20260921-194413` scored with the
+bubble row 11 had sent at 19:29; it is the only inherited run among all 17 scanned).
 
 Row 6's `meta.json` is the proof that the old reset could not have caught this:
 
