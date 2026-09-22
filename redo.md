@@ -320,6 +320,43 @@ after 4 steps. The 16 Sep run only found the cinemas because it happened to brow
 > 'org.telegram.messenger'])` returns both, the focus falls back to the launcher, and no
 > `com.bt.bms` process remains.
 
+### 2026-09-22 re-run — rows 6/11/12/13 (relaunch with the pre-app reset live)
+
+Row 6 is the run that proves the §7.4 fix was load-bearing, and it fails for the reason the
+task actually deserves:
+
+| row | model | outcome | evidence |
+| --- | --- | --- | --- |
+| 6 | `bytedance-seed/seed-2.0-lite` | **FAIL** (not sent) | 30 steps, self-reported `success: true`, but the composer held the whole message unsent |
+| 11 | `moonshotai/kimi-k2.6` | **VOID — never ran** | aborted at the seed gate on row 6's leaked draft (§7.5) |
+| 12 | `gemma-4-E2B-it` | in flight | `LAUNCH.txt` model matches the row |
+| 13 | `Bonsai-2-27B` | pending | |
+
+Row 6's `meta.json` is the proof that the old reset could not have caught this:
+
+```json
+"pre_app_reset_stopped_package": null,
+"pre_app_reset_stopped_packages": ["com.bt.bms", "org.telegram.messenger"]
+```
+
+`pre_app_reset_stopped_package: null` means the **foreground** app was not BookMyShow — so
+the pre-§7.4 reset was a silent no-op and BookMyShow was free to resume the stale
+seat-selection page that produced the previous row 6's `Error code: 400`. With the task-apps
+stop in place the 400 **did not recur** (0 occurrences), and the run cold-started cleanly.
+
+Row 6 then produced exactly the false pass the delivery gate exists to catch:
+
+```
+self-reported success : False   <- after the gate (was true before it)
+delivery_check        : not_sent
+sent_bubbles / draft  : 0 / true
+draft_text: "INOX: Symphony Mall, Avengers Endgame: Encore, 07:15 PM, per-ticket price ₹240..."
+```
+
+It typed the entire message and never pressed send. This is a genuine task failure (the
+deliverable is the message), but note it is *not* the `INOX Bhubaneswar` failure of the
+original rows — the cinema is now correct, so this row is a clean, attributable miss.
+
 ---
 
 ## 4. `hard__drive-notes-telegram__010` — Notes + Telegram (hard, 5pt, day 1)
@@ -1027,3 +1064,49 @@ visible in the artifacts instead of having to be inferred from `ui_states/0001`.
 notification shade, mid-animation) and made the force-stop a silent no-op — three of the
 2026-09-21 re-runs recorded `None` while parked inside `com.oneplus.note`. It now falls
 back to `mFocusedApp`, then the resumed-activity line.
+
+### 7.5 The Telegram draft clear gave up two ways and burned a row (fixed 2026-09-22)
+
+The between-row leak cleanup is the **only** thing standing between a composed-but-unsent
+message and the next row reading it as already handled (§7.2). It failed on row 6's draft,
+and the cost was not a wrong verdict but a **wasted row**: row 11 aborted at the seed gate
+without ever running, then the identical draft cleared fine on the very next attempt.
+
+The 27-character residue is the tell. A ~127-char draft came back as
+`'INOX: Symphony Mall, Avenge'`, which identifies both defects at once:
+
+* **A single `input keyevent 67 x N` drops presses.** The flood is not a reliable delete, so
+  a long draft survives it in part. Deletes are now issued in chunks of 25 with a read
+  between chunks, so a partial clear is *seen* and deleted again instead of accepted.
+* **`box is None` broke the whole loop.** One dump that transiently lacked the composer
+  ended the cleanup — which then printed `still holds a draft after 3 attempts` having
+  really tried *once*. A missing composer is now a retry (6 rounds), never a reason to bail,
+  and the message no longer claims attempts that never happened.
+
+Regression cover: `tests/test_reset_phone_run_leaks.py` gains three tests, and the first two
+**fail against the previous code** — the second reproduces the misleading
+`after 3 attempts` line verbatim.
+
+Worth keeping the safety net in mind: the abort was loud and correct. The seed gate caught
+the surviving draft and refused to run the row, so no contaminated result was recorded. The
+defect cost a row, not a verdict.
+
+### 7.6 A local row could silently run against the wrong model (fixed 2026-09-22)
+
+The launcher's readiness probe asked only whether *something* answered on the shared local
+port, never **which** model was behind it. A `llama-server` left on 8088 by one row would
+therefore serve the next row the wrong weights — and the run would be published under the
+intended row's name.
+
+Concretely: row 13 needs `Bonsai-2-27B`, row 12 needs `gemma-4-E2B-it`. A leftover Bonsai on
+8088 would have had row 12 recorded as a `gemma` result while actually running Bonsai.
+
+`server_model()` now reads the alias the port advertises and `preset_alias()` maps each
+preset to the alias `serve_gguf.sh` publishes (an unknown preset yields empty and disables
+the guard rather than failing a row that may be fine). With `LOCAL_AUTOSERVE=1` the stale
+server is restarted; otherwise the row is skipped and named `local-wrong-model` in the
+failure list. `stop_existing_server()` targets the listener on that port only — verified to
+kill 8088 while leaving an unrelated listener on 8090 untouched.
+
+This is the same shape as the §3 `cinema` placeholder: a value that resolves perfectly and
+is simply wrong, with nothing downstream positioned to notice.
