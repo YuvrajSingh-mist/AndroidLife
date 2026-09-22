@@ -72,6 +72,24 @@ run's query / route leaks forward and satisfies the task for free where no query
 - Consider tightening the grade so it also asserts the query was typed — otherwise a
   pre-existing suggestion can keep satisfying it.
 
+> ### ↻ RE-RUN STARTED 2026-09-23 — all 13 rows
+>
+> Seed applied today (`2026-09-23`, profile `public_v2`) and the gate passed. **The "before
+> re-running" step was load-bearing, and it is NOT automated.** On opening the Maps search
+> box the **Recent** list still held **`Biju Patnaik International Airport`** — the exact
+> free hint that produced the vacuous PASSes — plus `restaurants` and `AI4Bharat`. Cleared
+> through the documented UI path (long-press → *Delete suggested search?* → Delete, never a
+> plain tap, which would open the place page and re-add the row), re-confirmed empty, then
+> Maps force-stopped. The airport is no longer pre-suggested.
+>
+> **Why this nearly bit again.** `scripts/seeding/SKILL.md` §8 documents the step and the
+> task→check table marks it `manual (§7)`, but it is **absent from
+> `public_v2.manual_ui_cleanup`** in `reset_phone.py`, so the reset never printed it and a
+> run could have started on a dirty Maps and re-scored the same vacuous PASSes. Adding it
+> there — or automating it the way the Telegram/Notes leak cleanups already are — is the
+> follow-up (deferred until this batch exits, so as not to edit `reset_phone.py` under a
+> running run).
+
 ---
 
 ## 2. `hard__google-meet-files__070` — Google Meet + Files (hard, 5pt, day 3)
