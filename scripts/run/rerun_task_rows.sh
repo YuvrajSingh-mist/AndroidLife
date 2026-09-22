@@ -86,6 +86,11 @@ LOCAL_AUTOSERVE="${LOCAL_AUTOSERVE:-0}"
 # can leave a draft or a sent bubble, and the runner's verify-only gate then aborts every
 # remaining row. Set LEAK_CLEANUP=0 to disable (e.g. for a task that cannot leak).
 LEAK_CLEANUP="${LEAK_CLEANUP:-1}"
+# After every row, refuse to start the next one until that row has a review.json (see the
+# manual-review gate at the end of the row loop). On by default: a redo row's verdict has
+# to be read from its own artifacts before it is published, and batching past that is how
+# a whole sweep ends up needing a redo of the redo.
+REVIEW_GATE="${REVIEW_GATE:-1}"
 SEED_GATE_PROFILE="${SEED_GATE_PROFILE:-public_v2}"
 SERVED_PID=""
 
@@ -373,6 +378,35 @@ EOF
   # name it as such (see flag_aborted_root). A row can vanish here in two ways that both
   # look like a scored run otherwise -- the seed gate refused it, or the harness died mid-run.
   flag_aborted_root "$ROOT" "$TASK_DIR_SLUG"
+
+  # Manual-review gate. `output.json` alone is NOT publishable for a redo row: a leaked
+  # recent list produces a vacuous PASS, and a well-formed note can answer the wrong
+  # question (2026-09-23 row 9 saved "Fastest Option: Two-wheeler" when the task asked for
+  # the fastest of driving/transit/walking). Both look like `success: true`.
+  #
+  # So after every row this STOPS the batch and asks for a review, rather than running on
+  # to the next model and finding out later that the whole sweep needs redoing. That is
+  # the one-row-at-a-time discipline, enforced by the runner instead of by memory:
+  #
+  #   uv run python scripts/tools/review_rerun_row.py --run-root <ROOT> --write
+  #   then re-invoke this script for the remaining rows.
+  #
+  # REVIEW_GATE=0 disables it (e.g. a task with no reviewer implemented yet).
+  if [[ "$REVIEW_GATE" == "1" ]]; then
+    REVIEW_JSON="$(ls "$ROOT"/day*/"$TASK_DIR_SLUG"/review.json 2>/dev/null | head -1)"
+    if [[ -z "$REVIEW_JSON" ]]; then
+      echo "   REVIEW REQUIRED before the next row - this batch is stopping here."
+      echo "     uv run python scripts/tools/review_rerun_row.py --run-root $ROOT --write"
+      echo "     then re-run: $0 $TASK_ID $TAG <remaining rows...>"
+      FAILED+=("$ROW(unreviewed)")
+      break
+    fi
+    REVIEW_VERDICT="$(grep -o '"verdict": *"[A-Z]*"' "$REVIEW_JSON" | head -1 | grep -o '[A-Z]*"$' | tr -d '"')"
+    echo "   review: $REVIEW_VERDICT ($REVIEW_JSON)"
+    if [[ "$REVIEW_VERDICT" != "PASS" ]]; then
+      echo "   NOTE: reviewing a FAIL is still the gate passing - the verdict is recorded."
+    fi
+  fi
 done
 
 echo

@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | **0** (1 batch, aborted) | — | **still owed a run** — the 2026-09-23 batch died at row 8 on a false "seed damaged" (see §1a); rows 1-7 are themselves suspect because each row dirtied Maps for the next |
+| 1 | `medium__google-maps__002` | 9 of 13 | ✅ 1-9 | **8 PASS / 1 FAIL** — rows 1-8 valid; **row 9 FAIL** (named *Two-wheeler* fastest, 60-step cap). Rows 10-13 pending, each gated by `review_rerun_row.py` before the next starts (§1b) |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -20,8 +20,9 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 | 6 | `easy__calendar__002` | 9 (8 roots + row 13 in place) | ✅ | **7 PASS / 1 FAIL** confirmed (row 12, malformed tool-call markup) |
 
 Notes from the pass:
-* **§1 and §2 have no artifacts.** They are still owed their first re-run; there is no
-  result to audit until then.
+* **§1 now has artifacts.** Rows 1-7 ran on 2026-09-23 and were audited from their
+  trajectories (all typed the query — see §1a); rows 8-13 were lost to a false seed-gate
+  abort and are being re-run. **§2 has no artifacts** and is still owed its first re-run.
 * **§4 rows 3/4/12 self-report `success: true`** — that is exactly the false pass the
   delivery gate exists to catch; recorded correctly as FAIL.
 * **§6 row 13 (Bonsai)** has no separate run root: its re-run was substituted **in place**
@@ -140,11 +141,86 @@ because run artifacts push the seed down the list. It never touches the seed its
 **State after the abort:** run-notes 7 → 0, Maps recents → empty, `Budget Deadline`
 `text_count 518` intact, `--leak-cleanup-only` **RESULT PASS**.
 
-**Rows 1-7 are still not trustworthy.** Row 1 started clean, but each row re-added the
-airport to the Maps recents and its own note, so rows 2-7 ran against the same dirty state
-that produced the original vacuous PASSes. The whole task needs re-running on the now
-automated clean state — **one row at a time, with the gate asserted between rows**, which is
-what should have happened first.
+**Rows 1-7 ARE valid — this was checked, not assumed.** The abort lost rows 8-13, so the
+question was whether the 7 rows that did run are trustworthy. They are: tracing every row's
+trajectory for a `type` of the airport query (the discriminator this section defines) shows
+**all 7 typed it themselves** — `Bhubaneswar Airport`, into the Maps search box — and each
+wrote its own distinct comparison note. None read an answer off a leftover suggestion or a
+previous row's note. So the manual recents clear did its job and **only rows 8-13 are
+missing**.
+
+## 1b. Manual review per row — the pipeline, and why it now gates the runner
+
+**Every re-run row gets reviewed before the next model starts.** Not the artifact-level
+"did it type the query" check alone — that one was fooled on 2026-09-23 by row 9, which
+typed the query *and* wrote a well-formed note and still got the question wrong.
+
+The review is `scripts/tools/review_rerun_row.py`: it reads a row from its OWN artifacts
+(`output.json`, `trajectory.json`) and writes `review.json` next to them. `rerun_task_rows.sh`
+now **stops the batch** after any row that has no `review.json` (`REVIEW_GATE=1`, default),
+so the one-row-at-a-time discipline is enforced by the runner instead of by memory:
+
+```
+bash scripts/run/rerun_task_rows.sh medium__google-maps__002 rerun-maps 10 11 12 13
+# ... row 10 runs, then:
+#   REVIEW REQUIRED before the next row - this batch is stopping here.
+uv run python scripts/tools/review_rerun_row.py --run-root assets/runs/public/<ts> --write
+bash scripts/run/rerun_task_rows.sh medium__google-maps__002 rerun-maps 11 12 13
+```
+
+What the reviewer catches that `success: true` does not:
+
+| signal | why it matters |
+| --- | --- |
+| no `type` of the airport query | the redo.md §1 vacuous PASS — a leftover suggestion satisfies the task for free |
+| note names an off-mode (`Two-wheeler`, `cab`, …) | a well-formed note answering a different question (**row 9**) |
+| note names none of driving/transit/walking | the saved answer is not about the asked modes |
+| 60-step cap | an honest FAIL, not a harness failure |
+| no note at all | the deliverable is missing |
+
+Care is needed in **both** directions, and both traps are pinned in
+`tests/test_review_rerun_row.py`:
+
+* The task says *save the ETA and distance for that fastest option*, so a note carrying
+  **one** mode (`Driving: 26 minutes, 13 km`) is correct — the comparison happens on the Maps
+  screen. The reviewer's first version demanded all three modes in the note and
+  false-FAILed row 3.
+* The note write is itself a `type` call containing the airport name, so it must be excluded
+  from query detection or a row that only wrote a note looks like it searched. Caught by the
+  test suite, not by inspection.
+
+### Per-row status
+
+| row | model | mode | where | run root | typed query | review |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | qwen3.8-27b | TEXT | API | `20260923-022050` | ✅ | ✅ PASS |
+| 2 | kimi-k2.6 | TEXT | API | `20260923-023201` | ✅ | ✅ PASS |
+| 3 | gemini-3.1-flash-lite | TEXT | API | `20260923-023915` | ✅ | ✅ PASS |
+| 4 | seed-2.0-lite | TEXT | API | `20260923-024645` | ✅ | ✅ PASS |
+| 5 | qwen3.8-27b | VISION | API | `20260923-025320` | ✅ | ✅ PASS |
+| 6 | seed-2.0-lite | VISION | API | `20260923-025950` | ✅ | ✅ PASS |
+| 7 | gpt-5.6-luna | TEXT | API | `20260923-030604` | ✅ | ✅ PASS |
+| 8 | gpt-5.6-luna | VISION | API | `20260923-160008` | ✅ | ✅ PASS |
+| 9 | Qwen3.5-4B | TEXT | **local** | `20260923-162648` | ✅ | ❌ **FAIL** |
+| 10 | gemma-4-E2B-it | TEXT | **local** | — | — | ⏳ next |
+| 11 | kimi-k2.6 | VISION | API | — | — | ⏳ pending |
+| 12 | gemma-4-E2B-it | VISION | **local** | — | — | ⏳ pending |
+| 13 | Bonsai-2-27B | TEXT | **local** | — | — | ⏳ pending |
+
+**Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
+`Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks
+for the fastest of **driving / transit / walking**; the Maps UI also offers *Two-wheeler* and
+*Public transport*, and the model compared a mode that was never asked about — it read
+`Driving at 35 minutes` and then reported a 33-minute two-wheeler as the answer. It also
+burned all 60 steps. The artifact-level check would have called this a pass.
+
+### Device-state note (verified, not assumed)
+
+Rows 1-7 ran against a manually-cleared Maps recents list, and rows 2-7 **re-added** the
+airport to that list. That is real, but it cost nothing: every row typed the query anyway.
+An earlier version of this file called rows 2-7 suspect on the strength of the re-added
+recents; **trajectory evidence beats inference about device state**, and the evidence says
+they are fine.
 
 ---
 
