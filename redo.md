@@ -1704,24 +1704,32 @@ maps task (-6, dated 09-19) while HF holds the re-run the report actually serves
 
 | row | root | published | final | re-runs folded in |
 |---|---|---|---|---|
-| 1 | 2026-08-28-002424 | −69 % | **−72 %** | calendar, slides, 010, maps, bookmyshow |
-| 2 | 2026-08-29-153657 | −90 % | **−84 %** | calendar, slides, 010, maps, bookmyshow |
-| 3 | 20260826-105200 | −21 % | **−18 %** | calendar, slides, 010, maps, bookmyshow |
+| 1 | 2026-08-28-002424 | −69 % | **−70 %** | calendar, slides, 010, maps, bookmyshow |
+| 2 | 2026-08-29-153657 | −90 % | **−80 %** | calendar, slides, 010, maps, bookmyshow |
+| 3 | 20260826-105200 | −21 % | **−16 %** | calendar, slides, 010, maps, bookmyshow |
 | 4 | 2026-08-30-143554 | −29 % | **−27 %** | slides, 010, maps, bookmyshow |
-| 5 | 20260909-043419 | −79 % | **−80 %** | 010, maps, bookmyshow |
+| 5 | 20260909-043419 | −79 % | **−78 %** | 010, maps, bookmyshow |
 | 6 | 20260905-051950 | −51 % | **−50 %** | calendar, slides, 010, maps, bookmyshow |
 | 7 | 20260906-063336 | −85 % | **−84 %** | calendar, slides, 010, maps, bookmyshow |
 | 8 | 20260910-041531 | −88 % | **−87 %** | 010, maps, bookmyshow |
 | 9 | 20260914-061846 | −96 % | **−98 %** | 010, maps *(bookmyshow is an orphan — excluded)* |
-| 10 | 20260916-011341 | −81 % | **−82 %** | calendar, 010, maps, bookmyshow |
+| 10 | 20260916-011341 | −81 % | **−80 %** | calendar, 010, maps, bookmyshow |
 | 11 | 2026-08-30-021852 | −94 % | **−97 %** | calendar, slides, 010, maps, bookmyshow |
-| 12 | 20260917-160018 | −93 % | **−93 %** | calendar, 010, maps, bookmyshow |
+| 12 | 20260917-160018 | −93 % | **−87 %** | calendar, 010, maps, bookmyshow |
 | 13 | 20260920-044846 | −92 % | **−100 %** | calendar, 010, maps *(clamped — see below)* |
 
 **Row 13 is clamped.** Its per-task drains are large (-4..-15), so three medians add ≈15 to a run
 that already ended at 0 % — the fill alone implies **−107 %**, which no phone can drain. The
 report publishes **−100 %** with the observed **−92 %** shown next to it, and the note states the
 unclamped figure so the arithmetic stays visible.
+
+**Correction (2026-09-24): six rows were wrong for a few hours.** Folding BookMyShow in used
+`abs(now) − orig + med` where `now` had already been made positive, so the signed `orig`/`med`
+flipped the wrong way and overstated the magnitude. Rows 1, 2, 3, 5, 10 and 12 were affected
+(72→**70**, 84→**80**, 18→**16**, 80→**78**, 82→**80**, 93→**87**). Caught by recomputing each
+aggregate a second way — summing the per-task `battery_level_delta_pct` actually stored in the
+artifacts on the Hub — which needs no memory of the originals and agrees with the table above.
+The artifacts themselves were always right; only the reports and `batteryDrain` were inflated.
 
 **Rows 9 and 13 keep BookMyShow out of the aggregate.** Both reports already record that re-run as
 an explicit **orphan** ("2 orphans … counted INTERRUPTED, not FAIL, and excluded from the 27 %"),
