@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.42857142857142855,
   "gui_only_success_rate": 0.6415094339622641,
-  "average_steps": 25.616666666666667,
+  "average_steps": 25.6,
   "average_user_queries": 0.7142857142857143,
   "user_interaction_quality_factmatch": 0.16666666666666666,
   "kb_interaction_quality": 0.25,
@@ -29,10 +29,11 @@
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 26532.70539320907,
+  "wall_clock_seconds": 26447.98227087607,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 25942.70539320907,
+  "agent_running_seconds": 25857.98227087607,
   "cooldown_seconds_per_gap": 10.0,
   "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
-  "rerun_2026_09_22_bookmyshow": "re-run 2026-09-22: hard__bookmyshow__005 re-taken against the corrected 'INOX: Symphony Mall' seed (the old 'INOX Bhubaneswar' placeholder named a cinema BookMyShow does not list). Verdict FAIL -> PASS: the re-run reached the correct cinema, picked Avengers Endgame: Encore 07:15 PM Sat 26 Sep, and actually DELIVERED the Telegram plan (device evidence: 1 sent bubble in the 'Yuvraj Airtel' chat). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_22_bookmyshow": "re-run 2026-09-22: hard__bookmyshow__005 re-taken against the corrected 'INOX: Symphony Mall' seed (the old 'INOX Bhubaneswar' placeholder named a cinema BookMyShow does not list). Verdict FAIL -> PASS: the re-run reached the correct cinema, picked Avengers Endgame: Encore 07:15 PM Sat 26 Sep, and actually DELIVERED the Telegram plan (device evidence: 1 sent bubble in the 'Yuvraj Airtel' chat). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state to confirm the PASS was non-vacuous. It typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the real Driving/Transit/Walking values with ETA and distance. Self-reported and manual verdict both unchanged (PASS); only this task's telemetry moved. Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
 }
