@@ -894,6 +894,36 @@ checklist in `docs/pre-run-checklist.md` covers it.
 > Opt out with `--no-leak-cleanup`. Both run in the same pre-first-task window as
 > `verify_calendar_view_mode`, so they always hand back a stopped app on the launcher.
 
+> **A second, nastier version of the Telegram leak: the run *after* the send (2026-09-22).**
+> The cleanup above only deletes bubbles under **today's** separator, and it did not exist
+> before 2026-09-22. So the 2026-09-21 `hard__drive-notes-telegram__010` re-runs had **no
+> coverage at all**, and the chat carried each row's delivered message into the next row.
+> The consequence is a genuinely false pass, not just a dirty device:
+>
+> | row | run | started | what the chat showed |
+> |---|---|---|---|
+> | 11 | `20260921-192331` (kimi-k2.6) | 19:25 | typed the chase from step 8, **sent it at 19:29** |
+> | 13 | `20260921-194413` (Bonsai-2-27B) | 19:46 | at **step 6** already showed the same `Sent at 19:29` bubble |
+>
+> Row 13's `success=true` over 9 steps was **inherited state**: row 11 had already sent the
+> exact message the task asks for, so there was nothing left to do and Bonsai reported
+> success having sent nothing. The PASS was an artifact of the previous row, which is why it
+> was already recorded FAIL — but the *reason* matters, because the same shape will recur
+> wherever a task's deliverable is a message.
+>
+> **The rule this generalises to:** a run must not start while a message it is required to
+> send is already sitting in the target chat. Any run that did start in that state is void
+> and has to be re-taken, however it scored — a leftover message turns "did the agent do the
+> work" into "was the work already done for it".
+>
+> Re-measured across both batches on 2026-09-22 with
+> `scripts/tools/audit_telegram_inheritance.py` (a sent bubble whose stamp predates the
+> run's own start is an inheritance, not an action): the `010` batch has exactly one
+> inheritance (**row 13**), and the `bookmyshow` batch has **none** — row 5 is the only row
+> that sent, at 12:06 against an 11:58 start, and the between-row cleanup deleted it before
+> row 7 began. So the fix holds going forward, and the contamination is confined to the
+> batch that ran before the cleanup existed.
+
 > **Promoted out of this table 2026-09-21 — App UI mode drift.** A previous run leaving the
 > **Calendar app in Day view** used to be undetectable here: `--verify-only` reads the
 > *provider*, and the view mode lives in app state. It bit **rows 1 and 2** of the
