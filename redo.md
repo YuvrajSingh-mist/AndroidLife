@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Published: rows 1-3** (`700711e`+`b2e4776` row 1, `241a762` row 2, `9f14da4` row 3). Rows 4-13 pending — see §7 for the two conventions to handle |
+| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Published: rows 1-8** (`700711e`+`b2e4776` 1, `241a762` 2, `9f14da4` 3, `8d16589` 4, `5b1d763` 5, `d3bb345` 6, `35b05e6` 7, `08d3475` 8). Rows 9-13 pending — the hand pass, see §7c and §7d |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -1478,9 +1478,25 @@ open(p+'.md','w').write(ar.render_markdown(json.load(open(p+'.json'))))"
 Regenerating row 1's surfaced a second drift the hand-edit had preserved: KBIQ read
 `0/4 KB tasks with a correct KB answer` where the JSON has `0/3 queries`.
 
-Known-current drift (regenerate each when touched): rows 2 (48.3 vs 50.0), 3 (61.7 vs 63.3),
-6 (65.0 vs 63.3), 11 (14.3 vs 17.1), 12 (33.3 vs 29.6), 13 (42.9 vs 40.0). Row 5 (BMS):
-`hard` 35.3 (md) vs 41.2 (json).
+Known-current drift (regenerate each when touched): rows **11** (14.3 vs 17.1), **12** (33.3 vs
+29.6), **13** (42.9 vs 40.0) — all three belong to the rows 9-13 hand pass. Rows 2, 3, 5 and 6
+were fixed while publishing the Maps batch (row 2 48.3 -> 50.0, row 3 61.7 -> 63.3, row 5 BMS
+`hard` 35.3 -> 41.2, row 6 65.0 -> 63.3); rows 1, 4, 7, 8, 9, 10 now agree exactly.
+
+**7d. A third divergence axis: the report's manual step average vs the metrics JSON's
+step average.** These are *different metrics on different bases* and the verifier already
+treats the gap as a **warning**, not a mismatch (`steps(official): metrics JSON X vs
+published Y`). Current gaps: row 3 8.37 vs 8.09, row 4 12.97 vs 13.67, row 7 40.58 vs 41.52,
+row 13 3.53 vs 12.64. Rows 1, 2, 5, 8, 9, 10, 11, 12 agree.
+
+*Do not force them equal.* Row 7 briefly did, on the theory that the 0.93 gap was exactly the
+2026-09-21 `calendar_002` re-run's -56/60; it was reverted because rows 3/4/13 show the same
+kind of gap with no such tidy explanation, i.e. the two numbers are genuinely computed
+differently. Apply the task delta to **each** on its own basis and leave the residual alone.
+
+**7e. Row 13's steps gap (3.53 vs 12.64) is the largest and is unexplained.** Its report is an
+interrupted-then-resumed run; ~9.1 steps over 60 runs is ~546 steps, more than the whole run.
+That row needs the hand pass before either number is trusted.
 
 **7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
 Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day headers) for the same
