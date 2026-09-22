@@ -27,9 +27,15 @@ Notes from the pass:
   first re-run.
 * **§4 rows 3/4/12 self-report `success: true`** — that is exactly the false pass the
   delivery gate exists to catch; recorded correctly as FAIL.
-* **§6 row 13 (Bonsai)** has no separate run root: its re-run was substituted **in place**
-  inside `20260920-044846/day1/easy-calendar-002/` (artifacts dated 2026-09-21), which is
-  why a `LAUNCH.txt` scan finds only 8 roots for 9 rows.
+* **§6 row 13 (Bonsai)** has no separate *working* root: its calendar re-run was captured
+  **in place** inside `20260920-044846/day1/easy-calendar-002/` (artifacts dated 2026-09-21),
+  which is why a `LAUNCH.txt` scan finds only 8 roots for 9 rows. Publication is unaffected —
+  see §8h.
+* **Every re-run, in every section, is published the same way: in place.** The canonical roots
+  keep their identity and only the re-run task's directory inside them is replaced. HF carries
+  the 15 canonical roots and no re-run roots at all; 56 of the 65 redo-task directories are
+  byte-identical to a local re-run root, and the 9 that are not are exactly the rows that were
+  deliberately left alone (details in §8h).
 * `reports/` is byte-identical on HuggingFace and `verify_leaderboard.py` reports
   **0 mismatches across 13 rows / 300 fields**.
 
@@ -1096,9 +1102,11 @@ confirmed; all models need a re-run.**
 > roots were re-derived from their own artifacts by a purpose-built reviewer
 > (`review_calendar`), reproducing the hand verdicts — **8 PASS / 1 FAIL across the 9 rows**,
 > row 12 the FAIL (malformed tool-call markup). Two caveats on the count: row 12 was attempted
-> **twice** (both malformed, both FAIL); and row 13's re-run was merged **in place** into its
-> original root `20260920-044846` (only that root's `easy-calendar-002` trajectory is the
-> 2026-09-21 re-run). The two discarded first-pass runs for rows 1 and 2 sit in
+> **twice** (both malformed, both FAIL); and row 13's calendar re-run is the only one
+> **captured** directly inside its canonical root `20260920-044846` instead of in a separate
+> `2026092x` working root. That is a capture detail, not a publication one — every re-run,
+> here and in §1/§3/§4/§5, is published the same way, by replacing the task directory inside
+> the canonical root (see §8h). The two discarded first-pass runs for rows 1 and 2 sit in
 > `assets/runs/_rerun_backups/thrownaway/` and are deliberately not reviewed — they were
 > superseded, not published.
 >
@@ -1783,7 +1791,39 @@ either task is gated and writes a `review.json` with true provenance. There is *
 for `hard__bookmyshow__005` or `hard__drive-notes-telegram__010` — a matching one was written
 and then reverted with the backfill, since it existed only to manufacture the files.
 
-### 8g. Still open
+### 8h. How re-runs are published: in place, for every task
+
+There is **one** publication rule and it applies to all five redo tasks: the re-run replaces the
+task directory **inside the canonical run root**, and the root keeps its identity. No re-run is
+ever published as a root of its own.
+
+| | |
+|---|---|
+| run roots on HF | **15** — the canonical rows, plus `2026-08-26-184934` and `20260901-002701`. **Zero** re-run roots |
+| redo-task dirs in those roots | **65** (13 rows × 5 tasks) |
+| byte-identical to a local re-run root | **56** |
+| not identical | **9** — exactly the rows deliberately left alone |
+
+The 9 are `easy__calendar__002` rows 4, 5, 8, 9 and `easy__google-slides__001` rows 5, 8, 9, 10,
+12 — precisely the rows those two sections record as unaffected and correctly not re-run. Row 13
+on all five tasks is a self-match against the canonical root (which is local for that row), so
+its "match" is uninformative; its calendar re-run is evidenced instead by
+`assets/runs/_rerun_backups/20260920-044846/easy-calendar-002/`, which holds the displaced
+original (`started_at_utc` 2026-09-20T04:00:09).
+
+**Why the backup exists for that one directory and no other.** Merging in place overwrites the
+local original. For rows 1–12 that costs nothing, because the canonical roots are not on this
+machine — only the published copy is touched. Row 13's canonical root *is* local
+(`20260920-044846`), so its in-place merge would have destroyed the pre-fix run, and the original
+was moved to `_rerun_backups/` first. Same for the three superseded first-pass runs in
+`_rerun_backups/thrownaway/`.
+
+So "merged in place" is not a property of `easy__calendar__002` — it is the mechanism for every
+re-run. The only thing unique to row 13 is that its calendar re-run was *captured* in the
+canonical root rather than in a separate `2026092x` working root, which is what forced the
+backup. Earlier wording in §6 implied the former; §6 and the header table now say the latter.
+
+### 8i. Still open
 
 * `hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
   calendar event.
