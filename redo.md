@@ -1628,3 +1628,122 @@ Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day header
 headers by simple counting — row 2 already needs a manual read (its day tables parse as
 19/16/20 rows and a hallucination row is not machine-findable). Each of those rows needs a hand
 pass, not arithmetic.
+
+---
+
+## 8. Re-run battery telemetry — median fill, and the BookMyShow publication (2026-09-24)
+
+### 8a. The problem: every re-run reads as costing no battery
+
+All 55 re-run task-runs were taken with the phone on charge, so every re-run artifact carries
+`battery_level_delta_pct = 0`. Substituted into the published roots as-is, a task a model
+re-ran looks *free* while every task it sits next to carries a real drain, which quietly breaks
+the one comparison the row is supposed to support.
+
+Thermals are **not** affected and were deliberately left alone: a re-run night on charge still
+heated the phone, so its CPU/GPU/NPU peaks, `thermal_status`, skin/battery temps and 1 Hz
+samples are genuine measurements of that run. Only the battery *delta* is meaningless. Verified
+after the fact — the only key written anywhere was `battery_level_delta_pct`.
+
+### 8b. The fill rule
+
+`battery_level_delta_pct` for a re-run task = **the median of the same-category tasks in the run
+root the task is published under, excluding the task itself and every other re-run in that
+root.** Not the model's other rows, and not the re-run root (which holds one task, so a median
+there is just that task's own 0).
+
+Median rather than mean because the per-task distribution is spiky (an easy task is 0..-2, a
+long hard one -6..-15) and a mean would let one outlier stand in for an "easy" reading.
+
+**Which dirs count as re-runs** — decided from the artifacts, not from `LAUNCH.txt` tags:
+
+```
+a task dir is a re-run  ⇔  battery_level_delta_pct == 0  AND  start date >= 2026-09-20
+```
+
+Two earlier rules were tried and rejected on evidence:
+
+* matching `LAUNCH.txt` `redo_task=` against leaderboard rows — misses substitutions made *in
+  place*, so row 13's calendar went undetected;
+* "start date differs from the modal date" — flags every task after midnight UTC; row 1 lit up
+  with 22 of its 60 tasks.
+
+The window rule is checked against the two cases that break the naive versions: row 3's run
+legitimately spans 2026-08-26 → 08-28 (those 08-28 tasks carry real readings of -1, -1, 0 and
+are *not* re-runs), and row 9's 2026-09-16 re-runs ran **off** charge (-2, -1) so their readings
+are genuine and stay. Row 13's calendar is caught by the window despite being substituted in
+place: dated 2026-09-20 with Δ% = 0 among neighbours of -1..-15.
+
+### 8c. The aggregate, recomputed without recovering any originals
+
+Each report publishes the run's summed drain. Replacing k task readings by medians moves the sum
+by (medians − originals), and the originals are not needed individually:
+
+```
+published = A + Σ(originals of the re-runs)      A = the root's untouched tasks
+final     = A + Σ(medians)  =  published − Σoriginals + Σmedians
+```
+
+`Σoriginals` falls out as `published − A` and was used as the sanity check (all rows gave a
+small negative proportional to the number of re-runs). Facts always come from the **published
+root on HF**, never the local copy — row 13's local `20260920-044846` still holds the *original*
+maps task (-6, dated 09-19) while HF holds the re-run the report actually serves (0, 09-23).
+
+| row | root | published | final | re-runs folded in |
+|---|---|---|---|---|
+| 1 | 2026-08-28-002424 | −69 % | **−72 %** | calendar, slides, 010, maps, bookmyshow |
+| 2 | 2026-08-29-153657 | −90 % | **−84 %** | calendar, slides, 010, maps, bookmyshow |
+| 3 | 20260826-105200 | −21 % | **−18 %** | calendar, slides, 010, maps, bookmyshow |
+| 4 | 2026-08-30-143554 | −29 % | **−27 %** | slides, 010, maps, bookmyshow |
+| 5 | 20260909-043419 | −79 % | **−80 %** | 010, maps, bookmyshow |
+| 6 | 20260905-051950 | −51 % | **−50 %** | calendar, slides, 010, maps, bookmyshow |
+| 7 | 20260906-063336 | −85 % | **−84 %** | calendar, slides, 010, maps, bookmyshow |
+| 8 | 20260910-041531 | −88 % | **−87 %** | 010, maps, bookmyshow |
+| 9 | 20260914-061846 | −96 % | **−98 %** | 010, maps *(bookmyshow is an orphan — excluded)* |
+| 10 | 20260916-011341 | −81 % | **−82 %** | calendar, 010, maps, bookmyshow |
+| 11 | 2026-08-30-021852 | −94 % | **−97 %** | calendar, slides, 010, maps, bookmyshow |
+| 12 | 20260917-160018 | −93 % | **−93 %** | calendar, 010, maps, bookmyshow |
+| 13 | 20260920-044846 | −92 % | **−100 %** | calendar, 010, maps *(clamped — see below)* |
+
+**Row 13 is clamped.** Its per-task drains are large (-4..-15), so three medians add ≈15 to a run
+that already ended at 0 % — the fill alone implies **−107 %**, which no phone can drain. The
+report publishes **−100 %** with the observed **−92 %** shown next to it, and the note states the
+unclamped figure so the arithmetic stays visible.
+
+**Rows 9 and 13 keep BookMyShow out of the aggregate.** Both reports already record that re-run as
+an explicit **orphan** ("2 orphans … counted INTERRUPTED, not FAIL, and excluded from the 27 %"),
+so its artifact is published alongside the root but its drain is not part of the sum.
+
+### 8d. Where the numbers live — all three surfaces agree
+
+1. **Artifacts** — 42 `run_metrics.json` rewritten (local re-run dirs *and* the published root's
+   local copy where it held the placeholder) and re-uploaded; plus 13 BookMyShow dirs.
+2. **Reports** — each report's battery row now carries the final figure, followed by a
+   `> **Battery Δ note:**` naming the re-run tasks, the median rule, and the aggregate. The note
+   is placed after the enclosing table, not inside it.
+3. **Leaderboard** — `batteryDrain` updated for all 13 rows (`verify_leaderboard.py`: 13 rows /
+   300 fields / 0 mismatches).
+
+The published-root local copy guard matters: row 13's local `20260920-044846/day1/medium-google-maps-002`
+still holds the **original** run (-6, 09-19) and was left untouched — only a dir whose current Δ%
+is 0 (the placeholder) was overwritten.
+
+### 8e. BookMyShow publication (all 13 rows)
+
+The 2026-09-22 BookMyShow re-runs had verdicts written into every report but their artifacts were
+never uploaded, so HF still served the *originals*. Replaced in place for all 13:
+**1102 file ops, ~435 MB** (row 13's dir created fresh; rows 9/12's partial dirs completed).
+
+`review.json`: the 15 backfills for `easy__google-slides__001` and `easy__calendar__002` — and the
+Maps ones — are present on the Hub (verified by listing the published dirs, which is what the
+earlier check should have done).
+
+### 8f. Still open
+
+* `hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
+  calendar event.
+* §5/§6 verdicts predate `review_rerun_row.py`; their `review.json` files are now backfilled, but
+  the verdicts themselves were never re-derived through the gate.
+* `hard__drive-notes-telegram__010` and `hard__bookmyshow__005` have **no** `review.json` in any
+  re-run dir — those two batches were reviewed by hand before the gate existed and never had one
+  written. Unlike slides/calendar they also have no backfill script yet.
