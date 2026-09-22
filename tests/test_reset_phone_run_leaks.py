@@ -343,3 +343,81 @@ def test_leak_cleanup_only_rejects_the_contradictory_flag(rp, monkeypatch, capsy
     assert _run_leak_only(rp, monkeypatch, "--no-leak-cleanup") == 2
     assert "contradicts" in capsys.readouterr().err
     assert calls["cleared"] == []
+
+
+# ---- draft clearing (the row-11 abort, 2026-09-22) --------------------------
+
+# A real leaked draft: the chase message hard__bookmyshow__005 composes.
+LEAKED_DRAFT = "INOX: Symphony Mall, Avengers Endgame: Encore, 07:15 PM"
+# What one large DEL flood actually left behind on the device (27 of ~127 chars).
+PARTIAL_AFTER_FLOOD = "INOX: Symphony Mall, Avenge"
+
+
+def _chat_xml(*bodies: str) -> str:
+    return "<hierarchy>" + "".join(bodies) + "</hierarchy>"
+
+
+def _composer(text: str) -> str:
+    """The composer: an EditText below the y-guard, so it is not the search box."""
+    return _node(text, cls="android.widget.EditText", bounds="[171,2212][777,2332]")
+
+
+def _wire_draft_clear(monkeypatch, rp, dumps: list[str], calls: list[str]) -> None:
+    monkeypatch.setattr(rp, "_tg_today_label", lambda serial: "September 22")
+    monkeypatch.setattr(rp, "_pull_ui_dump", lambda serial, remote="/x": dumps.pop(0))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: calls.append(cmd) or "")
+    monkeypatch.setattr(rp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(
+        rp, "_tg_open_chat",
+        lambda serial, timeout_s=45.0: rp._ui_nodes(_chat_xml(_composer(LEAKED_DRAFT))))
+
+
+def test_draft_clear_chunks_deletes_so_a_dropped_press_is_recovered(rp, monkeypatch):
+    """One big `input keyevent 67 x N` silently truncates, so the delete must be chunked.
+
+    Measured 2026-09-22: a ~127-char draft survived a single flood as 27 chars, and the
+    cleanup then reported a leak it had half-cleared -- row 11 aborted at the seed gate.
+    Here the first chunk leaves a partial draft and the second finishes it.
+    """
+    calls: list[str] = []
+    dumps = [_chat_xml(_composer(LEAKED_DRAFT)),      # box found, deleting starts
+             _chat_xml(_composer(PARTIAL_AFTER_FLOOD)),  # chunk 1: a press was dropped
+             _chat_xml(_composer("Message"))]         # chunk 2: empty (the hint shows)
+    _wire_draft_clear(monkeypatch, rp, dumps, calls)
+
+    assert rp.clear_telegram_run_leaks("S", apply=True) is True
+    dels = [c for c in calls if c.startswith("input keyevent 67")]
+    assert len(dels) >= 2, "a partial read must be deleted again, not accepted"
+    # Every DEL is a bounded chunk rather than one unbounded flood.
+    assert all(c.split()[2:] == ["67"] * 25 for c in dels)
+
+
+def test_transiently_missing_composer_is_retried_not_fatal(rp, monkeypatch):
+    """A dump without the composer must retry, not abandon the whole clear.
+
+    The old loop `break`-ed on `box is None`, so one transient read ended the cleanup and
+    printed "still holds a draft after 3 attempts" having really tried once.
+    """
+    calls: list[str] = []
+    dumps = ["<hierarchy/>",                          # composer absent: must retry
+             _chat_xml(_composer(LEAKED_DRAFT)),      # retry finds it and clears
+             _chat_xml(_composer("Message"))]
+    _wire_draft_clear(monkeypatch, rp, dumps, calls)
+
+    assert rp.clear_telegram_run_leaks("S", apply=True) is True
+
+
+def test_composer_that_never_appears_still_fails_and_never_guesses(rp, monkeypatch):
+    """An unreadable composer is a surviving leak: fail, and never tap blind."""
+    calls: list[str] = []
+    monkeypatch.setattr(rp, "_tg_today_label", lambda serial: "September 22")
+    monkeypatch.setattr(rp, "_pull_ui_dump", lambda serial, remote="/x": "<hierarchy/>")
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: calls.append(cmd) or "")
+    monkeypatch.setattr(rp.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(
+        rp, "_tg_open_chat",
+        lambda serial, timeout_s=45.0: rp._ui_nodes(_chat_xml(_composer(LEAKED_DRAFT))))
+
+    assert rp.clear_telegram_run_leaks("S", apply=True) is False
+    assert not [c for c in calls if c.startswith("input tap")]
+    assert not [c for c in calls if c.startswith("input keyevent 67")]

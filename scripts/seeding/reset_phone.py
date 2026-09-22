@@ -2236,27 +2236,40 @@ def clear_telegram_run_leaks(serial: str, apply: bool) -> bool:
     if draft is not None:
         # Ctrl+A does NOT work in Telegram's composer (measured 2026-09-22: the selection
         # is ignored and the draft survives). Move to the end and delete character-wise
-        # instead, with margin so a longer draft is still fully cleared -- then re-read the
-        # composer and retry, because a tap that misses focus silently clears nothing.
-        for _ in range(3):
+        # instead -- then re-read the composer and retry, because a tap that misses focus
+        # silently clears nothing.
+        #
+        # Two further failure modes, both measured 2026-09-22 and both of which burned a
+        # row (row 11 aborted at the seed gate) before they were handled:
+        #   * One large `input keyevent 67 x N` drops presses. On a ~127-char draft it
+        #     left 'INOX: Symphony Mall, Avenge' (27 chars) behind -- so the delete has to
+        #     be chunked with a read between chunks, not fired once.
+        #   * A dump that transiently lacks the composer used to `break` the loop, which
+        #     then printed "still holds a draft after 3 attempts" having really tried once.
+        #     A missing box is a reason to retry, never to give up.
+        ok_draft = False
+        for _ in range(6):
             fresh = _ui_nodes(_pull_ui_dump(serial))
             box = next((n for n in fresh if "EditText" in n["cls"] and n["cy"] > 1500), None)
             if box is None:
-                break
+                time.sleep(2)  # transient: the composer comes back; retry, don't bail
+                continue
             _ui_tap(serial, box)
             time.sleep(2)
             sh(serial, "input keyevent 123")  # KEYCODE_MOVE_END
             time.sleep(1)
-            sh(serial, "input keyevent " + " ".join(["67"] * (len(draft) + 10)))  # DEL
-            time.sleep(3)
-            draft = _tg_draft(_ui_nodes(_pull_ui_dump(serial)))
+            # Chunked, with a read after each chunk: a single flood silently truncates.
+            for _ in range(len(draft) // 25 + 3):
+                sh(serial, "input keyevent " + " ".join(["67"] * 25))  # DEL x25
+                time.sleep(1)
+                draft = _tg_draft(_ui_nodes(_pull_ui_dump(serial)))
+                if draft is None:
+                    break
             if draft is None:
+                ok_draft = True
                 break
-        if draft is not None:
-            print(f"  [!!]  telegram: composer still holds a draft after 3 attempts ({draft!r})")
-            ok_draft = False
-        else:
-            ok_draft = True
+        if not ok_draft:
+            print(f"  [!!]  telegram: composer still holds a draft after 6 attempts ({draft!r})")
     else:
         ok_draft = True
 
