@@ -119,6 +119,48 @@ start_server() {
 # Never orphan a llama-server if the batch is interrupted.
 trap 'stop_server' EXIT INT TERM
 
+# The alias the running server advertises, e.g. "Bonsai-2-27B".
+server_model() {
+  curl -sf -m 5 "$LOCAL_UPSTREAM/v1/models" 2>/dev/null | python3 -c \
+    "import json,sys
+try:
+    d=json.load(sys.stdin)
+except Exception:
+    sys.exit(0)
+rows=d.get('data') or d.get('models') or []
+print((rows[0].get('id') or rows[0].get('name') or '') if rows else '')" 2>/dev/null
+}
+
+# The alias a preset advertises, mirroring the ALIAS defaults in serve_gguf.sh. Keep this
+# in step with that file's `case "$SPEC"` block; an empty result means "unknown preset" and
+# disables the guard rather than failing a row that might be fine.
+preset_alias() {
+  case "$1" in
+    qwen3.5-4b|qwen|qwen35|qwen3.5) echo "Qwen3.5-4B" ;;
+    gemma4-e2b|gemma|gemma4|e2b)    echo "gemma-4-E2B-it" ;;
+    bonsai2-27b|bonsai2|bonsai|bonsai-2-27b|ternary-bonsai-2|bonsai-2) echo "Bonsai-2-27B" ;;
+    *) echo "" ;;
+  esac
+}
+
+# Stop whatever is listening on the shared local port, when we did not start it ourselves
+# (SERVED_PID is empty). Targets the listening PID specifically, so an unrelated
+# llama-server on another port is left alone.
+stop_existing_server() {
+  local port="${LOCAL_UPSTREAM##*:}" pids
+  pids="$(lsof -ti "tcp:$port" -sTCP:LISTEN 2>/dev/null)"
+  [[ -z "$pids" ]] && return 0
+  # shellcheck disable=SC2086 # word-splitting the PID list is intended
+  kill $pids 2>/dev/null
+  for _ in $(seq 1 20); do
+    lsof -ti "tcp:$port" -sTCP:LISTEN >/dev/null 2>&1 || return 0
+    sleep 1
+  done
+  # shellcheck disable=SC2086
+  kill -9 $pids 2>/dev/null
+  sleep 1
+}
+
 wanted() {
   local r="$1"
   [[ ${#WANT_ROWS[@]} -eq 0 ]] && return 0
@@ -178,7 +220,26 @@ for SPEC in "${ROW_TABLE[@]}"; do
     echo "-- row $ROW ($SLUG $MODE): skipped (ROWS_FILTER=$ROWS_FILTER)"; continue
   fi
   if [[ -z "$UP" ]]; then
-    if ! curl -sf -m 5 "$LOCAL_UPSTREAM/v1/models" >/dev/null 2>&1; then
+    # A server left on the shared port would serve this row the WRONG weights: the
+    # readiness test below only asks whether something answers on the port, never which
+    # model it is. Same shape as the `cinema` placeholder bug -- resolves cleanly, wrong
+    # value -- and just as silent. Measured 2026-09-22: row 13 leaves Bonsai-2-27B on
+    # 8088, while row 12 needs gemma-4-E2B-it, so row 12 would have been recorded against
+    # Bonsai and published as a gemma result.
+    running_model="$(server_model)"
+    expect="$(preset_alias "$PRESET")"
+    if [[ -n "$running_model" && -n "$expect" && "$running_model" != "$expect" ]]; then
+      if [[ "$LOCAL_AUTOSERVE" == "1" ]]; then
+        echo "-- row $ROW ($SLUG $MODE): 8088 serves '$running_model', this row needs '$expect' - restarting it"
+        stop_existing_server
+        running_model=""
+      else
+        echo "-- row $ROW ($SLUG $MODE): SKIPPED - $LOCAL_UPSTREAM serves '$running_model' but this row needs '$expect'"
+        echo "   stop it and start scripts/llm/serve_gguf.sh $PRESET, or set LOCAL_AUTOSERVE=1"
+        FAILED+=("$ROW(local-wrong-model)"); continue
+      fi
+    fi
+    if [[ -z "$running_model" ]] && ! curl -sf -m 5 "$LOCAL_UPSTREAM/v1/models" >/dev/null 2>&1; then
       if [[ "$LOCAL_AUTOSERVE" == "1" && -n "$PRESET" ]]; then
         SRVLOG="$LOGDIR/llama-server-row$ROW.log"
         if ! start_server "$PRESET" "$SRVLOG"; then
