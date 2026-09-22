@@ -119,6 +119,14 @@ PROFILES: dict[str, dict] = {
         "meet_packages": ["com.google.android.apps.meetings", "com.google.android.apps.tachyon"],
         # Titles that must be visible in Meet -> "Scheduled" on run day.
         "meet_expected_titles": ["Weekly Sync"],
+        # Guests that must be attached to the linked agenda seed (the 10:00 copy).
+        # Added by hand through the Calendar UI on 2026-09-24: the non-rooted `content`
+        # CLI cannot create guest rows on a synced event either (same class of limit as
+        # the conference link), and Meet reads the CLOUD state, so only an in-app edit
+        # uploads. `--apply` date-shifts this seed IN PLACE, so the list survives
+        # resets -- it is a one-time seed. This gate exists because it would otherwise
+        # vanish silently.
+        "meet_expected_attendees": ["rajceo2031@gmail.com", "ranirajesh786@gmail.com"],
         # Recurring (rrule != NULL) run-artifact SERIES to delete on every reset, matched
         # by title on ANY date. A date-exact sweep cannot catch these: the parent row's
         # dtstart is in the past, yet the recurrence lands on EVERY day of the run window
@@ -391,6 +399,9 @@ PROFILES: dict[str, dict] = {
 }
 
 CAL_URI = "content://com.android.calendar/events"
+# Guests of an event. Read-only here: the guest list is a GUI-only seed (see
+# verify_meet_agenda), so the gate asserts it is still present rather than writing it.
+ATTENDEES_URI = "content://com.android.calendar/attendees"
 CONTACTS_DATA_URI = "content://com.android.contacts/data"
 CONTACTS_URI = "content://com.android.contacts/contacts"
 BLOCKED_URI = "content://com.android.blockednumber/blocked"
@@ -1543,13 +1554,77 @@ def _agenda_conference_links(serial: str, prof: dict) -> list[tuple[str, bool]]:
     return out
 
 
+def _agenda_attendees(serial: str, prof: dict) -> list[str]:
+    """Guest emails on each live agenda occurrence, from the `attendees` table.
+
+    Added 2026-09-24. The guest list is a GUI-only seed for the same reason the
+    conference link is: the non-rooted `content` CLI cannot write guest rows on a
+    synced event, and Meet reads the cloud state, so only an in-app edit uploads.
+    `--apply` date-shifts the seed in place (never delete/recreate), so the guests
+    persist across resets -- but nothing asserted they were still there, and a
+    silently dropped guest list is exactly the kind of defect that only shows up as
+    an unexplained model failure on run day. Hence this read-only assertion.
+
+    Scoped to the `meet`-marked seeds' time-of-day, mirroring
+    `_agenda_conference_links`, so the same-titled non-agenda clash seeds (Monday
+    07:00 / Saturday 10:00) are not counted.
+    """
+    import datetime
+    from zoneinfo import ZoneInfo
+
+    agenda = [e for e in prof.get("seed_calendar_events", []) if e.get("meet")]
+    titles = {e["title"] for e in agenda}
+    starts = {e["start"] for e in agenda}
+    if not titles:
+        return []
+
+    tz = ZoneInfo(sh(serial, "getprop persist.sys.timezone").strip() or "Asia/Kolkata")
+    events = sh(serial, f"content query --uri {CAL_URI} "
+                        f"--projection _id:title:dtstart:deleted")
+    want: dict[str, str] = {}
+    for block in re.split(r"^Row: \d+ ", events, flags=re.M)[1:]:
+        i = re.search(r"_id=(\d+)", block)
+        t = re.search(r"title=([^,]*),", block)
+        d = re.search(r"deleted=([01])", block)
+        s = re.search(r"dtstart=(\d+)", block)
+        if not (i and t and d and s) or d.group(1) == "1":
+            continue
+        if t.group(1).strip() not in titles:
+            continue
+        slot = datetime.datetime.fromtimestamp(int(s.group(1)) / 1000, tz=tz).strftime("%H:%M")
+        if slot in starts:
+            want[i.group(1)] = t.group(1).strip()
+    if not want:
+        return []
+
+    rows = sh(serial, f"content query --uri {ATTENDEES_URI} "
+                      f"--projection event_id:attendeeEmail:attendeeStatus")
+    emails: list[str] = []
+    for block in re.split(r"^Row: \d+ ", rows, flags=re.M)[1:]:
+        e = re.search(r"event_id=(\d+)", block)
+        m = re.search(r"attendeeEmail=([^,]*)", block)
+        if not (e and m) or e.group(1) not in want:
+            continue
+        addr = m.group(1).strip()
+        # Dedupe: when a guest is itself an account signed in on this device, the ONE
+        # cloud event materialises as an extra local row on that guest's calendar
+        # (same `_sync_id`, different `calendar_id`), so its attendee rows appear once
+        # per mirror. Measured 2026-09-24: 1 event -> 3 rows, 3 guests -> 9 rows.
+        if addr and addr not in emails:
+            emails.append(addr)
+    return emails
+
+
 def verify_meet_agenda(serial: str, prof: dict, timeout_s: float = 40.0) -> bool:
     """Pre-run gate: will Meet actually list the agenda meeting on run day?
 
     Three layers, because they catch different breakages:
       1. calendar-side window check (deterministic) — catches a stale anchor;
       2. conference-link check (deterministic) — catches a dropped Meet link;
-      3. live Meet "Scheduled" probe — catches the classic account mismatch (Meet
+      3. guest check (deterministic) — catches a dropped guest list. Both 2 and 3 are
+         GUI-only seeds (the non-rooted `content` CLI can write neither on a synced
+         event, and Meet reads the cloud state), so both are asserted rather than set;
+      4. live Meet "Scheduled" probe — catches the classic account mismatch (Meet
          signed into a different Google account than the one cal_id=16 lives on, so
          the meeting never appears even though the seed is perfect).
     """
@@ -1572,6 +1647,20 @@ def verify_meet_agenda(serial: str, prof: dict, timeout_s: float = 40.0) -> bool
               "Edit -> Add video conferencing -> Google Meet -> Save")
         return False
     print(f"  PASS meet: conference link present ({len(linked)}/{len(links)} agenda seed(s))")
+
+    # Guests: a GUI-only seed, so assert it is still attached rather than trusting that
+    # it survived the reset. Dates were the easy failure mode; this is the quiet one.
+    expected = [a.strip().lower() for a in (prof.get("meet_expected_attendees") or [])]
+    if expected:
+        found = [a.lower() for a in _agenda_attendees(serial, prof)]
+        missing = [a for a in expected if a not in found]
+        if missing:
+            print(f"  FAIL meet: agenda seed is missing guest(s) {missing} "
+                  f"(found {found or 'none'})")
+            print("        -> re-add by hand: Calendar -> open the 10:00 'Weekly Sync' -> "
+                  "Edit -> Add people -> add the guest(s) -> Save -> Don't send")
+            return False
+        print(f"  PASS meet: agenda seed guests present ({len(found)} attendee row(s))")
 
     installed = sh(serial, "pm list packages")
     pkg = next((p for p in prof.get("meet_packages", []) if f"package:{p}" in installed), None)

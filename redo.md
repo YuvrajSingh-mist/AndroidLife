@@ -429,6 +429,35 @@ The failure was **never the account** — one report (`public-20260826-105200.md
 > Until that is done, `reset_phone.py` reports this check as a **WARN** (not a FAIL) so the
 > launch gate stays usable; `--meet-strict` re-arms it once the seed is fixed.
 
+> ### ⚠️ 2026-09-24 — attendees added by hand; the *task prompt* is the remaining defect
+>
+> The guest list was added through the Calendar **app UI** (the adb path cannot write guest
+> rows on a synced event — same limit as the conference link): `rajceo2031@gmail.com` and
+> `ranirajesh786@gmail.com` on the linked 10:00 `Weekly Sync`. Measured after saving:
+> `dirty=0`, same `_sync_id`, Meet link intact, Calendar sheet reads **"4 guests /
+> 1 yes, 3 awaiting"**. `--apply` date-shifts this seed **in place**, so the guests survive
+> resets — **a one-time seed**. `verify_meet_agenda()` now asserts them
+> (`meet_expected_attendees`), so a dropped guest list FAILs the pre-run gate.
+>
+> Side effect worth knowing: the UI save **re-uploaded the whole event**, so the corrected
+> date went to Google with it (`dirty=0`). That is why Meet's `Scheduled` list currently
+> shows `Weekly Sync` at the right date.
+>
+> **But the hand-review of row 2 proved the requirement itself is unsatisfiable.** Across
+> every Meet surface — home card, green room header, participant line, `Joining info`
+> sheet, and `More options` — Meet **never displays a scheduled attendee count**.
+> `No one is in the call yet` is *live call participants*, which is 0 before the call by
+> definition. Only **Calendar** shows the count.
+>
+> The prompt nevertheless instructs the model to *"open Google Meet … and note its title,
+> time, and number of attendees"*. There is no `answer_check` for this task and the graded
+> reply is only title + file name, so the clause is ungraded — but it is a **trap**: row 2
+> (`kimi-k2.6`) burned all 60 steps hunting it (56 identical swipes in the green room) and
+> FAILed, while row 1 (`qwen3.8-27b`) gave up after ~10 steps and passed. Diligence is
+> penalised; that is not a model signal.
+>
+> **This clause must be dropped or re-pointed at Calendar before rows 1–13 are re-run.**
+
 **Expect the numbers to move** once it is fixed — but note the post-fix runs will not be
 comparable to the 11 on record, and the earlier "this is now solvable" claim above was
 wrong: every recorded run failed, and none of them failed for a reason a reset could fix.

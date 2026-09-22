@@ -136,6 +136,25 @@ Canonical operator runbook (ADB reset + manual seeds table):
 - ☐ **Scheduled meetings** present today (`easy__google-meet__004`) and a conferenced **Weekly Sync
   10:00 within the next 2 days** with attendees `hard__google-meet-files__070` — Meet only lists
   conferenced meetings, signed in as `yuvraj.mist@gmail.com`, and only ~48h out.
+  - **Guests are a GUI-only seed, added once (2026-09-24).** Both the conference link *and*
+    the guest list can only be written through the Calendar **app UI** — the non-rooted
+    `content` CLI can write neither on a synced row, and Meet reads the cloud state. Edit
+    the 10:00 `Weekly Sync` → **Add people** → add `rajceo2031@gmail.com` and
+    `ranirajesh786@gmail.com` → Save → **Don't send**. `--apply` date-shifts this seed
+    **in place** (never delete/recreate), so the guests survive resets; you add them **once**.
+  - **Both are gate-enforced.** `verify_meet_agenda` asserts the conference link *and*
+    the guest list (`meet_expected_attendees`), so a dropped guest list FAILs the pre-run
+    gate instead of surfacing later as an unexplained model failure.
+  - **Note:** inviting accounts that are themselves signed in on this device makes the one
+    cloud event materialise as an extra local row on each guest's calendar (same
+    `_sync_id`, different `calendar_id`). Calendar and Meet still show a single entry per
+    date — it is not a duplicate seed.
+  - **Caveat, measured 2026-09-24:** Meet itself **never displays a scheduled attendee
+    count** — not on the home card, not in the green room (`No one is in the call yet` is
+    *live call participants*, always 0 pre-call), not under `More options`. The guest count
+    is visible only in the **Calendar** event sheet (`4 guests` / `1 yes, 3 awaiting`).
+    The task prompt asks the model to "note … the number of attendees" **in Meet**, so that
+    clause is unsatisfiable as written. See `redo.md` §2.
 
 ## §5 — Chrome
 
