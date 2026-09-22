@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.0,
   "gui_only_success_rate": 0.42857142857142855,
-  "average_steps": 3.533333333333333,
+  "average_steps": 3.6,
   "average_user_queries": 0.0,
   "user_interaction_quality_factmatch": 0.0,
   "kb_interaction_quality": null,
@@ -29,10 +29,11 @@
   "hallucination_control_honest": 2,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 27035.644310167998,
+  "wall_clock_seconds": 26923.47331,
   "cooldown_seconds_total": 140.0,
-  "agent_running_seconds": 26895.644310167998,
+  "agent_running_seconds": 26783.47331,
   "cooldown_seconds_per_gap": 10.0,
   "rerun_2026_09_21": "re-run 2026-09-21: easy__calendar_002 replaced with a valid-seed re-run; the aggregates here are recomputed for that single task (exact arithmetic, not a corpus regeneration). See the run report for the verdict.",
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a swept Maps state. Verdict PASS (unchanged) -- typed the query, compared the three modes and wrote the note; 15 steps. Aggregates recomputed for this single task by exact arithmetic -- not a corpus regeneration."
 }

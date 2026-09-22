@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Published: rows 1-8** (`700711e`+`b2e4776` 1, `241a762` 2, `9f14da4` 3, `8d16589` 4, `5b1d763` 5, `d3bb345` 6, `35b05e6` 7, `08d3475` 8). Rows 9-13 pending — the hand pass, see §7c and §7d |
+| 1 | `medium__google-maps__002` | 13 of 13 | ✅ | **10 PASS / 3 FAIL** across the batch. **Published: all 13 rows** — rows 1-8 by the arithmetic pass, **rows 9-13 by the hand pass** (§1b below). `verify_leaderboard.py`: 0 mismatches / 300 fields |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -20,9 +20,11 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 | 6 | `easy__calendar__002` | 9 (8 roots + row 13 in place) | ✅ | **7 PASS / 1 FAIL** confirmed (row 12, malformed tool-call markup) |
 
 Notes from the pass:
-* **§1 now has artifacts.** Rows 1-7 ran on 2026-09-23 and were audited from their
-  trajectories (all typed the query — see §1a); rows 8-13 were lost to a false seed-gate
-  abort and are being re-run. **§2 has no artifacts** and is still owed its first re-run.
+* **§1 now has artifacts, and all 13 rows are published.** Rows 1-7 ran on 2026-09-23 and
+  were audited from their trajectories (all typed the query — see §1a). Rows 8-13 were lost to a
+  false seed-gate abort and were re-run afterwards; those five are the hand pass in §1b, because
+  their reports do not use the 60-task table shape. **§2 has no artifacts** and is still owed its
+  first re-run.
 * **§4 rows 3/4/12 self-report `success: true`** — that is exactly the false pass the
   delivery gate exists to catch; recorded correctly as FAIL.
 * **§6 row 13 (Bonsai)** has no separate run root: its re-run was substituted **in place**
@@ -223,8 +225,47 @@ Care is needed in **both** directions, and both traps are pinned in
 allowed to start (§1b). Leak cleanup reported **PASS** after every row: no Maps
 run-notes left, recents cleared, Telegram composer empty, `Budget Deadline` intact.
 
-**Still to do:** write these 13 verdicts back into the 13 model reports, recompute
-metrics, and re-upload byte-identical to `androidlife-public`.
+**Done.** All 13 verdicts are written back into the 13 model reports, the metrics JSONs are
+recomputed and their `.md` rendered from them, `leaderboard.js` matches all 300 fields, and
+`reports/` + `runs/` are uploaded byte-identical to `androidlife-public`.
+
+### 1b. The hand pass — rows 9-13 (2026-09-23)
+
+Rows 9-13 are partial/interrupted runs (`Success Rate (N runs)`, orphaned tasks, different
+denominators), so the delta cannot be applied by counting (see §7c). Each was re-derived from
+its own re-run artifacts — `output.json` + `run_metrics.json` for the **before** half (pulled
+from `androidlife-public`, since those run roots are not on disk), the local re-run root for the
+**after** half, and `review.json` for the verdict:
+
+| row | model | report | re-run root | before (steps / s) | after | verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| 9 | Qwen3.5-4B (TEXT) | `20260914-061846` | `20260923-162648` | 14 / 386.3 | 60 / 1971.9 | ❌ FAIL → **❌ FAIL** (was recorded PASS) |
+| 10 | gemma-4-E2B-it (TEXT) | `20260916-011341` | `20260923-171300` | 14 / 342.5 | 60 / 1552.4 | ❌ FAIL → ❌ FAIL |
+| 11 | kimi-k2.6 (VISION) | `2026-08-30-021852` | `20260923-174839` | 60 / 569.2 | 16 / 269.9 | ❌ FAIL → **✅ PASS** |
+| 12 | gemma-4-E2B-it (VISION) | `20260917-160018` | `20260923-180228` | 26 / 553.0 | 60 / 2052.8 | 🚨 HALLU → ❌ FAIL |
+| 13 | Bonsai-2-27B (TEXT) | `20260920-044846` | `20260923-184553` | 14 / 1807.8 | 15 / 1695.7 | ✅ PASS → ✅ PASS |
+
+Three things surfaced that the arithmetic pass could not have seen:
+
+* **Row 9 was recorded as PASS on an off-mode answer.** Its report had already been merged in
+  place from a **16 Sep** re-run, upgraded FAIL → PASS on a note that named **Two-wheeler** as the
+  fastest option. Two-wheeler is not one of driving / transit / walking, so the note answers a
+  different question; the 2026-09-23 re-run reproduced exactly that (plus a 60-step cap). The row
+  is now ❌ FAIL — the 23 Sep reviewer was right and the 16 Sep upgrade was wrong.
+* **Row 11's report carried three different totals for the same 35 tasks** (Day-1 header 3 PASS,
+  Totals table 4 PASS, prose 4/35) while its verdict rows already said 4 — left behind when the
+  2026-09-21 slides re-run flipped a Day-1 FAIL to PASS without moving the aggregates. Same for
+  its official-vs-manual note, whose worked example used two *orphaned* tasks (`meet-004`,
+  `google-maps-004`) that are not graded at all. Both are fixed against the verdict rows.
+* **Row 10 had the same class of drift from the calendar re-run** (metrics table 6 PASS / Totals
+  5 PASS / failure analysis 43 FAIL) — reconciled to 6 PASS / 42 FAIL.
+* **Row 12's rows 1-8 siblings were not the pattern for the elapsed figure.** The report's
+  wall-clock and the metrics JSON's are computed on slightly different bases (row 9 by 458 s,
+  row 11 by 18 s, row 12 by 97 s). The maps delta was applied to **each on its own basis**, as
+  §7d requires for steps, rather than re-basing either onto the other.
+
+**A note on `steps(official)`.** §7d's warning list is unchanged apart from rows 9-12 dropping
+off it (their two figures now agree); row 13's 3.53 vs 12.71 gap is §7e and still unexplained.
 
 **Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
 `Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks

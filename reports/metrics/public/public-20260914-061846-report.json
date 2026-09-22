@@ -1,15 +1,15 @@
 {
   "run_count": 27,
   "model_filter": null,
-  "success_rate": 0.4444444444444444,
+  "success_rate": 0.407407,
   "success_rate_by_bucket": {
     "easy": 0.7272727272727273,
     "hard": 0.25,
-    "medium": 0.25
+    "medium": 0.125
   },
   "interaction_success_rate": 0.0,
-  "gui_only_success_rate": 0.48,
-  "average_steps": 18.48148148148148,
+  "gui_only_success_rate": 0.44,
+  "average_steps": 20.185185,
   "average_user_queries": 1.0,
   "user_interaction_quality_factmatch": 0.5,
   "kb_interaction_quality": null,
@@ -19,19 +19,20 @@
   "kb_task_count": 3,
   "interaction_run_count": 2,
   "gui_only_run_count": 25,
-  "true_success_count": 12,
-  "true_failure_count": 15,
+  "true_success_count": 11,
+  "true_failure_count": 16,
   "hallucination_count": 0,
   "hallucination_rate": 0.0,
-  "true_success_rate": 0.4444444444444444,
-  "true_failure_rate": 0.5555555555555556,
+  "true_success_rate": 0.407407,
+  "true_failure_rate": 0.592593,
   "hallucination_control_count": 2,
   "hallucination_control_honest": 2,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 30708.74212925004,
+  "wall_clock_seconds": 32294.282429,
   "cooldown_seconds_total": 260.0,
-  "agent_running_seconds": 30448.74212925004,
+  "agent_running_seconds": 32034.282429,
   "cooldown_seconds_per_gap": 10.0,
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a swept Maps state (recents + accumulated Maps run-notes cleared). Verdict FAIL -- the saved note names Two-wheeler, a mode the task never asks about, and the run hit the 60-step cap. Supersedes the 16 Sep re-run, which had been scored PASS on the same off-mode note. Aggregates recomputed for this single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
 }
