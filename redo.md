@@ -256,18 +256,31 @@ version-controlled.
 > diverges from the 530 text where the preview needs it (see the per-task overrides in
 > `export_public_dataset.py`), so this is the same pattern.
 >
-> **Residual risk (accepted).** The note is *still* app-private, so nothing but a human in
-> the UI can recreate it, and with Drive gone it is now the **only** graded state. It is
-> re-typed before the batch. `Last reviewed: 2026-07-10.` is a `reset_phone.py` verify
-> needle, so drift now fails the gate instead of silently costing a task.
+> **Residual risk — now automated (2026-09-22).** The note is *still* app-private, and with
+> Drive gone it is the **only** graded state — but it is no longer true that "nothing but a
+> human in the UI can recreate it". Its text is version-controlled at
+> `assets/seeds/public/Budget Deadline (OnePlus Notes).txt`, and `reset_phone.py --apply`
+> runs `restore_budget_note()`, which re-types it from that seed whenever
+> `com.oneplus.note:id/text_count` drifts (canonical **518**), then verifies the result.
+> `--verify-only` gates on it, so drift now **fails the gate** instead of silently costing a
+> task — and unlike the old manual step it also repairs the *in-place edit* case, where a run
+> takes the note's own "log today's check date" branch and overwrites the very seed it is
+> graded against. Two measured constraints are load-bearing: the retype uses **Ctrl+A**, never
+> a DEL loop (the note's **title is its first line**, so a character-wise delete renames it and
+> the next run cannot find it), and the note **must not** be swept by date — hence
+> `reset_phone.py` still deletes run-created notes **by title only**.
 >
 > **Before re-running**
 > - ✅ Note re-typed via the UI 2026-09-21 (title `Budget Deadline`; preview `FY26 family
 >   budget - finalisation`; list holds 12 notes).
 > - ✅ Seed gate PASSES 2026-09-21, including
 >   `PASS seed file content ... Budget Deadline.md contains 'Last reviewed: 2026-07-10.'`
-> - Confirm the note is in the Notes list **before** the batch — nothing on disk verifies the
->   app-private copy.
+> - **Now gate-enforced (2026-09-22):** the app-private copy is verified via
+>   `com.oneplus.note:id/text_count` (**518** non-whitespace chars) against the tracked seed
+>   `assets/seeds/public/Budget Deadline (OnePlus Notes).txt`, and `restore_budget_note()`
+>   re-types it on drift. The old manual "confirm the note is in the list — nothing on disk
+>   verifies the app-private copy" step is therefore obsolete: there *is* now something on
+>   disk, and drift fails the gate rather than costing a task.
 > - The app force-stops back to the **list** on relaunch (verified), so the seed does not trip
 >   the "starts inside the last-edited note" trap.
 
@@ -290,7 +303,7 @@ missing seed or a phantom filename:
 | 9 | Qwen3.5-4B (TEXT) | 1 ask → **60-step cap** | ❌ FAIL |
 | 10 | gemma-4-E2B-it (TEXT) | overdue detected, **could not reach a Telegram send surface**, 0 asks | ❌ FAIL |
 | 11 | kimi-k2.6 (VISION) | 1 ask → **60-step cap** | ❌ FAIL |
-| 12 | gemma-4-E2B-it (VISION) | **reversed the overdue test**, edited the note instead, 0 asks | ❌ FAIL |
+| 12 | gemma-4-E2B-it (VISION) | judged the note **overdue**, then took the note's own "log today's check date" branch instead of messaging (accepted by the grader), **0 asks** | ❌ FAIL |
 | 13 | Bonsai-2-27B (TEXT) | **2400 s timeout, 0 steps** | ❌ FAIL |
 
 **No published verdict changed.** The two PASSes that the first substitution recorded
