@@ -131,6 +131,18 @@ if [[ "$LOCAL_AUTOSERVE" == "1" ]] && ! command -v llama-server >/dev/null 2>&1 
   echo "WARN: no llama-server found; local rows 9/10/12/13 will be skipped" >&2
 fi
 echo "== phoenix collector: $PHOENIX_URL reachable =="
+# The runner guards a *missing* placeholder (SystemExit) but not a *wrong* one, so a
+# drifted machine-local config/user.yaml resolves silently and invalidates the whole
+# batch. That is not hypothetical: `cinema: INOX Bhubaneswar` (not a real BookMyShow
+# listing) survived the "fixed in all five places" commit precisely because
+# config/user.yaml is gitignored, so it overrides the corrected shipped default in
+# user_config.py. Render the values the agent will actually be given, and refuse to
+# burn a batch on a known-bad one.
+echo "== resolved task vars (what the agent will be told) =="
+if ! uv run python scripts/tools/verify_task_vars.py --dataset "$DATASET" --task-id "$TASK_ID"; then
+  echo "FAIL: resolved task vars look wrong - fix config/user.yaml (or pass --config) first" >&2
+  exit 1
+fi
 echo "== seed gate (must pass TODAY; anchors are date-relative) =="
 # Deliberately NO --no-account-check / --no-meet-check: the runner runs the full
 # gate internally and aborts the task on failure, so a weaker preflight here just
@@ -205,9 +217,11 @@ EOF
   # Free the port before the next local row wants it.
   [[ -n "$SERVED_PID" ]] && stop_server
 
-  # The note under test is app-private and a run can rewrite it; re-assert the
-  # graded line so drift is caught before it contaminates the next row.
-  if ! adb -s "$SERIAL" shell "cat '/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md'" 2>/dev/null \
+  # Per-task post-row drift check. Only the app-private OnePlus-Notes seed needs one:
+  # a run can rewrite the note it is graded against, and the rewrite would contaminate
+  # the next row. Other tasks have nothing app-private that a run can silently mutate.
+  if [[ "$TASK_ID" == "hard__drive-notes-telegram__010" ]] \
+     && ! adb -s "$SERIAL" shell "cat '/sdcard/Obsidian/Papers vault oneplus /Budget Deadline.md'" 2>/dev/null \
        | grep -q "Last reviewed: 2026-07-10."; then
     echo "   WARN: Obsidian 'Budget Deadline.md' lost its 'Last reviewed:' line - restore it"
     FAILED+=("$ROW(seed-drift)")

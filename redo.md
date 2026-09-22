@@ -148,16 +148,78 @@ after 4 steps. The 16 Sep run only found the cinemas because it happened to brow
 `INOX` prefix instead.
 
 **Fixed 2026-09-18:** `cinema` is now **`INOX: Symphony Mall`** (an exact live listing) in
-all five places it was defined — `src/androidlife/user_config.py`, `config/user_config.example`,
-and the `public_vars.local.env` / `tasks_vars.local.env` copies under `benchmarks/` and
-`hf_release/`.
+`src/androidlife/user_config.py`, `config/user_config.example`, and the
+`public_vars.local.env` / `tasks_vars.local.env` copies under `benchmarks/`.
+
+> ### ⚠️ 2026-09-22 — the fix was NOT in effect; re-verified live before re-running
+>
+> **The fix missed the one file the runner actually reads.** `config/user.yaml` is
+> **gitignored** (machine-local persona config), so a "fixed in all five places" commit could
+> not touch it, and because `load_user_config()` merges it *over* the shipped defaults it
+> **overrode** the corrected value:
+>
+> | Layer | `cinema` | Actually used? |
+> |---|---|---|
+> | `src/androidlife/user_config.py` (shipped default) | `INOX: Symphony Mall` ✅ | no — overridden |
+> | `config/user_config.example` | `INOX: Symphony Mall` ✅ | no |
+> | `benchmarks/.../public_vars.local.env`, `tasks_vars.local.env` | `INOX: Symphony Mall` ✅ | no — not passed by the launcher |
+> | **`config/user.yaml`** (gitignored, the runner's `--config` default) | ~~`INOX Bhubaneswar`~~ ❌ | **YES** |
+>
+> Proof, through the runner's own resolution path: `var_map(load_user_config())` returned
+> `cinema = 'INOX Bhubaneswar'`. A 13-row re-run staged against that value would have
+> re-run the *defect*, not the fix. Corrected in `config/user.yaml` 2026-09-22, and
+> `scripts/tools/verify_task_vars.py` now renders the resolved task vars and **fails the
+> launch** on a known-bad value — the runner only guards a *missing* placeholder, never a
+> wrong one, which is why this slipped through twice.
+>
+> **Live re-verification on the run day (2026-09-22, device `CPH2423`).** BookMyShow
+> Bhubaneswar still lists `INOX: Symphony Mall` (first result), `INOX: DN Regalia Mall`,
+> `INOX: BMC Bhawani Mall`. So the pinned value is current.
+>
+> **Correction to this section's own claim: the search is not strictly literal.** Typing
+> `INOX` — or even a mangled `INOX Bhuneswar` — surfaces the real INOX venues, so the task is
+> reachable by browsing the prefix. What returns `Sorry! No result found` is the **exact
+> phrase** `INOX Bhubaneswar`, confirmed in row 12's own `ui_states/0003`. The defect is
+> therefore *ambiguity*, not unreachability — but pinning a real listing is still the right
+> fix for a `DETERMINISTIC` task.
+>
+> **The recorded history is more mixed than "every run failed this task"** (all live pulls
+> from the Hub, `day2/hard-bookmyshow-005/output.json`):
+>
+> | row | run | outcome | reply / reason |
+> |---|---|---|---|
+> | 3 | `20260826-105200` | `success=true`, 7 steps | `INOX: Symphony Mall, Toxic…, 07:00 AM` — **correct cinema**, failed only at the harness Send step |
+> | 6 | `20260905-051950` | `success=true`, 18 steps | replied `INOX Bhubaneswar` — the **placeholder**, not a listing |
+> | 10 | `20260916-011341` | `success=true`, 18 steps | replied `INOX Bhubaneswar` — graded 🚨 **HALLUCINATION** ("wrong cinema label") |
+> | 8 | `20260910-041531` | `success=false` | "`INOX Bhubaneswar` was not found in BookMyShow" |
+> | 12 | `20260917-160018` | `success=false`, 4 steps | "Sorry! No result found" at `ui_states/0003` |
+> | 1,1,2,5,11,+ | … | `success=false` | step-capped at 60 (or malformed tool-call ×3) |
+>
+> Two consequences for interpretation:
+> 1. **Rows 6 and 10 "succeeded" by echoing the placeholder back** — `INOX Bhubaneswar` is
+>    not a cinema BookMyShow lists. Row 10 was correctly graded a hallucination; **row 6 was
+>    graded `❌ FAIL — ASK USER — 0 asks (gate FAIL)`, but this task is `DETERMINISTIC`
+>    (`is_ask_user: false`)** — an ASK USER gate applied to a non-ASK-USER task. The verdict
+>    (FAIL) may still be right, but that stated reason is not.
+> 2. So the redo premise "**failed in every recorded public run**" is wrong: at least one run
+>    (row 3) produced the correct cinema+showtime and failed on delivery, and two others
+>    replied with the non-existent placeholder. Row 3's is the only genuine solve, and it was
+>    a **harness** failure.
+>
+> **Still open, for a verdict pass after the re-run:** there is no `answer_check` for this
+> task, so a reply naming a non-existent cinema (`INOX Bhubaneswar`) is not machine-checkable
+> — every graded judgement here came from a human reading the reply.
 
 **Before re-running:**
-- Re-verify the listing name is still current **on the run day** — BookMyShow's cinema list
-  is live data and can change or drop a mall.
+- ✅ **Re-verified live 2026-09-22** — `INOX: Symphony Mall` is still the first Bhubaneswar
+  result. ✅ **`config/user.yaml` corrected 2026-09-22** (it was silently overriding the fix —
+  see above), and `scripts/tools/verify_task_vars.py` now gates the launch.
 - Keep `ticket price=₹240`.
 - This task touches live data (showtimes for "this weekend"), so re-verify on the run day
   like the docs already require for the other live-data tasks.
+- ⚠️ **Verdict pass needed afterwards:** rows 6 and 10 recorded "success" while replying the
+  non-existent `INOX Bhubaneswar`, and row 6's stated FAIL reason (ASK USER gate) does not
+  apply to a `DETERMINISTIC` task. See the table above.
 
 ---
 
@@ -643,7 +705,7 @@ level**, not by any individual model — so the recorded cells are not a model s
 | 1 | `medium__google-maps__002` | vacuous PASS from Maps' leaked recent/route state; the 17 Sep run also left live navigation running over 26/27 tasks | clear Maps history + stop nav |
 | 2 | `hard__google-meet-files__070` | unsolvable seed (no conference link + 48h window) — **fixed** | re-run `reset_phone.py --apply` **on the run day** (anchors are date-relative; no new time needed), then `--verify-only` gates it |
 | 3 | `hard__bookmyshow__005` | `[cinema]` placeholder named a non-existent cinema — **fixed (`INOX: Symphony Mall`)** | re-verify listing on the run day |
-| 4 | `hard__drive-notes-telegram__010` | app-private `Budget Deadline` note kept vanishing, and the oracle named a Drive file (`family_numbers.xlsx`) that never existed — **fixed 2026-09-21: Drive dropped from the task, oracle fixed, note text version-controlled + re-typed via UI** | re-confirm the note is present on the run day |
+| 4 | `hard__drive-notes-telegram__010` | app-private `Budget Deadline` note kept vanishing, and the oracle named a Drive file (`family_numbers.xlsx`) that never existed — **fixed 2026-09-21: Drive dropped from the task, oracle fixed, note text version-controlled + re-typed via UI** | ✅ **DONE 2026-09-21** — all 13 rows re-run against the corrected seed (**0 PASS**, no verdict flipped); every run verified to start on the launcher; reports/leaderboard/metrics substituted, artifacts + reports byte-identical on HF |
 | 5 | `easy__google-slides__001` | Two decks both named **"Q3 Review"** (stray **1**-slide vs canonical `Q3_Review.pptx` **8**-slide, rebuilt 2026-09-07) → runs read the wrong file; the grader had no ground truth, so `1`/`3`/`8` all recorded PASS — **deck now version-controlled + restored on reset, grader now checks the reply** | ✅ **DONE 2026-09-21** — all 7 affected rows re-run against the real deck (6 PASS / 1 genuine FAIL); reports, leaderboard + metrics JSONs substituted; artifacts byte-identical on HF |
 | 6 | `easy__calendar__002` | conflict pair seeded on the **run day** instead of tomorrow in 5 of 13 rows → 3 vacuous PASSes (incl. the golden report) + 1 unjust FAIL — **cause confirmed, fix is same-day `--apply`** | ✅ **DONE 2026-09-21** — all 9 affected rows re-run; `--apply` gate is now enforced at launch and the recurring-artifact sweep is automatic |
 
