@@ -2554,12 +2554,37 @@ def verify_maps_run_notes_clear(serial: str) -> bool:
     return not left
 
 
-def clear_maps_recents(serial: str, apply: bool) -> bool:
-    """Clear the Maps search box's *Recent* list (the redo.md section 1 free hint).
+def _maps_recent_rows(ns: list[dict]) -> list[dict]:
+    """Tappable entries in the Maps search box's *Recent* list.
 
-    Long-press each recent row -> "Delete suggested search?" -> Delete. Never a plain tap:
-    that opens the place page AND re-adds the row to history (measured 2026-09-16).
+    The Recent section starts under the "Recent" header; rows there are tappable
+    place/query entries, not the Home/Work/Favourites chips above it.
     """
+    hdr = next((n for n in ns if n["text"] == "Recent"), None)
+    if hdr is None:
+        return []
+    chip_labels = ("Home", "Work", "Favourites", "Set location")
+    out = []
+    for n in ns:
+        if (n["bounds"][1] > hdr["bounds"][1] and n["text"].strip()
+                and n["text"] not in chip_labels
+                and not n["text"].startswith("Search here")
+                and n["text"] != "Recent"):
+            out.append(n)
+    return out
+
+
+# Evidence that Maps actually reached its search screen. Needed because "no Recent
+# header" is ALSO what a Maps that never launched looks like -- an empty or launcher
+# dump has no header either, so absence of the header is not evidence the list is
+# clear, it is evidence of nothing. Same fail-closed rule as the Notes To-dos trap
+# below: an ambiguous read must never print OK. Measured 2026-09-23 on a clean state:
+# the search screen reads "Search here" with Home / Set location / Work / Favourites.
+MAPS_SEARCH_MARKERS = ("Search here", "Set location", "Favourites", "Recent", "Explore", "Contribute")
+
+
+def _maps_open_recents(serial: str) -> tuple[list[dict], bool]:
+    """Launch Maps, tap the omnibox and return (nodes, reached_the_search_screen)."""
     sh(serial, "input keyevent KEYCODE_WAKEUP")
     sh(serial, f"am force-stop {MAPS_PKG}")
     sh(serial, f"monkey -p {MAPS_PKG} -c android.intent.category.LAUNCHER 1")
@@ -2567,23 +2592,23 @@ def clear_maps_recents(serial: str, apply: bool) -> bool:
     sh(serial, f"input tap {MAPS_RECENTS_BUTTON[0]} {MAPS_RECENTS_BUTTON[1]}")
     time.sleep(5)
     nodes = _ui_nodes(_pull_ui_dump(serial))
+    return nodes, any(n["text"] in MAPS_SEARCH_MARKERS for n in nodes)
 
-    def recent_rows(ns: list[dict]) -> list[dict]:
-        # The Recent section starts under the "Recent" header; rows there are tappable
-        # place/query entries, not the Home/Work/Favourites chips above it.
-        hdr = next((n for n in ns if n["text"] == "Recent"), None)
-        if hdr is None:
-            return []
-        chip_labels = ("Home", "Work", "Favourites", "Set location")
-        out = []
-        for n in ns:
-            if (n["bounds"][1] > hdr["bounds"][1] and n["text"].strip()
-                    and n["text"] not in chip_labels
-                    and not n["text"].startswith("Search here")
-                    and n["text"] != "Recent"):
-                out.append(n)
-        return out
 
+def clear_maps_recents(serial: str, apply: bool) -> bool:
+    """Clear the Maps search box's *Recent* list (the redo.md section 1 free hint).
+
+    Long-press each recent row -> "Delete suggested search?" -> Delete. Never a plain tap:
+    that opens the place page AND re-adds the row to history (measured 2026-09-16).
+    """
+    nodes, ready = _maps_open_recents(serial)
+    if not ready:
+        print("  [!!]  maps: never reached the search screen -- cannot confirm the recents")
+        sh(serial, f"am force-stop {MAPS_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return False
+
+    recent_rows = _maps_recent_rows
     rows = recent_rows(nodes)
     if not rows:
         print("  [ok]  maps: recent list empty")
@@ -2624,8 +2649,38 @@ def clear_maps_recents(serial: str, apply: bool) -> bool:
 
     sh(serial, f"am force-stop {MAPS_PKG}")
     sh(serial, "input keyevent KEYCODE_HOME")
+    # Assert rather than announce. This function used to print "[ok] cleared"
+    # unconditionally after a bounded loop, which is the same "reports success while
+    # deleting nothing" shape that already shipped twice in this section (the plain-tap
+    # re-add and the checkbox-deselect). `rows` is the last dump's reading, so a sweep
+    # that ran out of its 12 attempts with entries still listed now says so.
+    if rows:
+        print(f"  [!!]  maps: {len(rows)} recent entry/entries survived the sweep"
+              f" - e.g. {rows[0]['text'][:48]!r}")
+        return False
     print("  [ok]  maps: recent list cleared")
     return True
+
+
+def verify_maps_recents_clear(serial: str) -> bool:
+    """Gate: the Maps search box's *Recent* list is empty.
+
+    This is the free hint from redo.md section 1: with an airport row sitting in Recents,
+    an agent can satisfy `medium__google-maps__002` without ever typing the query, which
+    is how 7 of the 13 original runs passed or were misled. The full reset cleared the
+    list but never gated on it -- only `--leak-cleanup-only` did -- so a silent cleanup
+    failure would have gone unnoticed on exactly the path that starts a fresh batch.
+    """
+    nodes, ready = _maps_open_recents(serial)
+    left = _maps_recent_rows(nodes) if ready else []
+    sh(serial, f"am force-stop {MAPS_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    if not ready:
+        print("  FAIL maps: never reached the search screen -- cannot confirm the recents")
+        return False
+    print(f"  {'PASS' if not left else 'FAIL'} maps: {len(left)} recent entry/entries left"
+          + (f" - {left[0]['text'][:48]!r}" if left else ""))
+    return not left
 
 
 def main() -> int:
@@ -2726,6 +2781,7 @@ def main() -> int:
         ok_only = verify_telegram_chat_clean(args.serial)
         ok_only &= verify_budget_note(args.serial)
         ok_only &= verify_maps_run_notes_clear(args.serial)
+        ok_only &= verify_maps_recents_clear(args.serial)
         print("RESULT " + ("PASS" if ok_only else "FAIL"))
         return 0 if ok_only else 1
 
@@ -2783,9 +2839,16 @@ def main() -> int:
         ok &= verify_slides_deck(args.serial, prof)
     if not args.no_leak_cleanup:
         # Both are gates, not warnings: a run that starts against a leaked draft or an
-        # edited note is not running the benchmarked task.
+        # edited note is not running the benchmarked task. The two Maps gates belong here
+        # for the same reason and were missing: the reset cleared the Maps run-notes and
+        # the Recent list but asserted neither, so only --leak-cleanup-only (the between-row
+        # repair) would have caught a silent cleanup failure -- not the full reset that
+        # starts a batch. Step 8 of the 2026-09-23 redo lost rows 8-13 to exactly that
+        # class of un-asserted cleanup.
         ok &= verify_telegram_chat_clean(args.serial)
         ok &= verify_budget_note(args.serial)
+        ok &= verify_maps_run_notes_clear(args.serial)
+        ok &= verify_maps_recents_clear(args.serial)
     # The Meet agenda check is verified but -- by default -- does NOT block. It cannot
     # pass today for a reason that is not a seeding mistake: the meeting has to exist in
     # Google's CLOUD for Meet to list it, and an adb-written calendar row never uploads

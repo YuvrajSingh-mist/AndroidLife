@@ -229,6 +229,55 @@ run-notes left, recents cleared, Telegram composer empty, `Budget Deadline` inta
 recomputed and their `.md` rendered from them, `leaderboard.js` matches all 300 fields, and
 `reports/` + `runs/` are uploaded byte-identical to `androidlife-public`.
 
+### The published artifacts had to be replaced, not just the text
+
+Writing the verdicts into the reports was only half the job. `runs/<root>/day1/
+medium-google-maps-002/` on the Hub still held the **original** artifacts for all 13 rows,
+while every report already said *"Artifacts and metrics are the 2026-09-23 re-run"*. So the
+artifact viewer would have shown the vacuous tap-the-recent run under a FAIL verdict, and the
+hallucinated run under a PASS — the text and the evidence said opposite things.
+
+Replaced in place, one commit per row (the run roots keep their identity; only that one task's
+files change):
+
+| | delete | add | | | delete | add |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 43 | 57 | | 8 | 137 | 127 |
+| 2 | 45 | 45 | | 9 | 45 | 139 |
+| 3 | 33 | 37 | | 10 | 45 | 139 |
+| 4 | 45 | 47 | | 11 | 137 | 51 |
+| 5 | 49 | 49 | | 12 | 69 | 139 |
+| 6 | 49 | 43 | | 13 | 45 | 49 |
+| 7 | 136 | 99 | | **total** | **878** | **1021** (687.8 MB) |
+
+Verified byte-identical afterwards on the two hashes that matter — git blob for text/JSON and
+**LFS sha256** for the screenshots and `trajectory.gif`. The first check compared git blob ids
+and reported all 13 rows as mismatched; that was the check being wrong, not the upload: binary
+files are LFS pointers, so their blob id is the pointer's hash, not the content's.
+
+**Rows 7, 8 and 11 lost ~40 files each** (136→99, 137→127, 137→51). Those originals carried
+screenshot sets from the *pre-re-run* attempts that were still under the same task dir.
+
+### One gap this exposed: the Maps gate did not run on the full reset
+
+`clear_maps_run_notes` and `clear_maps_recents` both ran in `--apply`, but only
+`--leak-cleanup-only` *asserted* the result — `verify_maps_run_notes_clear` was unreachable
+from the full reset path, and the Recents list had no gate at all. `clear_maps_recents` also
+printed `[ok] maps: recent list cleared` unconditionally after a bounded loop, the same
+"reports success while achieving nothing" shape that already shipped twice in that function
+(the plain-tap re-add and the checkbox-deselect). The full reset is what precedes a fresh
+launch, so a silent cleanup failure there would have gone unseen — which is the class of
+failure that cost rows 8-13 in §1.
+
+Fixed: `verify_maps_recents_clear` added, both gates wired into the full path, the sweep now
+asserts instead of announcing, and both fail **closed** — a Maps that never opened has no
+`Recent` header either, so "no header" is no longer read as "no recents" (it now requires
+positive evidence of the search screen: `Search here` or the Home/Work/Favourites chips).
+10 new tests in `tests/test_reset_phone_run_leaks.py` cover the pure row-selection, the
+fail-closed path, the surviving-entry failure, and that the full `--verify-only` path gates on
+both Maps leaks. Live-verified on the device: both gates PASS, `--leak-cleanup-only` → `RESULT
+PASS`, full `--verify-only` → `RESULT PASS`.
+
 ### 1b. The hand pass — rows 9-13 (2026-09-23)
 
 Rows 9-13 are partial/interrupted runs (`Success Rate (N runs)`, orphaned tasks, different

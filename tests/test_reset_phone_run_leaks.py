@@ -298,6 +298,8 @@ def _wire_leak_only(monkeypatch, rp, *, tg_clean: bool, note_clean: bool,
                         lambda serial: calls["verified"].append("note") or note_clean)
     monkeypatch.setattr(rp, "verify_maps_run_notes_clear",
                         lambda serial: calls["verified"].append("maps") or maps_clean)
+    monkeypatch.setattr(rp, "verify_maps_recents_clear",
+                        lambda serial: calls["verified"].append("maps_recents") or maps_clean)
     # Any full-reset work would mean the mode is not actually narrow.
     monkeypatch.setattr(rp, "reset_settings",
                         lambda *a, **k: calls["full_reset"].append("settings") or True)
@@ -323,7 +325,7 @@ def test_leak_cleanup_only_repairs_and_returns_zero(rp, monkeypatch, capsys):
     assert calls["restored"] == [True]
     assert calls["maps_notes"] == [True]
     assert calls["maps_recents"] == [True]
-    assert calls["verified"] == ["telegram", "note", "maps"]
+    assert calls["verified"] == ["telegram", "note", "maps", "maps_recents"]
     assert "RESULT PASS" in capsys.readouterr().out
 
 
@@ -345,7 +347,7 @@ def test_leak_cleanup_only_still_checks_the_note_when_telegram_is_dirty(rp, monk
     """Both verifies always run, so the log names every live leak, not just the first."""
     calls = _wire_leak_only(monkeypatch, rp, tg_clean=False, note_clean=False)
     _run_leak_only(rp, monkeypatch)
-    assert calls["verified"] == ["telegram", "note", "maps"]
+    assert calls["verified"] == ["telegram", "note", "maps", "maps_recents"]
 
 
 def test_leak_cleanup_only_fails_when_a_maps_note_survives(rp, monkeypatch, capsys):
@@ -505,3 +507,171 @@ def test_composer_that_never_appears_still_fails_and_never_guesses(rp, monkeypat
     assert rp.clear_telegram_run_leaks("S", apply=True) is False
     assert not [c for c in calls if c.startswith("input tap")]
     assert not [c for c in calls if c.startswith("input keyevent 67")]
+
+
+# ---- Maps Recents gate (the free-hint surface of redo.md section 1) -----------------
+#
+# With an airport row parked in Recents an agent can satisfy medium__google-maps__002
+# without ever typing the query: it taps the pre-existing suggestion and the grader sees
+# the right end state. That is how 7 of the 13 original runs passed or were misled, and
+# it is why the re-run batch had to clear the list by hand before every row.
+#
+# The list was cleared on each reset but never *gated*, so a cleanup that silently did
+# nothing still printed OK on the full-reset path -- the one that starts a batch. These
+# tests pin both halves: what counts as a recent entry, and that an unreadable screen
+# fails closed rather than reading as "clean".
+
+
+def _maps_screen(*nodes: str) -> str:
+    return "<hierarchy>" + "".join(nodes) + "</hierarchy>"
+
+
+def test_maps_recent_rows_needs_the_header(rp):
+    """No Recent header means there is no list to read -- not an empty list."""
+    xml = _maps_screen(
+        _node("Biju Patnaik International Airport", bounds="[40,700][900,760]"),
+        _node("Search here", bounds="[40,1200][500,1260]"),
+    )
+    assert rp._maps_recent_rows(rp._ui_nodes(xml)) == []
+
+
+def test_maps_recent_rows_takes_entries_below_the_header_only(rp):
+    """A place name above the header is the search suggestion, not history."""
+    xml = _maps_screen(
+        _node("Biju Patnaik International Airport", bounds="[40,200][900,260]"),
+        _node("Recent", bounds="[40,600][300,660]"),
+        _node("restaurants", bounds="[40,700][900,760]"),
+    )
+    rows = rp._maps_recent_rows(rp._ui_nodes(xml))
+    assert [r["text"] for r in rows] == ["restaurants"]
+
+
+def test_maps_recent_rows_ignores_the_chips_and_the_omnibox(rp):
+    """Home/Work/Favourites sit under the header but are shortcuts, not history."""
+    xml = _maps_screen(
+        _node("Recent", bounds="[40,600][300,660]"),
+        _node("Home", bounds="[40,700][300,760]"),
+        _node("Work", bounds="[40,780][300,840]"),
+        _node("Favourites", bounds="[40,860][300,920]"),
+        _node("Set location", bounds="[40,940][300,1000]"),
+        _node("Search here", bounds="[40,1020][500,1080]"),
+    )
+    assert rp._maps_recent_rows(rp._ui_nodes(xml)) == []
+
+
+def test_verify_maps_recents_passes_on_a_clean_search_screen(rp, monkeypatch, capsys):
+    """The measured clean state: chips + the omnibox hint, and no Recent header."""
+    xml = _maps_screen(
+        _node("Home", bounds="[40,700][300,760]"),
+        _node("Set location", bounds="[40,780][300,840]"),
+        _node("Work", bounds="[40,860][300,920]"),
+        _node("Favourites", bounds="[40,940][300,1000]"),
+        _node("Search here", bounds="[40,1020][500,1080]"),
+    )
+    monkeypatch.setattr(rp, "_maps_open_recents", lambda serial: (rp._ui_nodes(xml), True))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    assert rp.verify_maps_recents_clear("S") is True
+    assert "PASS maps" in capsys.readouterr().out
+
+
+def test_verify_maps_recents_fails_when_an_entry_survives(rp, monkeypatch, capsys):
+    xml = _maps_screen(
+        _node("Recent", bounds="[40,600][300,660]"),
+        _node("Biju Patnaik International Airport", bounds="[40,700][900,760]"),
+    )
+    monkeypatch.setattr(rp, "_maps_open_recents", lambda serial: (rp._ui_nodes(xml), True))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    assert rp.verify_maps_recents_clear("S") is False
+    out = capsys.readouterr().out
+    assert "FAIL maps" in out and "Biju Patnaik International Airport" in out
+
+
+def test_verify_maps_recents_fails_closed_when_maps_never_opened(rp, monkeypatch, capsys):
+    """An unreadable screen must never read as 'clean'.
+
+    A dump taken on the launcher has no Recent header either, so absence of the header is
+    not evidence the list is clear -- it is evidence of nothing. Treating it as clean is
+    the same shape as the Notes To-dos trap and the plain-tap re-add, both of which
+    printed OK while achieving nothing.
+    """
+    monkeypatch.setattr(rp, "_maps_open_recents",
+                        lambda serial: (rp._ui_nodes("<hierarchy/>"), False))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    assert rp.verify_maps_recents_clear("S") is False
+    assert "never reached the search screen" in capsys.readouterr().out
+
+
+def test_clear_maps_recents_reports_failure_when_entries_survive(rp, monkeypatch, capsys):
+    """The sweep used to print '[ok] cleared' after its bounded loop whatever it achieved."""
+    xml = _maps_screen(
+        _node("Recent", bounds="[40,600][300,660]"),
+        _node("restaurants", bounds="[40,700][900,760]", rid="android:id/title"),
+    )
+    monkeypatch.setattr(rp, "_maps_open_recents", lambda serial: (rp._ui_nodes(xml), True))
+    monkeypatch.setattr(rp, "_pull_ui_dump", lambda serial, remote="/x": xml)
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    monkeypatch.setattr(rp.time, "sleep", lambda _s: None)
+    assert rp.clear_maps_recents("S", apply=True) is False
+    out = capsys.readouterr().out
+    assert "survived the sweep" in out
+    assert "[ok]" not in out
+
+
+def test_clear_maps_recents_fails_closed_when_maps_never_opened(rp, monkeypatch, capsys):
+    monkeypatch.setattr(rp, "_maps_open_recents",
+                        lambda serial: (rp._ui_nodes("<hierarchy/>"), False))
+    monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
+    assert rp.clear_maps_recents("S", apply=True) is False
+    assert "never reached the search screen" in capsys.readouterr().out
+
+
+# ---- the full reset path must gate on the Maps leaks too ----------------------------
+#
+# This is the regression: verify_maps_run_notes_clear existed but was only reachable
+# through --leak-cleanup-only, and the Recents list had no gate at all. The full reset is
+# what precedes a fresh launch, so a silent cleanup failure there was invisible.
+
+
+def _wire_full_verify(monkeypatch, rp, *, maps_clean: bool) -> dict[str, list]:
+    """Stub every device touch the full --verify-only path makes, recording the gaps."""
+    calls: dict[str, list] = {"verified": [], "full_reset": []}
+    monkeypatch.setattr(rp, "connect_ok", lambda serial: True)
+    for name in ("verify_calendar_view_mode", "verify_cloud_accounts", "verify_slides_deck",
+                 "verify_meet_agenda", "assert_anchor_durability"):
+        monkeypatch.setattr(rp, name, lambda *a, **k: True)
+    monkeypatch.setattr(rp, "verify", lambda *a, **k: True)
+    monkeypatch.setattr(rp, "verify_telegram_chat_clean",
+                        lambda serial: calls["verified"].append("telegram") or True)
+    monkeypatch.setattr(rp, "verify_budget_note",
+                        lambda serial: calls["verified"].append("note") or True)
+    monkeypatch.setattr(rp, "verify_maps_run_notes_clear",
+                        lambda serial: calls["verified"].append("maps") or maps_clean)
+    monkeypatch.setattr(rp, "verify_maps_recents_clear",
+                        lambda serial: calls["verified"].append("maps_recents") or maps_clean)
+    # --verify-only must not repair anything.
+    for name in ("reset_settings", "clear_telegram_run_leaks", "clear_maps_run_notes",
+                 "clear_maps_recents", "restore_budget_note", "restore_slides_deck"):
+        monkeypatch.setattr(rp, name,
+                            lambda *a, **k: calls["full_reset"].append(name) or True)
+    return calls
+
+
+def test_full_verify_only_gates_on_both_maps_leaks(rp, monkeypatch, capsys):
+    calls = _wire_full_verify(monkeypatch, rp, maps_clean=True)
+    monkeypatch.setattr(sys, "argv", [
+        "reset_phone.py", "--serial", "S", "--profile", "public_v2", "--verify-only",
+    ])
+    assert rp.main() == 0
+    assert calls["verified"] == ["telegram", "note", "maps", "maps_recents"]
+    assert calls["full_reset"] == [], "--verify-only must not repair the phone"
+    assert "RESULT PASS" in capsys.readouterr().out
+
+
+def test_full_verify_only_blocks_on_a_surviving_maps_recents_entry(rp, monkeypatch, capsys):
+    """A leaked Recent entry is a gate, not a warning: it aborts the launch."""
+    _wire_full_verify(monkeypatch, rp, maps_clean=False)
+    monkeypatch.setattr(sys, "argv", [
+        "reset_phone.py", "--serial", "S", "--profile", "public_v2", "--verify-only",
+    ])
+    assert rp.main() == 1
+    assert "RESULT FAIL" in capsys.readouterr().out
