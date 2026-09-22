@@ -524,13 +524,23 @@ version-controlled.
 > The `task_id` comment is untouched, so the artifact path stays
 > `hard-drive-notes-telegram-010` and history remains comparable by path.
 >
-> **This is a deliberate public-only divergence.** `tasks_530.md` keeps its own copy of this
-> task on **Drive + Obsidian + Telegram** (`hard__drive-obsidian-telegram__049` is its
-> Obsidian twin) and stays as-is: the 530 corpus is self-consistent because
-> `ask_user_facts_530.json` names **`shared budget.xlsx`**, which really does exist in Drive.
-> Only the *public* slice carried the nonexistent `family_numbers.xlsx`. `public.md` already
-> diverges from the 530 text where the preview needs it (see the per-task overrides in
-> `export_public_dataset.py`), so this is the same pattern.
+> **This is a deliberate public-only divergence — but the 530 twin was NOT self-consistent.**
+> `tasks_530.md` keeps its own copy of this task on **Drive + Notes + Telegram**
+> (`hard__drive-obsidian-telegram__049` is its Obsidian twin) and keeps the Drive leg.
+> It was originally left as-is on the belief that the 530 corpus was self-consistent because
+> `ask_user_facts_530.json` named **`shared budget.xlsx`**, "which really does exist in Drive".
+>
+> **That was wrong, and it was corrected 2026-09-23.** Verified on the live device: the only
+> budget spreadsheet that exists is **`budget.xlsx`** — `/sdcard/Download/budget.xlsx`,
+> 57 bytes, mtime `2026-07-18 10:00` (exactly as the 530 fabrication spec creates it). There
+> is **no `shared budget.xlsx`** anywhere, and the 530 corpus's own docs
+> (`fabricated-test-data.md`) describe the file as **`budget.xlsx` in Drive**. The
+> `shared budget.xlsx` string was a typo in the sidecar, so the 530 oracle named a phantom
+> file — the same defect class as the public `family_numbers.xlsx`, just in the other slice.
+>
+> Fixed in `ask_user_facts_530.json` + `AndroidLife_530_v1.{json,jsonl}`
+> (`shared budget.xlsx` → **`budget.xlsx`**) and `hf_release/` regenerated, which also
+> swept up the **stale public copy** that still carried `family_numbers.xlsx`.
 >
 > **Residual risk — now automated (2026-09-22).** The note is *still* app-private, and with
 > Drive gone it is the **only** graded state — but it is no longer true that "nothing but a

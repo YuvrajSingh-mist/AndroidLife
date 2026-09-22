@@ -3032,7 +3032,7 @@
       "ahi": "ASK USER",
       "interaction": "single",
       "note": "deliberately no recipient or budget spreadsheet is named, so the agent must ask the user which budget spreadsheet they mean and who to message",
-      "ask_user_fact": "Message Yuvraj Airtel. The spreadsheet to chase is 'shared budget.xlsx'.",
+      "ask_user_fact": "Message Yuvraj Airtel. The spreadsheet to chase is 'budget.xlsx'.",
       "is_ask_user": true,
       "task_number_within_app": 10,
       "task_number_within_dataset_app": 1,
