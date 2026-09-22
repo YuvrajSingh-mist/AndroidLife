@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 13 of 13 | ❌ | **10 PASS / 3 FAIL** — rows 1-8, 11, 13 valid; rows 9, 10, 12 FAIL. All rows reviewed from artifacts (§1b); verdicts not yet written into the model reports |
+| 1 | `medium__google-maps__002` | 13 of 13 | ⏳ | **10 PASS / 3 FAIL** across the batch. **Row 1 published** (`700711e`, corrected `b2e4776`). Rows 2-13 pending — see §7 for the two conventions to handle |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -1449,3 +1449,46 @@ triggered by the reset, not by a human remembering it. The two cleanups in §7.2
 correct and still let this through because they only knew about the tasks that had already
 bitten. Task→artifact knowledge belongs in the profile (`manual_ui_cleanup`) *and* in an
 automated sweep; a note in `SKILL.md` alone is not a gate.
+
+---
+
+## 7. Two conventions to get right when publishing (found while publishing Maps row 1)
+
+**7a. `reports/metrics/...-report.{json,md}` carry the OFFICIAL number; `reports/public/*.md`
+carries the MANUAL one.** They are *supposed* to differ. Established from the generator, not
+inferred: `androidlife_report.py` builds one `report` dict, dumps it to `.json`, then renders
+the SAME dict to `.md` via `render_markdown()` — so the two are one artefact in two formats.
+Row 8 proves which number they carry: its report states *"official 3 true success / 5.0%;
+manual headline 10/60 (16.7%)"* while its metrics file says **5.0%**.
+
+*Do not "reconcile" metrics against the run report* — that is the official/manual split. Apply
+the task delta to the OFFICIAL values (row 1: 32 -> 33, 53.3% -> 55.0%), leaving the manual
+report to carry its own reconciled number (37/60, 61.7%).
+
+**7b. But `.md` and `.json` must never disagree with each other**, and in 6 of 13 rows they do.
+That IS a bug — one dict, two files. Rebuild the `.md` instead of hand-editing it:
+
+```bash
+uv run python -c "
+import json, sys; sys.path.insert(0,'scripts/eval'); import androidlife_report as ar
+p='reports/metrics/public/<root>-report'
+open(p+'.md','w').write(ar.render_markdown(json.load(open(p+'.json'))))"
+```
+
+Regenerating row 1's surfaced a second drift the hand-edit had preserved: KBIQ read
+`0/4 KB tasks with a correct KB answer` where the JSON has `0/3 queries`.
+
+Known-current drift (regenerate each when touched): rows 2 (48.3 vs 50.0), 3 (61.7 vs 63.3),
+6 (65.0 vs 63.3), 11 (14.3 vs 17.1), 12 (33.3 vs 29.6), 13 (42.9 vs 40.0). Row 5 (BMS):
+`hard` 35.3 (md) vs 41.2 (json).
+
+**7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
+Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day headers) for the same
+60 tasks; the per-task verdict rows were 36. Row 2 carries 32 (metrics table + prose) vs 31
+(totals + day headers). Reconcile against the **per-task verdict rows**, which are ground truth.
+
+*Caveat:* that counting works cleanly only for rows 1-8. Rows 9-13 use a different table shape
+(`Success Rate (N runs)`, partial runs, orphaned tasks) where the verdict rows do not sum to the
+headers by simple counting — row 2 already needs a manual read (its day tables parse as
+19/16/20 rows and a hallucination row is not machine-findable). Each of those rows needs a hand
+pass, not arithmetic.
