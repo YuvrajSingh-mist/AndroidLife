@@ -5,6 +5,33 @@ why, and what to do before re-running. Not a changelog — only things we owe a 
 
 ---
 
+## Manual review — verification pass, 2026-09-23
+
+Every re-run that exists on disk was re-reviewed from its own artifacts (`output.json`,
+`delivery.json`, `ui_states`, trajectories) and reconciled with what the reports publish.
+
+| § | task | re-runs on disk | reviewed | outcome |
+| --- | --- | --- | --- | --- |
+| 1 | `medium__google-maps__002` | **0** | — | **nothing to review — still owed a run** |
+| 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
+| 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
+| 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
+| 5 | `easy__google-slides__001` | 7 | ✅ | **6 PASS / 1 FAIL** confirmed (row 7, 60-step cap) — every PASS replied `8` |
+| 6 | `easy__calendar__002` | 9 (8 roots + row 13 in place) | ✅ | **7 PASS / 1 FAIL** confirmed (row 12, malformed tool-call markup) |
+
+Notes from the pass:
+* **§1 and §2 have no artifacts.** They are still owed their first re-run; there is no
+  result to audit until then.
+* **§4 rows 3/4/12 self-report `success: true`** — that is exactly the false pass the
+  delivery gate exists to catch; recorded correctly as FAIL.
+* **§6 row 13 (Bonsai)** has no separate run root: its re-run was substituted **in place**
+  inside `20260920-044846/day1/easy-calendar-002/` (artifacts dated 2026-09-21), which is
+  why a `LAUNCH.txt` scan finds only 8 roots for 9 rows.
+* `reports/` is byte-identical on HuggingFace and `verify_leaderboard.py` reports
+  **0 mismatches across 13 rows / 300 fields**.
+
+---
+
 ## 1. `medium__google-maps__002` — Google Maps + Notes (medium, 3pt, day 1)
 
 **Verdict: every recorded result is a vacuous PASS — the search was never performed.**
