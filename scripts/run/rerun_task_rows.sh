@@ -37,6 +37,9 @@
 set -uo pipefail
 
 TASK_ID="${1:-}"
+# The run directory is the task_id in slug form: hard__bookmyshow__005 -> hard-bookmyshow-005.
+# (SLUG is the *model* slug, so it cannot be used for this.)
+TASK_DIR_SLUG="${TASK_ID//__/-}"
 TAG="${2:-}"
 shift 2 2>/dev/null || true
 WANT_ROWS=("$@")
@@ -228,6 +231,28 @@ EOF
 
   # Free the port before the next local row wants it.
   [[ -n "$SERVED_PID" ]] && stop_server
+
+  # Delivery evidence, read BEFORE the cleanup below deletes the bubble it looks for.
+  # A task whose deliverable is a message cannot be graded on the model's own `success`:
+  # three rows of the 2026-09-22 hard__bookmyshow__005 re-run reported success having sent
+  # nothing (draft left in the composer / Telegram never launched / message typed into the
+  # search box). Writing the device-side fact here lets scripts/eval/androidlife_report.py
+  # demote those. The grader only demotes on definite evidence, so a probe that cannot
+  # reach the chat is recorded honestly rather than guessed at.
+  if [[ -n "$TASK_DIR_SLUG" ]] && ls "$ROOT"/day*/"$TASK_DIR_SLUG"/output.json >/dev/null 2>&1; then
+    TASK_DIR="$(ls -d "$ROOT"/day*/"$TASK_DIR_SLUG")"
+    if PROBE="$(uv run python scripts/seeding/reset_phone.py --serial "$SERIAL" \
+          --profile "$SEED_GATE_PROFILE" --delivery-probe 2>/dev/null | grep '^DELIVERY ' | head -1)"; then
+      if [[ -n "$PROBE" ]]; then
+        printf '%s\n' "${PROBE#DELIVERY }" >"$TASK_DIR/delivery.json"
+        echo "   delivery: $(grep -o '"sent_bubbles": [0-9]*' "$TASK_DIR/delivery.json" | head -1)"
+      else
+        echo "   delivery: probe produced no verdict (left unrecorded - grader will not demote)"
+      fi
+    else
+      echo "   delivery: probe failed (left unrecorded - grader will not demote)"
+    fi
+  fi
 
   # Between-row content-leak repair, BEFORE the next row's gate looks at the device.
   # Force-stop resets an app's screen, never its content, and this task messages on

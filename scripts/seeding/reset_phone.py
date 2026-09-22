@@ -2158,6 +2158,40 @@ def _tg_run_window_bubbles(nodes: list[dict], today_label: str) -> list[dict]:
     ]
 
 
+def probe_telegram_delivery(serial: str) -> dict:
+    """Evidence that THIS run actually delivered a message to TG_CHAT_NAME.
+
+    A task whose deliverable is a message cannot be graded on `success` alone: measured
+    2026-09-22 in the hard__bookmyshow__005 re-run, three rows self-reported success
+    without delivering anything -- one left the text in the composer, one never launched
+    Telegram at all, and one typed the whole message into Telegram's SEARCH box. All three
+    would score as passes. The run-window bubble is the device-side fact: a message that
+    reached the chat carries a "Sent at" stamp under today's separator, and nothing else
+    can produce one.
+
+    Read-only, and it must run BEFORE the leak cleanup deletes the bubble. Returns
+    `reached_chat: False` when the chat could not be opened, which callers must treat as
+    "no evidence" rather than as "nothing was sent" -- the two are different verdicts and
+    only the second is safe to fail a run on.
+    """
+    today = _tg_today_label(serial)
+    nodes = _tg_open_chat(serial)
+    if not nodes:
+        return {"reached_chat": False, "today": today, "sent_bubbles": 0,
+                "draft_present": False, "sent_texts": []}
+    bubbles = _tg_run_window_bubbles(nodes, today)
+    draft = _tg_draft(nodes)
+    return {
+        "reached_chat": True,
+        "today": today,
+        "sent_bubbles": len(bubbles),
+        # A live draft is the signature of the "typed it but never sent it" failure.
+        "draft_present": draft is not None,
+        "draft_text": draft or "",
+        "sent_texts": [" ".join(b["text"].split())[:400] for b in bubbles],
+    }
+
+
 def _tg_today_label(serial: str) -> str:
     """Telegram's date-separator spelling for today, read from the device clock."""
     raw = sh(serial, "date +%Y-%m-%d").strip()
@@ -2347,6 +2381,15 @@ def main() -> int:
                              "3-13 because row 2 composed a Telegram plan and left the draft "
                              "behind, and the (correct) verify-only gate then aborted each "
                              "remaining row rather than seed it contaminated.")
+    parser.add_argument("--delivery-probe", action="store_true",
+                        help="Read-only: report whether the Yuvraj Airtel chat holds a "
+                             "message sent TODAY (a run-window bubble), plus any live "
+                             "draft. Prints one `DELIVERY {json}` line and exits. The "
+                             "evidence a message-delivering task needs: three rows of the "
+                             "2026-09-22 hard__bookmyshow__005 re-run self-reported "
+                             "success without delivering anything, and `success` alone "
+                             "cannot tell that from a real send. Run it BEFORE the leak "
+                             "cleanup, which deletes the bubble it looks for.")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -2365,6 +2408,11 @@ def main() -> int:
         return 1
 
     prof = PROFILES[profile_name]
+
+    # Read-only delivery evidence, for the grader of a message-delivering task.
+    if args.delivery_probe:
+        print("DELIVERY " + json.dumps(probe_telegram_delivery(args.serial)))
+        return 0
 
     # Between-row repair for a batch runner: only the content leaks, then its gate.
     # Deliberately narrow so it can run on every row without paying for the calendar

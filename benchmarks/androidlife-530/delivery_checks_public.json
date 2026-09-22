@@ -1,0 +1,9 @@
+{
+  "hard__bookmyshow__005": {
+    "channel": "telegram",
+    "contact": "Yuvraj Airtel",
+    "requires_send": true,
+    "note": "The task ends 'message [contact] on Telegram with the plan' with no condition on the send, so a delivered message is part of the deliverable. Added 2026-09-22 after three rows of the re-run self-reported success without delivering anything: row 3 left the text in the composer, row 4 never launched Telegram (it tried the non-existent package org.telegram.messaging), and row 10 typed the whole message into Telegram's search box and never opened the chat. `success` alone cannot tell any of those from a real send.",
+    "evidence": "delivery.json (written by reset_phone.py --delivery-probe before the leak cleanup deletes the bubble): sent_bubbles >= 1, or reached_chat=false meaning no evidence was obtainable."
+  }
+}

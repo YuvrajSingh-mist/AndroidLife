@@ -432,6 +432,24 @@ def answer_checks_path(source: str) -> str:
     return f"benchmarks/androidlife-530/{checks_file}"
 
 
+def delivery_checks_path(source: str) -> str:
+    """Return the task_id -> required-delivery sidecar for a task source markdown path.
+
+    Same naming as `answer_checks_path` (and the same map, so the two stay aligned):
+
+      tasks.md  -> benchmarks/androidlife-530/delivery_checks_530.json
+      public.md -> benchmarks/androidlife-530/delivery_checks_public.json
+
+    A task listed here has an outbound message as its deliverable, so `success` alone is
+    not gradeable: a run that never sent anything can still report success. See
+    `probe_telegram_delivery` in scripts/seeding/reset_phone.py.
+    """
+    suffix = _ANSWER_CHECKS_BY_SOURCE.get(Path(source).name)
+    if suffix is None:
+        raise ValueError(f"Unknown task source {source!r}: expected tasks.md or public.md")
+    return f"benchmarks/androidlife-530/delivery{suffix[len('answer'):]}"
+
+
 def merge_answer_checks(dataset: dict[str, Any], checks_path: str | Path) -> None:
     """Attach each task's ground-truth answer check from a {task_id: check} JSON file.
 

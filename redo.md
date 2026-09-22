@@ -221,6 +221,60 @@ after 4 steps. The 16 Sep run only found the cinemas because it happened to brow
   non-existent `INOX Bhubaneswar`, and row 6's stated FAIL reason (ASK USER gate) does not
   apply to a `DETERMINISTIC` task. See the table above.
 
+> ### 2026-09-22 re-run — 9 of 13 rows done, and a delivery defect it exposed
+>
+> Rows 1–5 and 7–10 have run; **6, 11, 12 and 13 still need one** (the host rebooted mid-batch
+> at ~15:02 and took the detached launcher with it — `start_new_session=True` survives the
+> shell and Cursor dying, not a reboot — and the handset then dropped off the network, so the
+> batch cannot resume until it is reachable again).
+>
+> | row | model | `success` | delivered? | verdict |
+> |---|---|---|---|---|
+> | 3 | gemini-3.1-flash-lite (text) | `true` | ❌ left in the composer | **FAIL** (demoted) |
+> | 4 | seed-2.0-lite (text) | `true` | ❌ Telegram never launched | **FAIL** (demoted) |
+> | 5 | qwen3.8-27b (vision) | `true` | ✅ real sent bubble | **PASS** — the first genuine solve |
+> | 7 | gpt-5.6-luna (text) | `false` | — | FAIL (honest) |
+> | 8 | gpt-5.6-luna (vision) | `false` | — | FAIL |
+> | 10 | gemma-4-E2B-it (text) | `true` | ❌ typed into Telegram's search box | **FAIL** (demoted) |
+> | 1, 2, 9 | qwen3.8-27b / kimi-k2.6 / Qwen3.5-4B | `false` | — | FAIL (step cap) |
+>
+> **The defect: `success` cannot tell a send from a near-miss.** Three rows scored a pass while
+> delivering nothing, each in a different way — row 3 typed the plan and never tapped Send
+> (the leak cleanup recovered it as a live draft, `draft='INOX: Symphony Mall, Avengers
+> Endgame: Encore, 07:15 PM'`); row 4 could not launch Telegram at all (it used the
+> non-existent package `org.telegram.messaging`, which every other row resolved correctly to
+> `org.telegram.messenger`) and called `complete(success=true)` anyway; row 10 typed the whole
+> message into Telegram's **search box** and never opened the chat. Row 10 is the instructive
+> one: its final UI state is a chat *list* with the composer empty, so nothing inside the chat
+> looks wrong — the tell is that the message text is sitting in the search field.
+>
+> **Fixed, in the same one-directional style as `answer_check`:** `reset_phone.py
+> --delivery-probe` reads the device-side fact (a "Sent at" bubble under today's separator in
+> the `Yuvraj Airtel` chat) and the launcher writes it to `delivery.json` before the leak
+> cleanup deletes the bubble. `androidlife_report.py` then demotes a self-reported success when
+> a required-delivery task has evidence that nothing was sent. It only demotes on *definite*
+> evidence: an unreachable chat, or a run taken before the probe existed, keeps its own
+> outcome. The sidecar `benchmarks/androidlife-530/delivery_checks_public.json` lists the task,
+> and it must stay **opt-in** — `hard__drive-notes-telegram__010` ("message … if it hasn't been
+> updated by the deadline"), `hard__chrome-telegram-notes__008` (only over $10) and
+> `hard__google-search-obsidian-telegram__057` (only if it crossed the threshold) all have
+> *conditional* sends, so gating them would fail a correct decision not to send.
+>
+> Today's rows predate the probe, so their evidence was recovered from the leak-cleanup logs —
+> the same two functions (`_tg_run_window_bubbles` / `_tg_draft`), run at the same moment —
+> by `scripts/tools/backfill_delivery_evidence.py`. Re-running the grader over the 7 rows
+> demotes exactly 3, 4 and 10 and leaves row 5's pass intact.
+>
+> **Also fixed in the harness (all committed):** `--leak-cleanup-only` between rows (the gate
+> is verify-only, so one row's leftover draft used to abort every row after it — the first
+> 2026-09-22 attempt lost rows 3–13 to row 2's unsent plan); a retry on transient seed-gate
+> UI-read failures; the Telegram bubble deletion, which had **never** worked because the
+> selection bar's `Delete` carries its label in `content-desc` rather than `text`, so it
+> always reported "long-press menu did not appear" while the menu was on screen; and a retry
+> in `_tg_open_chat`.
+>
+> **Still open:** run rows 6, 11–13 with the probe active, then do the verdict pass below.
+
 ---
 
 ## 4. `hard__drive-notes-telegram__010` — Notes + Telegram (hard, 5pt, day 1)
