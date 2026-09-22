@@ -907,17 +907,25 @@ read the wrong one (1 slide, not 8). All 7 affected rows re-taken against the ca
 `reset_phone.py`, and the grader now checks the reply against ground truth — see the end of
 this item.**
 
-**↻ Re-reviewed 2026-09-23 under the review gate (backfill).** These verdicts were reached
-by hand on 2026-09-21, *before* `review_rerun_row.py` existed, so none of the 7 re-run roots
-carried a `review.json` and the gate had no record to read. All 7 have now been reviewed from
-their own artifacts by a purpose-built reviewer (`review_slides`) and each root has a
-`review.json`: **6 PASS / 1 FAIL**, reproducing the hand verdicts exactly (row 7's 60-step
-cap is the FAIL). The reviewer is deliberately stricter than the hand pass in one way —
-because two decks were both called "Q3 Review", it requires (a) the canonical
+**↻ Re-reviewed 2026-09-23 under the review gate (backfill) — then withdrawn (2026-09-24).**
+These verdicts were reached by hand on 2026-09-21, *before* `review_rerun_row.py` existed, so
+none of the 7 re-run roots carried a `review.json` and the gate had no record to read. On
+2026-09-23 all 7 were re-derived from their own artifacts by a purpose-built reviewer
+(`review_slides`), which reproduced the hand verdicts exactly (**6 PASS / 1 FAIL**; row 7's
+60-step cap is the FAIL). The reviewer is deliberately stricter than the hand pass in one way
+— because two decks were both called "Q3 Review", it requires (a) the canonical
 `Q3_Review.pptx` to be the deck actually opened and (b) the reply's **first integer** to be
 the expected `8`, mirroring the grader's `answer_checks` semantics. That combination is what
 the original grader could not see: replies of `1`, `3` and `8` all scored PASS because the
 grader carried no ground truth at all.
+
+**The resulting `review.json` files were deleted again on 2026-09-24, and the verdicts stand
+on the hand review alone.** Writing them created an artifact dated 2026-09-23 for a review
+performed on 2026-09-21, i.e. a gate record for a gate that did not exist at review time —
+indistinguishable in the corpus from a genuine one. The task does not need the file: its
+re-run artifacts replaced the superseded ones in place, and the 6/1 split is recorded here.
+`review_rerun_row.py`'s `review_slides` reviewer remains in the tool and is what a *future*
+re-run of this task will be gated by.
 
 The task: *"open the `[presentation name]` presentation in Google Slides and tell me how
 many slides it has"* → `presentation name=Q3 Review`.
@@ -1082,18 +1090,23 @@ confirmed; all models need a re-run.**
 > **Net: +4 true successes across the 9 rows**, 1 hallucination retired, and every remaining
 > PASS on this task is now earned rather than vacuous.
 >
-> **↻ Re-reviewed 2026-09-23 under the review gate (backfill).** As with section 5, these
-> verdicts were reached by hand on 2026-09-21 before `review_rerun_row.py` existed, so no
-> root carried a `review.json`. All the re-run roots have now been reviewed from their own
-> artifacts by a purpose-built reviewer (`review_calendar`) and carry a `review.json`:
-> **8 PASS / 1 FAIL across the 9 rows**, reproducing the hand verdicts — row 12 is the FAIL
-> (malformed tool-call markup). Two caveats on the count: row 12 was attempted **twice**
-> (both malformed, both FAIL), so there are 10 review files for 9 rows; and row 13's re-run
-> was merged **in place** into its original root `20260920-044846` (only that root's
-> `easy-calendar-002` trajectory is the 2026-09-21 re-run), so its `review.json` lives there
-> rather than in a `20260921-*` root. The two discarded first-pass runs for rows 1 and 2
-> sit in `assets/runs/_rerun_backups/thrownaway/` and are deliberately not reviewed — they
-> were superseded, not published.
+> **↻ Re-reviewed 2026-09-23 under the review gate (backfill) — then withdrawn (2026-09-24).**
+> As with section 5, these verdicts were reached by hand on 2026-09-21 before
+> `review_rerun_row.py` existed, so no root carried a `review.json`. On 2026-09-23 the re-run
+> roots were re-derived from their own artifacts by a purpose-built reviewer
+> (`review_calendar`), reproducing the hand verdicts — **8 PASS / 1 FAIL across the 9 rows**,
+> row 12 the FAIL (malformed tool-call markup). Two caveats on the count: row 12 was attempted
+> **twice** (both malformed, both FAIL); and row 13's re-run was merged **in place** into its
+> original root `20260920-044846` (only that root's `easy-calendar-002` trajectory is the
+> 2026-09-21 re-run). The two discarded first-pass runs for rows 1 and 2 sit in
+> `assets/runs/_rerun_backups/thrownaway/` and are deliberately not reviewed — they were
+> superseded, not published.
+>
+> **Those `review.json` files were deleted again on 2026-09-24**, for the same provenance
+> reason as section 5: a gate record dated after the review it describes, for a gate that did
+> not exist when the review was done, is indistinguishable in the corpus from a genuine one.
+> The 8/1 split stands on the hand review and on this section. `review_calendar` remains the
+> reviewer a future re-run of this task will be gated by.
 >
 > The reviewer requires the reply to name **both** seeded events *and* say they
 > conflict/overlap, and it special-cases the malformed-tool-call abort. A self-reported
@@ -1734,16 +1747,40 @@ The 2026-09-22 BookMyShow re-runs had verdicts written into every report but the
 never uploaded, so HF still served the *originals*. Replaced in place for all 13:
 **1102 file ops, ~435 MB** (row 13's dir created fresh; rows 9/12's partial dirs completed).
 
-`review.json`: the 15 backfills for `easy__google-slides__001` and `easy__calendar__002` — and the
-Maps ones — are present on the Hub (verified by listing the published dirs, which is what the
-earlier check should have done).
+### 8f. `review.json` is not backfilled anywhere (decided 2026-09-24)
 
-### 8f. Still open
+Only `medium__google-maps__002` carries a `review.json`, in all 13 roots, and those are genuine
+outputs of the live batch — `rerun_task_rows.sh` ran with `REVIEW_GATE=1` and stopped after each
+row until the file existed, which is why they could be published at the time.
+
+The other four redo tasks have **none**, and a backfill attempt was reverted:
+
+| task | re-run | how it was really reviewed | `review.json` |
+|---|---|---|---|
+| `medium__google-maps__002` | 2026-09-23 | live, through the gate | **13/13** |
+| `easy__google-slides__001` | 2026-09-21 | by hand (gate didn't exist) | 0 |
+| `easy__calendar__002` | 2026-09-21 | by hand (gate didn't exist) | 0 |
+| `hard__bookmyshow__005` | 2026-09-22 | by hand (gate didn't exist) | 0 |
+| `hard__drive-notes-telegram__010` | 2026-09-21 | by hand (gate didn't exist) | 0 |
+
+A backfill for the four was written on 2026-09-23 and **deleted on 2026-09-24**, having been
+verified byte-for-byte back to the pre-commit state on the Hub. The file's whole value is that
+its presence means "a batch was gated here"; fabricating one *post hoc* for a review performed
+before the gate existed produces something indistinguishable in the corpus from a genuine gate
+record, and it re-dates the review. Their reviews live where they were actually done: the
+per-row verdict tables in sections 3–6 and the `↻ re-run` notes in the 13 reports.
+
+`review_slides` and `review_calendar` remain in `review_rerun_row.py`, so a *future* re-run of
+either task is gated and writes a `review.json` with true provenance. There is **no** reviewer
+for `hard__bookmyshow__005` or `hard__drive-notes-telegram__010` — a matching one was written
+and then reverted with the backfill, since it existed only to manufacture the files.
+
+### 8g. Still open
 
 * `hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
   calendar event.
-* §5/§6 verdicts predate `review_rerun_row.py`; their `review.json` files are now backfilled, but
-  the verdicts themselves were never re-derived through the gate.
-* `hard__drive-notes-telegram__010` and `hard__bookmyshow__005` have **no** `review.json` in any
-  re-run dir — those two batches were reviewed by hand before the gate existed and never had one
-  written. Unlike slides/calendar they also have no backfill script yet.
+* The 010 and BookMyShow re-runs have no `review.json` (see 8f). The sidecar mechanism cannot
+  cover 010 at all: `delivery_checks_public.json` lists only BookMyShow, and 010 must stay out
+  of it because its send is conditional — gating it would fail a correct decision *not* to send.
+  The discriminator for 010 is the final screen (a bubble ending `Sent at` vs. text left in an
+  `EditText`), which is what the hand review used.
