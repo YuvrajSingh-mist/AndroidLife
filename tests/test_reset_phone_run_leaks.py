@@ -155,3 +155,77 @@ def test_verify_fails_when_the_note_title_vanished(rp, monkeypatch):
     monkeypatch.setattr(rp, "sh", lambda serial, cmd, check=False: "")
     monkeypatch.setattr(rp, "_note_open", lambda serial, timeout_s=40.0: [])
     assert rp.verify_budget_note("S") is False
+
+
+# --- --leak-cleanup-only: the between-row repair a batch runner depends on ----------
+#
+# Without it a batch loses every row after the first that messages: the runner's seed
+# gate is verify-only, so a leaked Telegram draft aborts the next row instead of seeding
+# it. That is exactly how 2026-09-22's hard__bookmyshow__005 batch lost rows 3-13.
+
+
+def _wire_leak_only(monkeypatch, rp, *, tg_clean: bool, note_clean: bool) -> dict[str, list]:
+    """Stub every device touch that --leak-cleanup-only makes, and record the calls."""
+    calls: dict[str, list] = {"cleared": [], "restored": [], "verified": [], "full_reset": []}
+    monkeypatch.setattr(rp, "connect_ok", lambda serial: True)
+    monkeypatch.setattr(rp, "clear_telegram_run_leaks",
+                        lambda serial, apply=False: calls["cleared"].append(apply) or True)
+    monkeypatch.setattr(rp, "restore_budget_note",
+                        lambda serial, apply=False: calls["restored"].append(apply) or True)
+    monkeypatch.setattr(rp, "verify_telegram_chat_clean",
+                        lambda serial: calls["verified"].append("telegram") or tg_clean)
+    monkeypatch.setattr(rp, "verify_budget_note",
+                        lambda serial: calls["verified"].append("note") or note_clean)
+    # Any full-reset work would mean the mode is not actually narrow.
+    monkeypatch.setattr(rp, "reset_settings",
+                        lambda *a, **k: calls["full_reset"].append("settings") or True)
+    monkeypatch.setattr(rp, "verify_cloud_accounts",
+                        lambda *a, **k: calls["full_reset"].append("accounts") or True)
+    monkeypatch.setattr(rp, "verify_slides_deck",
+                        lambda *a, **k: calls["full_reset"].append("slides") or True)
+    return calls
+
+
+def _run_leak_only(rp, monkeypatch, *extra: str) -> int:
+    monkeypatch.setattr(sys, "argv", [
+        "reset_phone.py", "--serial", "S", "--profile", "public_v2", "--leak-cleanup-only", *extra,
+    ])
+    return rp.main()
+
+
+def test_leak_cleanup_only_repairs_and_returns_zero(rp, monkeypatch, capsys):
+    calls = _wire_leak_only(monkeypatch, rp, tg_clean=True, note_clean=True)
+    assert _run_leak_only(rp, monkeypatch) == 0
+    # Both leaks are repaired with apply=True (the caller wants the fix, not a dry run).
+    assert calls["cleared"] == [True]
+    assert calls["restored"] == [True]
+    assert calls["verified"] == ["telegram", "note"]
+    assert "RESULT PASS" in capsys.readouterr().out
+
+
+def test_leak_cleanup_only_skips_every_full_reset_step(rp, monkeypatch):
+    """It must stay cheap: no calendar anchors, no account sweep, no slides push."""
+    calls = _wire_leak_only(monkeypatch, rp, tg_clean=True, note_clean=True)
+    _run_leak_only(rp, monkeypatch)
+    assert calls["full_reset"] == []
+
+
+def test_leak_cleanup_only_fails_when_a_leak_survives(rp, monkeypatch, capsys):
+    """A surviving draft must be a non-zero exit, so the runner can flag that row."""
+    _wire_leak_only(monkeypatch, rp, tg_clean=False, note_clean=True)
+    assert _run_leak_only(rp, monkeypatch) == 1
+    assert "RESULT FAIL" in capsys.readouterr().out
+
+
+def test_leak_cleanup_only_still_checks_the_note_when_telegram_is_dirty(rp, monkeypatch):
+    """Both verifies always run, so the log names every live leak, not just the first."""
+    calls = _wire_leak_only(monkeypatch, rp, tg_clean=False, note_clean=False)
+    _run_leak_only(rp, monkeypatch)
+    assert calls["verified"] == ["telegram", "note"]
+
+
+def test_leak_cleanup_only_rejects_the_contradictory_flag(rp, monkeypatch, capsys):
+    calls = _wire_leak_only(monkeypatch, rp, tg_clean=True, note_clean=True)
+    assert _run_leak_only(rp, monkeypatch, "--no-leak-cleanup") == 2
+    assert "contradicts" in capsys.readouterr().err
+    assert calls["cleared"] == []

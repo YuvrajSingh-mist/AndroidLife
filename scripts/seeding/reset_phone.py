@@ -2285,6 +2285,15 @@ def main() -> int:
                              "Telegram draft misled 4 rows, and an in-place edit to the "
                              "Budget Deadline note (row 12) flips the overdue branch the "
                              "next run takes. See redo.md 7.2.")
+    parser.add_argument("--leak-cleanup-only", action="store_true",
+                        help="Do ONLY the Telegram + OnePlus-Notes run-leak cleanup and its "
+                             "gate, then exit -- the cheap (~60-90s) between-row repair for "
+                             "a batch runner. Implies --apply. A batch that re-runs one task "
+                             "across all rows hits this on EVERY row for any task that "
+                             "messages: 2026-09-22's hard__bookmyshow__005 batch lost rows "
+                             "3-13 because row 2 composed a Telegram plan and left the draft "
+                             "behind, and the (correct) verify-only gate then aborted each "
+                             "remaining row rather than seed it contaminated.")
     args = parser.parse_args()
 
     profile_name = args.profile
@@ -2303,6 +2312,25 @@ def main() -> int:
         return 1
 
     prof = PROFILES[profile_name]
+
+    # Between-row repair for a batch runner: only the content leaks, then its gate.
+    # Deliberately narrow so it can run on every row without paying for the calendar
+    # anchors, account sweep or slides push. `--apply` is implied: the caller wants the
+    # repair done, not a dry-run of it.
+    if args.leak_cleanup_only:
+        if args.no_leak_cleanup:
+            print("ERROR: --leak-cleanup-only contradicts --no-leak-cleanup", file=sys.stderr)
+            return 2
+        print("== leak cleanup only (Telegram draft/bubbles + Budget Deadline note) ==")
+        clear_telegram_run_leaks(args.serial, apply=True)
+        restore_budget_note(args.serial, apply=True)
+        # Both verifies always run (`&=` does not short-circuit), so the log names every
+        # leak that is still live rather than only the first.
+        ok_only = verify_telegram_chat_clean(args.serial)
+        ok_only &= verify_budget_note(args.serial)
+        print("RESULT " + ("PASS" if ok_only else "FAIL"))
+        return 0 if ok_only else 1
+
     if not args.verify_only:
         print(f"== reset (profile={profile_name}, apply={args.apply}) ==")
         reset_settings(args.serial, prof.get("settings", {}), args.apply)

@@ -125,28 +125,49 @@ def run_seed_gate(serial: str, batch_dir: Path, profile: str, mode: str, timeout
     command = [sys.executable, str(script), "--serial", serial,
                "--profile", profile, "--verify-only"]
     print(f"Seed gate ({mode}): {' '.join(command)}")
-    try:
-        proc = subprocess.run(command, capture_output=True, text=True, timeout=timeout,
-                              check=False)
-    except subprocess.TimeoutExpired:
-        detail = f"seed gate exceeded {timeout:.0f}s; no verdict for profile {profile}"
-        print(f"\nSEED GATE FAILED: {detail}", file=sys.stderr)
-        if mode == "enforce":
-            (batch_dir / "SEED_GATE_FAILED").write_text(detail + "\n", encoding="utf-8")
-            raise SystemExit(5)
-        return
-    output = (getattr(proc, "stdout", "") or "") + (getattr(proc, "stderr", "") or "")
-    # The gate's verdict is its own RESULT line, not the exit code: a WARN-only run (the
-    # known-unsolvable Meet seed) still exits 0 with RESULT PASS.
-    verdict = next((line.strip() for line in reversed(output.splitlines())
-                    if line.strip().startswith("RESULT ")), "")
-    passed = verdict == "RESULT PASS"
-    for line in output.splitlines():
-        if line.startswith("  FAIL") or line.startswith("  WARN") or line.startswith("  PASS seed stamp"):
-            print(line)
-    if passed:
-        print(f"Seed gate: PASS (profile={profile})")
-        return
+
+    def _report_verdict_lines(text: str) -> None:
+        """Echo only the gate's verdict/warning lines, not its whole app-driving log."""
+        for line in text.splitlines():
+            if line.startswith(("  FAIL", "  WARN", "  PASS seed stamp")):
+                print(line)
+
+    # The gate launches several apps and reads their UI, so it can fail transiently with
+    # no seed fault at all -- measured 2026-09-22 as `cloud account gm: not readable` and
+    # `could not read the Calendar UI`, which passed unchanged on an immediate retry. One
+    # retry turns that from "lose every remaining row" into "lose 2 minutes": without it
+    # this exact flake aborted an 11-row bookmyshow batch. A genuine fault (a leaked
+    # draft, a drifted account) fails again, so the retry only delays that verdict.
+    attempts = 2
+    output = ""
+    verdict = ""
+    for attempt in range(1, attempts + 1):
+        try:
+            proc = subprocess.run(command, capture_output=True, text=True, timeout=timeout,
+                                  check=False)
+        except subprocess.TimeoutExpired:
+            if attempt < attempts:
+                print(f"Seed gate: timed out after {timeout:.0f}s; retrying once", file=sys.stderr)
+                continue
+            detail = f"seed gate exceeded {timeout:.0f}s; no verdict for profile {profile}"
+            print(f"\nSEED GATE FAILED: {detail}", file=sys.stderr)
+            if mode == "enforce":
+                (batch_dir / "SEED_GATE_FAILED").write_text(detail + "\n", encoding="utf-8")
+                raise SystemExit(5)
+            return
+        output = (getattr(proc, "stdout", "") or "") + (getattr(proc, "stderr", "") or "")
+        # The gate's verdict is its own RESULT line, not the exit code: a WARN-only run (the
+        # known-unsolvable Meet seed) still exits 0 with RESULT PASS.
+        verdict = next((line.strip() for line in reversed(output.splitlines())
+                        if line.strip().startswith("RESULT ")), "")
+        if verdict == "RESULT PASS":
+            _report_verdict_lines(output)
+            print(f"Seed gate: PASS (profile={profile})")
+            return
+        if attempt < attempts:
+            print(f"Seed gate: {verdict or 'no RESULT line'} on attempt {attempt}; "
+                  f"retrying once (UI-driven checks read apps and fail transiently)")
+    _report_verdict_lines(output)
     detail = f"seed gate FAILED for profile {profile} ({verdict or 'no RESULT line'})"
     print(f"\nSEED GATE FAILED: {detail}\nFix the seed, then relaunch:\n"
           f"  uv run python scripts/seeding/reset_phone.py --serial {serial} "

@@ -13,6 +13,13 @@
 #   bash scripts/run/rerun_task_rows.sh hard__drive-notes-telegram__010 rerun-010
 #   bash scripts/run/rerun_task_rows.sh easy__google-slides__001 rerun-slides 1 5
 #   ROWS_FILTER=text bash scripts/run/rerun_task_rows.sh <task> <tag>   # skip vision rows
+#   LEAK_CLEANUP=0 bash scripts/run/rerun_task_rows.sh <task> <tag>      # no between-row repair
+#   STEPS=40 LOCAL_AUTOSERVE=1 bash scripts/run/rerun_task_rows.sh <task> <tag>
+#
+# Between rows the script repairs the Telegram/Notes content leaks (LEAK_CLEANUP=1,
+# default). Necessary for any task that messages: a row can leave a draft or a sent
+# bubble, and the runner's verify-only seed gate then correctly ABORTS every remaining
+# row. See --leak-cleanup-only in reset_phone.py.
 #
 # Rows (from LEADERBOARD_ROWS in androidlife-website/assets/js/leaderboard.js):
 #    1 qwen3.8-27b TEXT        2 kimi-k2.6 TEXT        3 gemini-3.1-flash-lite
@@ -72,6 +79,11 @@ ROW_TABLE=(
 # LOCAL_AUTOSERVE=1 starts the row's llama-server, waits for it, runs the row, then
 # stops it — one server at a time, since they all want $LOCAL_UPSTREAM's port.
 LOCAL_AUTOSERVE="${LOCAL_AUTOSERVE:-0}"
+# Between-row Telegram/Notes content-leak repair. On by default: any task that messages
+# can leave a draft or a sent bubble, and the runner's verify-only gate then aborts every
+# remaining row. Set LEAK_CLEANUP=0 to disable (e.g. for a task that cannot leak).
+LEAK_CLEANUP="${LEAK_CLEANUP:-1}"
+SEED_GATE_PROFILE="${SEED_GATE_PROFILE:-public_v2}"
 SERVED_PID=""
 
 stop_server() {
@@ -148,7 +160,7 @@ echo "== seed gate (must pass TODAY; anchors are date-relative) =="
 # gate internally and aborts the task on failure, so a weaker preflight here just
 # means we discover a bad seed AFTER burning a row. Run the same check the runner
 # will run (see run_seed_gate in androidlife/n.py).
-if ! uv run python scripts/seeding/reset_phone.py --serial "$SERIAL" --profile public_v2 \
+if ! uv run python scripts/seeding/reset_phone.py --serial "$SERIAL" --profile "$SEED_GATE_PROFILE" \
       --verify-only 2>&1 | tail -3 | tee /dev/stderr | grep -q "RESULT PASS"; then
   echo "FAIL: seed gate did not pass - run reset_phone.py --apply first" >&2; exit 1
 fi
@@ -216,6 +228,23 @@ EOF
 
   # Free the port before the next local row wants it.
   [[ -n "$SERVED_PID" ]] && stop_server
+
+  # Between-row content-leak repair, BEFORE the next row's gate looks at the device.
+  # Force-stop resets an app's screen, never its content, and this task messages on
+  # Telegram -- so nearly every row leaves either a sent bubble or (when the harness
+  # Send tap misses) a live draft. The runner's gate is verify-only and correctly
+  # ABORTS on that, which without this step costs every remaining row: the first
+  # 2026-09-22 attempt lost rows 3-13 because row 2 left its movie-night plan in the
+  # Yuvraj Airtel composer. Cheap (~60-90s) next to a row.
+  if [[ "$LEAK_CLEANUP" == "1" ]]; then
+    if uv run python scripts/seeding/reset_phone.py --serial "$SERIAL" --profile "$SEED_GATE_PROFILE" \
+         --leak-cleanup-only 2>&1 | tee "$LOGDIR/leak-cleanup-row$ROW.log" | grep -q "RESULT PASS"; then
+      echo "   leak cleanup: PASS"
+    else
+      echo "   leak cleanup: FAIL - next row will abort on the seed gate (see $LOGDIR/leak-cleanup-row$ROW.log)"
+      FAILED+=("$ROW(leak-cleanup)")
+    fi
+  fi
 
   # Per-task post-row drift check. Only the app-private OnePlus-Notes seed needs one:
   # a run can rewrite the note it is graded against, and the rewrite would contaminate
