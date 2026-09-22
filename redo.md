@@ -456,7 +456,15 @@ The failure was **never the account** — one report (`public-20260826-105200.md
 > FAILed, while row 1 (`qwen3.8-27b`) gave up after ~10 steps and passed. Diligence is
 > penalised; that is not a model signal.
 >
-> **This clause must be dropped or re-pointed at Calendar before rows 1–13 are re-run.**
+> **Decision (2026-09-24): the clause is being KEPT and the task is re-run as worded.**
+> Rather than amend the prompt or re-point it at Calendar, the owner chose to run rows 1–13
+> against the prompt verbatim and grade a green-room loop as a **genuine model failure**.
+> Rationale to keep in mind when reading the results: the requirement is not satisfiable
+> from Meet and is not graded, so a FAIL here measures *how a model handles an unanswerable
+> sub-goal* (does it recognise the information is unavailable and move on, or thrash?) —
+> not whether it can read an attendee count. Row 1 (`qwen3.8-27b`) recognised it and passed
+> in 16 steps; row 2 (`kimi-k2.6`) thrashed for 56 and hit the 60-step cap. Read §2 verdicts
+> with that lens, and **do not compare them to other tasks' pass rates.**
 
 **Expect the numbers to move** once it is fixed — but note the post-fix runs will not be
 comparable to the 11 on record, and the earlier "this is now solvable" claim above was
