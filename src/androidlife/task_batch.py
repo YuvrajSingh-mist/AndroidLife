@@ -14,6 +14,7 @@ from typing import Any
 from dotenv import load_dotenv
 
 from .adb import capture_sample
+from .app_packages import packages_for
 from .custom_tools import DEFAULT_ASK_USER_MODEL
 from .files import dated_out_dir, slugify, write_json
 from .task_dataset import app_slug, ask_user_facts_path, load_dataset, select_tasks
@@ -277,6 +278,14 @@ def build_run_command(
         command.extend(["--run-root", args.run_root])
     if task.get("task_id"):
         command.extend(["--task-id", task["task_id"]])
+    # Force-stop the task's own apps before the agent starts. The runner's pre-run reset
+    # stops the FOREGROUND app only, so an app this task needs that happens to be
+    # backgrounded keeps its stale screen and `open_app` resumes it instead of
+    # cold-starting -- the 2026-09-22 BookMyShow "Error code: 400" at step 2. The dataset
+    # names apps by display name, so resolve them to packages here, where that map lives.
+    task_packages = packages_for(task.get("apps") or [])
+    if task_packages:
+        command.extend(["--pre-app-reset-packages", ",".join(task_packages)])
     timeout = args.task_timeout if getattr(args, "task_timeout", None) is not None else task_timeout_seconds(task)
     # 0 = no wall-clock cap: pass --task-timeout 0, which the runner translates
     # to timeout=None. (Omitting the flag would fall back to the runner's own 1000s default and

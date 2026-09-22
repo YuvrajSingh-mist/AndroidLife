@@ -19,7 +19,14 @@ from dotenv import load_dotenv
 from llama_index.llms.openai_like import OpenAILike
 from mobilerun import AgentConfig, DeviceConfig, FastAgentConfig, LoggingConfig, MobileAgent, MobileConfig, TracingConfig
 
-from .adb import capture_app_battery, capture_sample, read_jsonl, reset_app_state, utc_now
+from .adb import (
+    capture_app_battery,
+    capture_sample,
+    read_jsonl,
+    reset_app_state,
+    stop_packages,
+    utc_now,
+)
 from .custom_tools import CUSTOM_TOOLS, DEFAULT_ASK_USER_MODEL, build_ask_user_tool
 from .files import default_batch_run_dir, run_dir_for_label, write_json, write_text
 from .processes import ProxyStartupError, start_llm_proxy, stop_process, wait_for_proxy_ready
@@ -61,6 +68,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after the run (on by default, for fairness so the next task doesn't inherit this task's UI/navigation state).")
     parser.add_argument("--no-pre-app-reset", action="store_true", help="Skip the same force-stop + home reset BEFORE the agent starts (on by default). The post-run reset cleans up after task N; this one guarantees task N itself does not begin on whatever the previous run left on screen -- which matters when a run dies before its post-run reset, when --no-app-reset was used, or when two runs are launched by different processes (e.g. one re-run per leaderboard row).")
+    parser.add_argument("--pre-app-reset-packages", default="", help="Comma-separated packages to force-stop before the agent starts, in ADDITION to the foreground-app reset. The foreground reset cannot help when the app the task needs was backgrounded: `open_app` then resumes its stale screen instead of cold-starting. Measured 2026-09-22 -- row 10 of the hard__bookmyshow__005 re-run left BookMyShow on the seat-selection page and row 6's open_app resumed that dead booking, earning 'Sorry! Request failed ... (Error code: 400)' at step 2. Batch runners pass the task's own apps resolved from the dataset's `apps` field.")
     parser.add_argument("--ask-user-context", default="", help="The hidden ground-truth fact for this task's ask_user tool (Hard/ASK USER tasks only - see the dataset's 'note'/'ask_user_fact' fields). Empty means the simulated user has nothing to reveal.")
     parser.add_argument("--ask-user-kb", default="", help="Path to a JSON knowledge-base profile for the simulated user (multi-turn mode): the user answers whatever the agent asks, from the profile, with rolling memory across turns. When set, takes precedence over --ask-user-context.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="OpenAI model used to play the simulated user for the ask_user tool.")
@@ -405,12 +413,28 @@ def main() -> int:
     # (the 2026-09-21 hard__drive-notes-telegram__010 re-runs were exactly that). Doing
     # it here makes the guarantee self-contained: the agent always starts on the
     # launcher, whoever ran before it.
+    #
+    # Stopping the FOREGROUND app is not enough on its own. It only helps when the app
+    # the task needs happened to be on screen last; when it was BACKGROUNDED it is never
+    # touched, and `open_app` then resumes its stale screen instead of cold-starting.
+    # Measured 2026-09-22: row 10 of the hard__bookmyshow__005 re-run left BookMyShow on
+    # the seat-selection page, and when row 6 ran 3 h later its `open_app` resumed that
+    # dead booking, which BookMyShow answered with "Sorry! Request failed ... (Error code:
+    # 400)" -- at step 2, before the agent had done anything. So each task's own apps
+    # (from the dataset's `apps` field, resolved by app_packages.packages_for) are
+    # force-stopped too. Force-stop only kills the process; it does not clear app data,
+    # so a logged-in app stays logged in.
     pre_app_reset_stopped_package = None
+    pre_app_reset_stopped_packages: list[str] = []
     if not args.no_pre_app_reset:
         try:
             pre_app_reset_stopped_package = reset_app_state(args.serial)
         except Exception:  # noqa: BLE001, S110 - best-effort, same contract as the post-run reset
             pass
+        pre_app_reset_stopped_packages = stop_packages(
+            args.serial,
+            [p.strip() for p in args.pre_app_reset_packages.split(",") if p.strip()],
+        )
     start_monotonic = time.monotonic()
     outcome = asyncio.run(run_agent(args, run_dir, api_base))
     elapsed = time.monotonic() - start_monotonic
@@ -433,6 +457,7 @@ def main() -> int:
         "ended_at_utc": utc_now(), "elapsed_seconds": elapsed, "command_exit_code": return_code,
         "sampler_errors": sampler.errors, "app_reset_stopped_package": app_reset_stopped_package,
         "pre_app_reset_stopped_package": pre_app_reset_stopped_package,
+        "pre_app_reset_stopped_packages": pre_app_reset_stopped_packages,
     })
     write_json(run_dir / "meta.json", meta)
     write_text(run_dir / "output.txt", outcome.reason)

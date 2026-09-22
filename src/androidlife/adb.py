@@ -222,6 +222,34 @@ def reset_app_state(serial: str) -> str | None:
     return stopped
 
 
+def stop_packages(serial: str, packages: list[str] | None) -> list[str]:
+    """Force-stop each package, best-effort, and return the ones that were stopped.
+
+    Complements `reset_app_state`, which can only stop whatever happens to be in the
+    FOREGROUND. A task's own apps are often backgrounded instead, and a backgrounded app
+    keeps its UI state: the next `open_app` then *resumes* the stale screen rather than
+    cold-starting. Measured 2026-09-22 on `hard__bookmyshow__005` -- row 10 left
+    BookMyShow on the seat-selection page, and row 6's `open_app` three hours later
+    resumed that dead booking, which the app answered with "Sorry! Request failed ...
+    (Error code: 400)" at step 2.
+
+    Force-stop kills the process WITHOUT clearing app data, so a signed-in app stays
+    signed in; it is deliberately not `pm clear`. Failures are swallowed: an uninstalled
+    candidate package or a transient adb hiccup must not abort a run, and the caller
+    records what it actually stopped for audit.
+    """
+    stopped: list[str] = []
+    for package in packages or []:
+        if not package or not should_force_stop(package):
+            continue
+        try:
+            force_stop_app(serial, package)
+        except Exception:  # noqa: BLE001, S112 - best-effort, same contract as reset_app_state
+            continue
+        stopped.append(package)
+    return stopped
+
+
 def read_jsonl(path: str, start_offset: int) -> list[dict[str, Any]]:
     """Read JSONL objects from a file starting at a byte offset.
     Returns an empty list if the file doesn't exist (e.g. the proxy logged nothing)."""

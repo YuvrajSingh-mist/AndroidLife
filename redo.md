@@ -129,7 +129,6 @@ wrong: every recorded run failed, and none of them failed for a reason a reset c
 ---
 
 ## 3. `hard__bookmyshow__005` — BookMyShow + Telegram (hard, 5pt, day 2)
-
 **Verdict: the `[cinema]` placeholder named a cinema that does not exist. Failed in every
 recorded public run. Vars fixed 2026-09-18 — all models need a re-run.**
 
@@ -274,6 +273,52 @@ after 4 steps. The 16 Sep run only found the cinemas because it happened to brow
 > in `_tg_open_chat`.
 >
 > **Still open:** run rows 6, 11–13 with the probe active, then do the verdict pass below.
+
+> ### 2026-09-22 (later) — row 6 hit a `400` on BookMyShow, and it was *state*, not network
+>
+> Row 6 died at step 2 on an app error page, so the batch was stopped to diagnose it:
+>
+> ```
+> com.bt.bms:id/no_network_error_container
+> Sorry! Request failed
+> It seems like we are encountering some issues at our side. Please try again.
+> (Error code: 400).
+> ```
+>
+> **The tell is the container: `seat_quantity_container`.** That is the *seat-selection*
+> page — reachable only after choosing a movie, cinema and showtime — and it appeared one
+> step after the splash, before the agent had done anything. BookMyShow had been **resumed
+> into a previous run's unfinished booking**: row 10 (`20260922-140420`, 14:04) drove the
+> app into seat selection and left it there (its own narration: *"the screen has changed to
+> a seat selection interface… I see a 'How many seats?'"*). Row 6 started at 16:57, its
+> `open_app` brought that stale task to the foreground instead of cold-starting, and
+> BookMyShow answered the dead session with `400`.
+>
+> **It is not a network fault.** Verified on the device during the diagnosis: `ping 8.8.8.8`
+> 0% loss, Wi-Fi on, airplane mode off, and BookMyShow opens to a normal home page
+> (Bhubaneswar, movies listed). `am force-stop com.bt.bms` → relaunch lands cleanly on
+> `MainActivity`. Blast radius was **1 of 13 rows**: rows 1, 5 and 10 also reached seat
+> selection without erroring, because each was cold-started.
+>
+> **Why the reset missed it.** The pre-run reset (`cli.py`, §7.4) force-stops only the app in
+> the **foreground**. BookMyShow was *backgrounded* (the foreground was Telegram), so it was
+> never touched, and a backgrounded app keeps its UI state. The fix force-stops **the task's
+> own apps** as well:
+>
+> * `src/androidlife/app_packages.py` — the app-name → package map, moved out of
+>   `scripts/tools/app_audit.py` so the audit and the runner share one source of truth.
+> * `adb.stop_packages()` — best-effort force-stop of a package list, reusing
+>   `should_force_stop` so a protected/system package can never be killed. Force-stop kills
+>   the process **without clearing app data**, so a signed-in app stays signed in — it is
+>   deliberately not `pm clear`.
+> * `cli.py --pre-app-reset-packages` — stopped before the agent starts, and recorded in
+>   `meta.json` as `pre_app_reset_stopped_packages` so each run says what it actually reset.
+> * `task_batch.py` resolves the dataset's per-task `apps` field (all 60 tasks declare one;
+>   `hard__bookmyshow__005` → `['BookMyShow', 'Telegram']`) and passes the packages through.
+>
+> Verified on the device: with BookMyShow in the foreground, `stop_packages(['com.bt.bms',
+> 'org.telegram.messenger'])` returns both, the focus falls back to the launcher, and no
+> `com.bt.bms` process remains.
 
 ---
 
