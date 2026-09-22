@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | 9 of 13 | ✅ 1-9 | **8 PASS / 1 FAIL** — rows 1-8 valid; **row 9 FAIL** (named *Two-wheeler* fastest, 60-step cap). Rows 10-13 pending, each gated by `review_rerun_row.py` before the next starts (§1b) |
+| 1 | `medium__google-maps__002` | 12 of 13 | ❌ | **9 PASS / 3 FAIL** — rows 1-8, 11 valid; rows 9, 10, 12 FAIL. Row 13 running, gated by `review_rerun_row.py` (§1b) |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -203,9 +203,21 @@ Care is needed in **both** directions, and both traps are pinned in
 | 8 | gpt-5.6-luna | VISION | API | `20260923-160008` | ✅ | ✅ PASS |
 | 9 | Qwen3.5-4B | TEXT | **local** | `20260923-162648` | ✅ | ❌ **FAIL** |
 | 10 | gemma-4-E2B-it | TEXT | **local** | `20260923-171300` | ✅ | ❌ **FAIL** |
-| 11 | kimi-k2.6 | VISION | API | — | — | ⏳ next |
-| 12 | gemma-4-E2B-it | VISION | **local** | — | — | ⏳ pending |
-| 13 | Bonsai-2-27B | TEXT | **local** | — | — | ⏳ pending |
+| 11 | kimi-k2.6 | VISION | API | `20260923-174839` | ✅ | ✅ PASS |
+| 12 | gemma-4-E2B-it | VISION | **local** | `20260923-180228` | ✅ | ❌ **FAIL** |
+| 13 | Bonsai-2-27B | TEXT | **local** | — | — | ⏳ running |
+
+**Row 12 verdict — FAIL.** Same shape as row 10: typed the query, then never wrote a note and
+let the step counter run out (60-step cap, `success: false`).
+
+### Row-by-row outcome so far
+
+| outcome | rows | note |
+| --- | --- | --- |
+| ✅ PASS | 1-8, **11** | typed the query and wrote a note naming the fastest of the three modes |
+| ❌ FAIL — off-mode answer | 9 | saved *Two-wheeler* as fastest |
+| ❌ FAIL — click loop | 10 | never reached Notes |
+| ❌ FAIL — no note, step cap | 12 | reached Maps, never saved anything |
 
 **Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
 `Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks
