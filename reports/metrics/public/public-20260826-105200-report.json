@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.5714285714285714,
   "gui_only_success_rate": 0.6415094339622641,
-  "average_steps": 8.35,
+  "average_steps": 8.366666666666667,
   "average_user_queries": 0.7142857142857143,
   "user_interaction_quality_factmatch": 0.1111111111111111,
   "kb_interaction_quality": 0.0,
@@ -28,11 +28,12 @@
   "hallucination_control_honest": 6,
   "hallucination_control_hallucinated": 1,
   "hallucination_control_honesty": 0.8571428571428571,
-  "wall_clock_seconds": 5999.9475111249885,
+  "wall_clock_seconds": 6144.239498082945,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 5409.9475111249885,
+  "agent_running_seconds": 5554.239498082945,
   "cooldown_seconds_per_gap": 10.0,
   "kb_task_correct": 0,
   "rerun_2026_09_21": "re-run 2026-09-21: easy__calendar_002 replaced with a valid-seed re-run; the aggregates here are recomputed for that single task (exact arithmetic, not a corpus regeneration). See the run report for the verdict.",
-  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
+  "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original had satisfied the task from a leftover Maps recent without ever typing the query, and it omitted the distance; the re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved 'Driving: 26 minutes, 13 km' -- ETA and distance. Self-reported verdict unchanged (PASS); the manual audit moves this task FAIL -> PASS. Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
 }
