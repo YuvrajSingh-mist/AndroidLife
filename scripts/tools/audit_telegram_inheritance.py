@@ -11,7 +11,9 @@ dirty device, it is a false pass.
 Measured: row 11 (`20260921-192331`) sent the budget chase at 19:29. Row 13
 (`20260921-194413`) started at 19:46 and its step-6 UI tree already contained the same
 `Sent at 19:29` bubble. Bonsai then reported `success=true` in 9 steps having sent nothing
--- the work had been done for it.
+-- the work had been done for it. That root has since been DELETED: a `success=true` run
+holding a voided pass is exactly the debris that a run-root glob cannot tell from a result
+(see redo.md 7.7), so it was removed rather than left to be re-counted.
 
 The test is a timestamp comparison, not a heuristic: a sent bubble carrying a stamp
 EARLIER than the run's own start cannot have been produced by that run. Such a run is
@@ -25,7 +27,7 @@ Usage
 -----
     uv run python scripts/tools/audit_telegram_inheritance.py                    # whole corpus
     uv run python scripts/tools/audit_telegram_inheritance.py --task hard__drive-notes-telegram__010
-    uv run python scripts/tools/audit_telegram_inheritance.py --run-root assets/runs/public/20260921-194413
+    uv run python scripts/tools/audit_telegram_inheritance.py --run-root assets/runs/public/<TS>
 
 Exit 1 if any run inherited a message (so it can gate a verdict pass), else 0.
 """

@@ -1115,3 +1115,40 @@ kill 8088 while leaving an unrelated listener on 8090 untouched.
 
 This is the same shape as the §3 `cinema` placeholder: a value that resolves perfectly and
 is simply wrong, with nothing downstream positioned to notice.
+
+### 7.7 Failed runs stayed in the run root and could be counted as results (fixed 2026-09-22)
+
+**Scored results — one run per model, per task.** A model gets exactly one recorded run.
+Harness failures are not attempts: they are void and must not be counted, and they must not
+be left looking like results.
+
+Two kinds of debris had accumulated in `assets/runs/public/`, and **18 roots were removed**:
+
+- **15 dead roots** that produced no `output.json` — the batch killed mid-flight by the
+  2026-09-22 restart (12 roots), seed-gate aborts (`20260922-121017`, `20260922-121707`,
+  `20260922-203844`), and one earlier abort (`20260921-182317.aborted-step43`).
+- **3 superseded runs that DID write `output.json`** — and this is the dangerous class:
+  - `20260921-194413` (row 13) held `success: true` from the §4 inherited message. A voided
+    pass sitting in the run root under a plain timestamped name is indistinguishable from a
+    real result to anything that globs the roots.
+  - `20260921-193702` (row 12) and `20260922-223255` (row 13, this session's redundant spot
+    re-run) were superseded by the audited `20260921-212306` / `20260921-213754`, which are
+    the roots that carry turn-based reports under `reports/turn-based/`.
+
+After pruning, both `hard__bookmyshow__005` and `hard__drive-notes-telegram__010` have
+**13 valid runs — one per model — with zero duplicates and zero dead roots**.
+
+**Why it stayed hidden.** `androidlife_report.py:is_backup()` only skips `.bak`/`.old`-style
+names, and `.aborted-<reason>` was created by *nothing in the repo* — the two that existed
+were renamed by hand. So the convention was real but unenforced, and the root that most
+needed it (a false pass) never got it.
+
+**The fix.** `rerun_task_rows.sh` now calls `flag_aborted_root()` as the last step of each
+row: a root that produced no `output.json` is renamed to `<ts>.aborted-seedgate` (seed gate
+refused it) or `<ts>.aborted-incomplete` (the harness died), keeping `batch.log` and
+`SEED_GATE_FAILED` as the explanation for why the row vanished.
+
+A **timeout is deliberately not flagged**: it writes `output.json` and is an honest, if
+void, result (Bonsai row 13), whereas no `output.json` at all means nothing was measured.
+`tests/test_rerun_task_rows.py` pins both the flagging and the acceptance case, including an
+abort that happens before the task directory is known.

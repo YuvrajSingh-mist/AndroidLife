@@ -131,14 +131,17 @@ rows=d.get('data') or d.get('models') or []
 print((rows[0].get('id') or rows[0].get('name') or '') if rows else '')" 2>/dev/null
 }
 
-# The alias a preset advertises, mirroring the ALIAS defaults in serve_gguf.sh. Keep this
-# in step with that file's `case "$SPEC"` block; an empty result means "unknown preset" and
-# disables the guard rather than failing a row that might be fine.
+# The alias a preset advertises, mirroring the ALIAS defaults in serve_gguf.sh. An empty
+# result means "unknown preset" and disables the guard rather than failing a row that might
+# be fine -- tests/test_rerun_task_rows.py parses serve_gguf.sh and fails if this drifts, so
+# adding a preset there without adding it here is caught rather than silently unguarded.
 preset_alias() {
   case "$1" in
     qwen3.5-4b|qwen|qwen35|qwen3.5) echo "Qwen3.5-4B" ;;
     gemma4-e2b|gemma|gemma4|e2b)    echo "gemma-4-E2B-it" ;;
     bonsai2-27b|bonsai2|bonsai|bonsai-2-27b|ternary-bonsai-2|bonsai-2) echo "Bonsai-2-27B" ;;
+    lfm2.5-2.6b|lfm2.6b|lfm-text|lfm2.5-text|lfm26) echo "LFM2.5-2.6B" ;;
+    lfm2.5-vl-3b|lfm|lfm2|lfm2.5|lfm-vl|lfm2-vl|lfm3b) echo "LFM2.5-VL-3B" ;;
     *) echo "" ;;
   esac
 }
@@ -159,6 +162,30 @@ stop_existing_server() {
   # shellcheck disable=SC2086
   kill -9 $pids 2>/dev/null
   sleep 1
+}
+
+# Mark a run root that never produced a result, so it cannot be mistaken for a model run.
+#
+# The `.aborted-<reason>` convention existed only by hand: nothing in this repo created it,
+# so aborted roots sat in assets/runs/public looking exactly like scored runs. Measured
+# 2026-09-22, that is not theoretical -- 20260921-194413 held `success: true` from a message
+# the PREVIOUS run had sent, and was found only because a separate audit reconstructed the
+# timestamps. It has since been deleted; 15 more dead roots were removed with it.
+#
+# Renaming (rather than deleting) keeps the diagnostic -- batch.log and SEED_GATE_FAILED are
+# what explain why a row vanished -- while making the root unambiguously not-a-result. A
+# TIMEOUT is deliberately NOT flagged: it writes output.json and is an honest (void) result,
+# whereas "no output.json at all" means the harness died and nothing was measured.
+flag_aborted_root() {
+  local root="$1" slug="$2"
+  [[ -n "$slug" ]] && ls "$root"/day*/"$slug"/output.json >/dev/null 2>&1 && return 0
+  local reason="incomplete"
+  [[ -e "$root/SEED_GATE_FAILED" ]] && reason="seedgate"
+  local new="$root.aborted-$reason"
+  [[ -e "$new" ]] && new="$new.$$"
+  if mv "$root" "$new" 2>/dev/null; then
+    echo "   flagged: $(basename "$new") - no result ($reason), not a model run"
+  fi
 }
 
 wanted() {
@@ -341,6 +368,11 @@ EOF
     echo "   WARN: Obsidian 'Budget Deadline.md' lost its 'Last reviewed:' line - restore it"
     FAILED+=("$ROW(seed-drift)")
   fi
+
+  # Last, so every reader above still sees the real path: if this row produced no result,
+  # name it as such (see flag_aborted_root). A row can vanish here in two ways that both
+  # look like a scored run otherwise -- the seed gate refused it, or the harness died mid-run.
+  flag_aborted_root "$ROOT" "$TASK_DIR_SLUG"
 done
 
 echo
