@@ -278,18 +278,26 @@ def test_verify_fails_when_the_note_title_vanished(rp, monkeypatch):
 # it. That is exactly how 2026-09-22's hard__bookmyshow__005 batch lost rows 3-13.
 
 
-def _wire_leak_only(monkeypatch, rp, *, tg_clean: bool, note_clean: bool) -> dict[str, list]:
+def _wire_leak_only(monkeypatch, rp, *, tg_clean: bool, note_clean: bool,
+                    maps_clean: bool = True) -> dict[str, list]:
     """Stub every device touch that --leak-cleanup-only makes, and record the calls."""
-    calls: dict[str, list] = {"cleared": [], "restored": [], "verified": [], "full_reset": []}
+    calls: dict[str, list] = {"cleared": [], "restored": [], "maps_notes": [],
+                              "maps_recents": [], "verified": [], "full_reset": []}
     monkeypatch.setattr(rp, "connect_ok", lambda serial: True)
     monkeypatch.setattr(rp, "clear_telegram_run_leaks",
                         lambda serial, apply=False: calls["cleared"].append(apply) or True)
     monkeypatch.setattr(rp, "restore_budget_note",
                         lambda serial, apply=False: calls["restored"].append(apply) or True)
+    monkeypatch.setattr(rp, "clear_maps_run_notes",
+                        lambda serial, apply=False: calls["maps_notes"].append(apply) or True)
+    monkeypatch.setattr(rp, "clear_maps_recents",
+                        lambda serial, apply=False: calls["maps_recents"].append(apply) or True)
     monkeypatch.setattr(rp, "verify_telegram_chat_clean",
                         lambda serial: calls["verified"].append("telegram") or tg_clean)
     monkeypatch.setattr(rp, "verify_budget_note",
                         lambda serial: calls["verified"].append("note") or note_clean)
+    monkeypatch.setattr(rp, "verify_maps_run_notes_clear",
+                        lambda serial: calls["verified"].append("maps") or maps_clean)
     # Any full-reset work would mean the mode is not actually narrow.
     monkeypatch.setattr(rp, "reset_settings",
                         lambda *a, **k: calls["full_reset"].append("settings") or True)
@@ -310,10 +318,12 @@ def _run_leak_only(rp, monkeypatch, *extra: str) -> int:
 def test_leak_cleanup_only_repairs_and_returns_zero(rp, monkeypatch, capsys):
     calls = _wire_leak_only(monkeypatch, rp, tg_clean=True, note_clean=True)
     assert _run_leak_only(rp, monkeypatch) == 0
-    # Both leaks are repaired with apply=True (the caller wants the fix, not a dry run).
+    # Every leak is repaired with apply=True (the caller wants the fix, not a dry run).
     assert calls["cleared"] == [True]
     assert calls["restored"] == [True]
-    assert calls["verified"] == ["telegram", "note"]
+    assert calls["maps_notes"] == [True]
+    assert calls["maps_recents"] == [True]
+    assert calls["verified"] == ["telegram", "note", "maps"]
     assert "RESULT PASS" in capsys.readouterr().out
 
 
@@ -335,7 +345,81 @@ def test_leak_cleanup_only_still_checks_the_note_when_telegram_is_dirty(rp, monk
     """Both verifies always run, so the log names every live leak, not just the first."""
     calls = _wire_leak_only(monkeypatch, rp, tg_clean=False, note_clean=False)
     _run_leak_only(rp, monkeypatch)
-    assert calls["verified"] == ["telegram", "note"]
+    assert calls["verified"] == ["telegram", "note", "maps"]
+
+
+def test_leak_cleanup_only_fails_when_a_maps_note_survives(rp, monkeypatch, capsys):
+    """A left-over Maps run-note buries the seed and free-hints the next row: non-zero exit."""
+    _wire_leak_only(monkeypatch, rp, tg_clean=True, note_clean=True, maps_clean=False)
+    assert _run_leak_only(rp, monkeypatch) == 1
+    assert "RESULT FAIL" in capsys.readouterr().out
+
+
+# ---- Maps run-note sweep (the false "seed damaged" abort, 2026-09-23) --------------
+#
+# medium__google-maps__002 writes a note every row. Seven accumulated on 2026-09-23 and
+# pushed the protected `Budget Deadline` seed below the fold, so the seed gate reported
+# the seed as missing and aborted rows 8-13. The pure decision worth pinning is what
+# counts as a run artifact -- getting that wrong deletes a seed.
+
+MAPS_RUN_TITLES = [
+    "Fastest route to Bhubaneswar Airport",
+    "Fastest Route to Bhubaneswar Airport",
+    "Fastest Travel to Bhubaneswar Airport: Driving (25 min, 12 km)",
+    "Bhubaneswar Airport Travel Info: Fastest Option",
+    "parked here",
+]
+NOTE_SEED_TITLES = [
+    "Budget Deadline",
+    "Daily Reflection",
+    "Rent Dues",
+    "To Buy",
+    "Trip Packing Checklist",
+]
+
+
+@pytest.mark.parametrize("title", MAPS_RUN_TITLES)
+def test_maps_run_titles_are_swept(rp, title):
+    assert rp._note_is_run_artifact(title) is True
+
+
+@pytest.mark.parametrize("title", NOTE_SEED_TITLES)
+def test_seed_titles_are_never_swept(rp, title):
+    assert rp._note_is_run_artifact(title) is False
+
+
+def test_budget_deadline_is_protected_even_if_it_matched_a_pattern(rp):
+    """The seed is excluded by an explicit allow-list, not by hoping no pattern matches."""
+    assert rp._note_is_run_artifact(rp.NOTE_TITLE) is False
+    assert rp.NOTE_TITLE in rp.NOTE_PROTECTED_TITLES
+
+
+def test_note_list_rows_only_takes_the_list_area(rp):
+    xml = ("<hierarchy>"
+           + _node("Fastest Route to Bhubaneswar Airport", rid="com.oneplus.note:id/tv_title",
+                   bounds="[95,732][996,797]")
+           + _node("Budget Deadline", rid="com.oneplus.note:id/tv_title",
+                   bounds="[95,2195][996,2260]")     # under the bottom nav -> not a list row
+           + "</hierarchy>")
+    rows = rp._note_list_rows(rp._ui_nodes(xml))
+    assert [r["text"] for r in rows] == ["Fastest Route to Bhubaneswar Airport"]
+
+
+def test_ui_nodes_reads_the_checkbox_checked_state(rp):
+    """Selection must be driven by `checked`: re-tapping an already-ticked box clears it.
+
+    Measured 2026-09-23: the long-press already checks the pressed row, so a sweep that
+    taps every target clears the one it just selected and deletes nothing while printing
+    success. The fix reads this attribute.
+    """
+    def box(y: int, checked: bool) -> str:
+        return (f'<node index="0" text="" resource-id="com.oneplus.note:id/cb_list_select" '
+                f'class="android.widget.CheckBox" package="app" content-desc="" '
+                f'checkable="true" checked="{str(checked).lower()}" bounds="[40,{y}][130,{y + 90}]" />')
+
+    xml = "<hierarchy>" + box(765, True) + box(974, False) + "</hierarchy>"
+    boxes = [n for n in rp._ui_nodes(xml) if n["rid"].endswith("id/cb_list_select")]
+    assert [b["checked"] for b in boxes] == [True, False]
 
 
 def test_leak_cleanup_only_rejects_the_contradictory_flag(rp, monkeypatch, capsys):

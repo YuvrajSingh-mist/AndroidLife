@@ -359,8 +359,8 @@ PROFILES: dict[str, dict] = {
         "calendar_titles_to_remove": ["Leave for Bhubaneswar Airport"],
         "manual_ui_cleanup": [
             "Notes app: delete run-created notes ('SUM Hospital - 2.8 km' from hard__google-maps-notes__005; largest-file note from medium__files__001; Myntra thread summary from medium__gmail-notes__001; invoice/amount note from hard__files-notes__011; music note from medium__music__001)",
-            "Notes app: delete the Maps run notes 'parked here' (easy__google-maps__004) and 'Fastest Route to Bhubaneswar Airport' (medium__google-maps__002), then REMOVE the home-screen Notes widget those runs add. NOTE: the app reopens the last-edited note on launch, so a leftover note makes the next agent start INSIDE a note - confirmed 2026-09-16 it burned all 60 steps for qwen-26 + kimi-30v and let gemini-26 pass on the pre-existing note.",
-            "Google Maps: clear the search box's *Recent* list (medium__google-maps__002). LONG-PRESS each recent row -> 'Delete suggested search?' -> Delete; do NOT plain-tap the row (that opens the place page AND re-adds it to history - happened 16 Sep with 'Treebo Aasma Downtown'). Leftover rows let agents skip typing the destination entirely (7 of 13 runs on 2026-09-16, incl. 3 that PASSED on the leftover). Then force-stop Maps so it reopens on the home/search state, not a leftover route/place page.",
+            "Notes app: the two Maps run-notes 'parked here' (easy__google-maps__004) and 'Fastest Route to Bhubaneswar Airport' (medium__google-maps__002) are now AUTOMATED - `clear_maps_run_notes` deletes every note whose title matches 'Bhubaneswar Airport' or 'parked here' on each reset and between rows (via --leak-cleanup-only), and never touches the protected 'Budget Deadline' seed. Still MANUAL: remove the home-screen Notes widget those runs add. NOTE: the app reopens the last-edited note on launch, so a leftover note makes the next agent start INSIDE a note - confirmed 2026-09-16 it burned all 60 steps for qwen-26 + kimi-30v and let gemini-26 pass on the pre-existing note. 2026-09-23: a 13-row batch left 7 such notes, which pushed the 'Budget Deadline' seed below the fold and aborted rows 8-13 on the seed gate.",
+            "Google Maps: the search box's *Recent* list (medium__google-maps__002) is now AUTOMATED - `clear_maps_recents` long-presses each recent row -> 'Delete suggested search?' -> Delete on each reset and between rows. NEVER a plain tap: that opens the place page AND re-adds the row to history (happened 16 Sep with 'Treebo Aasma Downtown'). Leftover rows let agents skip typing the destination entirely (7 of 13 runs on 2026-09-16, incl. 3 that PASSED on the leftover). It force-stops Maps afterwards so the app reopens on the home/search state, not a leftover route/place page.",
             "Notes app: restore the font-size note's text size 20 -> 16 (easy__notes__001)",
             "Obsidian: delete the run-created send-record note from hard__photos-gmail-obsidian__012 (title from that run's note)",
             "Gmail: unstar the urgent Myntra email + unread the 8 marked-read (medium__gmail__001); delete the forwarded email sent to Yuvraj Airtel (easy__gmail__001); delete the sent event-photo email (hard__photos-gmail-obsidian__012)",
@@ -1840,6 +1840,8 @@ TG_COMPOSE_HINT = "Message"
 NOTE_PKG = "com.oneplus.note"
 NOTE_TITLE = "Budget Deadline"
 NOTE_TEXT_COUNT_ID = "com.oneplus.note:id/text_count"
+# Notes that must NEVER be deleted by a leak sweep: they are seeds, not run artifacts.
+NOTE_PROTECTED_TITLES = (NOTE_TITLE,)
 
 # Tracked plain-text seed for the OnePlus Notes app. This is NOT the same artifact as
 # assets/seeds/public/notes/Budget Deadline.md -- that one is a markdown note pushed
@@ -1867,6 +1869,7 @@ def _ui_nodes(xml: str) -> list[dict]:
             "cls": attrs.get("class", ""),
             "rid": attrs.get("resource-id", ""),
             "bounds": (x1, y1, x2, y2),
+            "checked": attrs.get("checked") == "true",
             "cy": (y1 + y2) // 2,
             "cx": (x1 + x2) // 2,
         })
@@ -1902,12 +1905,52 @@ def _note_seed_text() -> str | None:
     return ONEPLUS_NOTE_SEED.read_text(encoding="utf-8").rstrip("\n")
 
 
+def _note_find_title(serial: str, timeout_s: float = 40.0) -> list[dict]:
+    """Wait for NOTE_TITLE to appear in the note list, repairing the two ways it hides.
+
+    The OnePlus Notes app reopens on whichever bottom tab it was last left on, and the
+    **To-dos** tab does not list notes at all — so a run that ends on To-dos makes the
+    note look missing. Measured 2026-09-23: a Maps run left the app on To-dos, `_note_open`
+    then returned [] for every remaining row, and the seed gate aborted rows 8-13 of the
+    re-run. The note was never actually damaged.
+
+    A long list is the second way: run artifacts accumulate at the TOP of the list
+    (7 new "Fastest route to Bhubaneswar Airport" notes pushed the seed down on
+    2026-09-23), so the title can sit below the fold. We therefore scroll a bounded
+    number of times rather than assuming the first screenful is the whole list.
+    """
+    _, nodes = _ui_wait(serial, lambda ns: any(n["text"] == NOTE_TITLE for n in ns),
+                        timeout_s, interval_s=1.5)
+    if any(n["text"] == NOTE_TITLE for n in nodes):
+        return nodes
+
+    # Repair the wrong-tab case: tap the bottom-nav "Notes" item (the nav item is the
+    # bottom-most node carrying that content-desc; the screen's own header is not tappable).
+    tab = next((n for n in sorted((n for n in nodes if n["desc"] == "Notes"),
+                                  key=lambda n: n["cy"], reverse=True)), None)
+    if tab is not None:
+        _ui_tap(serial, tab)
+        _, nodes = _ui_wait(serial, lambda ns: any(n["text"] == NOTE_TITLE for n in ns),
+                            15.0, interval_s=1.5)
+        if any(n["text"] == NOTE_TITLE for n in nodes):
+            return nodes
+
+    # Repair the below-the-fold case: scroll the list down, re-dumping after each swipe.
+    for _ in range(6):
+        sh(serial, "input swipe 540 1800 540 700 300")
+        time.sleep(1.5)
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+        if any(n["text"] == NOTE_TITLE for n in nodes):
+            return nodes
+    return nodes
+
+
 def _note_open(serial: str, timeout_s: float = 40.0) -> list[dict]:
     """Force-stop Notes, launch it, open NOTE_TITLE and return the editor's a11y nodes."""
     sh(serial, "input keyevent KEYCODE_WAKEUP")
     sh(serial, f"am force-stop {NOTE_PKG}")
     sh(serial, f"monkey -p {NOTE_PKG} -c android.intent.category.LAUNCHER 1")
-    _, nodes = _ui_wait(serial, lambda ns: any(n["text"] == NOTE_TITLE for n in ns), timeout_s)
+    nodes = _note_find_title(serial, timeout_s)
     target = next((n for n in nodes if n["text"] == NOTE_TITLE), None)
     if target is None:
         return []
@@ -2347,6 +2390,244 @@ def verify_telegram_chat_clean(serial: str) -> bool:
     return good
 
 
+# --- Google Maps run-leak cleanup -----------------------------------------------------
+# The Maps tasks (medium__google-maps__002, easy__google-maps__004) leak in two ways that
+# a force-stop cannot clear, because both live in app-private state:
+#
+#   1. The search box's *Recent* list keeps "Biju Patnaik International Airport". A later
+#      run then taps the suggestion instead of typing the query and the grader sees the
+#      right end state for free -- the "vacuous PASS" of redo.md section 1 (7 of 13 runs).
+#   2. The task WRITES a note ("Fastest Route to Bhubaneswar Airport" and model-specific
+#      variants), one per run. Left alone they accumulate in the OnePlus Notes list, where
+#      they (a) are the same free-hint surface and (b) push the protected `Budget Deadline`
+#      seed below the fold, so `_note_find_title` cannot see it and the seed gate aborts
+#      every later row. Measured 2026-09-23: a 13-row batch left 7 such notes, the seed
+#      looked missing, and rows 8-13 aborted.
+#
+# Both are UI-only: Maps has no public API for recent history, and the notes are
+# app-private. `parked here` is easy__google-maps__004's artifact.
+MAPS_PKG = "com.google.android.apps.maps"
+MAPS_RECENTS_BUTTON = (391, 192)  # the "Search here" omnibox on the Maps home screen
+MAPS_RUN_NOTE_PATTERNS = ("Bhubaneswar Airport", "parked here")
+
+
+def _note_list_rows(nodes: list[dict]) -> list[dict]:
+    """Note rows in the scrollable list area (above the bottom nav bar)."""
+    return [n for n in nodes if n["rid"].endswith("tv_title") and 200 < n["bounds"][1] < 2190]
+
+
+def _note_is_run_artifact(title: str) -> bool:
+    """True for a run-created Maps note. Never matches a protected seed."""
+    if title in NOTE_PROTECTED_TITLES:
+        return False
+    return any(p in title for p in MAPS_RUN_NOTE_PATTERNS)
+
+
+def _note_list_open(serial: str) -> list[dict]:
+    """Force-stop Notes, launch it and land on the *Notes* tab's list.
+
+    The app reopens on whichever bottom tab was last used, and the **To-dos** tab does not
+    list notes -- so a run that ends on To-dos makes every note look missing.
+    """
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, f"monkey -p {NOTE_PKG} -c android.intent.category.LAUNCHER 1")
+    time.sleep(7)
+    nodes = _ui_nodes(_pull_ui_dump(serial))
+    tab = next((n for n in sorted((n for n in nodes if n["rid"].endswith("id/note_tab")),
+                                  key=lambda n: n["cy"], reverse=True)), None)
+    if tab is not None:
+        _ui_tap(serial, tab)
+        time.sleep(4)
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+    return nodes
+
+
+def clear_maps_run_notes(serial: str, apply: bool) -> bool:
+    """Delete the run-created Maps notes, keeping the protected `Budget Deadline` seed."""
+    nodes = _note_list_open(serial)
+    targets = [r for r in _note_list_rows(nodes) if _note_is_run_artifact(r["text"])]
+
+    if not targets:
+        # They may sit below the fold, so scan before concluding there are none.
+        for _ in range(8):
+            sh(serial, "input swipe 540 1700 540 800 300")
+            time.sleep(1.4)
+            nodes = _ui_nodes(_pull_ui_dump(serial))
+            targets = [r for r in _note_list_rows(nodes) if _note_is_run_artifact(r["text"])]
+            if targets:
+                break
+    if not targets:
+        print("  [ok]  notes: no Maps run-notes")
+        sh(serial, f"am force-stop {NOTE_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    print(f"  [!!]  notes: {len(targets)} Maps run-note(s) - e.g. {targets[0]['text'][:48]!r}")
+    if not apply:
+        print("  [dry] delete the Maps run-notes (multi-select, never 'Select all')")
+        sh(serial, f"am force-stop {NOTE_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    removed = 0
+    for _ in range(12):
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+        targets = [r for r in _note_list_rows(nodes) if _note_is_run_artifact(r["text"])]
+        if not targets:
+            break
+
+        if not any(n["rid"].endswith("id/select_all") for n in nodes):
+            # Long-press enters multi-select AND checks the pressed row.
+            t = targets[0]
+            sh(serial, f"input swipe {t['cx']} {t['cy']} {t['cx']} {t['cy']} 1200")
+            time.sleep(2.5)
+            nodes = _ui_nodes(_pull_ui_dump(serial))
+            if not any(n["rid"].endswith("id/select_all") for n in nodes):
+                print("  [!!]  notes: multi-select did not open - delete these by hand")
+                break
+
+        # Tick only the targets whose checkbox is still clear. Tapping an already-checked
+        # row DESELECTS it, and the long-press has already checked the row it pressed:
+        # 2026-09-23's first attempt tapped every target, cleared the one it had just
+        # selected, and then deleted nothing while still reporting success.
+        boxes = [n for n in nodes if n["rid"].endswith("id/cb_list_select")]
+        for row in _note_list_rows(nodes):
+            if not _note_is_run_artifact(row["text"]):
+                continue
+            box = min(boxes, key=lambda b: abs(b["cy"] - row["cy"]), default=None)
+            if box is None or box["checked"]:
+                continue
+            _ui_tap(serial, row)
+            time.sleep(0.7)
+
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+        sel = next((n["text"] for n in nodes if n["rid"].endswith("id/main_title")), "")
+        m = re.search(r"(\d+)\s+selected", sel)
+        n_sel = int(m.group(1)) if m else 0
+        if n_sel == 0:
+            print("  [!!]  notes: nothing stayed selected - aborting this sweep")
+            sh(serial, "input keyevent 4")
+            time.sleep(1.5)
+            break
+
+        dele = next((n for n in nodes if n["rid"].endswith("id/note_delete")), None)
+        if dele is None:
+            print("  [!!]  notes: no delete action - backing out")
+            sh(serial, "input keyevent 4")
+            time.sleep(1.5)
+            break
+        _ui_tap(serial, dele)
+        time.sleep(2.5)
+        # Confirmation dialog, when the build shows one.
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+        confirm = next((n for n in nodes
+                        if n["text"] in ("Delete", "OK", "Confirm") and n["bounds"][1] > 900), None)
+        if confirm is not None:
+            _ui_tap(serial, confirm)
+            time.sleep(2.5)
+        removed += n_sel
+        time.sleep(1.5)
+
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    print(f"  [ok]  notes: deleted {removed} Maps run-note(s)")
+    return True
+
+
+def verify_maps_run_notes_clear(serial: str) -> bool:
+    """Gate: no Maps run-note is left in the Notes list."""
+    nodes = _note_list_open(serial)
+    for _ in range(8):
+        left = [r["text"] for r in _note_list_rows(nodes) if _note_is_run_artifact(r["text"])]
+        if left:
+            break
+        sh(serial, "input swipe 540 1700 540 800 300")
+        time.sleep(1.4)
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+    else:
+        left = [r["text"] for r in _note_list_rows(nodes) if _note_is_run_artifact(r["text"])]
+    sh(serial, f"am force-stop {NOTE_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    print(f"  {'PASS' if not left else 'FAIL'} notes: {len(left)} Maps run-note(s) left"
+          + (f" - {left[0][:48]!r}" if left else ""))
+    return not left
+
+
+def clear_maps_recents(serial: str, apply: bool) -> bool:
+    """Clear the Maps search box's *Recent* list (the redo.md section 1 free hint).
+
+    Long-press each recent row -> "Delete suggested search?" -> Delete. Never a plain tap:
+    that opens the place page AND re-adds the row to history (measured 2026-09-16).
+    """
+    sh(serial, "input keyevent KEYCODE_WAKEUP")
+    sh(serial, f"am force-stop {MAPS_PKG}")
+    sh(serial, f"monkey -p {MAPS_PKG} -c android.intent.category.LAUNCHER 1")
+    time.sleep(8)
+    sh(serial, f"input tap {MAPS_RECENTS_BUTTON[0]} {MAPS_RECENTS_BUTTON[1]}")
+    time.sleep(5)
+    nodes = _ui_nodes(_pull_ui_dump(serial))
+
+    def recent_rows(ns: list[dict]) -> list[dict]:
+        # The Recent section starts under the "Recent" header; rows there are tappable
+        # place/query entries, not the Home/Work/Favourites chips above it.
+        hdr = next((n for n in ns if n["text"] == "Recent"), None)
+        if hdr is None:
+            return []
+        chip_labels = ("Home", "Work", "Favourites", "Set location")
+        out = []
+        for n in ns:
+            if (n["bounds"][1] > hdr["bounds"][1] and n["text"].strip()
+                    and n["text"] not in chip_labels
+                    and not n["text"].startswith("Search here")
+                    and n["text"] != "Recent"):
+                out.append(n)
+        return out
+
+    rows = recent_rows(nodes)
+    if not rows:
+        print("  [ok]  maps: recent list empty")
+        sh(serial, f"am force-stop {MAPS_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    print(f"  [!!]  maps: {len(rows)} entry/entries in the recent list")
+    if not apply:
+        print("  [dry] clear the Maps recent list")
+        sh(serial, f"am force-stop {MAPS_PKG}")
+        sh(serial, "input keyevent KEYCODE_HOME")
+        return True
+
+    for _ in range(12):
+        nodes = _ui_nodes(_pull_ui_dump(serial))
+        rows = recent_rows(nodes)
+        if not rows:
+            break
+        t = rows[0]
+        sh(serial, f"input swipe {t['cx']} {t['cy']} {t['cx']} {t['cy']} 1200")
+        time.sleep(3)
+        dlg = _ui_nodes(_pull_ui_dump(serial))
+        if not any(n["text"] == "Delete suggested search?" for n in dlg):
+            # Not a deletable suggestion (e.g. a "More from recent history" row): skip it
+            # by scrolling rather than tapping, which would re-add it to history.
+            sh(serial, "input keyevent 4")
+            time.sleep(1)
+            sh(serial, "input swipe 540 1200 540 700 300")
+            time.sleep(1.5)
+            continue
+        dele = next((n for n in dlg if n["text"] == "Delete"), None)
+        if dele is None:
+            sh(serial, "input keyevent 4")
+            continue
+        _ui_tap(serial, dele)
+        time.sleep(3)
+
+    sh(serial, f"am force-stop {MAPS_PKG}")
+    sh(serial, "input keyevent KEYCODE_HOME")
+    print("  [ok]  maps: recent list cleared")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Reset benchmark phone to pre-run baseline (dry-run by default).")
     parser.add_argument("--serial", required=True, help="ADB serial (device id or ip:port)")
@@ -2435,13 +2716,16 @@ def main() -> int:
         if args.no_leak_cleanup:
             print("ERROR: --leak-cleanup-only contradicts --no-leak-cleanup", file=sys.stderr)
             return 2
-        print("== leak cleanup only (Telegram draft/bubbles + Budget Deadline note) ==")
+        print("== leak cleanup only (Telegram draft/bubbles + Budget Deadline note + Maps) ==")
         clear_telegram_run_leaks(args.serial, apply=True)
         restore_budget_note(args.serial, apply=True)
-        # Both verifies always run (`&=` does not short-circuit), so the log names every
+        clear_maps_run_notes(args.serial, apply=True)
+        clear_maps_recents(args.serial, apply=True)
+        # All verifies always run (`&=` does not short-circuit), so the log names every
         # leak that is still live rather than only the first.
         ok_only = verify_telegram_chat_clean(args.serial)
         ok_only &= verify_budget_note(args.serial)
+        ok_only &= verify_maps_run_notes_clear(args.serial)
         print("RESULT " + ("PASS" if ok_only else "FAIL"))
         return 0 if ok_only else 1
 
@@ -2475,6 +2759,8 @@ def main() -> int:
             # Both report rather than raise, so a cleanup failure cannot abort a reset.
             clear_telegram_run_leaks(args.serial, apply=args.apply)
             restore_budget_note(args.serial, apply=args.apply)
+            clear_maps_run_notes(args.serial, apply=args.apply)
+            clear_maps_recents(args.serial, apply=args.apply)
         manual = prof.get("manual_ui_cleanup") or []
         if manual:
             print("== CANNOT auto-reset (app-private; do by hand in the UI) ==")

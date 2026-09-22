@@ -12,7 +12,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
-| 1 | `medium__google-maps__002` | **0** | — | **nothing to review — still owed a run** |
+| 1 | `medium__google-maps__002` | **0** (1 batch, aborted) | — | **still owed a run** — the 2026-09-23 batch died at row 8 on a false "seed damaged" (see §1a); rows 1-7 are themselves suspect because each row dirtied Maps for the next |
 | 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
@@ -85,10 +85,66 @@ run's query / route leaks forward and satisfies the task for free where no query
 > **Why this nearly bit again.** `scripts/seeding/SKILL.md` §8 documents the step and the
 > task→check table marks it `manual (§7)`, but it is **absent from
 > `public_v2.manual_ui_cleanup`** in `reset_phone.py`, so the reset never printed it and a
-> run could have started on a dirty Maps and re-scored the same vacuous PASSes. Adding it
-> there — or automating it the way the Telegram/Notes leak cleanups already are — is the
-> follow-up (deferred until this batch exits, so as not to edit `reset_phone.py` under a
-> running run).
+> run could have started on a dirty Maps and re-scored the same vacuous PASSes.
+>
+> ### ⚠️ ABORTED mid-batch — rows 8-13 lost to a *second* leak this section never named
+>
+> The run went out as a 13-row batch (against the one-row-at-a-time rule this file keeps
+> restating). It cleared the leak named above, ran rows 1-7, then **aborted rows 8-13 at the
+> seed gate**: `Budget Deadline` was reported missing.
+>
+> It was never missing. The Maps task **writes a note** ("Fastest Route to Bhubaneswar
+> Airport", plus a model-specific variant per row). Nothing force-stops those out of
+> existence, so they accumulated **one per row — 7 of them, all dated 9/23** — and pushed the
+> `Budget Deadline` seed **below the fold**. Worse, the OnePlus Notes app **reopens on
+> whichever bottom tab it was last left on**, and the *To-dos* tab lists no notes at all: a
+> row that ended on To-dos made every note look gone. `_note_open` returned `[]`, the gate
+> read that as "seed damaged", and stopped the batch. **The seed was intact the whole time.**
+>
+> So the section above undercounted the leak. It named the Maps *recents* free-pass but not
+> the Maps *run-notes*, which are the same free-hint surface **and** the thing that buried
+> the seed. Both are now automated; see §7.8.
+
+---
+
+## 1a. `medium__google-maps__002` — both leaks now automated (2026-09-23)
+
+`reset_phone.py` grows two cleanups next to the existing Telegram / Budget-Deadline ones,
+in the same place and with the same shape:
+
+| function | what it clears | how |
+| --- | --- | --- |
+| `clear_maps_run_notes` | every note titled `*Bhubaneswar Airport*` or `parked here` | OnePlus Notes multi-select → Delete |
+| `clear_maps_recents` | the Maps search box's **Recent** list | long-press row → *Delete suggested search?* → Delete |
+| `verify_maps_run_notes_clear` | gate: 0 Maps run-notes left | re-reads the Notes list |
+
+Both run in the `--apply` reset path **and** in `--leak-cleanup-only`, which
+`rerun_task_rows.sh` already calls between rows (`LEAK_CLEANUP=1`) — so a batch now repairs
+these before every row's gate instead of accumulating them.
+
+Two measured traps, both fixed:
+
+* **A plain tap on a Maps recent row re-adds it to history.** Always long-press → Delete.
+* **Tapping an already-checked Notes checkbox *deselects* it.** The long-press enters
+  multi-select *and* checks the pressed row, so the first version — which tapped every
+  target — cleared the very row it had just selected and deleted nothing **while printing
+  `[ok] deleted 12`**. Fixed by reading the checkbox's `checked` attribute and ticking only
+  the unchecked ones, then asserting the `N selected` count before pressing Delete. Caught
+  by a controlled test: create a real Maps-style note, run the cleanup, assert it is gone
+  **and** the `Budget Deadline` seed survives (it did, `text_count 518`).
+
+`_note_open` also stopped assuming the Notes tab is showing: `_note_find_title` now taps the
+bottom-nav **Notes** item when the list looks empty and scrolls a bounded number of times,
+because run artifacts push the seed down the list. It never touches the seed itself.
+
+**State after the abort:** run-notes 7 → 0, Maps recents → empty, `Budget Deadline`
+`text_count 518` intact, `--leak-cleanup-only` **RESULT PASS**.
+
+**Rows 1-7 are still not trustworthy.** Row 1 started clean, but each row re-added the
+airport to the Maps recents and its own note, so rows 2-7 ran against the same dirty state
+that produced the original vacuous PASSes. The whole task needs re-running on the now
+automated clean state — **one row at a time, with the gate asserted between rows**, which is
+what should have happened first.
 
 ---
 
@@ -1253,3 +1309,32 @@ A **timeout is deliberately not flagged**: it writes `output.json` and is an hon
 void, result (Bonsai row 13), whereas no `output.json` at all means nothing was measured.
 `tests/test_rerun_task_rows.py` pins both the flagging and the acceptance case, including an
 abort that happens before the task directory is known.
+
+### 7.8 The run-note sweep only covered the tasks someone remembered (fixed 2026-09-23)
+
+§7.2's Telegram and Budget-Deadline cleanups were written because those tasks got caught
+leaking. This one is the generalisation: **a task that writes an app-private note leaks on
+every single row**, and nothing about force-stopping prevents it.
+
+`medium__google-maps__002` writes "Fastest Route to Bhubaneswar Airport". Seven rows left
+seven of them. Two consequences, both measured on 2026-09-23:
+
+1. They are the *same* free-hint surface as the Maps recents — a later agent can read the
+   previous row's answer off the Notes list without doing the comparison.
+2. They **bury the protected seed**. `Budget Deadline` was pushed below the fold, and the
+   OnePlus Notes app reopens on the last-used bottom tab (the *To-dos* tab lists no notes at
+   all), so `_note_open` saw nothing. The seed gate then reported the seed as damaged and
+   **aborted six good rows on a false alarm**. The seed was never touched.
+
+**The fix.** `clear_maps_run_notes` deletes notes by title substring
+(`Bhubaneswar Airport`, `parked here`) and `clear_maps_recents` clears the Maps recent
+list; both are wired into `--apply` and `--leak-cleanup-only`, so `rerun_task_rows.sh`
+repairs them between rows. `_note_find_title` additionally repairs the wrong-tab and
+below-the-fold cases before concluding a note is missing. The seed is protected by an
+explicit `NOTE_PROTECTED_TITLES` list, and the sweep never uses *Select all*.
+
+**The lesson, stated generally:** any future "delete the run artifacts" step must be
+triggered by the reset, not by a human remembering it. The two cleanups in §7.2 were
+correct and still let this through because they only knew about the tasks that had already
+bitten. Task→artifact knowledge belongs in the profile (`manual_ui_cleanup`) *and* in an
+automated sweep; a note in `SKILL.md` alone is not a gate.
