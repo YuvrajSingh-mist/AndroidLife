@@ -294,6 +294,15 @@ Two deliberate exceptions, reported separately rather than failing:
 - **Third-source drift.** `reports/metrics/**` is git-ignored and regenerated
   locally by `androidlife_report.py`, so a machine JSON can disagree with the
   hand-verified report. The report wins; the script prints these as warnings.
+  These warnings are *expected* on the `steps` / `queries` / `uiq` axes and must
+  not be "reconciled" by pushing the JSON's figure onto the report: the report's
+  table carries the audited figure and the JSON carries the generator's, which
+  differ where the generator's definition does (it counts timeouts as `steps: 0`,
+  adds a `triggered` term to the UIQ denominator, etc.). Re-run deltas are applied
+  to **each basis separately** and the residual is left alone. As of 2026-09-26 the
+  full list is 7 fields — rows 3/4/7/13 `steps`, row 4 `queries`, rows 3/6 `uiq` —
+  each explained in `redo.md` §7d/§7e, which is also where to look before adding a
+  new one or declaring one fixed.
 - **Interrupted runs.** Rows with an `interrupted` block publish the relaxed
   `passed / 60` figure, so the script re-derives it from the block *and* checks the
   report's reached-denominator figure against `passed / finished`.

@@ -28,6 +28,14 @@ group against the raw `llm_proxy_metrics.jsonl` / `ask_user_metrics.jsonl` when
 the run root is present locally, because those are machine-generated and cannot
 be mistyped by hand.
 
+A disagreement there is *expected*, not a defect: the report's table carries the
+manually-audited figure and the board publishes from it, while the JSON carries
+the generator's figure, and the two are defined differently (the generator counts
+a timed-out task as `steps: 0`, adds a `triggered` term to the UIQ denominator,
+and so on). The report wins. The current expected list is documented in
+`redo.md` §7d/§7e and `docs/evaluation-policy.md` §9.1 — check there before
+treating a new warning as drift.
+
 Interrupted rows
 ----------------
 Rows 9-11 are interrupted runs. They carry two denominators: the relaxed
@@ -748,7 +756,10 @@ def main() -> int:
             print(f"  ✗ {c}")
         print()
     if warnings:
-        print(f"REPORT vs OFFICIAL METRICS JSON ({len(warnings)}) — not a leaderboard bug")
+        print(
+            f"EXPECTED DIVERGENCE vs OFFICIAL METRICS JSON ({len(warnings)}) — "
+            "official/manual split, not a leaderboard bug (report wins; redo.md §7d/§7e)"
+        )
         for key, r in warnings:
             print(f"  ~ {key}  ·  {r.name}: metrics JSON {r.expected!r} vs published {r.actual!r}")
         print()

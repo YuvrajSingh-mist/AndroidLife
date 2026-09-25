@@ -321,7 +321,9 @@ Three things surfaced that the arithmetic pass could not have seen:
   §7d requires for steps, rather than re-basing either onto the other.
 
 **A note on `steps(official)`.** §7d's warning list is unchanged apart from rows 9-12 dropping
-off it (their two figures now agree); row 13's 3.53 vs 12.71 gap is §7e and still unexplained.
+off it (their two figures now agree). Re-audited 2026-09-26: the list is rows 3/4/7/13 on
+`steps`, row 4 on `queries` and rows 3/6 on `uiq` — 7 fields, all explained in §7d, with row 13
+resolved there as the timeout (`steps: 0`) artifact.
 
 **Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
 `Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks
@@ -1726,20 +1728,55 @@ Known-current drift (regenerate each when touched): rows **11** (14.3 vs 17.1), 
 were fixed while publishing the Maps batch (row 2 48.3 -> 50.0, row 3 61.7 -> 63.3, row 5 BMS
 `hard` 35.3 -> 41.2, row 6 65.0 -> 63.3); rows 1, 4, 7, 8, 9, 10 now agree exactly.
 
-**7d. A third divergence axis: the report's manual step average vs the metrics JSON's
-step average.** These are *different metrics on different bases* and the verifier already
+**7d. A third divergence axis: the report's manual average vs the metrics JSON's
+average.** These are *different metrics on different bases* and the verifier already
 treats the gap as a **warning**, not a mismatch (`steps(official): metrics JSON X vs
-published Y`). Current gaps: row 3 8.37 vs 8.09, row 4 12.97 vs 13.67, row 7 40.58 vs 41.52,
-row 13 3.53 vs 12.64. Rows 1, 2, 5, 8, 9, 10, 11, 12 agree.
+published Y`, and likewise for `queries` and `uiq`).
+
+**Re-audited 2026-09-26 (all 7 warnings, all three axes).** The verifier's warning list is
+not steps-only — `queries` and `uiq` are cross-checked on the same official/manual split.
+The full current list:
+
+| row | model | axis | official (metrics JSON) | published (report table) | cause |
+|---|---|---|---|---|---|
+| 3 | gemini-3.1-flash-lite | steps | 8.4 | 8.12 | audit basis, unexplained residual |
+| 3 | gemini-3.1-flash-lite | uiq | 0.1111 | 0.125 | **denominator**: generator = 1 ÷ (7 interaction + 2 triggered) = 1/9; audit = 1/8 |
+| 4 | seed-2.0-lite | steps | 12.8833 | 13.59 | audit basis, unexplained residual |
+| 4 | seed-2.0-lite | queries | 0.5714 | 0.67 | **denominator**: generator = 4 asks ÷ 7 interaction tasks = 4/7; audit = 4/6 |
+| 6 | seed-2.0-lite (VISION) | uiq | 0.1 | 0.2 | **stale JSON** — fresh artifact recompute gives 0.2, i.e. the published figure |
+| 7 | gpt-5.6-luna (TEXT) | steps | 41.2833 | 42.22 | audit basis, unexplained residual |
+| 13 | Bonsai-2-27B (TEXT) | steps | 4.1875 | 12.73 | **resolved → §7e** |
+
+Rows 1, 2, 5, 8, 9, 10, 11 and 12 agree on all three axes.
 
 *Do not force them equal.* Row 7 briefly did, on the theory that the 0.93 gap was exactly the
 2026-09-21 `calendar_002` re-run's -56/60; it was reverted because rows 3/4/13 show the same
 kind of gap with no such tidy explanation, i.e. the two numbers are genuinely computed
 differently. Apply the task delta to **each** on its own basis and leave the residual alone.
 
-**7e. Row 13's steps gap (3.53 vs 12.64) is the largest and is unexplained.** Its report is an
-interrupted-then-resumed run; ~9.1 steps over 60 runs is ~546 steps, more than the whole run.
-That row needs the hand pass before either number is trusted.
+**Evidence that both series are being maintained (not one going stale).** Every re-run's delta
+lands on *both* bases by the same amount, within the report's 2-dp rounding — measured across
+the 2026-09-24/25 meet batch: row 3 +0.03 (report) vs +0.0333 (JSON), row 4 −0.08 vs −0.0834,
+row 6 −0.02 vs −0.0167, row 7 +0.70 vs +0.70. A stale series would drift by zero. The residual
+is what stays behind, and it does not move.
+
+**Reproduction notes (2026-09-26).** The official figures are reproducible from the Hub
+artifacts via `load_run_record()` + `benchmark_metrics`: row 3 `uiq` = 1/9 and
+`queries` = 5/7, row 4 `queries` = 4/7 all match their JSONs exactly, which is what pins the
+cause to the `triggered` term in `user_interaction_quality_factmatch` and to the audit's own
+interaction denominator. Note the JSONs are hand-adjusted per re-run, **not** regenerated, so a
+fresh aggregate over today's (in-place-merged) artifacts does not equal them — expected, not a
+defect. And §7b holds: every `metrics/*-report.md` is a pure `render_markdown()` of its `.json`
+(15/15 verified 2026-09-26).
+
+**7e. Row 13's steps gap (4.19 vs 12.73) — RESOLVED, it is a timeout artifact.** Every task
+that times out writes `steps: 0` to its `output.json` (the step counter is lost on the timeout
+path), so the official mean covers only the terminating tasks: **67 steps ÷ 16 records =
+4.1875**. The report's **12.73** is the true effort counted from the trajectories
+(**191 tool calls ÷ 15 tasks**). The published figure is the right one and the report says so in
+its own note at `reports/public/public-20260920-044846.md`; the official one must not be quoted
+as a speed figure. Nothing left to hand-pass here — this is the *explanation* of why the two
+bases differ, and it is the cleanest single example of the class.
 
 **7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
 Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day headers) for the same
@@ -1872,6 +1909,20 @@ backup. Earlier wording in §6 implied the former; §6 and the header table now 
 
 ### 8i. Still open
 
+* **§2's meet re-runs were published in the reports/metrics/leaderboard before the Hub had the
+  artifacts — now fixed, but this is the check to repeat for any future section.** Verified
+  2026-09-26 against `runs/` on `YuvrajSingh9886/androidlife-public` (15 canonical roots, zero
+  re-run roots): rows 1-8 still carried the **pre-fix** meet directory (row 3:
+  `"The Weekly Sync meeting was not found"` / `steps: 3` / `success: false`, where the published
+  re-run is `"Weekly Sync, Weekly Agenda.txt"` / `5` / `true`), row 10 carried a meet directory
+  with **no `output.json`**, and rows 9, 11, 12, 13 had no meet directory at all; HF's
+  `reports/` was also the pre-meet snapshot (last commit `bfb56a07`, 2026-09-25 07:17 UTC,
+  while the meet rows were written 19:05-20:20 UTC). **Merged in place on 2026-09-26** — the 13
+  local re-run roots replaced `runs/<canonical>/day3/hard-google-meet-files-070/` (524 MB
+  added, 359 pre-fix trajectory files deleted, `30926a1e`), all 13 file sets now match their
+  re-run root exactly with a single trajectory dir, and the reports were pushed (`39` files).
+  The lesson: a section is not published until the **artifacts** are, and the only proof is a
+  file-set comparison against the local re-run root — the reports alone will look right.
 * ~~`hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
   calendar event.~~ **Resolved 2026-09-24:** the event was seeded through the Calendar app UI
   (conference link + guest list), the pre-run gate now asserts both, and all 13 rows were
