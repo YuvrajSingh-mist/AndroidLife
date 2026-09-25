@@ -23,8 +23,9 @@ Notes from the pass:
 * **§1 now has artifacts, and all 13 rows are published.** Rows 1-7 ran on 2026-09-23 and
   were audited from their trajectories (all typed the query — see §1a). Rows 8-13 were lost to a
   false seed-gate abort and were re-run afterwards; those five are the hand pass in §1b, because
-  their reports do not use the 60-task table shape. **§2 has no artifacts** and is still owed its
-  first re-run.
+  their reports do not use the 60-task table shape. **§2 is now done too** — the seed was
+  repaired on 2026-09-24 and all 13 rows re-run; see the §2 `RE-RUN COMPLETE` block (this note
+  is the 2026-09-23 snapshot, when §2 was still the one section with no artifacts).
 * **§4 rows 3/4/12 self-report `success: true`** — that is exactly the false pass the
   delivery gate exists to catch; recorded correctly as FAIL.
 * **§6 row 13 (Bonsai)** has no separate *working* root: its calendar re-run was captured
@@ -396,6 +397,11 @@ The failure was **never the account** — one report (`public-20260826-105200.md
 
 > ### ⚠️ 2026-09-21 CORRECTION — the 2026-09-17 fix was NOT sufficient
 >
+> *(Historical. **Superseded 2026-09-24**: the seed was repaired with app-UI writes and all 13
+> rows re-run — see the `RE-RUN COMPLETE` block at the end of this section. The diagnosis below
+> still stands as the reason the adb-only path could never work, which is what forced the
+> app-UI seed.)*
+>
 > **This task is still unsolvable as seeded, and cannot be made solvable by resetting.**
 > The 17 Sep fix assumed the blocker was the link and the 48h window. Both were real, but
 > neither was the whole cause. The real blocker is that **Meet is a cloud app and the seed
@@ -495,7 +501,10 @@ corrected seed. **Result: 9 PASS / 4 FAIL.**
 **This is the largest single-task movement of any redo section: 9 of 13 published verdicts
 move, all FAIL → PASS.** The task was previously FAIL in all 13 rows *because the seed was
 unsolvable* (Meet listed no conferenced meeting), so the re-run is the first time the task
-measured a model at all. Per-row evidence is in the hand-review ledger.
+measured a model at all. Per-row evidence is the run root, step count and verdict in the table
+above; each row's full reasoning is written into that row's public report
+(`reports/public/public-<root>.md` → `hard__google-meet-files__070` re-run note) and metrics JSON
+(`rerun_2026_09_25_meet`).
 
 **Four failure modes, all model-side — no seeding defect:**
 
@@ -1346,7 +1355,7 @@ level**, not by any individual model — so the recorded cells are not a model s
 | # | Task | Why | Blocked on |
 |---|---|---|---|
 | 1 | `medium__google-maps__002` | vacuous PASS from Maps' leaked recent/route state; the 17 Sep run also left live navigation running over 26/27 tasks | clear Maps history + stop nav |
-| 2 | `hard__google-meet-files__070` | unsolvable seed — the 2026-09-17 "no conference link + 48h window" fix was **not sufficient**: Meet lists Google's *cloud* state, and an adb calendar write never uploads (see the §2 correction) | **BLOCKED** on a one-time manual seed in the Calendar **app UI** — a recurring DAILY `Weekly Sync` 10:00–11:00 with a Meet link + attendees, then delete the adb-seeded copies. `--apply` on the run day does **not** fix it, and `--verify-only` only **WARNs** unless `--meet-strict` is passed |
+| 2 | `hard__google-meet-files__070` | unsolvable seed — the 2026-09-17 "no conference link + 48h window" fix was **not sufficient**: Meet lists Google's *cloud* state, and an adb calendar write never uploads (see the §2 correction) | ✅ **DONE 2026-09-24** — one-time seed applied in the Calendar **app UI** (recurring DAILY `Weekly Sync` 10:00–11:00 with a Meet link + guest list; adb-seeded copies deleted) and the pre-run gate extended to assert both, so a silently dropped seed can no longer reach run day. All 13 rows re-run on the repaired seed: **9 PASS / 4 FAIL** (row 11's ATTENDEE clause and rows 7/8's non-termination are model-side). Verified by the gate: `reset_phone.py --verify-only` now covers `ATTENDEES_URI` |
 | 3 | `hard__bookmyshow__005` | `[cinema]` placeholder named a non-existent cinema — **fixed (`INOX: Symphony Mall`); the 2026-09-18 fix had NOT taken effect** — `config/user.yaml` is gitignored and was overriding it, so the runner still resolved `INOX Bhubaneswar`. Corrected + launch now gated by `verify_task_vars.py` | ✅ **DONE 2026-09-22** — all 13 rows re-run on the corrected seed and **manually reviewed** (0.5 → 1 PASS: **only row 5 moved, FAIL → PASS**, its plan genuinely delivered; rows 3/4/6/10 became delivery-gate false passes; row 10's hallucination retired; row 13 VOID on timeout). Rows + `↻` notes written into all 13 reports, metrics JSONs substituted, leaderboard updated (`verify_leaderboard.py`: 0 mismatches) |
 | 4 | `hard__drive-notes-telegram__010` | app-private `Budget Deadline` note kept vanishing, and the oracle named a Drive file (`family_numbers.xlsx`) that never existed — **fixed 2026-09-21: Drive dropped from the task, oracle fixed, note text version-controlled + re-typed via UI** | ✅ **DONE 2026-09-21** — all 13 rows re-run against the corrected seed (**0 PASS**, no verdict flipped); every run verified to start on the launcher; reports/leaderboard/metrics substituted, artifacts + reports byte-identical on HF |
 | 5 | `easy__google-slides__001` | Two decks both named **"Q3 Review"** (stray **1**-slide vs canonical `Q3_Review.pptx` **8**-slide, rebuilt 2026-09-07) → runs read the wrong file; the grader had no ground truth, so `1`/`3`/`8` all recorded PASS — **deck now version-controlled + restored on reset, grader now checks the reply** | ✅ **DONE 2026-09-21** — all 7 affected rows re-run against the real deck (6 PASS / 1 genuine FAIL); reports, leaderboard + metrics JSONs substituted; artifacts byte-identical on HF |
@@ -1863,8 +1872,10 @@ backup. Earlier wording in §6 implied the former; §6 and the header table now 
 
 ### 8i. Still open
 
-* `hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
-  calendar event.
+* ~~`hard__google-meet-files__070` — blocked on a manually seeded recurring DAILY `Weekly Sync`
+  calendar event.~~ **Resolved 2026-09-24:** the event was seeded through the Calendar app UI
+  (conference link + guest list), the pre-run gate now asserts both, and all 13 rows were
+  re-run — 9 PASS / 4 FAIL (§2).
 * The 010 and BookMyShow re-runs have no `review.json` (see 8f). The sidecar mechanism cannot
   cover 010 at all: `delivery_checks_public.json` lists only BookMyShow, and 010 must stay out
   of it because its send is conditional — gating it would fail a correct decision *not* to send.
