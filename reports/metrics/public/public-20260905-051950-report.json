@@ -9,7 +9,7 @@
   },
   "interaction_success_rate": 0.5714285714285714,
   "gui_only_success_rate": 0.660377358490566,
-  "average_steps": 19.1,
+  "average_steps": 19.0833333333,
   "average_user_queries": 0.5714285714285714,
   "user_interaction_quality_factmatch": 0.10000000000000003,
   "kb_interaction_quality": 0.5,
@@ -29,11 +29,12 @@
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 16488.247593171,
+  "wall_clock_seconds": 16358.978773171,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 15898.247593170996,
+  "agent_running_seconds": 15768.978773170996,
   "cooldown_seconds_per_gap": 10.0,
   "rerun_2026_09_21": "re-run 2026-09-21: easy__calendar_002 replaced with a valid-seed re-run; the aggregates here are recomputed for that single task (exact arithmetic, not a corpus regeneration). See the run report for the verdict.",
   "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
-  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original FAIL was a harness stop -- three malformed tool calls in a row, Maps never opened. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the real Driving/Transit/Walking values with ETA and distance. Self-reported success false -> true and manual FAIL -> PASS, so this is the first row in the batch where the official count moves too (38 -> 39 = 65.0%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original FAIL was a harness stop -- three malformed tool calls in a row, Maps never opened. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the real Driving/Transit/Walking values with ETA and distance. Self-reported success false -> true and manual FAIL -> PASS, so this is the first row in the batch where the official count moves too (38 -> 39 = 65.0%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration.",
+  "rerun_2026_09_25_meet": "re-run 2026-09-24: hard__google-meet-files__070 re-taken on the repaired seed (Meet conference link and guest list re-added through the Calendar app UI so they reach Google's servers). The original FAIL was the unsolvable seed: Meet's Scheduled list showed only the day-2 'Product Demo' event, so there was no 'Weekly Sync' to find -- and the run answered 'Product Demo' on a self-reported success (the manual audit then recorded it as an ASK-USER-gate FAIL, which it never was: the task has no ask_user fact). Verdict FAIL -> PASS: the re-run read 'Weekly Sync' from Meet's Scheduled list and opened 'Weekly Agenda.txt', replying 'Meeting title: Weekly Sync / Agenda file name: Weekly Agenda'. Official self-report is success before and after, so the official count is unchanged; telemetry: 8 -> 7 steps, 238.6 -> 109.4 s, 10 -> 9 requests, $0.018 -> $0.016. Aggregates here are recomputed for this single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
 }
