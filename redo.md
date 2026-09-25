@@ -1689,110 +1689,55 @@ pass, not arithmetic.
 
 ---
 
-## 8. Re-run battery telemetry — median fill, and the BookMyShow publication (2026-09-24)
+## 8. Re-run battery telemetry — N/A (no proxy), not a median fill (2026-09-25)
 
-### 8a. The problem: every re-run reads as costing no battery
+### 8a. The problem
 
-All 55 re-run task-runs were taken with the phone on charge, so every re-run artifact carries
-`battery_level_delta_pct = 0`. Substituted into the published roots as-is, a task a model
-re-ran looks *free* while every task it sits next to carries a real drain, which quietly breaks
-the one comparison the row is supposed to support.
+All charge-night re-runs recorded `battery_level_delta_pct = 0`. Leaving that 0 next to
+neighbours with real drains makes a re-run look free; **inventing** a same-category median
+to stand in for the missing reading was tried on 2026-09-24 and is **withdrawn**. A proxy
+is not a measurement.
 
-Thermals are **not** affected and were deliberately left alone: a re-run night on charge still
-heated the phone, so its CPU/GPU/NPU peaks, `thermal_status`, skin/battery temps and 1 Hz
-samples are genuine measurements of that run. Only the battery *delta* is meaningless. Verified
-after the fact — the only key written anywhere was `battery_level_delta_pct`.
+Thermals were never touched and stay as measured.
 
-### 8b. The fill rule
+### 8b. The rule (current)
 
-`battery_level_delta_pct` for a re-run task = **the median of the same-category tasks in the run
-root the task is published under, excluding the task itself and every other re-run in that
-root.** Not the model's other rows, and not the re-run root (which holds one task, so a median
-there is just that task's own 0).
+For every re-run task taken on charge:
 
-Median rather than mean because the per-task distribution is spiky (an easy task is 0..-2, a
-long hard one -6..-15) and a mean would let one outlier stand in for an "easy" reading.
+* `battery_level_delta_pct` is **N/A** in the reports (not a median, not a guessed drain).
+* Artifacts keep the honest on-charge reading of **0** (any median that was written into
+  `run_metrics.json` is being restored to 0).
+* The run's published **Battery drain (Δ sum)** is the sum over **untouched tasks only** —
+  re-run cells are excluded. That sum equals the pre-fill "published" column below.
 
-**Which dirs count as re-runs** — decided from the artifacts, not from `LAUNCH.txt` tags:
+### 8c. Aggregates (untouched tasks only)
 
-```
-a task dir is a re-run  ⇔  battery_level_delta_pct == 0  AND  start date >= 2026-09-20
-```
+| row | root | batteryDrain (excl. re-runs) | re-runs excluded |
+|---|---|---|---|
+| 1 | 2026-08-28-002424 | **−69 %** | calendar, slides, 010, maps, bookmyshow |
+| 2 | 2026-08-29-153657 | **−90 %** | calendar, slides, 010, maps, bookmyshow |
+| 3 | 20260826-105200 | **−21 %** | calendar, slides, 010, maps, bookmyshow |
+| 4 | 2026-08-30-143554 | **−29 %** | slides, 010, maps, bookmyshow |
+| 5 | 20260909-043419 | **−79 %** | 010, maps, bookmyshow |
+| 6 | 20260905-051950 | **−51 %** | calendar, slides, 010, maps, bookmyshow |
+| 7 | 20260906-063336 | **−85 %** | calendar, slides, 010, maps, bookmyshow |
+| 8 | 20260910-041531 | **−88 %** | 010, maps, bookmyshow |
+| 9 | 20260914-061846 | **−96 %** | 010, maps *(bookmyshow orphan — already excluded)* |
+| 10 | 20260916-011341 | **−81 %** | calendar, 010, maps, bookmyshow |
+| 11 | 2026-08-30-021852 | **−94 %** | calendar, slides, 010, maps, bookmyshow |
+| 12 | 20260917-160018 | **−93 %** | calendar, 010, maps, bookmyshow |
+| 13 | 20260920-044846 | **−92 %** | calendar, 010, maps *(bookmyshow orphan — already excluded)*; phone still 100%→0% overall |
 
-Two earlier rules were tried and rejected on evidence:
+The 2026-09-24 median-fill figures (−70 / −80 / −16 / … / −100) and the six-row
+bookmyshow-fold correction are historical only — they must not be re-applied.
 
-* matching `LAUNCH.txt` `redo_task=` against leaderboard rows — misses substitutions made *in
-  place*, so row 13's calendar went undetected;
-* "start date differs from the modal date" — flags every task after midnight UTC; row 1 lit up
-  with 22 of its 60 tasks.
+### 8d. Where the numbers live
 
-The window rule is checked against the two cases that break the naive versions: row 3's run
-legitimately spans 2026-08-26 → 08-28 (those 08-28 tasks carry real readings of -1, -1, 0 and
-are *not* re-runs), and row 9's 2026-09-16 re-runs ran **off** charge (-2, -1) so their readings
-are genuine and stay. Row 13's calendar is caught by the window despite being substituted in
-place: dated 2026-09-20 with Δ% = 0 among neighbours of -1..-15.
-
-### 8c. The aggregate, recomputed without recovering any originals
-
-Each report publishes the run's summed drain. Replacing k task readings by medians moves the sum
-by (medians − originals), and the originals are not needed individually:
-
-```
-published = A + Σ(originals of the re-runs)      A = the root's untouched tasks
-final     = A + Σ(medians)  =  published − Σoriginals + Σmedians
-```
-
-`Σoriginals` falls out as `published − A` and was used as the sanity check (all rows gave a
-small negative proportional to the number of re-runs). Facts always come from the **published
-root on HF**, never the local copy — row 13's local `20260920-044846` still holds the *original*
-maps task (-6, dated 09-19) while HF holds the re-run the report actually serves (0, 09-23).
-
-| row | root | published | final | re-runs folded in |
-|---|---|---|---|---|
-| 1 | 2026-08-28-002424 | −69 % | **−70 %** | calendar, slides, 010, maps, bookmyshow |
-| 2 | 2026-08-29-153657 | −90 % | **−80 %** | calendar, slides, 010, maps, bookmyshow |
-| 3 | 20260826-105200 | −21 % | **−16 %** | calendar, slides, 010, maps, bookmyshow |
-| 4 | 2026-08-30-143554 | −29 % | **−27 %** | slides, 010, maps, bookmyshow |
-| 5 | 20260909-043419 | −79 % | **−78 %** | 010, maps, bookmyshow |
-| 6 | 20260905-051950 | −51 % | **−50 %** | calendar, slides, 010, maps, bookmyshow |
-| 7 | 20260906-063336 | −85 % | **−84 %** | calendar, slides, 010, maps, bookmyshow |
-| 8 | 20260910-041531 | −88 % | **−87 %** | 010, maps, bookmyshow |
-| 9 | 20260914-061846 | −96 % | **−98 %** | 010, maps *(bookmyshow is an orphan — excluded)* |
-| 10 | 20260916-011341 | −81 % | **−80 %** | calendar, 010, maps, bookmyshow |
-| 11 | 2026-08-30-021852 | −94 % | **−97 %** | calendar, slides, 010, maps, bookmyshow |
-| 12 | 20260917-160018 | −93 % | **−87 %** | calendar, 010, maps, bookmyshow |
-| 13 | 20260920-044846 | −92 % | **−100 %** | calendar, 010, maps *(clamped — see below)* |
-
-**Row 13 is clamped.** Its per-task drains are large (-4..-15), so three medians add ≈15 to a run
-that already ended at 0 % — the fill alone implies **−107 %**, which no phone can drain. The
-report publishes **−100 %** with the observed **−92 %** shown next to it, and the note states the
-unclamped figure so the arithmetic stays visible.
-
-**Correction (2026-09-24): six rows were wrong for a few hours.** Folding BookMyShow in used
-`abs(now) − orig + med` where `now` had already been made positive, so the signed `orig`/`med`
-flipped the wrong way and overstated the magnitude. Rows 1, 2, 3, 5, 10 and 12 were affected
-(72→**70**, 84→**80**, 18→**16**, 80→**78**, 82→**80**, 93→**87**). Caught by recomputing each
-aggregate a second way — summing the per-task `battery_level_delta_pct` actually stored in the
-artifacts on the Hub — which needs no memory of the originals and agrees with the table above.
-The artifacts themselves were always right; only the reports and `batteryDrain` were inflated.
-
-**Rows 9 and 13 keep BookMyShow out of the aggregate.** Both reports already record that re-run as
-an explicit **orphan** ("2 orphans … counted INTERRUPTED, not FAIL, and excluded from the 27 %"),
-so its artifact is published alongside the root but its drain is not part of the sum.
-
-### 8d. Where the numbers live — all three surfaces agree
-
-1. **Artifacts** — 42 `run_metrics.json` rewritten (local re-run dirs *and* the published root's
-   local copy where it held the placeholder) and re-uploaded; plus 13 BookMyShow dirs.
-2. **Reports** — each report's battery row now carries the final figure, followed by a
-   `> **Battery Δ note:**` naming the re-run tasks, the median rule, and the aggregate. The note
-   is placed after the enclosing table, not inside it.
-3. **Leaderboard** — `batteryDrain` updated for all 13 rows (`verify_leaderboard.py`: 13 rows /
-   300 fields / 0 mismatches).
-
-The published-root local copy guard matters: row 13's local `20260920-044846/day1/medium-google-maps-002`
-still holds the **original** run (-6, 09-19) and was left untouched — only a dir whose current Δ%
-is 0 (the placeholder) was overwritten.
+1. **Artifacts** — re-run `run_metrics.json` carry `battery_level_delta_pct = 0` (on charge).
+   Median fills written into them are restored to 0; reports label those cells **N/A**.
+2. **Reports** — each battery row uses the excl.-re-runs sum above, with a
+   `> **Battery Δ note:**` stating N/A / no proxy.
+3. **Leaderboard** — `batteryDrain` matches the table (`verify_leaderboard.py`).
 
 ### 8e. BookMyShow publication (all 13 rows)
 
