@@ -13,7 +13,7 @@ Every re-run that exists on disk was re-reviewed from its own artifacts (`output
 | § | task | re-runs on disk | reviewed | outcome |
 | --- | --- | --- | --- | --- |
 | 1 | `medium__google-maps__002` | 13 of 13 | ✅ | **10 PASS / 3 FAIL** across the batch. **Published: all 13 rows** — rows 1-8 by the arithmetic pass, **rows 9-13 by the hand pass** (§1b below). `verify_leaderboard.py`: 0 mismatches / 300 fields |
-| 2 | `hard__google-meet-files__070` | **0** | — | **nothing to review — still owed a run** (unsolvable seed) |
+| 2 | `hard__google-meet-files__070` | 13 of 13 | ✅ | **9 PASS / 4 FAIL**; published to all 13 reports + metrics + leaderboard. FAILs: rows 7/8 (luna, non-termination), 11 (kimi VISION, attendee trap), 12 (gemma VISION, `[agenda file]` unresolved) |
 | 3 | `hard__bookmyshow__005` | 13 | ✅ | **1 published verdict moved: row 5 FAIL → PASS**; applied to all 13 reports + metrics + leaderboard |
 | 4 | `hard__drive-notes-telegram__010` | 13 | ✅ | **0 PASS** confirmed; rows 3/4 are delivery-gate false passes (composer never sent), row 12 FAILs the ASK-USER gate |
 | 5 | `easy__google-slides__001` | 7 | ✅ | **6 PASS / 1 FAIL** confirmed (row 7, 60-step cap) — every PASS replied `8` |
@@ -469,6 +469,62 @@ The failure was **never the account** — one report (`public-20260826-105200.md
 **Expect the numbers to move** once it is fixed — but note the post-fix runs will not be
 comparable to the 11 on record, and the earlier "this is now solvable" claim above was
 wrong: every recorded run failed, and none of them failed for a reason a reset could fix.
+
+### ✅ RE-RUN COMPLETE — 2026-09-24/25 (all 13 rows, hand-reviewed)
+
+The seed was repaired (conference link **and** guest list re-added through the Calendar app
+UI, so they upload to Google's servers) and every leaderboard row was re-taken on the
+corrected seed. **Result: 9 PASS / 4 FAIL.**
+
+| row | model | mode | run root | steps | verdict |
+| --- | --- | --- | --- | --- | --- |
+| 1 | qwen3.8-27b | text | `20260924-102208` | 13 | ✅ PASS |
+| 2 | kimi-k2.6 | text | `20260924-103804` | 17 | ✅ PASS |
+| 3 | gemini-3.1-flash-lite | text | `20260924-105601` | 5 | ✅ PASS |
+| 4 | seed-2.0-lite | text | `20260924-111349` | 12 | ✅ PASS |
+| 5 | qwen3.8-27b | vision | `20260924-113115` | 9 | ✅ PASS |
+| 6 | seed-2.0-lite | vision | `20260924-114614` | 7 | ✅ PASS |
+| 7 | gpt-5.6-luna | text | `20260924-132821` | 60 (cap) | ❌ FAIL |
+| 8 | gpt-5.6-luna | vision | `20260925-145242` | 60 (cap) | ❌ FAIL |
+| 9 | Qwen3.5-4B | text (local) | `20260925-210711` | 8 | ✅ PASS |
+| 10 | gemma-4-E2B-it | text (local) | `20260925-212621` | 6 | ✅ PASS |
+| 11 | kimi-k2.6 | vision | `20260925-223649` | 60 (cap) | ❌ FAIL |
+| 12 | gemma-4-E2B-it | vision (local) | `20260925-230840` | 12 | ❌ FAIL |
+| 13 | Bonsai-2-27B | text (local) | `20260925-232447` | 13 | ✅ PASS |
+
+**This is the largest single-task movement of any redo section: 9 of 13 published verdicts
+move, all FAIL → PASS.** The task was previously FAIL in all 13 rows *because the seed was
+unsolvable* (Meet listed no conferenced meeting), so the re-run is the first time the task
+measured a model at all. Per-row evidence is in the hand-review ledger.
+
+**Four failure modes, all model-side — no seeding defect:**
+
+1. **Rows 7, 8 (gpt-5.6-luna, both modes) — failure to terminate.** Both had the deliverable
+   correct (row 8 by step 47) and then repeated the answer string without ever emitting
+   `complete`, burning to the 60-step cap. This is luna's documented corpus-wide signature.
+2. **Row 11 (kimi-k2.6 VISION) — the attendee trap.** Repeated *"0 attendees … let me scroll
+   down more in the bottom sheet to see if there's attendee information"* ×38 to the cap.
+   Reproduced on a verified-clean device, so it is the prompt's unsatisfiable
+   "number of attendees" clause, not device state — the failure the owner's 2026-09-24
+   decision anticipated. Note kimi-k2.6 **TEXT** (row 2) passed the same task, so this is
+   mode-specific, and it is the *first* row to actually fall into the trap (rows 1-6, 9, 10 all
+   recognised the count was unavailable and moved on).
+3. **Row 12 (gemma-4-E2B-it VISION) — placeholder not resolved.** It found the meeting but
+   searched Files for the literal string `"agenda file"` instead of `Weekly Agenda`. The value
+   is supplied in the system prompt as ground truth and every other row resolved it, including
+   the same model in TEXT mode (row 10).
+4. Row 13 (Bonsai-2-27B) is the only row that **routed around** the attendee clause — it fell
+   back to the Calendar app and read *"3 guests (1 yes, 2 awaiting)"*.
+
+**Note on the first row-11 attempt.** `20260925-214040` was re-run with the `Left at 21:37`
+Meet-card subtitle present and also failed; a clean re-run (`20260925-223649`) reproduced the
+failure with the card absent, which is what proved the card was incidental and the attendee
+trap is the cause. The clean root supersedes it.
+
+**Operational note.** The pre-run seed gate flaked ~4 times during this batch on its UI checks
+(`maps` recents, Meet `Scheduled`), each passing on immediate retry while `reset_phone.py
+--verify-only` printed `RESULT PASS`. The runner aborts the row on that, so the batch needed
+manual/looped retries. Worth hardening before the next multi-row sweep.
 
 
 ---
@@ -1721,7 +1777,7 @@ For every re-run task taken on charge:
 | 5 | 20260909-043419 | **−79 %** | 010, maps, bookmyshow |
 | 6 | 20260905-051950 | **−51 %** | calendar, slides, 010, maps, bookmyshow |
 | 7 | 20260906-063336 | **−85 %** | calendar, slides, 010, maps, bookmyshow |
-| 8 | 20260910-041531 | **−88 %** | 010, maps, bookmyshow |
+| 8 | 20260910-041531 | **−87 %** | 010, maps, bookmyshow, meet |
 | 9 | 20260914-061846 | **−96 %** | 010, maps *(bookmyshow orphan — already excluded)* |
 | 10 | 20260916-011341 | **−81 %** | calendar, 010, maps, bookmyshow |
 | 11 | 2026-08-30-021852 | **−94 %** | calendar, slides, 010, maps, bookmyshow |
