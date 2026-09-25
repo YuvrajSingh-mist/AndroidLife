@@ -29,10 +29,11 @@
   "hallucination_control_honest": 7,
   "hallucination_control_hallucinated": 0,
   "hallucination_control_honesty": 1.0,
-  "wall_clock_seconds": 31529.292052458215,
+  "wall_clock_seconds": 31698.733371832,
   "cooldown_seconds_total": 590.0,
-  "agent_running_seconds": 30939.292052458215,
+  "agent_running_seconds": 31108.733371832,
   "cooldown_seconds_per_gap": 10.0,
   "rerun_2026_09_21_drive_notes_telegram": "re-run 2026-09-21: hard__drive-notes-telegram__010 re-taken against the corrected Notes-app seed (Drive component dropped; oracle now names the 'Budget Deadline' note). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict.",
-  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original ran to the 60-step cap with no verified end state. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the fastest option's ETA and distance. Self-reported success false -> true and manual FAIL -> PASS (official 3 -> 4 = 6.7%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration."
+  "rerun_2026_09_23_maps": "re-run 2026-09-23: medium__google-maps__002 re-taken on a clean Maps state. The original ran to the 60-step cap with no verified end state. The re-run typed 'Bhubaneswar Airport', tapped all three mode tabs and saved the fastest option's ETA and distance. Self-reported success false -> true and manual FAIL -> PASS (official 3 -> 4 = 6.7%). Aggregates here are recomputed for that single task by exact arithmetic -- not a corpus regeneration.",
+  "rerun_2026_09_25_meet": "re-run 2026-09-24: hard__google-meet-files__070 re-taken on the repaired seed (Meet conference link and guest list re-added through the Calendar app UI so they reach Google's servers). The original reason -- '60-step cap; no verified end-state success' -- is what the re-run reproduces: Meet's Scheduled list carried 'Weekly Sync' (Sat, Sep 26 - 10:00-11:00) and the run opened its greenroom, then searched Files and opened 'Weekly Agenda.txt' (/storage/emulated/0/Download/), but never emitted the reply -- it sat on the file view for the final ~13 steps of 13 tool calls and hit the 60-step cap again. Verdict FAIL (unchanged), so no headline or bucket figure moves. Telemetry: 60 -> 60 steps, 454.4 -> 623.8 s, 61 -> 60 requests, $0.1298 -> $0.1188; the task is now a battery N/A cell, so the untouched-task drain sum moves -88% -> -87%. Aggregates here are recomputed for this single task by exact arithmetic -- not a corpus regeneration. See the run report for the verdict."
 }
