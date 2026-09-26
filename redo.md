@@ -1833,40 +1833,72 @@ both series *and* the totals re-checked against a fresh artifact aggregate — t
 check §7d used only proves the two series moved by the same amount, not that either matched the
 artefacts.
 
-**(3) Row 1 `2026-08-28` GUI-only — a basis switch, not an off-by-one (2026-09-26).**
+**(3) GUI-only basis — settled on non-interaction; the whole published set normalised (2026-09-26).**
 
 `guiOnly` is the manual genuine pass rate over the **non-interaction** (GUI-only) run set — the
-tasks with no ASK USER component, 53 = 60 − 7. That is byte-for-byte the generator's basis
-(`androidlife_report.build_report`: `gui_only = [r for r in records if not r["is_interaction"]]`),
-so board, report and JSON should all read the same number.
+tasks with no ASK USER component, 53 = 60 − 7. That is the generator's basis
+(`androidlife_report.build_report`: `gui_only = [r for r in records if not r["is_interaction"]]`)
+and the basis the leaderboard column declares, so board, report and JSON must all read the same
+number.
 
 The trap is that the **non-control** set is *also* 53 (60 − 7 hallucination controls — the two
 7-sets are disjoint, and only 7 of `hallucination_controls.json`'s 60 keys are public tasks). Since
 controls never post a success, `non-control passes = non-interaction passes + interaction passes`,
-so swapping bases moves the figure by exactly the number of interaction tasks that passed — 1 here
-(`interaction_success_rate` = 1/7 = 0.1429). On a 53 denominator that is small enough to look like a
-rounding wobble.
+so the two bases differ by exactly the number of interaction tasks that passed, and on a 53
+denominator that is small enough to look like a rounding wobble.
 
-That is what happened: row 1 was republished on the non-control basis, `33/53 (62.3%)` → `34/53
-(64.2%)`, and the maps/meet chain was shifted up with it (`58.5 → 60.4 → 62.3` became
-`60.4 → 62.3 → 64.2`). Both chains are internally correct — they are simply **different metrics**:
+Re-summing every report's day-verdict tables (new tool `scripts/tools/audit_day_verdicts.py`)
+showed the **published set was on the non-control basis, 10 rows out of 10** — e.g. `184934` 21/53,
+`143554` 29/53, `051950` 28/53, `043419` 33/53, all equal to the non-control count, none to the
+non-interaction count. The denominator is the giveaway: `2026-08-30-021852` publishes `6/34` where
+`34 = 36 finalised − 2 controls reached`, not `36 − 3 interaction tasks`. Row 1 `2026-08-28` was
+worse than a basis mismatch — its `33/53` was also a **re-run stale** (33 is the pre-meet count;
+the meet re-run added the 38th pass and never reached the GUI-only row). Re-summed, row 1 is
+**32/53 = 60.4%** on the non-interaction basis and `34/53 = 64.2%` on the non-control basis;
+`33/53 (62.3%)` matches neither.
 
-| series | set | pre-maps | post-maps | post-meet |
-|---|---|---|---|---|
-| non-interaction (`guiOnly`) | 53 = 60 − 7 ASK USER | 31/53 = **58.5%** | 32/53 = **60.4%** | 33/53 = **62.3%** |
-| non-control | 53 = 60 − 7 HC controls | 32/53 = 60.4% | 33/53 = 62.3% | 34/53 = 64.2% |
+**Decision: standardise on non-interaction** (the declared basis, the generator's basis, and the
+settled definition). Applied across the public set in the same pass:
 
-Verified against the headline chain (total PASS − 4 honest HC − 1 interaction pass = 31/32/33 for
-36/37/38 PASS). **Reverted to the non-interaction basis** (the settled definition) in the row-1
-report and `leaderboard.js`, including the misleading "non-control" label. Two things that are
-*not* bugs, so do not "fix" them:
+| report | was (non-control, stale) | now (non-interaction) |
+|---|---|---|
+| `2026-08-26-184934` | 21/53 = 39.6% | **20/53 = 37.7%** |
+| `2026-08-28-002424` (row 1) | 33/53 = 62.3% | **32/53 = 60.4%** |
+| `2026-08-29-153657` (row 2) | 29/53 = 54.7% | **28/53 = 52.8%** |
+| `2026-08-30-143554` (row 4) | 29/53 = 54.7% | **28/53 = 52.8%** |
+| `20260905-051950` (row 6) | 28/53 = 52.8% | **27/53 = 50.9%** |
+| `20260909-043419` (row 5) | 33/53 = 62.3% | **31/53 = 58.5%** |
+| `2026-08-30-021852` (row 11) | 6/34 = 17.6% | **6/33 = 18.2%** |
 
-* The metrics JSON is **internally consistent** on this axis. `gui_only_success_rate` = 33/53 and
-  `true_success_count` = 34 are both right: 33 (non-interaction) + 1 (interaction) = 34. 33 is the
-  correct value for the non-interaction basis; do not raise it to 34.
+Row 1's maps/meet chain was rebased with it (`58.5 → 60.4 → 62.3` became `56.6 → 58.5 → 60.4`);
+`20260905-051950` became `49.1 → 50.9`; `20260909-043419` became `56.6 → 58.5`;
+`2026-08-30-143554` became `50.9 → 52.8`; `2026-08-30-021852` became `6/32 → 6/33`. The
+"non-control" label was dropped from the affected rows. Two things that are *not* bugs:
+
+* The metrics JSONs are a **different series** and stay as they are. For row 1 the JSON's
+  `gui_only_success_rate` = 33/53 is correct: the artifacts give 32 non-interaction passes pre-fold
+  and the meet fold is non-interaction, so post-fold official = 33 — with `true_success_count` = 34
+  being 33 + 1 interaction. The report's 32 is the *manual* count (the manual passes
+  `google-search-obsidian-telegram-057`, which never asked and so fails the official gate). Report
+  32 vs JSON 33 is the normal official/manual split, not drift.
 * `hallucination_control_honest: 7` vs the manual 4/7 is a separate, already-documented convention
   difference: the generator counts every non-hallucinating control as honest, the manual requires an
   actual honest report.
+
+**Independent re-derivation (2026-09-26).** All 15 published rows were re-derived twice, from
+independent inputs, and both agree to the digit:
+
+* **From the run artifacts** — the 610 metadata files (`output.json`/`meta.json`/
+  `run_metrics.json`/`ask_user_metrics.jsonl`) for rows 2/7/9 were pulled from HF and re-run through
+  `androidlife_report.py`. This caught the three `gui_only_success_rate` corruptions (§7e(4)) and
+  proved every other aggregate was right.
+* **From the day-verdict tables** — `scripts/tools/audit_day_verdicts.py` parses the `| Task |
+  Verdict | Notes |` tables a human filled in and re-sums the headline. All 15 now reconcile
+  (15/15, 0 findings). It also fixed two parsing traps that made reports *look* incomplete:
+  `⚠️ PASS (caveat)` / `🚫 BLOCKED` rows (which an emoji-only scan drops, undercounting `153657` at
+  58/60 and `105200` at 55/60) and the ASK USER tables' bare-word `FAIL` (an emoji-only scan falls
+  through to the `✅` in the neighbouring "Agent behavior" cell and invents a PASS — the source of
+  the phantom `chrome-telegram-notes-008` conflict).
 
 **Verifier hardening (2026-09-26).** This survived many green verifier runs because
 `verify_leaderboard.py` was *only* an agreement check — a value wrong in the same way on the board,
@@ -1879,23 +1911,42 @@ in the report and in the JSON passes it by construction. It now also runs `inter
   **additivity** identity as warnings.
 * **`guiOnly` basis guard** — warns when the published figure lands on the non-control basis, i.e.
   `generator + (passing interaction tasks) / 53`.
+* **Day-verdict re-derivation** — `scripts/tools/audit_day_verdicts.py` re-sums each report's own
+  day tables and compares the result to its headline (total passes, and GUI-only numerator +
+  denominator). This is the check the agreement checks structurally cannot do: a value wrong the
+  same way on the board, in the report and in the JSON passes `verify_leaderboard.py` by
+  construction, which is exactly how the non-control drift survived. 15/15 rows reconcile.
 
-**Three real JSON drift cases the additivity warning surfaced** (rows 2, 7, 9 — all hand-folded
-re-run rows). The JSON's aggregate success fields and its own bucket fields no longer partition:
+**(4) The three JSON drift cases the additivity warning surfaced — re-derived from artifacts
+(2026-09-26), all three were the same single-field corruption.**
 
-| row | report | JSON | gap |
+Rows 2, 7 and 9 are hand-folded re-run rows: a re-run is folded into the JSON by exact arithmetic
+rather than by re-running the corpus, so the dependent aggregate fields can be left behind. All
+three failed `gui_only_success_rate × 53 + interaction_success_rate × 7 == success_rate × 60`.
+
+The fix was not reasoned out, it was measured. The 610 metadata files for those three runs
+(`output.json`, `meta.json`, `run_metrics.json`, `delivery.json`, `kb_audit.json`,
+`ask_user_metrics.jsonl` — 4.3 MB) were pulled from `YuvrajSingh9886/androidlife-public` and re-run
+through `androidlife_report.py --no-hallucination-judge`. The re-derivation reproduced every field
+in all three JSONs **exactly** except one:
+
+| row | field | before | re-derived |
 |---|---|---|---|
-| 2 `kimi-k2.6` (TEXT) `2026-08-29-153657` | 32 true success / 53.3% | `success` 30 + `inter` 1 = 31 | +1 |
-| 7 `gpt-5.6-luna` (TEXT) `20260906-063336` | 19 true success / 31.7% | `gui_only` 13 passes, `inter` 0, but `true_success_count` 10 | +3 |
-| 9 `Qwen3.5-4B` (TEXT) `20260914-061846` | 9/27 GUI-only | `gui_only` 9 + `inter` 0 = 9, but `success` 12 | −3 |
+| 2 `kimi-k2.6` (TEXT) `2026-08-29-153657` | `gui_only_success_rate` | 30/53 = 56.6% | **29/53 = 54.7%** |
+| 7 `gpt-5.6-luna` (TEXT) `20260906-063336` | `gui_only_success_rate` | 13/53 = 24.5% | **10/53 = 18.9%** |
+| 9 `Qwen3.5-4B` (TEXT) `20260914-061846` | `gui_only_success_rate` | 9/27 = 33.3% | **12/27 = 44.4%** |
 
-Row 7 is provably impossible rather than merely stale: a 53-task subset cannot hold 13 passes when
-the whole 60-task run reports 10 successes. It is already rendered in
-`reports/metrics/public/public-20260906-063336-report.md` as `Success Rate | 16.7%` beside
-`Success Rate (GUI-only) | 24.5% (53 runs)`, so it would propagate through `render_metrics_md.py`
-(which is a pure function of the JSON). The board itself is unaffected — it publishes the report's
-manual figures, and the verifier keeps treating official/manual divergence as expected. Worth a
-dedicated JSON re-derivation pass; not done here.
+So the corruption is always `gui_only_success_rate` and nothing else: `success_rate`,
+`true_success_count`, `interaction_*` and the buckets were already correct in all three, and the
+re-derived additivity closes to the digit (30=30, 10=10, 12=12). The field had been filled from the
+*manual* report figure rather than the generator's output — for rows 2 and 7 it was the manual
+non-control count (row 7's 13 = 19 PASS − 6 honest controls, which is why it sat impossibly above
+`true_success_count` 10), and for row 9 the `run_count`-mismatched 9/27. Row 7 also showed
+`true_failure_count` 49/`hallucination_count` 1 against the judge-less re-derivation's 50/0 — that
+is the judge reclassifying one control, not drift, so it was left alone.
+
+The three `.md` mirrors were regenerated (`render_metrics_md.py`) and `--check` now reports all 15
+in sync; the verifier's `internal` warnings went 3 → 0.
 
 
 **7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
@@ -1908,6 +1959,12 @@ Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day header
 headers by simple counting — row 2 already needs a manual read (its day tables parse as
 19/16/20 rows and a hallucination row is not machine-findable). Each of those rows needs a hand
 pass, not arithmetic.
+
+**Resolved 2026-09-26:** `scripts/tools/audit_day_verdicts.py` does that hand pass for all 15 rows
+automatically — see §7e(3). The "hallucination row is not machine-findable" problem was a parser
+gap, not a data gap: the ASK USER tables carry a bare-word `Verdict` cell (`FAIL` with no emoji),
+and the day tables use `⚠️ PASS (caveat)` / `🚫 BLOCKED`, which an emoji-only scan silently drops.
+All 15 rows now reconcile 15/15 with 0 findings.
 
 ---
 
