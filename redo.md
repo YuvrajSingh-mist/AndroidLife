@@ -1833,6 +1833,71 @@ both series *and* the totals re-checked against a fresh artifact aggregate — t
 check §7d used only proves the two series moved by the same amount, not that either matched the
 artefacts.
 
+**(3) Row 1 `2026-08-28` GUI-only — a basis switch, not an off-by-one (2026-09-26).**
+
+`guiOnly` is the manual genuine pass rate over the **non-interaction** (GUI-only) run set — the
+tasks with no ASK USER component, 53 = 60 − 7. That is byte-for-byte the generator's basis
+(`androidlife_report.build_report`: `gui_only = [r for r in records if not r["is_interaction"]]`),
+so board, report and JSON should all read the same number.
+
+The trap is that the **non-control** set is *also* 53 (60 − 7 hallucination controls — the two
+7-sets are disjoint, and only 7 of `hallucination_controls.json`'s 60 keys are public tasks). Since
+controls never post a success, `non-control passes = non-interaction passes + interaction passes`,
+so swapping bases moves the figure by exactly the number of interaction tasks that passed — 1 here
+(`interaction_success_rate` = 1/7 = 0.1429). On a 53 denominator that is small enough to look like a
+rounding wobble.
+
+That is what happened: row 1 was republished on the non-control basis, `33/53 (62.3%)` → `34/53
+(64.2%)`, and the maps/meet chain was shifted up with it (`58.5 → 60.4 → 62.3` became
+`60.4 → 62.3 → 64.2`). Both chains are internally correct — they are simply **different metrics**:
+
+| series | set | pre-maps | post-maps | post-meet |
+|---|---|---|---|---|
+| non-interaction (`guiOnly`) | 53 = 60 − 7 ASK USER | 31/53 = **58.5%** | 32/53 = **60.4%** | 33/53 = **62.3%** |
+| non-control | 53 = 60 − 7 HC controls | 32/53 = 60.4% | 33/53 = 62.3% | 34/53 = 64.2% |
+
+Verified against the headline chain (total PASS − 4 honest HC − 1 interaction pass = 31/32/33 for
+36/37/38 PASS). **Reverted to the non-interaction basis** (the settled definition) in the row-1
+report and `leaderboard.js`, including the misleading "non-control" label. Two things that are
+*not* bugs, so do not "fix" them:
+
+* The metrics JSON is **internally consistent** on this axis. `gui_only_success_rate` = 33/53 and
+  `true_success_count` = 34 are both right: 33 (non-interaction) + 1 (interaction) = 34. 33 is the
+  correct value for the non-interaction basis; do not raise it to 34.
+* `hallucination_control_honest: 7` vs the manual 4/7 is a separate, already-documented convention
+  difference: the generator counts every non-hallucinating control as honest, the manual requires an
+  actual honest report.
+
+**Verifier hardening (2026-09-26).** This survived many green verifier runs because
+`verify_leaderboard.py` was *only* an agreement check — a value wrong in the same way on the board,
+in the report and in the JSON passes it by construction. It now also runs `internal` checks:
+
+* **JSON self-consistency** — `true_success + true_failure + hallucination == run_count`,
+  `gui_only_run_count == run_count − interaction_run_count`, and
+  `honest + hallucinated == control_count` (verified to hold on all 15 published rows, so they are
+  hard failures), plus `true_success_rate × run_count == true_success_count` and the success
+  **additivity** identity as warnings.
+* **`guiOnly` basis guard** — warns when the published figure lands on the non-control basis, i.e.
+  `generator + (passing interaction tasks) / 53`.
+
+**Three real JSON drift cases the additivity warning surfaced** (rows 2, 7, 9 — all hand-folded
+re-run rows). The JSON's aggregate success fields and its own bucket fields no longer partition:
+
+| row | report | JSON | gap |
+|---|---|---|---|
+| 2 `kimi-k2.6` (TEXT) `2026-08-29-153657` | 32 true success / 53.3% | `success` 30 + `inter` 1 = 31 | +1 |
+| 7 `gpt-5.6-luna` (TEXT) `20260906-063336` | 19 true success / 31.7% | `gui_only` 13 passes, `inter` 0, but `true_success_count` 10 | +3 |
+| 9 `Qwen3.5-4B` (TEXT) `20260914-061846` | 9/27 GUI-only | `gui_only` 9 + `inter` 0 = 9, but `success` 12 | −3 |
+
+Row 7 is provably impossible rather than merely stale: a 53-task subset cannot hold 13 passes when
+the whole 60-task run reports 10 successes. It is already rendered in
+`reports/metrics/public/public-20260906-063336-report.md` as `Success Rate | 16.7%` beside
+`Success Rate (GUI-only) | 24.5% (53 runs)`, so it would propagate through `render_metrics_md.py`
+(which is a pure function of the JSON). The board itself is unaffected — it publishes the report's
+manual figures, and the verifier keeps treating official/manual divergence as expected. Worth a
+dedicated JSON re-derivation pass; not done here.
+
+
 **7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
 Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day headers) for the same
 60 tasks; the per-task verdict rows were 36. Row 2 carries 32 (metrics table + prose) vs 31

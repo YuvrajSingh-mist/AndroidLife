@@ -36,6 +36,19 @@ and so on). The report wins. The current expected list is documented in
 `redo.md` §7d/§7e and `docs/evaluation-policy.md` §9.1 — check there before
 treating a new warning as drift.
 
+Two families of check
+---------------------
+`cross` checks compare the board against the report (and, for a few fields, the
+official metrics JSON). They can only ever prove the surfaces *agree*.
+
+`internal` checks assert the metrics JSON agrees with *itself*, plus a guard on
+the `guiOnly` basis. They exist because agreement is not truth: a figure that is
+wrong in the same way on the board, in the report and in the JSON passes every
+`cross` check by construction, so no amount of leaderboard<->report diffing can
+see it. Row 1 `2026-08-28`'s GUI-only basis switch (33/53 published as 34/53) and
+the three JSON-internal drift cases both lived through many green runs for exactly
+that reason — see `redo.md` §7e(3).
+
 Interrupted rows
 ----------------
 Rows 9-11 are interrupted runs. They carry two denominators: the relaxed
@@ -392,6 +405,14 @@ class FieldResult:
     JSON) that the board does not publish from. A disagreement there is report
     drift, not a leaderboard bug, so it does not fail the gate."""
 
+    kind: str = "cross"
+    """Which family of check produced this result.
+
+    ``cross``    leaderboard <-> report (and the official-JSON cross-check).
+    ``internal`` the metrics JSON agreeing with *itself*, plus the basis guard.
+                 These are the only checks that cannot be defeated by every
+                 surface being wrong the same way -- see `reconcile_official`."""
+
 
 def compare(
     name: str,
@@ -460,6 +481,165 @@ def requests_in(cells: list[str] | None) -> int | None:
         return None
     m = re.search(r"\(([\d,]+)\s+(?:requests|calls)", cells[0])
     return int(m.group(1).replace(",", "")) if m else None
+
+
+def reconcile_official(official: dict | None) -> list[FieldResult]:
+    """Assert the metrics JSON agrees with *itself*.
+
+    Every figure in `reports/metrics/public/*-report.json` is derived by
+    `androidlife_report.build_report` from one record set, so a handful of
+    identities must hold exactly. They matter because they are the only checks in
+    this file that a *consistently wrong* value cannot satisfy: a number that is
+    wrong in the same way on the board, in the report and in the JSON still has to
+    add up inside the JSON.
+
+    A pure leaderboard<->report diff is structurally blind to that class -- the
+    row-1 `2026-08-28` GUI-only off-by-one survived many green verifier runs for
+    exactly that reason (`redo.md` §7e(3)).
+
+    Only identities verified to hold across all 15 published rows are hard
+    failures; the two that do not (hand-adjusted re-run arithmetic, interrupted
+    rows) are surfaced as warnings.
+    """
+    out: list[FieldResult] = []
+    if not official:
+        return out
+
+    def add(name: str, expected, actual, ok: bool, note: str, *, warn: bool) -> None:
+        out.append(
+            FieldResult(
+                name,
+                expected,
+                actual,
+                "metrics JSON (self-consistency)",
+                ok,
+                note,
+                warn=warn,
+                kind="internal",
+            )
+        )
+
+    rc = official.get("run_count")
+    ts = official.get("true_success_count")
+    tf = official.get("true_failure_count")
+    ha = official.get("hallucination_count")
+    if None not in (rc, ts, tf, ha):
+        total = ts + tf + ha
+        add(
+            "json.outcome_split",
+            rc,
+            total,
+            total == rc,
+            "true_success + true_failure + hallucination must equal run_count",
+            warn=False,
+        )
+
+    grc = official.get("gui_only_run_count")
+    irc = official.get("interaction_run_count")
+    if None not in (grc, rc, irc):
+        add(
+            "json.gui_only_count",
+            (rc or 0) - (irc or 0),
+            grc,
+            grc == (rc or 0) - (irc or 0),
+            "gui_only_run_count must be run_count - interaction_run_count",
+            warn=False,
+        )
+
+    ch = official.get("hallucination_control_honest")
+    cx = official.get("hallucination_control_hallucinated")
+    cc = official.get("hallucination_control_count")
+    if None not in (ch, cx, cc):
+        add(
+            "json.control_split",
+            cc,
+            ch + cx,
+            ch + cx == cc,
+            "honest + hallucinated controls must equal hallucination_control_count",
+            warn=False,
+        )
+
+    tsr = official.get("true_success_rate")
+    if None not in (tsr, rc, ts):
+        implied = (tsr or 0) * (rc or 0)
+        add(
+            "json.true_success_rate",
+            round(implied, 4),
+            ts,
+            abs(implied - ts) <= 0.51,
+            "true_success_rate x run_count must recover true_success_count",
+            warn=True,
+        )
+
+    gsr = official.get("gui_only_success_rate")
+    isr = official.get("interaction_success_rate")
+    sr = official.get("success_rate")
+    if None not in (gsr, isr, sr, grc, irc, rc):
+        implied = (gsr or 0) * (grc or 0) + (isr or 0) * (irc or 0)
+        total = (sr or 0) * (rc or 0)
+        add(
+            "json.additivity",
+            round(total, 4),
+            round(implied, 4),
+            abs(implied - total) <= 0.51,
+            "gui_only passes + interaction passes must account for every success "
+            "(breaks when a re-run is folded in by hand instead of regenerated)",
+            warn=True,
+        )
+    return out
+
+
+def collision_guard(row: dict, report: Report, official: dict | None) -> FieldResult | None:
+    """Catch the two-bases/one-denominator trap on `guiOnly`.
+
+    `guiOnly` is the manual genuine pass rate over the **non-interaction**
+    (GUI-only) tasks -- the run set with no ASK USER task, 53 = 60 - 7. That is
+    exactly the generator's `gui_only_success_rate` basis
+    (`androidlife_report.build_report`: `gui_only = [r for r in records if not
+    r["is_interaction"]]`), so the two should agree.
+
+    The trap is that the **non-control** set is *also* 53 (60 - 7 hallucination
+    controls, and the two 7-sets are disjoint), and the non-control count is
+    `non-interaction passes + interaction passes` (controls never post a success).
+    So an edit that drops the non-interaction basis for the non-control one moves
+    the figure by exactly the number of interaction tasks that passed -- which,
+    on a 53 denominator, is small enough to read as a rounding wobble.
+
+    Row 1 `2026-08-28` was moved that way: 33/53 (62.3%) published as 34/53
+    (64.2%), the delta being the single passing interaction task
+    (`interaction_success_rate` = 1/7). The signature is exact:
+    published = generator + (interaction passes) / 53.
+    """
+    if not official:
+        return None
+    isr = official.get("interaction_success_rate") or 0.0
+    if isr <= 0:
+        return None  # the two bases coincide; nothing to distinguish
+    gsr = official.get("gui_only_success_rate")
+    irc = official.get("interaction_run_count")
+    grc = official.get("gui_only_run_count")
+    if gsr is None or not grc:
+        return None
+    published = first_pct(report.m("gui-only"))
+    if published is None:
+        return None
+    # non-control basis == non-interaction passes + interaction passes, over the same 53
+    inter_passes = (isr or 0.0) * (irc or 0)
+    noncontrol = gsr * 100 + inter_passes / grc * 100
+    if abs(published - gsr * 100) > TOL["guiOnly"] and abs(published - noncontrol) <= TOL["guiOnly"]:
+        return FieldResult(
+            "guiOnly.basis",
+            round(gsr * 100, 2),
+            round(published, 2),
+            "metrics JSON non-interaction basis",
+            False,
+            f"published figure is the NON-CONTROL basis (generator + the "
+            f"{inter_passes:.0f} passing interaction task(s)); guiOnly is defined "
+            f"over the NON-INTERACTION set, so it should be {gsr * 100:.1f}%",
+            warn=True,
+            kind="internal",
+        )
+    return None
 
 
 def check_row(idx: int, row: dict, report: Report, official: dict | None, verbose: bool) -> list[FieldResult]:
@@ -631,6 +811,15 @@ def check_row(idx: int, row: dict, report: Report, official: dict | None, verbos
     if lb_agent is not None and rep_agent is not None:
         out.append(compare("elapsedAgent", lb_agent, rep_agent, "report elapsed (agent)"))
 
+    # ---- metrics-JSON self-consistency + basis guard --------------------- #
+    # These do not compare the board to anything; they assert that the generated
+    # artifact is internally coherent. See reconcile_official() for why this is
+    # the only family that catches a value every surface shares.
+    out.extend(reconcile_official(official))
+    guard = collision_guard(row, report, official)
+    if guard:
+        out.append(guard)
+
     if verbose:
         for r in out:
             mark = "ok " if r.ok else "BAD"
@@ -723,6 +912,7 @@ def main() -> int:
                         "source": r.source,
                         "ok": r.ok,
                         "warn": r.warn,
+                        "kind": r.kind,
                     }
                     for r in rs
                 ]
@@ -735,17 +925,19 @@ def main() -> int:
         bad = [r for rs in results.values() for r in rs if not r.ok and not r.warn] or report_errors
         return 1 if bad else 0
 
-    failures = [(key, r) for key, rs in results.items() for r in rs if not r.ok and not r.warn]
-    warnings = [(key, r) for key, rs in results.items() for r in rs if not r.ok and r.warn]
+    cross_fail = [(k, r) for k, rs in results.items() for r in rs if not r.ok and not r.warn and r.kind == "cross"]
+    cross_warn = [(k, r) for k, rs in results.items() for r in rs if not r.ok and r.warn and r.kind == "cross"]
+    int_fail = [(k, r) for k, rs in results.items() for r in rs if not r.ok and not r.warn and r.kind == "internal"]
+    int_warn = [(k, r) for k, rs in results.items() for r in rs if not r.ok and r.warn and r.kind == "internal"]
     print()
     if report_errors:
         print("STRUCTURE ERRORS")
         for e in report_errors:
             print(f"  ! {e}")
         print()
-    if failures:
-        print(f"MISMATCHES ({len(failures)}) — leaderboard does not match the run report")
-        for key, r in failures:
+    if cross_fail:
+        print(f"MISMATCHES ({len(cross_fail)}) — leaderboard does not match the run report")
+        for key, r in cross_fail:
             print(f"  ✗ {key}  ·  {r.name}: leaderboard {r.actual!r} vs {r.source} {r.expected!r}")
         print()
     else:
@@ -755,17 +947,37 @@ def main() -> int:
         for c in cost_drift:
             print(f"  ✗ {c}")
         print()
-    if warnings:
+    if int_fail:
         print(
-            f"EXPECTED DIVERGENCE vs OFFICIAL METRICS JSON ({len(warnings)}) — "
+            f"INTERNAL RECONCILIATION FAILURES ({len(int_fail)}) — "
+            "a metrics JSON disagrees with itself"
+        )
+        for key, r in int_fail:
+            print(f"  ✗ {key}  ·  {r.name}: got {r.actual!r}, expected {r.expected!r} — {r.note}")
+        print()
+    if int_warn:
+        print(
+            f"INTERNAL RECONCILIATION WARNINGS ({len(int_warn)}) — "
+            "hand-adjusted re-run arithmetic, or a metric-basis collision"
+        )
+        for key, r in int_warn:
+            print(f"  ~ {key}  ·  {r.name}: got {r.actual!r}, expected {r.expected!r} — {r.note}")
+        print()
+    if cross_warn:
+        print(
+            f"EXPECTED DIVERGENCE vs OFFICIAL METRICS JSON ({len(cross_warn)}) — "
             "official/manual split, not a leaderboard bug (report wins; redo.md §7d/§7e)"
         )
-        for key, r in warnings:
+        for key, r in cross_warn:
             print(f"  ~ {key}  ·  {r.name}: metrics JSON {r.expected!r} vs published {r.actual!r}")
         print()
     total = sum(len(rs) for rs in results.values())
-    print(f"checked {len(results)} row(s), {total} field(s) -> {len(failures)} mismatch(es), {len(warnings)} warning(s)")
-    return 1 if failures or report_errors else 0
+    print(
+        f"checked {len(results)} row(s), {total} field(s) -> "
+        f"{len(cross_fail)} mismatch(es), {len(cross_warn)} warning(s), "
+        f"{len(int_fail)} internal failure(s), {len(int_warn)} internal warning(s)"
+    )
+    return 1 if cross_fail or int_fail or report_errors else 0
 
 
 if __name__ == "__main__":
