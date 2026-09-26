@@ -136,3 +136,15 @@ After each task finishes, the harness force-stops whatever app ended up in the f
 - Default action budget: `50` steps for every task.
 - This is intentionally fixed across easy, medium, hard-deterministic, and open-ended buckets.
 - The benchmark uses one global action budget to avoid bucket-specific budget advantages.
+
+### Retries and cooldown
+
+`--cooldown-seconds` (default `10.0`, `0` disables) is a fixed pause between tasks so the device does not run continuously into thermal/load territory. `androidlife_report.py` prints both the raw end-to-end wall-clock and the cooldown-corrected agent running time, subtracting `cooldown_seconds × (N − 1)` gaps.
+
+Retries cover infrastructure only, never a task the model failed:
+
+- **LLM proxy startup** — 3 attempts, 5/10/15 s apart. If it still cannot start the batch aborts rather than proceed without an LLM endpoint.
+- **Seed gate** — retried once on timeout and once on a non-`PASS` verdict (UI-driven checks read live apps and fail transiently).
+- **Transient LLM blip** — a failed task whose `output.json` contains `Request timed out` or `Empty response content` is re-queued and re-run once at the end of the batch; a second failure counts as a real failure.
+
+A preflight that cannot reach the phone writes a `DEVICE_UNREACHABLE` marker and aborts the whole batch: silently retrying would paper over an outage instead of reporting it. Task-level failures (step cap, wrong end-state, missed `ask_user`) are never retried, because they are the behaviours being measured. See `benchmark-spec.md` §Retries and cooldown.

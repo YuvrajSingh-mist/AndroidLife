@@ -572,6 +572,38 @@ $$\text{KBIQ} = \frac{1}{|K|}\sum_{k \in K} \frac{c_k}{q_k}, \qquad \tfrac{c_k}{
 - all benchmark tasks use the same default `50`-step action budget
 - this fixed cap is part of the benchmark definition and is meant to preserve fairness across buckets
 
+## Retries and cooldown
+
+Two runner behaviours change step counts and elapsed time, so they are part of the benchmark
+definition rather than an implementation detail.
+
+- **Inter-task cooldown.** A fixed pause of `--cooldown-seconds` (default `10.0`; `0` disables) is
+  applied between tasks so the device does not run continuously into thermal/load territory. The
+  report carries both the raw end-to-end wall-clock and the **cooldown-corrected agent running
+  time** (wall-clock − `cooldown_seconds × (N − 1)`), so the elapsed metric is true agent running
+  time rather than agent time plus idle gaps.
+- **Retries are infrastructure-only.** The harness retries (a) an LLM proxy that failed to start
+  (3 attempts, 5/10/15 s apart, then the run aborts rather than proceed without an endpoint),
+  (b) a seed gate that timed out or returned a transient non-`PASS` verdict (once each), and
+  (c) a task whose own `output.json` shows a dropped request (`Request timed out`) or an empty
+  completion (`Empty response content`) — that task is re-queued and re-run once at the end of the
+  batch, and a second failure counts as a real failure.
+
+Deliberately **not** retried:
+
+- **An unreachable device.** A preflight failure writes `DEVICE_UNREACHABLE` and aborts the whole
+  batch. The phone is the benchmark's subject, so a run that cannot reach it has no valid result,
+  and silently retrying would paper over an outage instead of reporting it.
+- **A task the model failed.** A step cap, a wrong end-state, or a missed `ask_user` are the
+  behaviours under test. Retrying them would inflate the success rate.
+
+A genuine external outage is graded as-is: such a task is recorded `BLOCKED`, neither a success nor
+a failure, and excluded from the success numerator. Published re-runs are marked in the run report,
+which recomputes the affected per-task aggregates (steps, elapsed, cost) by exact arithmetic.
+
+Because a transient retry can change a task's step count and elapsed time, comparability is
+protocol-level, not byte-identical — see `reproducibility.md`.
+
 ## Evaluation philosophy
 
 - deterministic tasks should be scored by explicit on-device success/failure evidence

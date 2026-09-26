@@ -53,7 +53,8 @@ and a fresh seed, runs diverge because:
 - **App and OS drift** — Play updates, WebView changes, notification copy, A/B layouts.
 - **Network and cloud** — Gmail, Drive, Maps, Chrome content, search rankings, CDN timing.
 - **Device physics** — battery level, thermal state, charging, background killers, a11y lag.
-- **Non-deterministic agents** — sampling temperature, tool-order choices, retries, timeouts.
+- **Non-deterministic agents** — sampling temperature, tool-order choices, and timeouts.
+- **Infrastructure retries** — the harness retries a proxy that would not start, a seed gate that read a live app transiently, and a task whose own log shows a dropped LLM request. A task that passes only after such a retry carries different step and elapsed figures than a clean pass (see [`benchmark-spec.md`](benchmark-spec.md) §Retries and cooldown).
 - **Human-shaped interrupts** — notifications, calls, and system dialogs that appear mid-task.
 - **Time** — “tomorrow” calendar seeds, relative dates, and “today” UI all move with the clock.
 

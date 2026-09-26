@@ -91,7 +91,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--save-trajectory", choices=["none", "step", "action"], default="action", help="Local trajectory recording level: none, step (per agent step), or action (per atomic action); default action.")
     parser.add_argument("--no-app-reset", action="store_true", help="Skip force-stopping the foreground app and returning home after each task (on by default, for fairness between consecutive tasks).")
     parser.add_argument("--no-pre-app-reset", action="store_true", help="Also skip the same reset BEFORE each task starts (on by default). See cli.py --no-pre-app-reset.")
-    parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see reports/qwen35-4b-public-wired-run-analysis.md section C2). 0 disables it.")
+    parser.add_argument("--cooldown-seconds", type=float, default=10.0, help="Fixed pause between tasks so the device doesn't run continuously into thermal/load territory (see docs/benchmark-spec.md, 'Retries and cooldown'). 0 disables it.")
     parser.add_argument("--ask-user-model", default=DEFAULT_ASK_USER_MODEL, help="Forwarded to each task run's ask_user tool.")
     parser.add_argument("--ask-user-kb", default="", metavar="PATH",
                         help="Path to a multi-turn knowledge-base JSON ({task_id: {correct_target, profile}}). Any selected task whose task_id is in the file runs in KB/multi-turn mode: the simulated user becomes an honest oracle over that task's profile with rolling memory (takes precedence over --ask-user-context). See benchmarks/androidlife-530/multiturn_kb_530.json.")
@@ -361,7 +361,8 @@ def find_run_dir(label: str, runs_root: str | Path = "assets/runs") -> Path | No
 def is_transient_failure(run_dir: Path | None) -> bool:
     """True if a failed run's own output.json looks like a dropped LLM request / empty
     completion rather than genuine task difficulty - worth one automatic retry at the end
-    of the batch instead of counting as a hard failure (see report sections C3 and A4)."""
+    of the batch instead of counting as a hard failure (see docs/benchmark-spec.md,
+    'Retries and cooldown')."""
     if run_dir is None:
         return False
     output_path = run_dir / "output.json"
