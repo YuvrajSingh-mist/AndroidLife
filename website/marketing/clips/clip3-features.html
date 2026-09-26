@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Clip 3 - Dataset (16:9)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+  <style>
+    .load-gate{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:var(--bg);transition:opacity .4s}
+    .load-gate.hide{opacity:0;pointer-events:none}
+    .load-gate p{font-family:var(--serif);color:var(--muted)}
+  </style>
+</head>
+<body class="stage-wrap">
+  <div class="stage">
+    <div class="load-gate" id="gate"><p>Loading trajectory…</p></div>
+    <div class="layer is-on" id="L0">
+      <div class="split">
+        <div class="copy">
+          <h1 class="headline line" id="h0">The corpus is shaped like a month of ordinary phone use, not a stack of isolated UI puzzles.</h1>
+          <p class="subline line" id="s0">Roughly ten apps a day, cross-app goals, incomplete asks, and tasks where the right move is to admit the data is missing.</p>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone show">
+            <div class="island"></div>
+            <div class="screen"><img id="gif" alt=""></div>
+          </div>
+          <div class="phone-cap line" id="cap">BookMyShow · from the public sixty</div>
+        </div>
+      </div>
+    </div>
+    <div class="layer" id="L1">
+      <div class="feat-grid" id="feats">
+        <div class="f"><div class="n">31</div><div class="l">Distinct apps from Telegram to Swiggy to Settings</div></div>
+        <div class="f"><div class="n">530</div><div class="l">Tasks on a fixed twenty-eight day schedule</div></div>
+        <div class="f"><div class="n">168</div><div class="l">Goals that jump between apps mid-way</div></div>
+        <div class="f"><div class="n">ASK</div><div class="l">Prompts that need a clarifying question first</div></div>
+        <div class="f"><div class="n">HC</div><div class="l">Absent-data traps for fake success</div></div>
+        <div class="f"><div class="n">60</div><div class="l">Public cut already run, GIF’d, and audited</div></div>
+      </div>
+    </div>
+    <div class="layer" id="L2">
+      <div class="center-copy">
+        <h1 class="headline line" id="h2">The public sixty sits inside the five-thirty corpus.</h1>
+        <p class="subline line" id="s2">Same harness on both. The leaderboard is the sample; the dataset is the month it came from.</p>
+        <p class="brand line" id="b2" style="margin-top:1.2rem">AndroidLife</p>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Dataset · full GIF loop · 16:9</span>
+  </div>
+  <script type="module">
+    import { wait, only, show, bindControls, preloadImages, setGif } from "./clips.js";
+    const SRC = "./media/bms-play.gif";
+    let runId = 0;
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line,.f").forEach((e) => e.classList.remove("in"));
+      const gate = document.getElementById("gate");
+      gate.classList.remove("hide");
+      await preloadImages([SRC]);
+      await setGif(document.getElementById("gif"), SRC);
+      if (id !== runId) return;
+      gate.classList.add("hide");
+      only("L0");
+      show(document.getElementById("h0"));
+      show(document.getElementById("s0"));
+      show(document.getElementById("cap"));
+      await wait(9200);
+      only("L1");
+      for (const f of document.querySelectorAll("#feats .f")) {
+        if (id !== runId) return;
+        show(f);
+        await wait(200);
+      }
+      await wait(2200);
+      only("L2");
+      for (const x of ["h2", "s2", "b2"]) {
+        show(document.getElementById(x));
+        await wait(200);
+      }
+      await wait(2000);
+    }
+    bindControls(play);
+  </script>
+</body>
+</html>

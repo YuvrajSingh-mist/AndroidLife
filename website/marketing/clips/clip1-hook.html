@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Clip 1 - Hook (16:9)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+  <style>
+    .load-gate {
+      position: absolute; inset: 0; z-index: 30; display: grid; place-items: center;
+      background: var(--bg); transition: opacity 0.4s ease;
+    }
+    .load-gate.hide { opacity: 0; pointer-events: none; }
+    .load-gate p { font-family: var(--serif); color: var(--muted); }
+  </style>
+</head>
+<body class="stage-wrap">
+  <div class="stage">
+    <div class="load-gate" id="gate"><p>Loading trajectory…</p></div>
+    <div class="layer is-on" id="L0">
+      <div class="split">
+        <div class="copy">
+          <h1 class="headline line" id="h0">Can an AI agent survive a day on a phone that is actually on?</h1>
+          <p class="subline line" id="s0">Not a screenshot quiz - live taps on a OnePlus, graded against what the device ends up showing.</p>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone show">
+            <div class="island"></div>
+            <div class="screen"><img id="gif" alt=""></div>
+          </div>
+          <div class="phone-cap line" id="cap">BookMyShow · manual PASS</div>
+        </div>
+      </div>
+    </div>
+    <div class="layer" id="L1">
+      <div class="center-copy">
+        <h1 class="headline line" id="h1">Thirty-one apps and five hundred thirty tasks, scheduled across a simulated month.</h1>
+        <p class="subline line" id="s1">One hundred sixty-eight of those goals jump between apps mid-way. The public leaderboard is a sixty-task cut of that month.</p>
+      </div>
+    </div>
+    <div class="layer" id="L2">
+      <div class="center-copy">
+        <p class="brand line" id="h2">AndroidLife</p>
+        <p class="subline line" id="s2">We score the phone state, not the model’s last sentence.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Hook · GIF holds full loop · 16:9</span>
+  </div>
+  <script type="module">
+    import { wait, only, show, bindControls, preloadImages, setGif } from "./clips.js";
+    const REELS = [
+      { src: "./media/bms-play.gif", cap: "BookMyShow · nearest cinema listed · PASS", hold: 9200 },
+      { src: "./media/amazon-play.gif", cap: "Amazon · WH-1000XM5 in cart · PASS", hold: 9200 },
+    ];
+    let runId = 0;
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line").forEach((e) => e.classList.remove("in"));
+      const gate = document.getElementById("gate");
+      gate.classList.remove("hide");
+      await preloadImages(REELS.map((r) => r.src));
+      if (id !== runId) return;
+      gate.classList.add("hide");
+      only("L0");
+      show(document.getElementById("h0"));
+      show(document.getElementById("s0"));
+      show(document.getElementById("cap"));
+      for (const r of REELS) {
+        if (id !== runId) return;
+        await setGif(document.getElementById("gif"), r.src);
+        document.getElementById("cap").textContent = r.cap;
+        await wait(r.hold);
+      }
+      only("L1");
+      show(document.getElementById("h1"));
+      show(document.getElementById("s1"));
+      await wait(3200);
+      only("L2");
+      show(document.getElementById("h2"));
+      show(document.getElementById("s2"));
+      await wait(2000);
+    }
+    bindControls(play);
+  </script>
+</body>
+</html>

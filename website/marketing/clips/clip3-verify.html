@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Clip 3 - Verify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+</head>
+<body class="stage-wrap">
+  <div class="stage" aria-label="Clip 3">
+    <div class="layer is-on" id="L0">
+      <div class="frame">
+        <div class="frame-top">
+          <div class="eyebrow line" id="e0">The agent said it succeeded</div>
+          <h1 class="headline line" id="h0">“Task completed.”</h1>
+          <p class="subline line" id="s0">MakeMyTrip · save the flight reservation</p>
+        </div>
+        <div class="frame-mid">
+          <div class="phone show" id="phone">
+            <div class="island"></div>
+            <div class="screen">
+              <div class="status"><span>19:42</span><span>74%</span></div>
+              <div class="app on">
+                <div class="app-bar"><span class="dot" style="background:#e11d48"></span>MakeMyTrip</div>
+                <div class="app-body">
+                  <div class="chip-row"><span class="chip">Flights</span><span class="chip">Saved</span></div>
+                  <div class="list">
+                    <div class="list-item active">
+                      <div class="t">DEL → BLR</div>
+                      <div class="d">Sat 22 Aug · 19:05 · Seat pending</div>
+                    </div>
+                    <div class="list-item">
+                      <div class="t">My Trips</div>
+                      <div class="d">No upcoming bookings</div>
+                    </div>
+                  </div>
+                  <div class="compose" style="color:rgba(52,199,89,0.95)">Agent: reservation saved ✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="float" id="floatClaim">
+            <div class="float-title">Agent output</div>
+            <div class="float-body" style="color:#1f8f4e">Task completed ✓</div>
+            <div class="float-meta">SELF-REPORT · 0:00</div>
+          </div>
+        </div>
+        <div class="frame-bot">
+          <span class="micro">Celebration UI</span>
+          <span class="micro">1×</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer" id="L1">
+      <div class="frame">
+        <div class="frame-top">
+          <div class="eyebrow line" id="e1">Verification</div>
+          <h1 class="headline line" id="h1">Checking the<br>actual device.</h1>
+        </div>
+        <div class="frame-mid" style="align-content:center">
+          <div class="compare-grid">
+            <div class="box" id="exp">
+              <div class="h">Expected</div>
+              <div class="t">Flight reservation saved ✓</div>
+            </div>
+            <div class="box bad" id="act">
+              <div class="h">Actual on device</div>
+              <div class="t">No reservation found ✗</div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-bot">
+          <span class="micro">VERIFYING DEVICE STATE…</span>
+          <span class="micro">ADB · live</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer" id="L2">
+      <div class="frame">
+        <div class="frame-top">
+          <div class="fail-mark" id="fail">Fail</div>
+          <h1 class="headline line" id="h2" style="margin-top:0.6rem">We don’t trust<br>the agent’s claim.</h1>
+          <p class="subline line" id="s2">Success is verified on-device.</p>
+        </div>
+        <div class="frame-mid" style="place-items:end start; padding-bottom:8%">
+          <div>
+            <div class="end-brand line" id="b2">AndroidLife</div>
+            <p class="subline line" id="s2b" style="margin-top:0.45rem">Real phone. Real state. Real evaluation.</p>
+          </div>
+        </div>
+        <div class="frame-bot">
+          <span class="micro line" id="m2">Hallucination controls · end-state grading</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Verify clip · ~7s · 9:16</span>
+  </div>
+
+  <script type="module">
+    import { wait, only, show, bindControls } from "./clips.js";
+
+    let runId = 0;
+
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line,.float,.box,.fail-mark").forEach((el) => {
+        el.classList.remove("in", "on");
+      });
+
+      only("L0");
+      for (const x of ["e0", "h0", "s0"]) {
+        show(document.getElementById(x));
+        await wait(160);
+      }
+      show(document.getElementById("floatClaim"));
+      await wait(1600);
+      if (id !== runId) return;
+
+      only("L1");
+      show(document.getElementById("e1"));
+      show(document.getElementById("h1"));
+      await wait(450);
+      show(document.getElementById("exp"));
+      await wait(500);
+      show(document.getElementById("act"));
+      await wait(1000);
+
+      only("L2");
+      show(document.getElementById("fail"));
+      await wait(400);
+      for (const x of ["h2", "s2", "b2", "s2b", "m2"]) {
+        show(document.getElementById(x));
+        await wait(240);
+      }
+      await wait(1500);
+    }
+
+    bindControls(play);
+  </script>
+</body>
+</html>

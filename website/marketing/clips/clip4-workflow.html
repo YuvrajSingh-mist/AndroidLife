@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Clip 4 - Run &amp; grade (16:9)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+  <style>
+    .load-gate{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:var(--bg);transition:opacity .4s}
+    .load-gate.hide{opacity:0;pointer-events:none}
+    .load-gate p{font-family:var(--serif);color:var(--muted)}
+  </style>
+</head>
+<body class="stage-wrap">
+  <div class="stage">
+    <div class="load-gate" id="gate"><p>Loading trajectory…</p></div>
+    <div class="layer is-on" id="L0">
+      <div class="center-copy">
+        <h1 class="headline line" id="h0">Every public task starts from a known phone state, then the agent has to earn the ending.</h1>
+        <p class="subline line" id="s0">We reset and seed the device, run MobileRun over live ADB, and keep the trajectory plus per-second telemetry.</p>
+      </div>
+    </div>
+    <div class="layer" id="L1">
+      <div class="flow-row" id="flow">
+        <div class="step"><div class="num">1</div><div class="title">Reset &amp; seed</div><div class="detail">Known start</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">2</div><div class="title">MobileRun</div><div class="detail">Live ADB</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">3</div><div class="title">Telemetry</div><div class="detail">$ · mAh · °C</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">4</div><div class="title">Trajectory</div><div class="detail">GIF + steps</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="num">5</div><div class="title">Audit</div><div class="detail">Human GT</div></div>
+      </div>
+    </div>
+    <div class="layer" id="L2">
+      <div class="split">
+        <div class="copy">
+          <h1 class="headline line" id="h2">The model can claim success. The phone still has to show it.</h1>
+          <p class="subline line" id="s2">End-state checks and hallucination controls decide the score. Manual audit is ground truth.</p>
+        </div>
+        <div class="phone-wrap">
+          <div class="phone show">
+            <div class="island"></div>
+            <div class="screen"><img id="gif" alt=""></div>
+          </div>
+          <div class="compare" style="margin-top:0.75rem;width:100%">
+            <div class="box line" id="exp"><div class="h">Claim</div><div class="t">Done</div></div>
+            <div class="box bad line" id="act"><div class="h">Device</div><div class="t">Missing</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="layer" id="L3">
+      <div class="center-copy">
+        <p class="fail-mark line" id="fail">Fail</p>
+        <p class="brand line" id="b3" style="margin-top:0.8rem">AndroidLife</p>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Workflow · GIF holds full loop · 16:9</span>
+  </div>
+  <script type="module">
+    import { wait, only, show, bindControls, preloadImages, setGif } from "./clips.js";
+    const SRC = "./media/amazon-play.gif";
+    let runId = 0;
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line,.step,.arrow,.box,.fail-mark").forEach((e) => e.classList.remove("in"));
+      const gate = document.getElementById("gate");
+      gate.classList.remove("hide");
+      await preloadImages([SRC]);
+      await setGif(document.getElementById("gif"), SRC);
+      if (id !== runId) return;
+      gate.classList.add("hide");
+      only("L0");
+      show(document.getElementById("h0"));
+      show(document.getElementById("s0"));
+      await wait(2400);
+      only("L1");
+      for (const el of document.querySelectorAll("#flow .step, #flow .arrow")) {
+        if (id !== runId) return;
+        show(el);
+        await wait(140);
+      }
+      await wait(1800);
+      only("L2");
+      show(document.getElementById("h2"));
+      show(document.getElementById("s2"));
+      await wait(500);
+      show(document.getElementById("exp"));
+      await wait(500);
+      show(document.getElementById("act"));
+      await wait(9200); // let Amazon GIF play through while claim/device is on screen
+      only("L3");
+      show(document.getElementById("fail"));
+      show(document.getElementById("b3"));
+      await wait(1800);
+    }
+    bindControls(play);
+  </script>
+</body>
+</html>

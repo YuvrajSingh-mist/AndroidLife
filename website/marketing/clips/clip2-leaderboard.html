@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Clip 2 - Leaderboard (16:9)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+</head>
+<body class="stage-wrap">
+  <div class="stage">
+    <div class="layer is-on" id="L0">
+      <div class="center-copy">
+        <h1 class="headline line" id="h0">60 tasks. One phone.<br>Who actually finishes?</h1>
+        <p class="subline line" id="s0">Manual audit - false “success” counts as fail.</p>
+      </div>
+    </div>
+    <div class="layer" id="L1">
+      <div class="lb" id="lb" style="width:min(70%,520px)"></div>
+    </div>
+    <div class="layer" id="L2">
+      <div style="display:grid;gap:1rem;justify-items:center;width:100%">
+        <h1 class="headline line" id="h2" style="text-align:center;font-size:clamp(1.3rem,2.5vw,1.8rem)">61.7% still cooked the phone.</h1>
+        <div class="metrics-grid" id="metrics">
+          <div class="m"><div class="k">SR</div><div class="v">61.7%</div></div>
+          <div class="m"><div class="k">Steps</div><div class="v">29.3</div></div>
+          <div class="m"><div class="k">$/task</div><div class="v">0.12</div></div>
+          <div class="m"><div class="k">Battery</div><div class="v">−71%</div></div>
+          <div class="m"><div class="k">CPU</div><div class="v">98°C</div></div>
+        </div>
+        <p class="subline line" id="s2" style="text-align:center">gemini-flash-lite: 41.7% · 8.3 steps · $0.02 · −21%</p>
+      </div>
+    </div>
+    <div class="layer" id="L3">
+      <div class="center-copy">
+        <h1 class="headline line" id="h3">Succeeding ≠ living on your phone.</h1>
+        <p class="brand line" id="b3" style="margin-top:1.2rem">AndroidLife</p>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Leaderboard · ~9s · 16:9</span>
+  </div>
+  <script type="module">
+    import { wait, only, show, bindControls } from "./clips.js";
+    const ROWS = [
+      { model: "qwen3.8-27b · TEXT", success: 61.7 },
+      { model: "qwen3.8-27b · VISION", success: 60.0 },
+      { model: "kimi-k2.6 · TEXT", success: 58.3 },
+      { model: "seed-2.0-lite · VISION", success: 53.3 },
+      { model: "gemini-3.1-flash-lite", success: 41.7 },
+      { model: "gpt-5.6-luna · TEXT", success: 30.0 },
+    ];
+    const lb = document.getElementById("lb");
+    let runId = 0;
+    function build() {
+      lb.innerHTML = ROWS.map((r) => `
+        <div class="lb-row"><div><div class="name">${r.model}</div>
+        <div class="bar-wrap"><div class="bar"></div></div></div>
+        <div class="pct">0%</div></div>`).join("");
+    }
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line,.lb-row,.m").forEach((e) => e.classList.remove("in", "hot"));
+      build();
+      only("L0");
+      show(document.getElementById("h0"));
+      show(document.getElementById("s0"));
+      await wait(1600);
+      only("L1");
+      const rows = [...lb.querySelectorAll(".lb-row")];
+      for (let i = 0; i < rows.length; i++) {
+        if (id !== runId) return;
+        show(rows[i]);
+        rows[i].querySelector(".bar").style.width = `${ROWS[i].success}%`;
+        rows[i].querySelector(".pct").textContent = `${ROWS[i].success.toFixed(1)}%`;
+        await wait(160);
+      }
+      rows[0].classList.add("hot");
+      await wait(700);
+      only("L2");
+      show(document.getElementById("h2"));
+      for (const m of document.querySelectorAll("#metrics .m")) { show(m); await wait(100); }
+      show(document.getElementById("s2"));
+      await wait(1800);
+      only("L3");
+      show(document.getElementById("h3"));
+      show(document.getElementById("b3"));
+      await wait(1600);
+    }
+    bindControls(play);
+  </script>
+</body>
+</html>

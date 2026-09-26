@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AndroidLife · Tweet 1 - Edge0 (battery death)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./clips.css">
+  <style>
+    /* Edge0: phone-dominant screen-recording energy */
+    .e0-stage .frame { padding: 0; gap: 0; }
+    .e0-phone {
+      width: min(78%, 300px);
+      aspect-ratio: 9 / 19.4;
+    }
+    .hud {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 14px;
+      z-index: 10;
+      background: rgba(12, 12, 14, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.88);
+      opacity: 0;
+      transform: translateY(6px);
+      backdrop-filter: blur(8px);
+    }
+    .hud.on {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .hud .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin: 0.2rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud .warn { color: #ff9f0a; }
+    .hud .crit { color: #ff453a; font-weight: 650; }
+    .hud .bar {
+      margin-top: 6px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .hud .bar > i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: #34c759;
+      border-radius: inherit;
+      transform-origin: left center;
+      transition: transform 0.4s linear, background 0.3s ease;
+    }
+    .big-fail {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      text-align: center;
+      padding: 1rem;
+    }
+    .big-fail.on { opacity: 1; transition: opacity 0.45s ease; }
+    .big-fail .t {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+    .big-fail .m {
+      margin-top: 0.55rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .title-card {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      align-content: end;
+      padding: 8% 9% 10%;
+      background: linear-gradient(180deg, transparent 40%, rgba(232, 232, 234, 0.96) 72%);
+    }
+    .dim-screen {
+      filter: brightness(0.35) saturate(0.7);
+      transition: filter 0.8s ease;
+    }
+  </style>
+</head>
+<body class="stage-wrap">
+  <div class="stage e0-stage" aria-label="Tweet 1 Edge0 clip">
+    <!-- cold open: phone working -->
+    <div class="layer is-on" id="L0" style="padding:6% 6% 7%">
+      <div class="frame" style="grid-template-rows:1fr auto">
+        <div class="frame-mid">
+          <div class="phone e0-phone show" id="phone">
+            <div class="island"></div>
+            <div class="screen" id="screen">
+              <div class="status">
+                <span id="clock">14:22</span>
+                <span id="battLabel">28%</span>
+              </div>
+              <div id="appHost"></div>
+              <div class="tap" id="tap"></div>
+              <div class="hud" id="hud">
+                <div class="row"><span>AndroidLife · kimi-k2.6 VISION</span><span id="taskLbl">task 28 / 60</span></div>
+                <div class="row"><span>CPU</span><span id="cpuLbl" class="warn">78.4°C</span></div>
+                <div class="row"><span>Battery</span><span id="batHud">28%</span></div>
+                <div class="bar"><i id="batBar"></i></div>
+              </div>
+              <div class="big-fail" id="bigFail">
+                <div>
+                  <div class="t">Task 35 / 60<br>Battery 0%</div>
+                  <div class="m">Run interrupted · OnePlus CPH2423</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-bot" style="padding:0 2%">
+          <span class="micro">Physical Android · no emulator</span>
+          <span class="micro">1× · silent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- end card -->
+    <div class="layer" id="L1" style="padding:8%">
+      <div class="frame">
+        <div class="frame-top">
+          <div class="eyebrow line" id="e1">Open source</div>
+          <h1 class="headline line" id="h1">AndroidLife</h1>
+          <p class="subline line" id="s1">Real phone. Real month. Real cost.</p>
+        </div>
+        <div class="frame-mid" style="place-items:start; align-content:end; padding-bottom:12%">
+          <p class="subline line" id="s1b" style="max-width:18rem">
+            31 apps · on-device verification · battery &amp; thermals first-class
+          </p>
+        </div>
+        <div class="frame-bot">
+          <span class="micro line" id="m1">yuvrajsingh-mist.github.io/AndroidLife</span>
+          <span class="micro line" id="m1b">No sandbox</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <button type="button" id="replay">Replay</button>
+    <span class="hint">Tweet 1 Edge0 · ~20s · 9:16</span>
+  </div>
+
+  <script type="module">
+    import { wait, only, show, hide, bindControls } from "./clips.js";
+
+    // Grounded in kimi-k2.6 VISION public run: interrupted 35/60, battery death.
+    const BEATS = [
+      {
+        clock: "14:22", task: 28, bat: 28, cpu: 78.4,
+        html: `
+          <div class="app on">
+            <div class="app-bar"><span class="dot"></span>Telegram</div>
+            <div class="app-body">
+              <div class="list">
+                <div class="list-item active"><div class="t">Priya</div><div class="d">Send the address for tonight</div></div>
+                <div class="list-item"><div class="t">Work</div><div class="d">Deck link?</div></div>
+              </div>
+              <div class="compose">Bhubaneswar · Patia<span class="caret"></span></div>
+            </div>
+          </div>`,
+        taps: [[62, 48], [55, 62]],
+      },
+      {
+        clock: "15:08", task: 31, bat: 18, cpu: 84.1,
+        html: `
+          <div class="app on">
+            <div class="app-bar"><span class="dot" style="background:#ea4335"></span>Gmail</div>
+            <div class="app-body">
+              <div class="list">
+                <div class="list-item active"><div class="t">Forward invoice</div><div class="d">to accounts@ · PDF attached</div></div>
+                <div class="list-item"><div class="t">Weekly Sync notes</div><div class="d">from alex@</div></div>
+              </div>
+            </div>
+          </div>`,
+        taps: [[50, 40], [70, 52]],
+      },
+      {
+        clock: "16:41", task: 34, bat: 7, cpu: 85.6,
+        html: `
+          <div class="app on">
+            <div class="app-bar"><span class="dot" style="background:#4285f4"></span>Maps</div>
+            <div class="app-body">
+              <div class="chip-row"><span class="chip">Directions</span><span class="chip">Driving</span></div>
+              <div class="list">
+                <div class="list-item active"><div class="t">Home → Airport</div><div class="d">42 min · traffic moderate</div></div>
+                <div class="list-item"><div class="t">Save to Telegram</div><div class="d">share ETA</div></div>
+              </div>
+            </div>
+          </div>`,
+        taps: [[48, 44], [60, 58]],
+      },
+      {
+        clock: "17:19", task: 35, bat: 2, cpu: 85.9,
+        html: `
+          <div class="app on">
+            <div class="app-bar"><span class="dot" style="background:#fc8019"></span>Swiggy</div>
+            <div class="app-body">
+              <div class="list">
+                <div class="list-item active"><div class="t">Reorder</div><div class="d">Downtown Delight · biryani</div></div>
+              </div>
+              <div class="compose" style="color:#ff9f0a">Battery critical…</div>
+            </div>
+          </div>`,
+        taps: [[55, 42]],
+      },
+    ];
+
+    const host = document.getElementById("appHost");
+    const tap = document.getElementById("tap");
+    const hud = document.getElementById("hud");
+    const batBar = document.getElementById("batBar");
+    const screen = document.getElementById("screen");
+    let runId = 0;
+
+    function setTelemetry({ clock, task, bat, cpu }) {
+      document.getElementById("clock").textContent = clock;
+      document.getElementById("battLabel").textContent = `${bat}%`;
+      document.getElementById("taskLbl").textContent = `task ${task} / 60`;
+      document.getElementById("cpuLbl").textContent = `${cpu.toFixed(1)}°C`;
+      document.getElementById("cpuLbl").className = cpu >= 85 ? "crit" : "warn";
+      const batEl = document.getElementById("batHud");
+      batEl.textContent = `${bat}%`;
+      batEl.className = bat <= 5 ? "crit" : bat <= 15 ? "warn" : "";
+      document.getElementById("battLabel").style.color = bat <= 5 ? "#ff453a" : "";
+      batBar.style.transform = `scaleX(${Math.max(0, bat) / 100})`;
+      batBar.style.background = bat <= 5 ? "#ff453a" : bat <= 15 ? "#ff9f0a" : "#34c759";
+    }
+
+    async function doTap(x, y) {
+      tap.style.left = `${x}%`;
+      tap.style.top = `${y}%`;
+      show(tap);
+      await wait(140);
+      hide(tap);
+    }
+
+    async function playBeat(beat, showHud) {
+      host.innerHTML = beat.html;
+      setTelemetry(beat);
+      if (showHud) show(hud);
+      for (const [x, y] of beat.taps) {
+        await doTap(x, y);
+        await wait(320);
+      }
+      await wait(480);
+    }
+
+    async function play() {
+      const id = ++runId;
+      document.querySelectorAll(".line,.hud,.big-fail,.tap").forEach((el) => {
+        el.classList.remove("in", "on");
+      });
+      screen.classList.remove("dim-screen");
+      hide(document.getElementById("bigFail"));
+      batBar.style.transform = "scaleX(0.28)";
+
+      only("L0");
+      // first beat without HUD - feels like raw recording
+      await playBeat(BEATS[0], false);
+      if (id !== runId) return;
+      show(hud);
+      await wait(200);
+      for (let i = 1; i < BEATS.length; i++) {
+        if (id !== runId) return;
+        await playBeat(BEATS[i], true);
+      }
+
+      // death
+      setTelemetry({ clock: "17:21", task: 35, bat: 0, cpu: 85.9 });
+      screen.classList.add("dim-screen");
+      await wait(500);
+      show(document.getElementById("bigFail"));
+      await wait(2200);
+      if (id !== runId) return;
+
+      only("L1");
+      for (const x of ["e1", "h1", "s1", "s1b", "m1", "m1b"]) {
+        show(document.getElementById(x));
+        await wait(180);
+      }
+      await wait(1800);
+    }
+
+    bindControls(play);
+  </script>
+</body>
+</html>
