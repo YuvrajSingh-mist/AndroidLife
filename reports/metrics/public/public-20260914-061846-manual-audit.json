@@ -3,16 +3,16 @@
   "model": "Qwen3.5-4B",
   "mode": "text",
   "interrupted": true,
-  "finalized": 27,
+  "finalized": 29,
   "scheduled": 60,
   "counts": {
     "PASS": 10,
-    "FAIL": 16,
+    "FAIL": 18,
     "HALLUCINATION": 1,
     "BLOCKED": 0,
-    "INTERRUPTED": 2
+    "INTERRUPTED": 1
   },
-  "success_rate_pct_finalized": 37.0,
+  "success_rate_pct_finalized": 34.5,
   "success_rate_pct_comparable_60": 16.67,
   "false_passes": [
     {
@@ -248,14 +248,36 @@
       "task_id": "medium__google-maps__002",
       "day": 1,
       "folder": "medium-google-maps-002",
-      "verdict": "PASS",
-      "agent_success": true,
+      "verdict": "FAIL",
+      "agent_success": false,
       "ask_user_calls": 0,
       "is_hc": false,
       "is_ask_user": false,
-      "evidence": "RE-RUN 16 Sep: typed destination itself (no leftover tap), compared Driving 36 min / Transit N/A / Walking 2h50; note saved. Still chose two-wheeler (34 min) outside asked trio; note body empty.",
+      "evidence": "↻ Re-run 2026-09-23 (recents + accumulated run-notes swept). Typed `Bhubaneswar Airport`, read the mode tabs, but saved `Two-wheeler (33 min, 12 km)` — a mode the task never asks about — then hit the **60-step cap**. Supersedes the 16 Sep “upgrade to PASS” (withdrawn).",
       "rerun": true,
       "original_verdict": "FAIL"
+    },
+    {
+      "task_id": "easy__amazon-shopping-002",
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "day": 2,
+      "folder": "easy-amazon-shopping-002",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "evidence": "🔄 Re-run 16 Sep (new task). Opened Chrome, not the Amazon Shopping app, and read the signed-out website cart → “cart is currently empty”. Never launched `in.amazon.mShop.android.shopping`."
+    },
+    {
+      "task_id": "easy__google-maps-004",
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "day": 2,
+      "folder": "easy-google-maps-004",
+      "verdict": "PASS",
+      "agent_success": true,
+      "evidence": "🔄 Re-run 16 Sep (new task). Created the `parked here` note (coords 20.29, 85.74) **and** the home-screen widget — both verified on-device."
     },
     {
       "task_id": "hard__chrome-telegram-notes__008",
@@ -314,14 +336,14 @@
     },
     {
       "task_id": "hard__bookmyshow__005",
-      "day": 2,
-      "folder": "hard-bookmyshow-005",
-      "verdict": "INTERRUPTED",
-      "agent_success": null,
       "ask_user_calls": 0,
       "is_hc": false,
       "is_ask_user": false,
-      "evidence": "Device offline mid-task / thin resume; no Telegram plan."
+      "day": 2,
+      "folder": "hard-bookmyshow-005",
+      "verdict": "FAIL",
+      "agent_success": false,
+      "evidence": "↻ re-run 2026-09-22 — the interrupted task was completed on the corrected `INOX: Symphony Mall` seed: reached the 60-step cap with no Telegram send (`sent_bubbles: 0`). Graded FAIL; the original interrupted attempt carried no verdict."
     },
     {
       "task_id": "easy__settings__014",
@@ -333,7 +355,18 @@
       "is_hc": false,
       "is_ask_user": false,
       "evidence": "Preflight device offline; no trajectory."
+    },
+    {
+      "task_id": "hard__google-meet-files__070",
+      "ask_user_calls": 0,
+      "is_hc": false,
+      "is_ask_user": false,
+      "day": 3,
+      "folder": "hard-google-meet-files-070",
+      "verdict": "PASS",
+      "agent_success": true,
+      "evidence": "🔄 Re-run 2026-09-25 (new task — the original run never reached day 3). Meet `Scheduled` → `Weekly Sync` (Sat, Sep 26 · 10:00–11:00); Files search → `Weekly Agenda.txt` opened; reply `Weekly Sync, Weekly Agenda.txt`. 8 steps / 257.4 s."
     }
   ],
-  "notes": "Partial run; battery/ADB death mid-day2. Manual audit artifact-only (no ADB). DeepEval HC 2/2 not hallucinated; manual calendar-008 FAIL + camera HALLU. REVISION 16 Sep: 3 single-task re-runs on a cleaned phone folded in (maps-002 FAIL->PASS; maps-004 + amazon-002 newly finalized). Official-column figures recomputed by hand, not script-generated."
+  "notes": "Partial run; battery/ADB death mid-day2. Manual audit artifact-only (no ADB). DeepEval HC 2/2 not hallucinated; manual calendar-008 FAIL + camera HALLU. REVISION 16 Sep: 3 single-task re-runs on a cleaned phone folded in (maps-002, maps-004 + amazon-002). REVISION 2026-09-23: maps-002 re-taken again on a swept Maps state -> FAIL again, so its 16 Sep upgrade to PASS is withdrawn. REVISION 2026-09-22/25: the day-2 orphan hard__bookmyshow__005 was completed (graded FAIL, 60-step cap, no Telegram send) and the never-reached day-3 hard__google-meet-files__070 was re-run (PASS), so finalized 27 -> 29 and orphans 2 -> 1 (easy__settings__014). Official-column figures recomputed by hand, not script-generated."
 }

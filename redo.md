@@ -321,9 +321,11 @@ Three things surfaced that the arithmetic pass could not have seen:
   §7d requires for steps, rather than re-basing either onto the other.
 
 **A note on `steps(official)`.** §7d's warning list is unchanged apart from rows 9-12 dropping
-off it (their two figures now agree). Re-audited 2026-09-26: the list is rows 3/4/7/13 on
-`steps`, row 4 on `queries` and rows 3/6 on `uiq` — 7 fields, all explained in §7d, with row 13
-resolved there as the timeout (`steps: 0`) artifact.
+off it (their two figures now agree). Re-audited 2026-09-26: the list was rows 3/4/7/13 on
+`steps`, row 4 on `queries` and rows 3/6 on `uiq` — 7 fields. **The four `steps` warnings are now
+all resolved and retired** (rows 3/4/7 by the trajectory recount in §7e(2); row 13 by the
+timeout artifact in §7e(1)), leaving only the three genuine denominator rows (`uiq`/`queries`) in
+§7d.
 
 **Row 9 verdict — FAIL, and the reason is substantive.** It typed the query and saved
 `Travel to Bhubaneswar Airport - Fastest Option: Two-wheeler (33 min, 12 km)`. The task asks
@@ -1739,20 +1741,30 @@ The full current list:
 
 | row | model | axis | official (metrics JSON) | published (report table) | cause |
 |---|---|---|---|---|---|
-| 3 | gemini-3.1-flash-lite | steps | 8.4 | 8.12 | audit basis, unexplained residual |
+| 3 | gemini-3.1-flash-lite | steps | 8.50 | 8.50 | **resolved → §7e(2)** — missed `bookmyshow` delta + stale published baseline |
 | 3 | gemini-3.1-flash-lite | uiq | 0.1111 | 0.125 | **denominator**: generator = 1 ÷ (7 interaction + 2 triggered) = 1/9; audit = 1/8 |
-| 4 | seed-2.0-lite | steps | 12.8833 | 13.59 | audit basis, unexplained residual |
+| 4 | seed-2.0-lite | steps | 13.00 | 13.00 | **resolved → §7e(2)** — missed `bookmyshow` delta + Meet delta sign flip + stale published baseline |
 | 4 | seed-2.0-lite | queries | 0.5714 | 0.67 | **denominator**: generator = 4 asks ÷ 7 interaction tasks = 4/7; audit = 4/6 |
 | 6 | seed-2.0-lite (VISION) | uiq | 0.1 | 0.2 | **stale JSON** — fresh artifact recompute gives 0.2, i.e. the published figure |
-| 7 | gpt-5.6-luna (TEXT) | steps | 41.2833 | 42.22 | audit basis, unexplained residual |
-| 13 | Bonsai-2-27B (TEXT) | steps | 4.1875 | 12.73 | **resolved → §7e** |
+| 7 | gpt-5.6-luna (TEXT) | steps | 41.18 | 41.18 | **resolved → §7e(2)** — missed `calendar_002` (−56) and `bookmyshow` (−6) deltas |
+| 13 | Bonsai-2-27B (TEXT) | steps | 4.1875 | 12.73 | **explained → §7e(1)** — timeout writes `steps: 0`; divergence is deliberate, not a bug |
 
-Rows 1, 2, 5, 8, 9, 10, 11 and 12 agree on all three axes.
+Rows 1, 2, 5, 8, 9, 10, 11 and 12 agree on all three axes. **Rows 3, 4 and 7's `steps` warnings
+are retired** — a trajectory recount proves those were hand-arithmetic drift, not a second
+basis, and both series are now re-based to the finalized artifacts. **Row 13 still carries a
+`steps` warning (4.1875 vs 12.73), but it is resolved in the other sense: explained, not
+equalized.** Its divergence is real and must stay — the JSON's 4.1875 is the timeout artifact
+(`steps: 0` on the timeout path, §7e(1)) and the published 12.73 is the correct figure — so the
+verifier's warning is expected there and should not be driven to zero.
 
-*Do not force them equal.* Row 7 briefly did, on the theory that the 0.93 gap was exactly the
-2026-09-21 `calendar_002` re-run's -56/60; it was reverted because rows 3/4/13 show the same
-kind of gap with no such tidy explanation, i.e. the two numbers are genuinely computed
-differently. Apply the task delta to **each** on its own basis and leave the residual alone.
+*Do not force them equal* applies to the axes that really are two bases: **`uiq` and `queries`**
+are genuine denominator differences (§7d rows 3/4/6), and **row 13's `steps`** is a genuine
+artifact (timeout → `steps: 0`, §7e(1)). It does **not** apply to rows 3/4/7's `steps`: a full
+trajectory recount (2026-09-26, §7e(2)) shows `output.json.steps` equals the final-trajectory
+LLM-turn count for **all 180 tasks** behind those rows, i.e. `steps` has exactly one basis and
+the gaps were hand-arithmetic drift. Row 7's "too tidy" theory was right all along; it was
+reverted on the strength of rows 3/4 sharing the *symptom* (a constant residual), not the
+*mechanism*. Both series are now re-based to the finalized artifacts and agree.
 
 **Evidence that both series are being maintained (not one going stale).** Every re-run's delta
 lands on *both* bases by the same amount, within the report's 2-dp rounding — measured across
@@ -1764,12 +1776,16 @@ is what stays behind, and it does not move.
 artifacts via `load_run_record()` + `benchmark_metrics`: row 3 `uiq` = 1/9 and
 `queries` = 5/7, row 4 `queries` = 4/7 all match their JSONs exactly, which is what pins the
 cause to the `triggered` term in `user_interaction_quality_factmatch` and to the audit's own
-interaction denominator. Note the JSONs are hand-adjusted per re-run, **not** regenerated, so a
-fresh aggregate over today's (in-place-merged) artifacts does not equal them — expected, not a
-defect. And §7b holds: every `metrics/*-report.md` is a pure `render_markdown()` of its `.json`
+interaction denominator. Note that on the `uiq`/`queries` axes the JSONs are hand-adjusted per
+re-run, **not** regenerated, so a fresh aggregate over today's (in-place-merged) artifacts does
+not equal them — expected, not a defect. (`steps` is the one axis where a fresh aggregate *is*
+the right check: see §7e(2).) And §7b holds: every `metrics/*-report.md` is a pure
+`render_markdown()` of its `.json`
 (15/15 verified 2026-09-26).
 
-**7e. Row 13's steps gap (4.19 vs 12.73) — RESOLVED, it is a timeout artifact.** Every task
+**7e. The `steps` gaps — RESOLVED (two different mechanisms).**
+
+**(1) Row 13 (4.19 vs 12.73) — a timeout artifact.** Every task
 that times out writes `steps: 0` to its `output.json` (the step counter is lost on the timeout
 path), so the official mean covers only the terminating tasks: **67 steps ÷ 16 records =
 4.1875**. The report's **12.73** is the true effort counted from the trajectories
@@ -1777,6 +1793,45 @@ path), so the official mean covers only the terminating tasks: **67 steps ÷ 16 
 its own note at `reports/public/public-20260920-044846.md`; the official one must not be quoted
 as a speed figure. Nothing left to hand-pass here — this is the *explanation* of why the two
 bases differ, and it is the cleanest single example of the class.
+
+**(2) Rows 3, 4 and 7 — not a second basis at all; hand-arithmetic drift (2026-09-26).** These
+three rows were the last `steps` residuals and §7d recorded them as "unexplained". A
+trajectory-recount pass over all **180 tasks** settles it: **`output.json.steps` equals the
+number of `FastAgentResponseEvent`s (agent turns) in that task's final trajectory for every
+single task** — 60/60 on each row, no exceptions — so the official and manual `steps` series are
+the *same metric*, not two bases. The values were re-derived by replaying every re-run delta
+against the Hub-artifact baselines and against the historical revisions of each artefact:
+
+| row | artifact baseline | deltas applied by each series | defect(s) | published → **corrected** | official → **corrected** |
+|---|---|---|---|---|---|
+| 3 | **8.60** (516) | slides −0.05, drive −0.20, maps +0.0167, meet +0.0333 | published still on its **pre-`swiggy`/`music-obsidian` 8.32 baseline**; **`bookmyshow` +6 missed by both** | 8.12 → **8.50** | 8.4 → **8.50** |
+| 4 | **13.10** (786) | slides −0.0333, drive −0.10, maps 0, meet **−0.0833 (sign inverted)** | published still on its **pre-SIM-rerun 13.80 baseline**; **`bookmyshow` −3 missed by both**; **meet +5 applied as −5 by both** | 13.59 → **13.00** | 12.8833 → **13.00** |
+| 7 | **41.8167** (2509) | calendar −0.9333, drive +0.0333, maps −0.3333, meet +0.70 | published **missed `calendar_002` (−56) and `bookmyshow` (−6)**; official missed `bookmyshow` | 42.22 → **41.18** | 41.2833 → **41.18** |
+
+The three root causes are all visible in the Hub revision history of
+`reports/metrics/public/*-report.json` (09-02 → 09-20 → 09-21 → 09-23 → 09-26) and of the
+matching public reports:
+
+* **`hard__bookmyshow__005` (re-run 2026-09-22) was applied to no aggregate in any row.** 2026-09-22
+  has exactly two Hub commits and none of them touched a report — the re-run landed between the
+  09-21 and 09-23 edits and was simply skipped (row 3 +6, row 4 −3, row 7 −6 steps).
+* **Each published table was frozen at a different artifact state than its metrics JSON**, so a
+  constant residual was baked in before any re-run: row 3's public report literally reads
+  `8.32 *(not recomputed — see re-run note)*` at the 09-20 revision (the `swiggy` /
+  `music-obsidian` in-place re-runs never reached the steps figure), and row 4's still read
+  `avg 13.8` from before the 2026-08-31 SIM re-runs.
+* **Row 4's Meet delta had its sign inverted in both series** — the artefact moved 7 → 12
+  (+5, and this is what the report's own meet note records) while the aggregate was moved −5.
+
+Corrections applied: `average_steps` in the three metrics JSONs (`.md` regenerated with
+`render_markdown`, §7b holds), the `Average Completion Steps` rows and every step figure in the
+three public reports, and the `steps` field of `androidlife-website/assets/js/leaderboard.js`.
+The verifier's `steps(official)` warning list **no longer contains rows 3, 4 or 7** — it retains
+only row 13 (a genuine timeout artifact, §7e(1)) alongside the `uiq`/`queries` denominator rows
+of §7d. **Corollary for future re-runs:** the deltas must be applied to
+both series *and* the totals re-checked against a fresh artifact aggregate — the "lockstep"
+check §7d used only proves the two series moved by the same amount, not that either matched the
+artefacts.
 
 **7c. Every report has a third, pre-existing class of drift: its own three totals disagree.**
 Row 1 carried 36 (outcome + metrics tables), 35 (prose), 34 (totals + day headers) for the same
@@ -1824,7 +1879,7 @@ For every re-run task taken on charge:
 | 6 | 20260905-051950 | **−51 %** | calendar, slides, 010, maps, bookmyshow |
 | 7 | 20260906-063336 | **−85 %** | calendar, slides, 010, maps, bookmyshow |
 | 8 | 20260910-041531 | **−87 %** | 010, maps, bookmyshow, meet |
-| 9 | 20260914-061846 | **−96 %** | 010, maps *(bookmyshow orphan — already excluded)* |
+| 9 | 20260914-061846 | **−96 %** | 010, maps, bookmyshow *(the orphan dir was completed by the 2026-09-22 re-run and is still excluded as a re-run cell — §8e)* |
 | 10 | 20260916-011341 | **−81 %** | calendar, 010, maps, bookmyshow |
 | 11 | 2026-08-30-021852 | **−94 %** | calendar, slides, 010, maps, bookmyshow |
 | 12 | 20260917-160018 | **−93 %** | calendar, 010, maps, bookmyshow |

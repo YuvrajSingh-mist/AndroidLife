@@ -12,6 +12,14 @@ reports/turn-based/public/
 
 Runs present: `2026-08-26-184934`, `2026-08-28-002424`, `2026-08-29-153657`, `2026-08-30-021852`, `2026-08-30-143554`, `20260826-105200`, `20260901-002701`, `20260905-051950`, `20260906-063336`, `20260909-043419`, `20260910-041531`, `20260914-061846`, `20260916-011341`, `20260920-044846`, `20260921-212306`, `20260921-213754`
 
+> **↻ Re-runs that are NOT indexed here.** The 2026-09-22 → 2026-09-25 redo re-runs
+> (`bookmyshow-005`, `google-maps-002`, `google-meet-files-070`) are not in this index — their ASK-USER
+> turns are documented in each row's public report under `reports/public/` (see `redo.md` §2/§5/§7).
+> Where a redo task's withheld fact changed — notably `hard__drive-notes-telegram__010`, whose
+> Drive/spreadsheet component was **dropped on 2026-09-21** and now names the **`Budget Deadline` note**
+> — the fact text in the tables below is the **pre-re-run** wording, kept for the historical record.
+> Current verdicts for every redo task are in the leaderboard-backed reports, never inferred from here.
+
 ## ask-query-single/
 | Run | Task | Day | # asks | Asked? | Fact |
 |---|---|---|---|---|---|
