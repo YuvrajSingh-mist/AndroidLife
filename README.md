@@ -285,11 +285,13 @@ Site source is the private repo [`androidlife-website`](https://github.com/Yuvra
 If you use AndroidLife — the benchmark, leaderboard, tasks, or results — please credit this work and cite it as:
 
 ```bibtex
-@misc{singh2026androidlife,
-      title={AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
-      author={Yuvraj Singh},
-      year={2026},
-      howpublished={\url{https://github.com/YuvrajSingh-mist/AndroidLife}},
+@software{singh2026androidlife,
+  title     = {AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs},
+  author    = {Singh, Yuvraj},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23196834},
+  url       = {https://github.com/YuvrajSingh-mist/AndroidLife}
 }
 ```
 
