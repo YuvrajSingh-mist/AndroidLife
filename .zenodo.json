@@ -1,0 +1,29 @@
+{
+  "title": "AndroidLife: Real-Phone Android Agent Benchmark for Open-Weight Models and On-Device SLMs",
+  "description": "<p><strong>AndroidLife</strong> is a real-phone Android agent benchmark for open-weight models and on-device SLMs, with a 60-task public set and a 530-task dataset.</p>\n<p>The harness and tooling are licensed under Apache-2.0. Task definitions, schedules and published evaluation artifacts are licensed under CC BY 4.0.</p>",
+  "creators": [
+    {
+      "name": "Singh, Yuvraj"
+    }
+  ],
+  "license": "apache-2.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "language": "eng",
+  "keywords": [
+    "android agents",
+    "benchmark",
+    "on-device SLM",
+    "real phone",
+    "mobile agents",
+    "open-weight models"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/YuvrajSingh-mist/AndroidLife",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ],
+  "notes": "Harness and tooling are licensed under Apache-2.0. Dataset, task definitions and published evaluation artifacts are additionally licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)."
+}
