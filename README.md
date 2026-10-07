@@ -1,15 +1,19 @@
+<div align="center">
+
 # AndroidLife
+
+**Can an AI agent survive a day in the life of a real user?**
+
+[![version](https://img.shields.io/github/v/release/YuvrajSingh-mist/AndroidLife?label=version&sort=semver)](https://github.com/YuvrajSingh-mist/AndroidLife/releases) [![license: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC_BY_4.0-lightgrey)](LICENSE-DATASET) [![python 3.11–3.13](https://img.shields.io/badge/python-3.11--3.13-blue)](pyproject.toml) [![mobilerun 0.6.15](https://img.shields.io/badge/mobilerun-0.6.15-informational)](https://docs.mobilerun.ai/framework/sdk)
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist) [<img src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Support me on Ko-fi" height="20">](https://ko-fi.com/O7W120DR8R)
+
+[**Leaderboard**](https://androidlife-website.vercel.app/) · [**530-task dataset**](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530) · [**60-task public runs**](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public) · [**Code**](https://github.com/YuvrajSingh-mist/AndroidLife)
+
+</div>
 
 Real-phone Android agent benchmark: everyday tasks on a live device, scoring **task success** and **phone cost** (battery, thermals, $$, steps). Agents are driven by [MobileRun](https://docs.mobilerun.ai/framework/sdk) / Droidrun over ADB — **pinned to `mobilerun==0.6.15`** (see `pyproject.toml` + `uv.lock`) for reproducible harness behavior.
 
 Built for **open-weight** models — OpenRouter / any OpenAI-compatible API today, with **on-device SLMs** as the long-term focus. Same harness either way.
-
-| | |
-|---|---|
-| **Leaderboard / site** | [androidlife-website.vercel.app](https://androidlife-website.vercel.app/) |
-| **Code** | [github.com/YuvrajSingh-mist/AndroidLife](https://github.com/YuvrajSingh-mist/AndroidLife) |
-| **Public run artifacts** | [`YuvrajSingh9886/androidlife-public`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public) |
-| **530-task corpus** | [`YuvrajSingh9886/androidlife-530`](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530) |
 
 ## What you get
 
@@ -306,7 +310,4 @@ Academic paper citation is a community norm (use the BibTeX above); CC BY is wha
 
 ## Fuel the benches
 
-Perf benchmarking burns wall-clock, watts, and a lot of coffee. If these numbers helped you pick a board or a model, fuel the next run:
-
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist)
-[<img src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Support me on Ko-fi" height="32">](https://ko-fi.com/O7W120DR8R)
+Perf benchmarking burns wall-clock, watts, and a lot of coffee. If these numbers helped you pick a board or a model, fuel the next run: [GitHub Sponsors](https://github.com/sponsors/YuvrajSingh-mist) · [Ko-fi](https://ko-fi.com/O7W120DR8R).
