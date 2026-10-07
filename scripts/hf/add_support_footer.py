@@ -37,6 +37,17 @@ KOFI_BADGE = "https://storage.ko-fi.com/cdn/kofi2.png?v=3"
 SPONSOR_BADGE = ("https://img.shields.io/badge/Sponsor-GitHub-ea4aaa"
                  "?logo=githubsponsors&logoColor=white")
 
+# The Ko-fi asset is served at 580x146 - a 4x retina render of a 145x36 button -
+# and a plain markdown badge shows it at that natural size, four times too big and
+# several times taller than the 20px shields.io badge beside it. An <img> with an
+# explicit height is the only way to size a linked badge, so wrap inline HTML in
+# the markdown link instead of nesting a markdown image in it.
+KOFI_BADGE_HEIGHT = 32
+KOFI_MARKDOWN = (
+    f'[<img src="{KOFI_BADGE}" alt="Support me on Ko-fi" '
+    f'height="{KOFI_BADGE_HEIGHT}">]({KOFI})'
+)
+
 # Repos that are part of AndroidLife and get the project blurb.
 ANDROIDLIFE = {
     "dataset:androidlife-530",
@@ -47,7 +58,7 @@ ANDROIDLIFE = {
 }
 
 SUPPORT_LINKS = (
-    f"[![Support me on Ko-fi]({KOFI_BADGE})]({KOFI})\n"
+    f"{KOFI_MARKDOWN}\n"
     f"[![GitHub Sponsors]({SPONSOR_BADGE})]({SPONSORS})"
 )
 
