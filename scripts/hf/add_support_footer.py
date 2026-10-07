@@ -33,20 +33,17 @@ COLLECTION = ("https://huggingface.co/collections/YuvrajSingh9886/"
               "androidlife-can-llm-agents-survive-a-day-in-your-life")
 KOFI = "https://ko-fi.com/O7W120DR8R"
 SPONSORS = "https://github.com/sponsors/YuvrajSingh-mist"
-KOFI_BADGE = "https://storage.ko-fi.com/cdn/kofi2.png?v=3"
+
+# Rendered as shields badges rather than the Ko-fi CDN button art (kofi2.png).
+# That art is a button, not a badge: its label occupies only ~31% of the image
+# height, so at any height that matches the 20px shields badges around it the
+# lettering renders roughly half size and reads as visually small. A shields
+# badge shares their geometry exactly - 20px pill, same font size - so the row
+# stays uniform. The yellow brand colour and wording are kept.
+KOFI_BADGE = ("https://img.shields.io/badge/Buy_me_a_coffee-FFDD00"
+              "?logo=buymeacoffee&logoColor=black")
 SPONSOR_BADGE = ("https://img.shields.io/badge/Sponsor-GitHub-ea4aaa"
                  "?logo=githubsponsors&logoColor=white")
-
-# The Ko-fi asset is served at 580x146 - a 4x retina render of a 145x36 button -
-# and a plain markdown badge shows it at that natural size, four times too big and
-# several times taller than the 20px shields.io badge beside it. An <img> with an
-# explicit height is the only way to size a linked badge, so wrap inline HTML in
-# the markdown link instead of nesting a markdown image in it.
-KOFI_BADGE_HEIGHT = 32
-KOFI_MARKDOWN = (
-    f'[<img src="{KOFI_BADGE}" alt="Support me on Ko-fi" '
-    f'height="{KOFI_BADGE_HEIGHT}">]({KOFI})'
-)
 
 # Repos that are part of AndroidLife and get the project blurb.
 ANDROIDLIFE = {
@@ -58,8 +55,8 @@ ANDROIDLIFE = {
 }
 
 SUPPORT_LINKS = (
-    f"{KOFI_MARKDOWN}\n"
-    f"[![GitHub Sponsors]({SPONSOR_BADGE})]({SPONSORS})"
+    f"[![Buy me a coffee]({KOFI_BADGE})]({KOFI})\n"
+    f"[![Sponsor: GitHub]({SPONSOR_BADGE})]({SPONSORS})"
 )
 
 # Kept deliberately short: link out for detail, don't paste an essay.

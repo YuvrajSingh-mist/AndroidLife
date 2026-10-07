@@ -5,7 +5,7 @@
 **Can an AI agent survive a day in the life of a real user?**
 
 [![version](https://img.shields.io/github/v/release/YuvrajSingh-mist/AndroidLife?label=version&sort=semver)](https://github.com/YuvrajSingh-mist/AndroidLife/releases) [![license: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC_BY_4.0-lightgrey)](LICENSE-DATASET) [![python 3.11–3.13](https://img.shields.io/badge/python-3.11--3.13-blue)](pyproject.toml) [![mobilerun 0.6.15](https://img.shields.io/badge/mobilerun-0.6.15-informational)](https://docs.mobilerun.ai/framework/sdk)
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist) [<img src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" alt="Support me on Ko-fi" height="20">](https://ko-fi.com/O7W120DR8R)
+[![Sponsor: GitHub](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/YuvrajSingh-mist) [![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://ko-fi.com/O7W120DR8R)
 
 [**Leaderboard**](https://androidlife-website.vercel.app/) · [**530-task dataset**](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-530) · [**60-task public runs**](https://huggingface.co/datasets/YuvrajSingh9886/androidlife-public) · [**Code**](https://github.com/YuvrajSingh-mist/AndroidLife)
 
